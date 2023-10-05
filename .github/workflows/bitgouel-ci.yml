@@ -28,7 +28,7 @@ jobs:
           character set server: 'utf8'
           mysql database: 'bitgouel'
           mysql user: 'bitgouel-admin'
-          mysql password: 'Esperer123!'
+          mysql password: "${{ secrets.BITGOUEL_MYSQL_PASSWORD }}"
 
       - name: Start Redis
         uses: supercharge/redis-github-action@1.4.0
