@@ -10,14 +10,14 @@ jobs:
   CI:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
-          MYSQL_DATABASE: bitgouel
-        ports:
-          - 3306:3306
+#    services:
+#      mysql:
+#        image: mysql:8.0
+#        env:
+#          MYSQL_ROOT_PASSWORD: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
+#          MYSQL_DATABASE: bitgouel
+#        ports:
+#          - 3306:3306
 
     steps:
       - uses: actions/checkout@v3
