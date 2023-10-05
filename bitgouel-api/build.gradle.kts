@@ -1,9 +1,3 @@
-
-plugins {
-
-}
-
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -21,8 +15,4 @@ kapt {
         arg("mapstruct.defaultComponentModel", "spring")
         arg("mapstruct.unmappedTargetPolicy", "ignore")
     }
-}
-
-tasks.getByName<Jar>("jar") {
-    enabled = false
 }

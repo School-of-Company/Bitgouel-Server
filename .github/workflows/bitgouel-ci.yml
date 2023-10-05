@@ -47,7 +47,7 @@ jobs:
         shell: bash
 
       - name: Run build with Gradle wrapper
-        run: ./gradlew clean build
+        run: ./gradlew clean bitgouel-api:build
 
       - name: Bitgouel Server CI Discord Notification
         uses: sarisia/actions-status-discord@v1
