@@ -1,23 +1,30 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.10"
+    id("org.springframework.boot") version "2.7.5"
+    id("io.spring.dependency-management") version "1.0.13.RELEASE"
+    kotlin("plugin.spring") version "1.7.10"
+    kotlin("plugin.jpa") version "1.7.10"
 }
 
 subprojects {
-    apply {
-        plugin("org.jetbrains.kotlin.jvm")
-        version = "1.6.10"
-    }
+    apply(plugin = "java")
+
+    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "org.springframework.boot")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+
+    apply(plugin = "kotlin")
+    apply(plugin = "kotlin-spring") //all-open
 
     apply {
         plugin("org.jetbrains.kotlin.kapt")
-        version = "1.6.10"
+        version = "1.7.10"
     }
 
     dependencies {
+        implementation("org.springframework.boot:spring-boot-starter")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.4")
-        implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
 }
 
@@ -29,12 +36,12 @@ allprojects {
         compileKotlin {
             kotlinOptions {
                 freeCompilerArgs = listOf("-Xjsr305=strict")
-                jvmTarget = "17"
+                jvmTarget = "11"
             }
         }
 
         compileJava {
-            sourceCompatibility = JavaVersion.VERSION_17.majorVersion
+            sourceCompatibility = JavaVersion.VERSION_11.majorVersion
         }
 
         test {

@@ -1,9 +1,6 @@
 
 plugins {
-    id("org.springframework.boot") version "2.7.4"
-    id("io.spring.dependency-management") version "1.0.13.RELEASE"
-    kotlin("plugin.spring") version "1.6.10"
-    kotlin("plugin.jpa") version "1.6.10"
+
 }
 
 
@@ -28,16 +25,4 @@ kapt {
 
 tasks.getByName<Jar>("jar") {
     enabled = false
-}
-
-allOpen {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.MappedSuperclass")
-    annotation("javax.persistence.Embeddable")
-}
-
-noArg {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.MappedSuperclass")
-    annotation("javax.persistence.Embeddable")
 }
