@@ -49,7 +49,7 @@ jobs:
       - name: Run build with Gradle wrapper
         run: ./gradlew clean build
 
-      - name: Bitgouel Backend CI Discord Notification
+      - name: Bitgouel Server CI Discord Notification
         uses: sarisia/actions-status-discord@v1
         if: ${{ success() }}
         with:
@@ -57,10 +57,10 @@ jobs:
           webhook: ${{ secrets.BITGOUEL_DISCORD_WEBHOOK }}
           color: 00FF00
 
-      - name: Bitgouel Backend CI Discord Notification
+      - name: Bitgouel Server CI Discord Notification
         uses: sarisia/actions-status-discord@v1
         if: ${{ failure() }}
         with:
-          title: ❗️ BitGouel-Server-CI 실패! ❗️
+          title: ❗️ Bitgouel-Server-CI 실패! ❗️
           webhook: ${{ secrets.BITGOUEL_DISCORD_WEBHOOK }}
           color: FF0000
