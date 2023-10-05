@@ -22,6 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8'
+          mysql database: 'bitgouel'
+          mysql user: 'bitgouel-admin'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+
       - name: Start Redis
         uses: supercharge/redis-github-action@1.4.0
         with:
