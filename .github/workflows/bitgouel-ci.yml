@@ -23,9 +23,10 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup MySQL
-        uses: samin/mysql-action@v1
+        uses: samin/mysql-action@v1.1
         with:
-          character set server: 'utf8'
+          host port: 3306
+          container port: 3306
           mysql database: 'bitgouel'
           mysql user: 'bitgouel-admin'
           mysql password: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
