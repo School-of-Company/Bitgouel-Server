@@ -10,17 +10,25 @@ jobs:
   CI:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
-          MYSQL_DATABASE: bitgouel
-        ports:
-          - 3306:3306
+#    services:
+#      mysql:
+#        image: mysql:8.0
+#        env:
+#          MYSQL_ROOT_PASSWORD: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
+#          MYSQL_DATABASE: bitgouel
+#        ports:
+#          - 3306:3306
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8'
+          mysql database: 'bitgouel'
+          mysql user: 'root'
+          mysql password: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
 
       - name: Start Redis
         uses: supercharge/redis-github-action@1.4.0
@@ -53,7 +61,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         if: ${{ success() }}
         with:
-          title: ✅ BitGouel-Server-CI 성공! ✅
+          title: ✅ Bitgouel-Server-CI 성공! ✅
           webhook: ${{ secrets.BITGOUEL_DISCORD_WEBHOOK }}
           color: 00FF00
 
