@@ -43,7 +43,7 @@ jobs:
 
       - name: Create application.yml
         run: |
-          echo "${{ secrets.BITGOUEL_BACKEND_ENV }}" > /bitgouel-api/src/main/resources/application.yml
+          echo "${{ secrets.BITGOUEL_BACKEND_ENV }}" > ./bitgouel-api/src/main/resources/application.yml
         shell: bash
 
       - name: Run build with Gradle wrapper
