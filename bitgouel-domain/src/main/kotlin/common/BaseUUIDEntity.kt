@@ -1,4 +1,4 @@
-package base
+package common
 
 import javax.persistence.Column
 import javax.persistence.GeneratedValue
