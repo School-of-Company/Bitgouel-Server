@@ -12,3 +12,5 @@
 ---
 
 ## Class Diagram
+
+![](./assets/img/project_diagram.png)
