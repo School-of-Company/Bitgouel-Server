@@ -9,7 +9,7 @@ package domain.user.enums
  * BBOZZAK - 뽀작 선생님
  * PROFESSOR - 대학 교수
  * COMPANY_INSTRUCTOR - 기업 강사
- * GOVERNMENT_INSTRUCTOR - 유관 기관 강사
+ * GOVERNMENT - 유관 기관
  */
 enum class Authority {
     ROLE_USER,
@@ -19,5 +19,5 @@ enum class Authority {
     ROLE_BBOZZAK,
     ROLE_PROFESSOR,
     ROLE_COMPANY_INSTRUCTOR,
-    ROLE_GOVERNMENT_INSTRUCTOR
+    ROLE_GOVERNMENT
 }
