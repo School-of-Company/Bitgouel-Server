@@ -1,11 +1,13 @@
 package team.msg
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import kotlin.system.exitProcess
 
 @SpringBootApplication
+@EnableBatchProcessing
 class BatchApplication
 
 fun main(args: Array<String>) {
