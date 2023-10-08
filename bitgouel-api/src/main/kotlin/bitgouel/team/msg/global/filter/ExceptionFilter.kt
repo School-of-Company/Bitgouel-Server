@@ -1,8 +1,8 @@
 package bitgouel.team.msg.global.filter
 
-import bitgouel.team.msg.global.error.ErrorCode
 import bitgouel.team.msg.global.error.ErrorResponse
 import bitgouel.team.msg.global.error.exception.BitgouelException
+import bitgouel.team.msg.global.error.exception.InternalServerException
 import com.fasterxml.jackson.databind.ObjectMapper
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -22,7 +22,8 @@ class ExceptionFilter: OncePerRequestFilter() {
             filterChain.doFilter(request, response)
         } catch (e: Exception) {
             when (e) {
-                is BitgouelException -> sendError(response, ErrorResponse(e.errorCode.message, e.errorCode.status))
+                is BitgouelException -> sendError(response, ErrorResponse.of(e))
+                is InternalServerException -> sendError(response, ErrorResponse.of(e))
             }
         }
     }
