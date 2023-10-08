@@ -22,15 +22,14 @@ class ExceptionFilter: OncePerRequestFilter() {
             filterChain.doFilter(request, response)
         } catch (e: Exception) {
             when (e) {
-                is BitgouelException -> sendError(response, ErrorCode.INTERNAL_SERVER_ERROR)
+                is BitgouelException -> sendError(response, ErrorResponse(e.errorCode.message, e.errorCode.status))
             }
         }
     }
 
-    private fun sendError(response: HttpServletResponse, errorCode: ErrorCode) {
-        val errorResponse = ErrorResponse(errorCode.message, errorCode.status)
+    private fun sendError(response: HttpServletResponse, errorResponse: ErrorResponse) {
         val responseString = ObjectMapper().writeValueAsString(errorResponse)
-        response.status = errorCode.status
+        response.status = errorResponse.status
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.characterEncoding = StandardCharsets.UTF_8.name()
         response.writer.write(responseString)
