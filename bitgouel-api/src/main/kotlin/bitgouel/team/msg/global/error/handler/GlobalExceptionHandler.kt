@@ -19,7 +19,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(BitgouelException::class)
     fun bitgouelExceptionHandler(e: BitgouelException): ResponseEntity<ErrorResponse> =
-        ResponseEntity(ErrorResponse.of(e), HttpStatus.valueOf(e.globalErrorCode.status))
+        ResponseEntity(ErrorResponse.of(e), HttpStatus.valueOf(e.status))
 
     @ExceptionHandler(BindException::class)
     fun handleBindException(e: BindException): ResponseEntity<ValidationErrorResponse> =

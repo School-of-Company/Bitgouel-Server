@@ -5,8 +5,4 @@ import bitgouel.team.msg.global.error.GlobalErrorCode
 
 class InternalServerException(
     message: String
-) : BitgouelException(GlobalErrorCode.INTERNAL_SERVER_ERROR) {
-    init {
-        super.globalErrorCode.message = message
-    }
-}
+) : BitgouelException(message, GlobalErrorCode.INTERNAL_SERVER_ERROR.status)

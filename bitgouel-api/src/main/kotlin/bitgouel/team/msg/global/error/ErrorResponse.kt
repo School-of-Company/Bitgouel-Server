@@ -12,8 +12,8 @@ data class ErrorResponse(
     companion object {
         fun of(e: BitgouelException) =
             ErrorResponse(
-                message = e.globalErrorCode.message,
-                status = e.globalErrorCode.status
+                message = e.message,
+                status = e.status
             )
 
         fun of(e: BindingResult): ValidationErrorResponse {

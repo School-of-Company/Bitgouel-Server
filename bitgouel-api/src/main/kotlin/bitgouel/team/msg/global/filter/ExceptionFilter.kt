@@ -1,9 +1,11 @@
 package bitgouel.team.msg.global.filter
 
 import bitgouel.team.msg.global.error.ErrorResponse
+import bitgouel.team.msg.global.error.GlobalErrorCode
 import bitgouel.team.msg.global.error.exception.BitgouelException
 import bitgouel.team.msg.global.exception.InternalServerException
 import com.fasterxml.jackson.databind.ObjectMapper
+import common.LoggerDelegator
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -12,6 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.nio.charset.StandardCharsets
 
 class ExceptionFilter: OncePerRequestFilter() {
+
+    private val log by LoggerDelegator()
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -22,9 +26,15 @@ class ExceptionFilter: OncePerRequestFilter() {
             filterChain.doFilter(request, response)
         } catch (e: Exception) {
             when (e) {
-                is BitgouelException -> sendError(response, ErrorResponse.of(e))
+                is BitgouelException -> {
+                    log.error("Generate Exception Message = {}, Status = {}",
+                        e.message, e.status)
+                    sendError(response, ErrorResponse.of(e))
+                }
                 else -> {
-                    sendError(response, ErrorResponse.of(InternalServerException("서버 내부 에러")))
+                    log.error("Generate Exception Message = {}, Status = {}",
+                        e.message, GlobalErrorCode.INTERNAL_SERVER_ERROR.status)
+                    sendError(response, ErrorResponse.of(InternalServerException("Internal Server Error")))
                 }
             }
         }
