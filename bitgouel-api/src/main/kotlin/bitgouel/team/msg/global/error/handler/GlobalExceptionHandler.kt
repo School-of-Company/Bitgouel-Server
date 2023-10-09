@@ -35,6 +35,6 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(NoHandlerFoundException::class)
     fun handleNoHandlerFoundException(e: NoHandlerFoundException): ResponseEntity<NoHandlerErrorResponse> =
-        ResponseEntity(ErrorResponse.of(e), HttpStatus.BAD_REQUEST)
+        ResponseEntity(ErrorResponse.of(e), HttpStatus.FORBIDDEN)
 
 }
