@@ -1,7 +1,7 @@
 package bitgouel.team.msg.global.error.exception
 
-import bitgouel.team.msg.global.error.ErrorCode
+import bitgouel.team.msg.global.error.GlobalErrorCode
 
 open class BitgouelException(
-    val errorCode: ErrorCode
-) : RuntimeException(errorCode.message)
+    val globalErrorCode: GlobalErrorCode
+) : RuntimeException(globalErrorCode.message)

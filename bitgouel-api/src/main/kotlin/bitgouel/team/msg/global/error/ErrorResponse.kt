@@ -12,8 +12,8 @@ data class ErrorResponse(
     companion object {
         fun of(e: BitgouelException) =
             ErrorResponse(
-                message = e.errorCode.message,
-                status = e.errorCode.status
+                message = e.globalErrorCode.message,
+                status = e.globalErrorCode.status
             )
 
         fun of(e: BindingResult): ValidationErrorResponse {
@@ -21,18 +21,18 @@ data class ErrorResponse(
 
             return ValidationErrorResponse(
                 fieldErrorMap,
-                ErrorCode.BAD_REQUEST.status
+                GlobalErrorCode.BAD_REQUEST.status
             )
         }
 
         fun of(e: DataIntegrityViolationException) = DataErrorResponse(
             message = e.message.toString(),
-            status = ErrorCode.BAD_REQUEST.status
+            status = GlobalErrorCode.BAD_REQUEST.status
         )
 
         fun of(e: NoHandlerFoundException) = NoHandlerErrorResponse(
             message = e.message.toString(),
-            status = ErrorCode.BAD_REQUEST.status
+            status = GlobalErrorCode.BAD_REQUEST.status
         )
     }
 }

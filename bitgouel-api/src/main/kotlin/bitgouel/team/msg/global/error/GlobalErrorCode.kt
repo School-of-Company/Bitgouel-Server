@@ -1,6 +1,6 @@
 package bitgouel.team.msg.global.error
 
-enum class ErrorCode(
+enum class GlobalErrorCode(
     var message: String,
     val status: Int
 ) {
