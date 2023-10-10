@@ -6,6 +6,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EntityScan("domain")
-class EntityScanConfig {
-
-}
+class EntityScanConfig
