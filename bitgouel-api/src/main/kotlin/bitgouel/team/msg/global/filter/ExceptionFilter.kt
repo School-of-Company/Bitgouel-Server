@@ -24,7 +24,7 @@ class ExceptionFilter: OncePerRequestFilter() {
     ) {
         runCatching {
             filterChain.doFilter(request, response)
-        }.onFailure { e: Exception ->
+        }.onFailure { e ->
             when (e) {
                 is BitgouelException -> {
                     log.error("Bitgouel Exception Occurred - Message = {}, Status = {}",
