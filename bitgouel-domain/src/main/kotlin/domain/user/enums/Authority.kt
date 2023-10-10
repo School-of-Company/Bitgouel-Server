@@ -1,7 +1,7 @@
 package domain.user.enums
 
 /**
- * 유저의 Authority를 정의하는 enum타입 클래스입니다.
+ * 유저의 Authority를 정의하는 enum 클래스입니다.
  * USER - Default
  * ADMIN - 교육청, 어드민 권한
  * STUDENT - 학생
