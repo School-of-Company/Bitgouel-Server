@@ -15,7 +15,7 @@ class Admin(
     override val id: UUID,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
-    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = false)
+    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
 
 ) : BaseUUIDEntity(id)
