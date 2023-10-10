@@ -27,12 +27,12 @@ class ExceptionFilter: OncePerRequestFilter() {
         } catch (e: Exception) {
             when (e) {
                 is BitgouelException -> {
-                    log.error("Generate Exception Message = {}, Status = {}",
+                    log.error("Bitgouel Exception Occurred - Message = {}, Status = {}",
                         e.message, e.status)
                     sendError(response, ErrorResponse.of(e))
                 }
                 else -> {
-                    log.error("Generate Exception Message = {}, Status = {}",
+                    log.error("Internal Exception Occurred - Message = {}, Status = {}",
                         e.message, GlobalErrorCode.INTERNAL_SERVER_ERROR.status)
                     sendError(response, ErrorResponse.of(InternalServerException("Internal Server Error")))
                 }
