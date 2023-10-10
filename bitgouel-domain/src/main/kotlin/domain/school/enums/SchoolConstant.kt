@@ -1,5 +1,8 @@
 package domain.school.enums
 
+/**
+ * 빛고을 직업교육 혁신지구 참여 학교 enum
+ */
 enum class SchoolConstant(
     val schoolName: String
 ) {
@@ -18,5 +21,4 @@ enum class SchoolConstant(
     GWANGJU_AUTOMATIC_EQUIPMENT_TECHNICAL_HIGH_SCHOOL("광주자동화설비마이스터고등학교"),
     GWANGJU_SOFTWARE_MEISTER_HIGHSCHOOL("광주소프트웨어마이스터고등학교")
     ;
-
 }
