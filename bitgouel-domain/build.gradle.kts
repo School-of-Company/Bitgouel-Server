@@ -12,7 +12,7 @@ jar.enabled = true
 bootJar.enabled = false
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:2.7.5")
 }
 
 allOpen {

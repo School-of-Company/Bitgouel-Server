@@ -1,4 +1,4 @@
-package common
+package common.entity
 
 import javax.persistence.Column
 import javax.persistence.MappedSuperclass

@@ -5,7 +5,7 @@ import bitgouel.team.msg.global.error.GlobalErrorCode
 import bitgouel.team.msg.global.error.exception.BitgouelException
 import bitgouel.team.msg.global.exception.InternalServerException
 import com.fasterxml.jackson.databind.ObjectMapper
-import common.LoggerDelegator
+import common.logger.LoggerDelegator
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

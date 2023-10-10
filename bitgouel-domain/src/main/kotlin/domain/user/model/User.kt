@@ -1,6 +1,6 @@
 package domain.user.model
 
-import common.BaseUUIDEntity
+import common.entity.BaseUUIDEntity
 import domain.user.enums.Authority
 import domain.user.enums.SignUpStatus
 import javax.persistence.Column
