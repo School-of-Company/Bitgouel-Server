@@ -22,9 +22,9 @@ class ExceptionFilter: OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        try {
+        runCatching {
             filterChain.doFilter(request, response)
-        } catch (e: Exception) {
+        }.onFailure { e: Exception ->
             when (e) {
                 is BitgouelException -> {
                     log.error("Bitgouel Exception Occurred - Message = {}, Status = {}",
