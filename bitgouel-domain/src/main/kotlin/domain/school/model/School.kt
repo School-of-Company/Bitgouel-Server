@@ -15,6 +15,8 @@ class School(
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(30)", nullable = false, unique = true)
-    val constant: SchoolConstant // 학교 이름 상수
+    @Enumerated(EnumType.STRING)
+    @Column(name = "school_name", columnDefinition = "VARCHAR(30)", nullable = false, unique = true)
+    val schoolName: SchoolConstant // 학교 이름 상수
 
 ) : BaseUUIDEntity(id)
