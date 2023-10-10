@@ -1,6 +1,7 @@
 package domain.student.model
 
 import common.entity.BaseUUIDEntity
+import domain.club.model.Club
 import domain.school.model.School
 import domain.student.enums.StudentRole
 import domain.user.model.User
@@ -25,8 +26,8 @@ class Student(
     val user: User?,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "school_id", columnDefinition = "BINARAY(16)", nullable = false)
-    val school: School,
+    @JoinColumn(name = "club_id", columnDefinition = "BINARY(16)", nullable = false)
+    val club: Club,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val grade: Int,

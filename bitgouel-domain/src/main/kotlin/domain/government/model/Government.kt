@@ -1,18 +1,18 @@
-package domain.teacher.model
+package domain.government.model
 
 import common.entity.BaseUUIDEntity
 import domain.club.model.Club
 import domain.user.model.User
 import javax.persistence.CascadeType
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
 import javax.persistence.OneToOne
 import java.util.UUID
 
 @Entity
-class Teacher(
+class Government(
 
     override val id: UUID,
 
@@ -20,8 +20,11 @@ class Teacher(
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = false)
     val user: User?,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id", columnDefinition = "BINARAY(16)", nullable = false)
-    val club: Club
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id", columnDefinition = "BINARY(16)", nullable = false)
+    val club: Club,
+
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    val governmentName: String
 
 ) : BaseUUIDEntity(id)
