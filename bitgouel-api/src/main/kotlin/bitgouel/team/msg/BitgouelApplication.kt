@@ -8,6 +8,5 @@ class BitgouelApplication
 
 fun main(args: Array<String>) {
     runApplication<BitgouelApplication>(*args)
-
 }
 
