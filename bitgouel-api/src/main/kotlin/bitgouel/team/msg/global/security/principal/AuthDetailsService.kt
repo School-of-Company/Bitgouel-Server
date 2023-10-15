@@ -11,11 +11,11 @@ import java.util.*
 
 @Service
 @Transactional(rollbackFor = [Exception::class], readOnly = true)
-class UserDetailsService(
+class AuthDetailsService(
     private val userRepository: UserRepository
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String?): UserDetails =
         userRepository.findByIdOrNull(UUID.fromString(username))
             .let { it ?: throw UserNotFoundException("존재하지 않는 유저입니다.") }
-            .let { UserDetails(it.id) }
+            .let { AuthDetails(it.id) }
 }

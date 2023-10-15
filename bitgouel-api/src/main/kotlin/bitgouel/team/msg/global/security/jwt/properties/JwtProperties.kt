@@ -1,13 +1,13 @@
 package bitgouel.team.msg.global.security.jwt.properties
 
 import io.jsonwebtoken.security.Keys
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 import java.nio.charset.StandardCharsets
 import java.security.Key
 
 @ConstructorBinding
-@ConfigurationPropertiesScan
+@ConfigurationProperties(prefix = "jwt")
 class JwtProperties(
     accessSecret: String,
     refreshSecret: String,
