@@ -1,16 +1,10 @@
 package team.msg.domain.company.model
 
 import team.msg.common.entity.BaseUUIDEntity
-import javax.persistence.CascadeType
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.OneToOne
 import team.msg.domain.club.model.Club
 import team.msg.domain.user.model.User
 import java.util.*
+import javax.persistence.*
 
 @Entity
 class CompanyInstructor(
