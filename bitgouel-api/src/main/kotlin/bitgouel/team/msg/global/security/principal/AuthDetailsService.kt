@@ -14,8 +14,8 @@ import java.util.*
 class AuthDetailsService(
     private val userRepository: UserRepository
 ) : UserDetailsService {
-    override fun loadUserByUsername(username: String?): UserDetails =
-        userRepository.findByIdOrNull(UUID.fromString(username))
-            .let { it ?: throw UserNotFoundException("존재하지 않는 유저입니다.") }
-            .let { AuthDetails(it.id) }
+    override fun loadUserByUsername(username: String?): UserDetails {
+        val user = userRepository.findByIdOrNull(UUID.fromString(username)) ?: throw UserNotFoundException()
+        return AuthDetails(user.id)
+    }
 }
