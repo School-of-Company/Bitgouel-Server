@@ -16,11 +16,11 @@ open class AuthDetails(
 
     override fun getUsername(): String = userId.toString()
 
-    override fun isAccountNonExpired(): Boolean = false
+    override fun isAccountNonExpired() = true
 
-    override fun isAccountNonLocked(): Boolean = false
+    override fun isAccountNonLocked() = true
 
-    override fun isCredentialsNonExpired(): Boolean = false
+    override fun isCredentialsNonExpired() = true
 
-    override fun isEnabled(): Boolean = false
+    override fun isEnabled() = true
 }
