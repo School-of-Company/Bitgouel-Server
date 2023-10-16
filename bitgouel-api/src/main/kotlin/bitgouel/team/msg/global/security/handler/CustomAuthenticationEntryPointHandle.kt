@@ -11,7 +11,7 @@ class CustomAuthenticationEntryPointHandler : AuthenticationEntryPoint {
 
     private val log = LoggerFactory.getLogger(this.javaClass.name)
 
-    override fun commence(request: HttpServletRequest?,response: HttpServletResponse?,authException: AuthenticationException?) {
+    override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authException: AuthenticationException?) {
         log.warn("========== AuthenticationEntryPoint ==========")
         throw ForbiddenException("Forbidden")
     }
