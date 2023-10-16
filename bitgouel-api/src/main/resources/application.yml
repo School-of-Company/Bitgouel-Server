@@ -31,7 +31,7 @@ spring:
     port: ${REDIS_PORT:6379}
 
 jwt:
-  accessSecret: ${JWT_ACCESS:Yml0Z291ZWwtYWNjZXNzU2VjcmV0}
-  refreshSecret: ${JWT_REFRESH:Yml0Z291ZWwtcmVmcmVzaFNlY3JldA==}
-  accessExp: ${ACCESS_EXP:1800}
-  refreshExp: ${REFRESH_EXP:7200}
+  accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}
+  refreshSecret: ${JWT_REFRESH:Yml0Z291ZWw=Yml0Z291ZWw=Yml0Z291ZWw=}
+  accessExpiration: ${ACCESS_EXP:1800}
+  refreshExpiration: ${REFRESH_EXP:108000}
