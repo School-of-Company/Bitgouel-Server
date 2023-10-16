@@ -1,9 +1,9 @@
 package bitgouel.team.msg.global.security.principal
 
-import domain.user.enums.Authority
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import team.msg.domain.user.enums.Authority
 import java.util.UUID
 
 open class AuthDetails(

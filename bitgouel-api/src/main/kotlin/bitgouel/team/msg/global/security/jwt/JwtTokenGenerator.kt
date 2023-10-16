@@ -2,12 +2,12 @@ package bitgouel.team.msg.global.security.jwt
 
 import bitgouel.team.msg.domain.auth.presentation.data.response.TokenResponse
 import bitgouel.team.msg.global.security.jwt.properties.JwtProperties
-import domain.auth.model.RefreshToken
-import domain.auth.repository.RefreshTokenRepository
-import domain.user.enums.Authority
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
+import team.msg.domain.auth.model.RefreshToken
+import team.msg.domain.auth.repository.RefreshTokenRepository
+import team.msg.domain.user.enums.Authority
 import java.security.Key
 import java.time.LocalDateTime
 import java.util.*

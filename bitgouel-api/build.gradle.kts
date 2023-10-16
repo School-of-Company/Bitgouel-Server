@@ -21,3 +21,4 @@ kapt {
         arg("mapstruct.unmappedTargetPolicy", "ignore")
     }
 }
+
