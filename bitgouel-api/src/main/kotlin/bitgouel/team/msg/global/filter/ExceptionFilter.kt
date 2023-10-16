@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets
 
 class ExceptionFilter: OncePerRequestFilter() {
 
-    private val log by team.msg.common.logger.LoggerDelegator()
+    private val log by LoggerDelegator()
 
     override fun doFilterInternal(
         request: HttpServletRequest,
