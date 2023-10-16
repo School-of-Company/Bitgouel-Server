@@ -17,7 +17,7 @@ class JwtRequestFilter(
     ) {
         val accessToken = jwtTokenParser.parseAccessToken(request)
 
-        if (accessToken.isNotBlank()) {
+        if (!accessToken.isNullOrBlank()) {
             val authentication = jwtTokenParser.authentication(accessToken)
             SecurityContextHolder.clearContext()
             SecurityContextHolder.getContext().authentication = authentication
