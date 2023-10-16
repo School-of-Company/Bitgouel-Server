@@ -1,7 +1,9 @@
 package bitgouel.team.msg.global.security
 
+import bitgouel.team.msg.global.config.FilterConfig
 import bitgouel.team.msg.global.security.handler.CustomAccessDeniedHandler
 import bitgouel.team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
+import bitgouel.team.msg.global.security.jwt.JwtTokenParser
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -12,7 +14,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
 
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtTokenParser: JwtTokenParser
+) {
     @Bean
     protected fun filterChain(http: HttpSecurity): SecurityFilterChain =
         http
@@ -34,7 +38,9 @@ class SecurityConfig {
             .exceptionHandling()
             .authenticationEntryPoint(CustomAuthenticationEntryPointHandler())
             .accessDeniedHandler(CustomAccessDeniedHandler())
+            .and()
 
+            .apply(FilterConfig(jwtTokenParser))
             .and()
             .build()
 
