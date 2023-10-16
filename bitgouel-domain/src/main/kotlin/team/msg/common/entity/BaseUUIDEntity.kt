@@ -14,4 +14,4 @@ abstract class BaseUUIDEntity(
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)", nullable = false)
     open val id: UUID
-) : team.msg.common.entity.BaseTimeEntity()
+) : BaseTimeEntity()
