@@ -58,7 +58,7 @@ class DataInitializer(
     }
 
     private fun initSchool() {
-            schoolRepository.saveAll(schoolList)
+        schoolRepository.saveAll(schoolList)
     }
 
     private fun initClub() {
