@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository
 import team.msg.domain.school.model.School
 import java.util.UUID
 
-interface SchoolRepository : CrudRepository<School, UUID> {
+interface SchoolRepository : CrudRepository<School, Int> {
 }
