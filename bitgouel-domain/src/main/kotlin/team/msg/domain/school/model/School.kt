@@ -15,9 +15,10 @@ class School(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int = 0,
+    @Column(name = "id", nullable = false, unique = false)
+    val id: Long = 0,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "highSchool", columnDefinition = "VARCHAR(30)", nullable = false, unique = true)
+    @Column(name = "highSchool", columnDefinition = "VARCHAR(100)", nullable = false, unique = true)
     val highSchool: HighSchool // 학교 이름 상수
 )

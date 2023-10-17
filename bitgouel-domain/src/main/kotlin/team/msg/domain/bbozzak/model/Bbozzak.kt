@@ -20,7 +20,7 @@ class Bbozzak(
     val user: User?,
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id", columnDefinition = "BINARY(16)", nullable = false)
+    @JoinColumn(name = "club_id", nullable = false)
     val club: Club
 
 ) : BaseUUIDEntity(id)
