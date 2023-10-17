@@ -1,9 +1,9 @@
 package team.msg.global.error
 
+import team.msg.global.error.exception.BitgouelException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.servlet.NoHandlerFoundException
-import team.msg.global.error.exception.BitgouelException
 
 data class ErrorResponse(
     val message: String,

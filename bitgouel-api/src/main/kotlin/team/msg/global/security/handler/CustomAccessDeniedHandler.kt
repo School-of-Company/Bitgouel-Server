@@ -1,11 +1,11 @@
 package team.msg.global.security.handler
 
+import team.msg.global.exception.InvalidRoleException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.web.access.AccessDeniedHandler
-import team.msg.global.exception.InvalidRoleException
 
 class CustomAccessDeniedHandler : AccessDeniedHandler {
 

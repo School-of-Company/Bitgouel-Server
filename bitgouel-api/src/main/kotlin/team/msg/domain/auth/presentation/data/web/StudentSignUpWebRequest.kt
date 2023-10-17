@@ -29,6 +29,9 @@ data class StudentSignUpWebRequest(
     @Enumerated(EnumType.STRING)
     val highSchool: HighSchool,
 
+    @field:NotBlank
+    val clubName: String,
+
     @field:Min(1)
     @field:Max(3)
     val grade: Int,

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.auth.exception.AlreadySignUpException
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
+import team.msg.domain.student.model.Student
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.enums.SignUpStatus
 import team.msg.domain.user.model.User
@@ -35,5 +36,12 @@ class AuthServiceImpl(
         )
 
         userRepository.save(user)
+
+//        val student = Student(
+//            id = UUID.randomUUID(),
+//            user = user,
+//
+//        )
+
     }
 }

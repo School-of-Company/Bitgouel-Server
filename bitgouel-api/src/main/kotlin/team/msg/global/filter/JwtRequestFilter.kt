@@ -1,11 +1,11 @@
 package team.msg.global.filter
 
+import team.msg.global.security.jwt.JwtTokenParser
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
-import team.msg.global.security.jwt.JwtTokenParser
 
 class JwtRequestFilter(
     private val jwtTokenParser: JwtTokenParser

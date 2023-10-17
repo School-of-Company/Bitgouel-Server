@@ -17,17 +17,21 @@ class AuthController(
     private val authService: AuthService
 ) {
     @PostMapping("/student")
-    fun studentSignUp(@RequestBody @Valid request: StudentSignUpWebRequest): ResponseEntity<Void> =
-        authService.studentSignUp(StudentSignUpRequest(
-            email = request.email,
-            name = request.name,
-            phoneNumber = request.phoneNumber,
-            password = request.password,
-            highSchool = request.highSchool,
-            grade = request.grade,
-            classRoom = request.classRoom,
-            number = request.number,
-            admissionNumber = request.admissionNumber
-        ))
-            .let { ResponseEntity.status(HttpStatus.CREATED).build() }
+    fun studentSignUp(@RequestBody @Valid request: StudentSignUpWebRequest): ResponseEntity<Void> {
+        authService.studentSignUp(
+            StudentSignUpRequest(
+                email = request.email,
+                name = request.name,
+                phoneNumber = request.phoneNumber,
+                password = request.password,
+                highSchool = request.highSchool,
+                clubName = request.clubName,
+                grade = request.grade,
+                classRoom = request.classRoom,
+                number = request.number,
+                admissionNumber = request.admissionNumber
+            )
+        )
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
 }

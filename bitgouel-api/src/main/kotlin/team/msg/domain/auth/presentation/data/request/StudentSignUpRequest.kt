@@ -16,6 +16,8 @@ class StudentSignUpRequest(
     @Enumerated(EnumType.STRING)
     val highSchool: HighSchool,
 
+    val clubName: String,
+
     val grade: Int,
 
     val classRoom: Int,

@@ -1,13 +1,13 @@
 package team.msg.global.security.jwt
 
+import team.msg.domain.auth.presentation.data.response.TokenResponse
+import team.msg.global.security.jwt.properties.JwtProperties
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
 import team.msg.domain.auth.model.RefreshToken
-import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.global.security.jwt.properties.JwtProperties
 import java.security.Key
 import java.time.LocalDateTime
 import java.util.*
