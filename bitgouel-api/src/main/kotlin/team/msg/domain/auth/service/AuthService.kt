@@ -1,7 +1,7 @@
 package team.msg.domain.auth.service
 
-import team.msg.domain.auth.presentation.data.request.StudentSignUpWebRequest
+import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 
 interface AuthService {
-    fun studentSignUp(studentSignUpWebRequest: StudentSignUpWebRequest)
+    fun studentSignUp(studentSignUpRequest: StudentSignUpRequest)
 }

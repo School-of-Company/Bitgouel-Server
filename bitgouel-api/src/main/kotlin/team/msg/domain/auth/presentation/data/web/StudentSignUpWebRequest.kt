@@ -1,4 +1,4 @@
-package team.msg.domain.auth.presentation.data.request
+package team.msg.domain.auth.presentation.data.web
 
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
