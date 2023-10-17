@@ -39,6 +39,10 @@ class DataInitializer(
 
     }
 
+    /**
+     * ApplicationReadyEvent가 발행되면 initData가 실행됩니다.
+     * school, club의 데이터 count가 0이라면 데이터 삽입이 실행됩니다.
+     */
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
     fun initData() {
