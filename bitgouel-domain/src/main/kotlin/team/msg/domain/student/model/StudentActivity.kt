@@ -22,7 +22,7 @@ class StudentActivity(
     val content: String,
 
     @Column(columnDefinition = "INT", nullable = false)
-    val credit: String,
+    val credit: Int,
 
     override val createdAt: LocalDateTime,
 
