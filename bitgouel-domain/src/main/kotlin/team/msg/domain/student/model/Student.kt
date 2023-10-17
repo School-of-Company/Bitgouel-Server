@@ -25,7 +25,7 @@ class Student(
     val user: User?,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id", columnDefinition = "BINARY(16)", nullable = false)
+    @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
