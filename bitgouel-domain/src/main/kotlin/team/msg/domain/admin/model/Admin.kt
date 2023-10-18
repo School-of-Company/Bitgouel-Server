@@ -1,5 +1,6 @@
 package team.msg.domain.admin.model
 
+import team.msg.common.entity.BaseUUIDEntity
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -15,6 +16,6 @@ class Admin(
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
-    val user: User?,
+    val user: User?
 
-    ) : team.msg.common.entity.BaseUUIDEntity(id)
+) : BaseUUIDEntity(id)

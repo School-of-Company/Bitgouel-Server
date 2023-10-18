@@ -14,13 +14,13 @@ class User(
 
     override val id: UUID,
 
-    @Column(columnDefinition = "VARCHAR(100)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val email: String,
 
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val name: String,
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val phoneNumber: String,
 
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)

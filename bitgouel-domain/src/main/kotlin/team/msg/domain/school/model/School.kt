@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import team.msg.domain.school.enums.HighSchool
-import java.util.UUID
 
 @Entity
 class School(

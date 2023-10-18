@@ -5,6 +5,7 @@ import team.msg.global.security.handler.CustomAccessDeniedHandler
 import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
 import team.msg.global.security.jwt.JwtTokenParser
 import org.springframework.context.annotation.Bean
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -31,6 +32,8 @@ class SecurityConfig(
             .requestMatchers(RequestMatcher { request ->
                 CorsUtils.isPreFlightRequest(request)
             }).permitAll()
+
+            .mvcMatchers(HttpMethod.POST, "/auth/student").permitAll()
 
             .anyRequest().authenticated()
             .and()
