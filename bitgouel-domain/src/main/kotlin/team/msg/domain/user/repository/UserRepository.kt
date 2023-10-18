@@ -6,5 +6,4 @@ import java.util.UUID
 
 interface UserRepository : CrudRepository<User, UUID> {
     fun existsByEmailOrPhoneNumber(email: String, phoneNumber: String): Boolean
-    fun save(user: User): User
 }

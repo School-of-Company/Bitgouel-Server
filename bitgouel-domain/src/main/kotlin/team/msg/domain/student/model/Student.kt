@@ -38,7 +38,7 @@ class Student(
     val number: Int,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
-    val cardinalNumber: Int,
+    val cohort: Int,
 
     @Column(columnDefinition = "INT", nullable = false)
     val credit: Int,

@@ -4,6 +4,5 @@ enum class UserErrorCode(
     val message: String,
     val status: Int
 ) {
-    USER_NOT_FOUND("존재하지 않는 유저입니다.", 404),
-    ALREADY_SIGN_UP("이미 가입된 정보입니다.", 403)
+    USER_NOT_FOUND("존재하지 않는 유저입니다.", 404)
 }
