@@ -51,9 +51,9 @@ class AuthServiceImpl(
         userRepository.save(user)
 
         val school = schoolRepository.findByHighSchool(request.highSchool)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. values = [ highSchool = ${request.highSchool} ]")
+            ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. values : [ highSchool = ${request.highSchool} ]")
         val club = clubRepository.findByNameAndSchool(request.clubName, school)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values = [ club = ${request.clubName} ]")
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
 
         val student = Student(
             id = UUID.randomUUID(),
