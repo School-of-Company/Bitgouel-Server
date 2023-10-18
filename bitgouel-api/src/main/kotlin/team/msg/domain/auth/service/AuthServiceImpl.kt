@@ -3,7 +3,8 @@ package team.msg.domain.auth.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.SecurityUtil
-import team.msg.domain.auth.exception.AlreadySignUpException
+import team.msg.domain.auth.exception.AlreadyExistEmailException
+import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.repository.ClubRepository
@@ -32,8 +33,11 @@ class AuthServiceImpl(
         val email = request.email
         val phoneNumber = request.phoneNumber
 
-        if (userRepository.existsByEmailOrPhoneNumber(email, phoneNumber))
-            throw AlreadySignUpException("이미 가입된 정보를 기입하였습니다.")
+        if (userRepository.existsByEmail(email))
+            throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info = $email")
+
+        if (userRepository.existsByPhoneNumber(phoneNumber))
+            throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info = $phoneNumber")
 
         val user = User(
             id = UUID.randomUUID(),
@@ -46,8 +50,10 @@ class AuthServiceImpl(
         )
         userRepository.save(user)
 
-        val school = schoolRepository.findByHighSchool(request.highSchool) ?: throw SchoolNotFoundException("존재하지 않는 학교입니다.")
-        val club = clubRepository.findByNameAndSchool(request.clubName, school) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다.")
+        val school = schoolRepository.findByHighSchool(request.highSchool)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. values = [ highSchool = ${request.highSchool} ]")
+        val club = clubRepository.findByNameAndSchool(request.clubName, school)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values = [ club = ${request.clubName} ]")
 
         val student = Student(
             id = UUID.randomUUID(),
