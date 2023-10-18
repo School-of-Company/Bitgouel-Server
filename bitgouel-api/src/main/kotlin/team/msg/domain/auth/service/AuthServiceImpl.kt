@@ -2,6 +2,7 @@ package team.msg.domain.auth.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
@@ -14,7 +15,6 @@ import team.msg.domain.student.enums.StudentRole
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.enums.SignUpStatus
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
 import java.util.*
@@ -46,7 +46,7 @@ class AuthServiceImpl(
             phoneNumber = phoneNumber,
             password = securityUtil.passwordEncode(request.password),
             authority = Authority.ROLE_STUDENT,
-            signUpStatus = SignUpStatus.PENDING
+            approveStatus = ApproveStatus.PENDING
         )
         userRepository.save(user)
 

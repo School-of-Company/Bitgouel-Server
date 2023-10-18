@@ -8,7 +8,7 @@ import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.domain.lecture.enum.LectureStatus
+import team.msg.common.enum.ApproveStatus
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
@@ -52,5 +52,5 @@ class Lecture(
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
-    var lectureStatus: LectureStatus = LectureStatus.PENDING
+    var approveStatus: ApproveStatus = ApproveStatus.PENDING
 ) : BaseUUIDEntity(id)
