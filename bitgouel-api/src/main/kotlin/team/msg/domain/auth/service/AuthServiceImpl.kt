@@ -32,6 +32,10 @@ class AuthServiceImpl(
     private val teacherRepository: TeacherRepository
 ) : AuthService {
 
+    /**
+     * 학생 회원가입을 처리해주는 비지니스 로직입니다.
+     * @param StudentSignUpRequest
+     */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
         val user = createUser(request.email, request.name, request.phoneNumber, request.password)
@@ -55,6 +59,10 @@ class AuthServiceImpl(
         studentRepository.save(student)
     }
 
+    /**
+     * 취동샘 회원가입을 처리해주는 비지니스 로직입니다.
+     * @param TeacherSignUpRequest
+     */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
         val user = createUser(request.email, request.name, request.phoneNumber, request.password)
@@ -72,6 +80,10 @@ class AuthServiceImpl(
         teacherRepository.save(teacher)
     }
 
+    /**
+     * 유저 회원가입을 처리해주는 private 함수입니다.
+     * @param email, name, phoneNumber, password
+     */
     private fun createUser(email: String, name: String, phoneNumber: String, password: String): User {
         if (userRepository.existsByEmail(email))
             throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info : [ email = $email ]")
