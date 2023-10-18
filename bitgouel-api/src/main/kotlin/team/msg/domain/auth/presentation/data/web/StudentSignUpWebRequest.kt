@@ -44,5 +44,4 @@ data class StudentSignUpWebRequest(
 
     @field:NotNull
     val admissionNumber: Int
-
 )
