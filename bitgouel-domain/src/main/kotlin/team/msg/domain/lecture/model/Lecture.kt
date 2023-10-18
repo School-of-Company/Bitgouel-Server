@@ -34,8 +34,6 @@ class Lecture(
     @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
     val completeDate: LocalDateTime,
 
-    override val createdAt: LocalDateTime,
-
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
     val content: String,
 
