@@ -34,10 +34,10 @@ class AuthServiceImpl(
         val phoneNumber = request.phoneNumber
 
         if (userRepository.existsByEmail(email))
-            throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info = $email")
+            throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info : [ email = $email ]")
 
         if (userRepository.existsByPhoneNumber(phoneNumber))
-            throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info = $phoneNumber")
+            throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
 
         val user = User(
             id = UUID.randomUUID(),
