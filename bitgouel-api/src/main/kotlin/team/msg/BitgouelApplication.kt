@@ -8,6 +8,6 @@ import org.springframework.boot.runApplication
 class BitgouelApplication
 
 fun main(args: Array<String>) {
-    runApplication<team.msg.BitgouelApplication>(*args)
+    runApplication<BitgouelApplication>(*args)
 }
 
