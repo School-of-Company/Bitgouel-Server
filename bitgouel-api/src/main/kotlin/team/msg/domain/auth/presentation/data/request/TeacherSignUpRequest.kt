@@ -2,7 +2,7 @@ package team.msg.domain.auth.presentation.data.request
 
 import team.msg.domain.school.enums.HighSchool
 
-class TeacherSignUpRequest(
+data class TeacherSignUpRequest(
     val email: String,
     val name: String,
     val phoneNumber: String,
