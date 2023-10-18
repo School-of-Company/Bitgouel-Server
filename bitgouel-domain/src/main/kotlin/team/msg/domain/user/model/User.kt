@@ -5,8 +5,8 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import team.msg.common.enum.ApproveStatus
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.enums.SignUpStatus
 import java.util.*
 
 @Entity
@@ -32,6 +32,6 @@ class User(
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
-    val signUpStatus: SignUpStatus
+    val approveStatus: ApproveStatus
 
 ) : BaseUUIDEntity(id)
