@@ -21,6 +21,10 @@ class UserUtil(
         else
             principal.toString())
 
-        return userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+        return queryUser(userId)
     }
+
+    private fun queryUser(userId: UUID): User =
+        userRepository.findByIdOrNull(userId)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
 }
