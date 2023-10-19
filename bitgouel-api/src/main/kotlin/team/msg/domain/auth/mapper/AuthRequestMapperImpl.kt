@@ -1,8 +1,12 @@
 package team.msg.domain.auth.mapper
 
 import org.springframework.stereotype.Component
+import team.msg.domain.auth.presentation.data.request.GovernmentSignUpRequest
+import team.msg.domain.auth.presentation.data.request.ProfessorSignUpRequest
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
+import team.msg.domain.auth.presentation.data.web.GovernmentSignUpWebRequest
+import team.msg.domain.auth.presentation.data.web.ProfessorSignUpWebRequest
 import team.msg.domain.auth.presentation.data.web.StudentSignUpWebRequest
 import team.msg.domain.auth.presentation.data.web.TeacherSignUpWebRequest
 
@@ -26,6 +30,9 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             admissionNumber = webRequest.admissionNumber
         )
 
+    /**
+     * Teacher 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
     override fun teacherSignUpWebRequestToDto(webRequest: TeacherSignUpWebRequest): TeacherSignUpRequest =
         TeacherSignUpRequest(
             email = webRequest.email,
@@ -34,5 +41,33 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             phoneNumber = webRequest.phoneNumber,
             highSchool = webRequest.highSchool,
             clubName = webRequest.clubName
+        )
+
+    /**
+     * Professor 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    override fun professorSignUpWebRequestToDto(webRequest: ProfessorSignUpWebRequest): ProfessorSignUpRequest =
+        ProfessorSignUpRequest(
+            email = webRequest.email,
+            name = webRequest.name,
+            phoneNumber = webRequest.phoneNumber,
+            password = webRequest.password,
+            highSchool = webRequest.highSchool,
+            clubName = webRequest.clubName,
+            university = webRequest.university
+        )
+
+    /**
+     * Government 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    override fun governmentSignUpWebRequestToDto(webRequest: GovernmentSignUpWebRequest): GovernmentSignUpRequest =
+        GovernmentSignUpRequest(
+            email = webRequest.email,
+            name = webRequest.name,
+            phoneNumber = webRequest.phoneNumber,
+            password = webRequest.password,
+            highSchool = webRequest.highSchool,
+            clubName = webRequest.clubName,
+            governmentName = webRequest.governmentName
         )
 }

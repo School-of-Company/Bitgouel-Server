@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.auth.mapper.AuthRequestMapper
+import team.msg.domain.auth.presentation.data.web.GovernmentSignUpWebRequest
+import team.msg.domain.auth.presentation.data.web.ProfessorSignUpWebRequest
 import team.msg.domain.auth.presentation.data.web.StudentSignUpWebRequest
 import team.msg.domain.auth.presentation.data.web.TeacherSignUpWebRequest
 import team.msg.domain.auth.service.AuthService
@@ -27,6 +29,18 @@ class AuthController(
     @PostMapping("/teacher")
     fun teacherSignUp(@RequestBody @Valid request: TeacherSignUpWebRequest): ResponseEntity<Void> {
         authService.teacherSignUp(authRequestMapper.teacherSignUpWebRequestToDto(request))
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/professor")
+    fun professorSignUp(@RequestBody @Valid request: ProfessorSignUpWebRequest): ResponseEntity<Void> {
+        authService.professorSignUp(authRequestMapper.professorSignUpWebRequestToDto(request))
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/government")
+    fun governmentSignUp(@RequestBody @Valid request: GovernmentSignUpWebRequest): ResponseEntity<Void> {
+        authService.governmentSignUp(authRequestMapper.governmentSignUpWebRequestToDto(request))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
