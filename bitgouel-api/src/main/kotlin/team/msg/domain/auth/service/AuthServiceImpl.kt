@@ -42,10 +42,17 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
-        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_STUDENT)
+        val user = createUser(
+            request.email,
+            request.name,
+            request.phoneNumber,
+            request.password,
+            Authority.ROLE_STUDENT
+        )
 
         val school = schoolRepository.findByHighSchool(request.highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
+
         val club = clubRepository.findByNameAndSchool(request.clubName, school)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
 
@@ -69,10 +76,17 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
-        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_TEACHER)
+        val user = createUser(
+            request.email,
+            request.name,
+            request.phoneNumber,
+            request.password,
+            Authority.ROLE_TEACHER
+        )
 
         val school = schoolRepository.findByHighSchool(request.highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
+
         val club = clubRepository.findByNameAndSchool(request.clubName, school)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
 
@@ -90,10 +104,17 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun professorSignUp(request: ProfessorSignUpRequest) {
-        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_PROFESSOR)
+        val user = createUser(
+            request.email,
+            request.name,
+            request.phoneNumber,
+            request.password,
+            Authority.ROLE_PROFESSOR
+        )
 
         val school = schoolRepository.findByHighSchool(request.highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
+
         val club = clubRepository.findByNameAndSchool(request.clubName, school)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
 
