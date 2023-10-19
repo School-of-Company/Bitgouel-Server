@@ -38,7 +38,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
-        val user = createUser(request.email, request.name, request.phoneNumber, request.password)
+        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_STUDENT)
 
         val school = schoolRepository.findByHighSchool(request.highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
@@ -65,7 +65,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
-        val user = createUser(request.email, request.name, request.phoneNumber, request.password)
+        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_TEACHER)
 
         val school = schoolRepository.findByHighSchool(request.highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
@@ -84,7 +84,7 @@ class AuthServiceImpl(
      * 유저 회원가입을 처리해주는 private 함수입니다.
      * @param email, name, phoneNumber, password
      */
-    private fun createUser(email: String, name: String, phoneNumber: String, password: String): User {
+    private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
         if (userRepository.existsByEmail(email))
             throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info : [ email = $email ]")
 
@@ -97,7 +97,7 @@ class AuthServiceImpl(
             name = name,
             phoneNumber = phoneNumber,
             password = securityUtil.passwordEncode(password),
-            authority = Authority.ROLE_STUDENT,
+            authority = authority,
             approveStatus = ApproveStatus.PENDING
         )
 
