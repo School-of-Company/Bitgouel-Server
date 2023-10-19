@@ -2,7 +2,9 @@ package team.msg.domain.auth.mapper
 
 import org.springframework.stereotype.Component
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
+import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
 import team.msg.domain.auth.presentation.data.web.StudentSignUpWebRequest
+import team.msg.domain.auth.presentation.data.web.TeacherSignUpWebRequest
 
 @Component
 class AuthRequestMapperImpl : AuthRequestMapper {
@@ -22,5 +24,15 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             clubName = webRequest.clubName,
             number = webRequest.number,
             admissionNumber = webRequest.admissionNumber
+        )
+
+    override fun teacherSignUpWebRequestToDto(webRequest: TeacherSignUpWebRequest): TeacherSignUpRequest =
+        TeacherSignUpRequest(
+            email = webRequest.email,
+            name = webRequest.name,
+            password = webRequest.password,
+            phoneNumber = webRequest.phoneNumber,
+            highSchool = webRequest.highSchool,
+            clubName = webRequest.clubName
         )
 }
