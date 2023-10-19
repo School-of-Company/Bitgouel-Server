@@ -1,6 +1,7 @@
 package team.msg.domain.student.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -24,6 +25,7 @@ class StudentActivityServiceImpl(
      * 학생 활동을 생성하는 비지니스 로직입니다
      * @param CreateStudentActivityRequest
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun createStudentActivity(request: CreateStudentActivityRequest) {
         val user = userUtil.queryCurrentUser()
 
