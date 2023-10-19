@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.auth.mapper.AuthRequestMapper
 import team.msg.domain.auth.presentation.data.web.StudentSignUpWebRequest
+import team.msg.domain.auth.presentation.data.web.TeacherSignUpWebRequest
 import team.msg.domain.auth.service.AuthService
 
 @RestController
@@ -20,6 +21,12 @@ class AuthController(
     @PostMapping("/student")
     fun studentSignUp(@RequestBody @Valid request: StudentSignUpWebRequest): ResponseEntity<Void> {
         authService.studentSignUp(authRequestMapper.studentSignUpWebRequestToDto(request))
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/teacher")
+    fun teacherSignUp(@RequestBody @Valid request: TeacherSignUpWebRequest): ResponseEntity<Void> {
+        authService.teacherSignUp(authRequestMapper.teacherSignUpWebRequestToDto(request))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }

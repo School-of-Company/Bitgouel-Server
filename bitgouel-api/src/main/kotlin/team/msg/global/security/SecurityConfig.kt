@@ -34,6 +34,7 @@ class SecurityConfig(
             }).permitAll()
 
             .mvcMatchers(HttpMethod.POST, "/auth/student").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/auth/teacher").permitAll()
 
             .anyRequest().authenticated()
             .and()
