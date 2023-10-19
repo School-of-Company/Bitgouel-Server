@@ -34,6 +34,10 @@ data class LectureCreateWebRequest(
     val lectureType: LectureType,
 
     @field:NotNull
+    @field:Min(0)
+    val credit: Int,
+
+    @field:NotNull
     @field:Min(1)
     val maxRegisteredUser: Int
 )

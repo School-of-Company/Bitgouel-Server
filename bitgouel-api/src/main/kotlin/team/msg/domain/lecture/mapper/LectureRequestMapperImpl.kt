@@ -13,6 +13,7 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         request.endDate,
         request.completeDate,
         request.lectureType,
+        request.credit,
         request.maxRegisteredUser
     )
 }

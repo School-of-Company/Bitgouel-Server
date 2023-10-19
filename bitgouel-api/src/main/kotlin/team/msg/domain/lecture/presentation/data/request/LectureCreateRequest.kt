@@ -10,5 +10,6 @@ data class LectureCreateRequest (
     val endDate: LocalDateTime,
     val completeDate: LocalDateTime,
     val lectureType: LectureType,
+    val credit: Int,
     val maxRegisteredUser: Int
 )
