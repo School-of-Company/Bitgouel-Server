@@ -8,6 +8,6 @@ data class ProfessorSignUpRequest(
     val phoneNumber: String,
     val password: String,
     val highSchool: HighSchool,
-    val clubName: String
+    val clubName: String,
     val university: String
 )
