@@ -146,7 +146,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 유저 생성과 검증을 처리해주는 private 메서드입니.
+     * 유저 생성과 검증을 처리해주는 private 메서드입니다.
      * @param email, name, phoneNumber, password, authority
      */
     private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
