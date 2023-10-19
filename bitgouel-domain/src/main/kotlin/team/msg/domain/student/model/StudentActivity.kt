@@ -3,9 +3,12 @@ package team.msg.domain.student.model
 import team.msg.common.entity.BaseUUIDEntity
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import team.msg.common.enum.ApproveStatus
 import team.msg.domain.teacher.model.Teacher
 import java.time.LocalDateTime
 import java.util.UUID
@@ -23,6 +26,10 @@ class StudentActivity(
 
     @Column(columnDefinition = "INT", nullable = false)
     val credit: Int,
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
+    val approveStatus: ApproveStatus,
 
     override val createdAt: LocalDateTime,
 
