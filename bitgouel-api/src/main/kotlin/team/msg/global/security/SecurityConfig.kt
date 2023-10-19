@@ -18,6 +18,11 @@ import org.springframework.web.cors.CorsUtils
 class SecurityConfig(
     private val jwtTokenParser: JwtTokenParser
 ) {
+    companion object {
+        const val ADMIN = "ADMIN"
+        const val STUDENT = "STUDENT"
+    }
+
     @Bean
     protected fun filterChain(http: HttpSecurity): SecurityFilterChain =
         http
@@ -41,7 +46,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/company-instructor").permitAll()
 
             // activity
-            .mvcMatchers(HttpMethod.POST, "/activity").hasRole("STUDENT")
+            .mvcMatchers(HttpMethod.POST, "/activity").hasAnyRole(ADMIN, STUDENT)
 
             .anyRequest().authenticated()
             .and()
