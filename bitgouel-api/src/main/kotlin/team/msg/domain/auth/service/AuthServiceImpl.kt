@@ -6,12 +6,15 @@ import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.presentation.data.request.GovernmentSignUpRequest
 import team.msg.domain.auth.presentation.data.request.ProfessorSignUpRequest
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.government.model.Government
+import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
@@ -35,7 +38,8 @@ class AuthServiceImpl(
     private val studentRepository: StudentRepository,
     private val schoolRepository: SchoolRepository,
     private val teacherRepository: TeacherRepository,
-    private val professorRepository: ProfessorRepository
+    private val professorRepository: ProfessorRepository,
+    private val governmentRepository: GovernmentRepository
 ) : AuthService {
 
     /**
@@ -115,6 +119,30 @@ class AuthServiceImpl(
             university = request.university
         )
         professorRepository.save(professor)
+    }
+
+    /**
+     * 유관 기관 회원가입을 처리해주는 비지니스 로직입니다.
+     * @param GovernmentSignUpRequest
+     */
+    override fun governmentSignUp(requet: GovernmentSignUpRequest) {
+        val user = createUser(
+            requet.email,
+            requet.name,
+            requet.phoneNumber,
+            requet.password,
+            Authority.ROLE_GOVERNMENT
+        )
+
+        val club = queryClub(requet.highSchool, requet.clubName)
+
+        val government = Government(
+            id = UUID.randomUUID(),
+            user = user,
+            club = club,
+            governmentName = requet.governmentName
+        )
+        governmentRepository.save(government)
     }
 
     /**
