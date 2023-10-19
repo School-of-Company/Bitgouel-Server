@@ -27,7 +27,7 @@ class User(
     val password: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     val authority: Authority,
 
     @Enumerated(EnumType.STRING)
