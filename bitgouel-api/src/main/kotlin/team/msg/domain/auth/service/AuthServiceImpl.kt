@@ -118,7 +118,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 유저 생성과 검증을 처리해주는 private 함수입니다.
+     * 유저 생성과 검증을 처리해주는 private 메서드입니다.
      * @param email, name, phoneNumber, password, authority
      */
     private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
@@ -142,7 +142,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 동아리 검증을 처리하는 private 함수입닉다.
+     * 학교와 동아리 이름을 받아 동아리 객체를 리턴하는 private 메서드입니다.
      * @param highSchool, clubName
      */
     private fun queryClub(highSchool: HighSchool, clubName: String): Club {
