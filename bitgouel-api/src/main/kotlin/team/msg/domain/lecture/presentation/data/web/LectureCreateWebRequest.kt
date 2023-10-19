@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.presentation.data.web
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.validation.constraints.Future
@@ -19,14 +20,17 @@ data class LectureCreateWebRequest(
 
     @field:NotNull
     @FutureOrPresent
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s")
     val startDate: LocalDateTime,
 
     @field:NotNull
     @Future
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s")
     val endDate: LocalDateTime,
 
     @field:NotNull
     @Future
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s")
     val completeDate: LocalDateTime,
 
     @field:NotNull
