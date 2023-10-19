@@ -6,10 +6,13 @@ import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.presentation.data.request.ProfessorSignUpRequest
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.professor.model.Professor
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.enums.StudentRole
@@ -29,7 +32,8 @@ class AuthServiceImpl(
     private val clubRepository: ClubRepository,
     private val studentRepository: StudentRepository,
     private val schoolRepository: SchoolRepository,
-    private val teacherRepository: TeacherRepository
+    private val teacherRepository: TeacherRepository,
+    private val professorRepository: ProfessorRepository
 ) : AuthService {
 
     /**
@@ -78,6 +82,28 @@ class AuthServiceImpl(
             club = club
         )
         teacherRepository.save(teacher)
+    }
+
+    /**
+     * 대학교수 회원가입을 처리해주는 비지니스 로직입니다.
+     * @param ProfessorSignUpRequest
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun professorSignUp(request: ProfessorSignUpRequest) {
+        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_PROFESSOR)
+
+        val school = schoolRepository.findByHighSchool(request.highSchool)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
+        val club = clubRepository.findByNameAndSchool(request.clubName, school)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
+
+        val professor = Professor(
+            id = UUID.randomUUID(),
+            user = user,
+            club = club,
+            university = request.university
+        )
+        professorRepository.save(professor)
     }
 
     /**
