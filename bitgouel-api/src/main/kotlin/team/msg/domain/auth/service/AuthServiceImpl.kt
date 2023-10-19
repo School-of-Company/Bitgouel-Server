@@ -10,9 +10,11 @@ import team.msg.domain.auth.presentation.data.request.ProfessorSignUpRequest
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
 import team.msg.domain.club.exception.ClubNotFoundException
+import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.enums.StudentRole
@@ -50,11 +52,7 @@ class AuthServiceImpl(
             Authority.ROLE_STUDENT
         )
 
-        val school = schoolRepository.findByHighSchool(request.highSchool)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
-
-        val club = clubRepository.findByNameAndSchool(request.clubName, school)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
+        val club = queryClub(request.highSchool, request.clubName)
 
         val student = Student(
             id = UUID.randomUUID(),
@@ -84,11 +82,7 @@ class AuthServiceImpl(
             Authority.ROLE_TEACHER
         )
 
-        val school = schoolRepository.findByHighSchool(request.highSchool)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
-
-        val club = clubRepository.findByNameAndSchool(request.clubName, school)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
+        val club = queryClub(request.highSchool, request.clubName)
 
         val teacher = Teacher(
             id = UUID.randomUUID(),
@@ -112,11 +106,7 @@ class AuthServiceImpl(
             Authority.ROLE_PROFESSOR
         )
 
-        val school = schoolRepository.findByHighSchool(request.highSchool)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = ${request.highSchool} ]")
-
-        val club = clubRepository.findByNameAndSchool(request.clubName, school)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = ${request.clubName} ]")
+        val club = queryClub(request.highSchool, request.clubName)
 
         val professor = Professor(
             id = UUID.randomUUID(),
@@ -149,5 +139,19 @@ class AuthServiceImpl(
         )
 
         return userRepository.save(user)
+    }
+
+    /**
+     * 동아리 검증을 처리하는 private 함수입닉다.
+     * @param highSchool, clubName
+     */
+    private fun queryClub(highSchool: HighSchool, clubName: String): Club {
+        val school = schoolRepository.findByHighSchool(highSchool)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = $highSchool ]")
+
+        val club = clubRepository.findByNameAndSchool(clubName, school)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = $clubName ]")
+
+        return club
     }
 }
