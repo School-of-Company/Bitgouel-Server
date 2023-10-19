@@ -1,4 +1,4 @@
-package team.msg.domain.user.presentation.data.web
+package team.msg.domain.student.presentation.data.web
 
 import javax.validation.constraints.Max
 import javax.validation.constraints.NotBlank

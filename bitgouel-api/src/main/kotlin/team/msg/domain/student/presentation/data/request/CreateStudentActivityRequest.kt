@@ -1,4 +1,4 @@
-package team.msg.domain.user.presentation.data.request
+package team.msg.domain.student.presentation.data.request
 
 import java.time.LocalDateTime
 
