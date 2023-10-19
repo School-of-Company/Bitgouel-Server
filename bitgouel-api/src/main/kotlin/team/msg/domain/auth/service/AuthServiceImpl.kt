@@ -6,13 +6,12 @@ import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
-import team.msg.domain.auth.presentation.data.request.GovernmentSignUpRequest
-import team.msg.domain.auth.presentation.data.request.ProfessorSignUpRequest
-import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
-import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
+import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.company.model.CompanyInstructor
+import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
@@ -39,7 +38,8 @@ class AuthServiceImpl(
     private val schoolRepository: SchoolRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
-    private val governmentRepository: GovernmentRepository
+    private val governmentRepository: GovernmentRepository,
+    private val companyInstructorRepository: CompanyInstructorRepository
 ) : AuthService {
 
     /**
@@ -125,24 +125,42 @@ class AuthServiceImpl(
      * 유관 기관 회원가입을 처리해주는 비지니스 로직입니다.
      * @param GovernmentSignUpRequest
      */
-    override fun governmentSignUp(requet: GovernmentSignUpRequest) {
+    override fun governmentSignUp(request: GovernmentSignUpRequest) {
         val user = createUser(
-            requet.email,
-            requet.name,
-            requet.phoneNumber,
-            requet.password,
+            request.email,
+            request.name,
+            request.phoneNumber,
+            request.password,
             Authority.ROLE_GOVERNMENT
         )
 
-        val club = queryClub(requet.highSchool, requet.clubName)
+        val club = queryClub(request.highSchool, request.clubName)
 
         val government = Government(
             id = UUID.randomUUID(),
             user = user,
             club = club,
-            governmentName = requet.governmentName
+            governmentName = request.governmentName
         )
         governmentRepository.save(government)
+    }
+
+    /**
+     * 기업 강사 회원가입을 처리해주는 비지니스 로직입니다.
+     * @param CompanyInstructorSignUpRequest
+     */
+    override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
+        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_COMPANY_INSTRUCTOR)
+
+        val club = queryClub(request.highSchool, request.clubName)
+
+        val companyInstructor = CompanyInstructor(
+            id = UUID.randomUUID(),
+            user = user,
+            club = club,
+            company = request.company
+        )
+        companyInstructorRepository.save(companyInstructor)
     }
 
     /**
