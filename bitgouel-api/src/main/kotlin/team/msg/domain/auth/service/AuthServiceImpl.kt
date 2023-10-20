@@ -198,11 +198,11 @@ class AuthServiceImpl(
 
     /**
      * 토큰 재발급을 처리하는 메서드입니다.
-     * @param refreshToken
+     * @param requestToken
      */
-    override fun reissueToken(refreshToken: String): TokenResponse {
-        val refreshToken = jwtTokenParser.parseRefreshToken(refreshToken)
-            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+    override fun reissueToken(requestToken: String): TokenResponse {
+        val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
 
         val token = refreshTokenRepository.findByIdOrNull(refreshToken)
             ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
@@ -211,6 +211,18 @@ class AuthServiceImpl(
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${token.userId} ]")
 
         return jwtTokenGenerator.generateToken(user.id, user.authority)
+    }
+
+    /**
+     * 로그아웃을 처리하는 메서드입니다.
+     * @param requestToken
+     */
+    override fun logout(requestToken: String) {
+        val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
+
+        val token = refreshTokenRepository.findByIdOrNull(refreshToken)
+            ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
     }
 
     /**
