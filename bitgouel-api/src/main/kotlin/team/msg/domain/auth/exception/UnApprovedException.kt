@@ -5,4 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class UnApprovedException(
     message: String
-) : BitgouelException(message, AuthErrorCode.NOT_APPROVED.status)
+) : BitgouelException(message, AuthErrorCode.UNAPPROVED.status)

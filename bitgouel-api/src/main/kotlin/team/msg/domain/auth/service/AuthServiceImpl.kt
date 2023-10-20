@@ -131,6 +131,7 @@ class AuthServiceImpl(
      * 유관 기관 회원가입을 처리하는 비지니스 로직입니다.
      * @param GovernmentSignUpRequest
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
         val user = createUser(
             request.email,
@@ -155,6 +156,7 @@ class AuthServiceImpl(
      * 기업 강사 회원가입을 처리하는 비지니스 로직입니다.
      * @param CompanyInstructorSignUpRequest
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
         val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_COMPANY_INSTRUCTOR)
 
@@ -173,6 +175,7 @@ class AuthServiceImpl(
      * 로그인을 처리하는 비지니스 로직입니다.
      * @param LoginRequest
      */
+    @Transactional(readOnly = true)
     override fun login(request: LoginRequest): TokenResponse {
         val user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
 
