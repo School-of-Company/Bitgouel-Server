@@ -255,10 +255,10 @@ class AuthServiceImpl(
      */
     private fun queryClub(highSchool: HighSchool, clubName: String): Club {
         val school = schoolRepository.findByHighSchool(highSchool)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. values : [ highSchool = $highSchool ]")
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ highSchool = $highSchool ]")
 
         val club = clubRepository.findByNameAndSchool(clubName, school)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. values : [ club = $clubName ]")
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ club = $clubName ]")
 
         return club
     }
