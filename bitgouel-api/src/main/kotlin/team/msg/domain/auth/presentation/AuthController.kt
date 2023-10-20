@@ -21,38 +21,38 @@ class AuthController(
     private val authRequestMapper: AuthRequestMapper
 ) {
     @PostMapping("/student")
-    fun studentSignUp(@RequestBody @Valid request: StudentSignUpWebRequest): ResponseEntity<Void> {
-        authService.studentSignUp(authRequestMapper.studentSignUpWebRequestToDto(request))
+    fun studentSignUp(@RequestBody @Valid webRequest: StudentSignUpWebRequest): ResponseEntity<Void> {
+        authService.studentSignUp(authRequestMapper.studentSignUpWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/teacher")
-    fun teacherSignUp(@RequestBody @Valid request: TeacherSignUpWebRequest): ResponseEntity<Void> {
-        authService.teacherSignUp(authRequestMapper.teacherSignUpWebRequestToDto(request))
+    fun teacherSignUp(@RequestBody @Valid webRequest: TeacherSignUpWebRequest): ResponseEntity<Void> {
+        authService.teacherSignUp(authRequestMapper.teacherSignUpWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/professor")
-    fun professorSignUp(@RequestBody @Valid request: ProfessorSignUpWebRequest): ResponseEntity<Void> {
-        authService.professorSignUp(authRequestMapper.professorSignUpWebRequestToDto(request))
+    fun professorSignUp(@RequestBody @Valid webRequest: ProfessorSignUpWebRequest): ResponseEntity<Void> {
+        authService.professorSignUp(authRequestMapper.professorSignUpWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/government")
-    fun governmentSignUp(@RequestBody @Valid request: GovernmentSignUpWebRequest): ResponseEntity<Void> {
-        authService.governmentSignUp(authRequestMapper.governmentSignUpWebRequestToDto(request))
+    fun governmentSignUp(@RequestBody @Valid webRequest: GovernmentSignUpWebRequest): ResponseEntity<Void> {
+        authService.governmentSignUp(authRequestMapper.governmentSignUpWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/company-instructor")
-    fun companyInstructorSignUp(@RequestBody @Valid request: CompanyInstructorSignUpWebRequest): ResponseEntity<Void> {
-        authService.companyInstructorSignUp(authRequestMapper.companyInstructorSignUpWebRequestToDto(request))
+    fun companyInstructorSignUp(@RequestBody @Valid webRequest: CompanyInstructorSignUpWebRequest): ResponseEntity<Void> {
+        authService.companyInstructorSignUp(authRequestMapper.companyInstructorSignUpWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid request: LoginWebRequest): ResponseEntity<TokenResponse> {
-        val response = authService.login(authRequestMapper.loginWebRequestToDto(request))
+    fun login(@RequestBody @Valid webRequest: LoginWebRequest): ResponseEntity<TokenResponse> {
+        val response = authService.login(authRequestMapper.loginWebRequestToDto(webRequest))
         return ResponseEntity.ok(response)
     }
 
