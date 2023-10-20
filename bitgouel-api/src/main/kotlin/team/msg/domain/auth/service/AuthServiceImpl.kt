@@ -6,7 +6,9 @@ import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.exception.MisMatchPasswordException
 import team.msg.domain.auth.presentation.data.request.*
+import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
@@ -25,8 +27,10 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.security.jwt.JwtTokenGenerator
 import java.util.*
 
 @Service
@@ -39,11 +43,12 @@ class AuthServiceImpl(
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
     private val governmentRepository: GovernmentRepository,
-    private val companyInstructorRepository: CompanyInstructorRepository
+    private val companyInstructorRepository: CompanyInstructorRepository,
+    private val jwtTokenGenerator: JwtTokenGenerator
 ) : AuthService {
 
     /**
-     * 학생 회원가입을 처리해주는 비지니스 로직입니다.
+     * 학생 회원가입을 처리하는 비지니스 로직입니다.
      * @param StudentSignUpRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -73,7 +78,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 취동샘 회원가입을 처리해주는 비지니스 로직입니다.
+     * 취동샘 회원가입을 처리하는 비지니스 로직입니다.
      * @param TeacherSignUpRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -97,7 +102,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 대학교수 회원가입을 처리해주는 비지니스 로직입니다.
+     * 대학교수 회원가입을 처리하는 비지니스 로직입니다.
      * @param ProfessorSignUpRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -122,7 +127,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 유관 기관 회원가입을 처리해주는 비지니스 로직입니다.
+     * 유관 기관 회원가입을 처리하는 비지니스 로직입니다.
      * @param GovernmentSignUpRequest
      */
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
@@ -146,7 +151,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 기업 강사 회원가입을 처리해주는 비지니스 로직입니다.
+     * 기업 강사 회원가입을 처리하는 비지니스 로직입니다.
      * @param CompanyInstructorSignUpRequest
      */
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
@@ -164,7 +169,20 @@ class AuthServiceImpl(
     }
 
     /**
-     * 유저 생성과 검증을 처리해주는 private 메서드입니다.
+     * 로그인을 처리하는 비지니스 로직입니다.
+     * @param LoginRequest
+     */
+    override fun login(request: LoginRequest): TokenResponse {
+        val user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+
+        if (!securityUtil.isPasswordMatch(request.password, user.password))
+            throw MisMatchPasswordException("바말번호가 일치하지 않습니다.")
+
+        return jwtTokenGenerator.generateToken(user.id, user.authority)
+    }
+
+    /**
+     * 유저 생성과 검증을 처리하는 private 메서드입니다.
      * @param email, name, phoneNumber, password, authority
      */
     private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
