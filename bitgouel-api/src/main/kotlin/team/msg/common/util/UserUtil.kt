@@ -21,10 +21,9 @@ class UserUtil(
         else
             principal.toString())
 
-        return queryUser(userId)
-    }
-
-    private fun queryUser(userId: UUID): User =
-        userRepository.findByIdOrNull(userId)
+        val user = userRepository.findByIdOrNull(userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+
+        return user
+    }
 }
