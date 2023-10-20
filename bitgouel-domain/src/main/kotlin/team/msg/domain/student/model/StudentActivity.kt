@@ -37,7 +37,7 @@ class StudentActivity(
     val activityDate: LocalDateTime,
 
     @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
-    override val createdAt: LocalDateTime,
+    override val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)", nullable = false)
