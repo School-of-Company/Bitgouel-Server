@@ -200,9 +200,9 @@ class AuthServiceImpl(
      * 토큰 재발급을 처리하는 메서드입니다.
      * @param refreshToken
      */
-    override fun reissueToken(request: String): TokenResponse {
-        val refreshToken = jwtTokenParser.parseRefreshToken(request)
-            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $request ]")
+    override fun reissueToken(refreshToken: String): TokenResponse {
+        val refreshToken = jwtTokenParser.parseRefreshToken(refreshToken)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
 
         val token = refreshTokenRepository.findByIdOrNull(refreshToken)
             ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")

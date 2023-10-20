@@ -10,5 +10,5 @@ interface AuthService {
     fun governmentSignUp(governmentSignUpRequest: GovernmentSignUpRequest)
     fun companyInstructorSignUp(companyInstructorSignUpRequest: CompanyInstructorSignUpRequest)
     fun login(request: LoginRequest): TokenResponse
-    fun reissueToken(request: String): TokenResponse
+    fun reissueToken(refreshToken: String): TokenResponse
 }
