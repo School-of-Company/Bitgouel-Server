@@ -18,7 +18,7 @@ class LectureController(
     private val lectureService: LectureService
 ) {
     @PostMapping
-    fun createLecture(@Valid @RequestBody webRequest: CreateLectureWebRequest) : ResponseEntity<Void> {
+    fun createLecture(@Valid @RequestBody webRequest: CreateLectureWebRequest): ResponseEntity<Void> {
         lectureService.createLecture(lectureRequestMapper.createLectureWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
