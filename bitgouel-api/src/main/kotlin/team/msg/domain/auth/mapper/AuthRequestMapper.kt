@@ -9,4 +9,5 @@ interface AuthRequestMapper {
     fun professorSignUpWebRequestToDto(webRequest: ProfessorSignUpWebRequest): ProfessorSignUpRequest
     fun governmentSignUpWebRequestToDto(webRequest: GovernmentSignUpWebRequest): GovernmentSignUpRequest
     fun companyInstructorSignUpWebRequestToDto(webRequest: CompanyInstructorSignUpWebRequest): CompanyInstructorSignUpRequest
+    fun loginWebRequestToDto(webRequest: LoginWebRequest): LoginRequest
 }
