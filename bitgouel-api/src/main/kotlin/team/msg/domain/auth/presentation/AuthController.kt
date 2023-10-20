@@ -22,37 +22,43 @@ class AuthController(
 ) {
     @PostMapping("/student")
     fun studentSignUp(@RequestBody @Valid webRequest: StudentSignUpWebRequest): ResponseEntity<Void> {
-        authService.studentSignUp(authRequestMapper.studentSignUpWebRequestToDto(webRequest))
+        val request = authRequestMapper.studentSignUpWebRequestToDto(webRequest)
+        authService.studentSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/teacher")
     fun teacherSignUp(@RequestBody @Valid webRequest: TeacherSignUpWebRequest): ResponseEntity<Void> {
-        authService.teacherSignUp(authRequestMapper.teacherSignUpWebRequestToDto(webRequest))
+        val request = authRequestMapper.teacherSignUpWebRequestToDto(webRequest)
+        authService.teacherSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/professor")
     fun professorSignUp(@RequestBody @Valid webRequest: ProfessorSignUpWebRequest): ResponseEntity<Void> {
-        authService.professorSignUp(authRequestMapper.professorSignUpWebRequestToDto(webRequest))
+        val request = authRequestMapper.professorSignUpWebRequestToDto(webRequest)
+        authService.professorSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/government")
     fun governmentSignUp(@RequestBody @Valid webRequest: GovernmentSignUpWebRequest): ResponseEntity<Void> {
-        authService.governmentSignUp(authRequestMapper.governmentSignUpWebRequestToDto(webRequest))
+        val request = authRequestMapper.governmentSignUpWebRequestToDto(webRequest)
+        authService.governmentSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/company-instructor")
     fun companyInstructorSignUp(@RequestBody @Valid webRequest: CompanyInstructorSignUpWebRequest): ResponseEntity<Void> {
-        authService.companyInstructorSignUp(authRequestMapper.companyInstructorSignUpWebRequestToDto(webRequest))
+        val request = authRequestMapper.companyInstructorSignUpWebRequestToDto(webRequest)
+        authService.companyInstructorSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/login")
     fun login(@RequestBody @Valid webRequest: LoginWebRequest): ResponseEntity<TokenResponse> {
-        val response = authService.login(authRequestMapper.loginWebRequestToDto(webRequest))
+        val request = authRequestMapper.loginWebRequestToDto(webRequest)
+        val response = authService.login(request)
         return ResponseEntity.ok(response)
     }
 
