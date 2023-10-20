@@ -3,15 +3,15 @@ package team.msg.domain.auth.presentation
 import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.auth.mapper.AuthRequestMapper
-import team.msg.domain.auth.presentation.data.web.GovernmentSignUpWebRequest
-import team.msg.domain.auth.presentation.data.web.ProfessorSignUpWebRequest
-import team.msg.domain.auth.presentation.data.web.StudentSignUpWebRequest
-import team.msg.domain.auth.presentation.data.web.TeacherSignUpWebRequest
+import team.msg.domain.auth.presentation.data.response.TokenResponse
+import team.msg.domain.auth.presentation.data.web.*
 import team.msg.domain.auth.service.AuthService
 
 @RestController
@@ -42,5 +42,23 @@ class AuthController(
     fun governmentSignUp(@RequestBody @Valid request: GovernmentSignUpWebRequest): ResponseEntity<Void> {
         authService.governmentSignUp(authRequestMapper.governmentSignUpWebRequestToDto(request))
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/company-instructor")
+    fun companyInstructorSignUp(@RequestBody @Valid request: CompanyInstructorSignUpWebRequest): ResponseEntity<Void> {
+        authService.companyInstructorSignUp(authRequestMapper.companyInstructorSignUpWebRequestToDto(request))
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody @Valid request: LoginWebRequest): ResponseEntity<TokenResponse> {
+        val response = authService.login(authRequestMapper.loginWebRequestToDto(request))
+        return ResponseEntity.ok(response)
+    }
+
+    @PatchMapping
+    fun reissueToken(@RequestHeader("RefreshToken") refreshToken: String): ResponseEntity<TokenResponse> {
+        val response = authService.reissueToken(refreshToken)
+        return ResponseEntity.ok(response)
     }
 }

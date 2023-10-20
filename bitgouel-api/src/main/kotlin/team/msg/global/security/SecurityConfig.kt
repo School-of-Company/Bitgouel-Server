@@ -13,11 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
-import team.msg.domain.lecture.repository.LectureRepository
 
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenParser: JwtTokenParser,private val lectureRepository: LectureRepository
+    private val jwtTokenParser: JwtTokenParser
 ) {
     companion object {
         const val USER = "USER"
@@ -50,7 +49,14 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/teacher").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/professor").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/government").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/auth/company-instructor").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/auth/login").permitAll()
+            .mvcMatchers(HttpMethod.PATCH, "/auth").permitAll()
 
+            // activity
+            .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
+
+            // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
 
             .anyRequest().authenticated()

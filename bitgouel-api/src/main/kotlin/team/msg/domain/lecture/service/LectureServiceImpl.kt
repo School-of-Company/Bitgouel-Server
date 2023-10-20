@@ -1,7 +1,7 @@
 package team.msg.domain.lecture.service
 
 import org.springframework.stereotype.Service
-import team.msg.common.util.SecurityUtil
+import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.model.Lecture
@@ -12,7 +12,7 @@ import java.util.*
 @Service
 class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
-    private val securityUtil: SecurityUtil
+    private val userUtil: UserUtil
 ) : LectureService{
 
     /**
@@ -20,12 +20,12 @@ class LectureServiceImpl(
      * @param LectureCreateRequest
      */
     override fun lectureCreate(request: LectureCreateRequest) {
-        val user = securityUtil.queryCurrentUser()
+        val user = userUtil.queryCurrentUser()
 
         val credit = when(request.lectureType){
             LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM   -> request.credit
             LectureType.UNIVERSITY_EXPLORATION_PROGRAM      -> 0
-            else -> throw InvalidLectureTypeException("유효하지 않은 강의 구분입니다. values : [ type = ${request.lectureType} ]")
+            else -> throw InvalidLectureTypeException("유효하지 않은 강의 구분입니다. info : [ type = ${request.lectureType} ]")
         }
 
         val lecture = Lecture(
