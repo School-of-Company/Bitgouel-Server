@@ -11,6 +11,6 @@ class StudentActivityMapperImpl : StudentActivityMapper {
             title = webRequest.title,
             content = webRequest.content,
             credit = webRequest.credit,
-            createdAt = webRequest.createdAt
+            activityDate = webRequest.activityDate
         )
 }

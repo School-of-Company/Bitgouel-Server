@@ -18,5 +18,5 @@ data class CreateStudentActivityWebRequest(
     val credit: Int,
 
     @field:NotNull
-    val createdAt: LocalDateTime
+    val activityDate: LocalDateTime
 )

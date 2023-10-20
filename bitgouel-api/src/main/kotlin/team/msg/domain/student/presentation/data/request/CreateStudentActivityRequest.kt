@@ -6,5 +6,5 @@ data class CreateStudentActivityRequest(
     val title: String,
     val content: String,
     val credit: Int,
-    val createdAt: LocalDateTime
+    val activityDate: LocalDateTime
 )

@@ -29,16 +29,18 @@ class StudentActivityServiceImpl(
     override fun createStudentActivity(request: CreateStudentActivityRequest) {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user) ?: throw StudentNotFoundException("학생을 찾을 수 없습니다.")
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다.")
 
-        val teacher = teacherRepository.findByClub(student.club) ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다.")
+        val teacher = teacherRepository.findByClub(student.club)
+            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다.")
 
         val studentActivity = StudentActivity(
             id = UUID.randomUUID(),
             title = request.title,
             content = request.content,
             credit = request.credit,
-            createdAt = request.createdAt,
+            activityDate = request.activityDate,
             student = student,
             teacher = teacher,
             approveStatus = ApproveStatus.PENDING
