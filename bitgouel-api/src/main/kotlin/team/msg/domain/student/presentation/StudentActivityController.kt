@@ -22,8 +22,9 @@ class StudentActivityController(
     private val studentActivityMapper: StudentActivityMapper
 ) {
     @PostMapping
-    fun createStudentActivity(@RequestBody @Valid request: CreateStudentActivityWebRequest): ResponseEntity<Void> {
-        studentActivityService.createStudentActivity(studentActivityMapper.createStudentActivityWebRequestToDto(request))
+    fun createStudentActivity(@RequestBody @Valid webRequest: CreateStudentActivityWebRequest): ResponseEntity<Void> {
+        val request = studentActivityMapper.createStudentActivityWebRequestToDto(webRequest)
+        studentActivityService.createStudentActivity(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 

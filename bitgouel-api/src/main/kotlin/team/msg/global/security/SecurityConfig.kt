@@ -19,8 +19,14 @@ class SecurityConfig(
     private val jwtTokenParser: JwtTokenParser
 ) {
     companion object {
+        const val USER = "USER"
         const val ADMIN = "ADMIN"
         const val STUDENT = "STUDENT"
+        const val TEACHER = "TEACHER"
+        const val BBOZZAK = "BBOZZAK"
+        const val PROFESSOR = "PROFESSOR"
+        const val COMPANY_INSTRUCTOR = "COMPANY_INSTRUCTOR"
+        const val GOVERNMENT = "GOVERNMENT"
     }
 
     @Bean
@@ -49,6 +55,9 @@ class SecurityConfig(
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
+
+            // lecture
+            .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
 
             .anyRequest().authenticated()
             .and()
