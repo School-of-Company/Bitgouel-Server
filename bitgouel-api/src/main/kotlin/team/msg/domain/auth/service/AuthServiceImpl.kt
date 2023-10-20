@@ -202,6 +202,7 @@ class AuthServiceImpl(
      * 토큰 재발급을 처리하는 메서드입니다.
      * @param requestToken
      */
+    @Transactional(readOnly = true)
     override fun reissueToken(requestToken: String): TokenResponse {
         val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
             ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
@@ -219,6 +220,7 @@ class AuthServiceImpl(
      * 로그아웃을 처리하는 메서드입니다.
      * @param requestToken
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun logout(requestToken: String) {
         val user = userUtil.queryCurrentUser()
 
