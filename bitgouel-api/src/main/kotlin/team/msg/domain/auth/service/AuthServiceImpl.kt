@@ -177,10 +177,11 @@ class AuthServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun login(request: LoginRequest): TokenResponse {
-        val user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+        val user = userRepository.findByEmail(request.email)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
 
         if (!securityUtil.isPasswordMatch(request.password, user.password))
-            throw MisMatchPasswordException("바말번호가 일치하지 않습니다. info : [ password = ${request.password} ]")
+            throw MisMatchPasswordException("비말번호가 일치하지 않습니다. info : [ password = ${request.password} ]")
 
         if (user.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedUserException("아직 회원가입 대기 중인 유저입니다. info : [ user = ${user.name} ]")
