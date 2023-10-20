@@ -61,4 +61,10 @@ class AuthController(
         val response = authService.reissueToken(refreshToken)
         return ResponseEntity.ok(response)
     }
+
+    @PostMapping
+    fun logout(@RequestHeader("RefreshToken") refreshToken: String): ResponseEntity<Void> {
+        authService.logout(refreshToken)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
 }
