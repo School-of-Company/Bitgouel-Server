@@ -6,7 +6,7 @@ import team.msg.domain.student.presentation.data.web.CreateStudentActivityWebReq
 
 @Component
 class StudentActivityMapperImpl : StudentActivityMapper {
-    override fun studentActivityWebRequestToDto(webRequest: CreateStudentActivityWebRequest): CreateStudentActivityRequest =
+    override fun createStudentActivityWebRequestToDto(webRequest: CreateStudentActivityWebRequest): CreateStudentActivityRequest =
         CreateStudentActivityRequest(
             title = webRequest.title,
             content = webRequest.content,

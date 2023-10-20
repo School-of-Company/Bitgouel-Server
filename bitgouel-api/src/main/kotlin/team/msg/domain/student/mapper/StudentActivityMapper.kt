@@ -4,5 +4,5 @@ import team.msg.domain.student.presentation.data.request.CreateStudentActivityRe
 import team.msg.domain.student.presentation.data.web.CreateStudentActivityWebRequest
 
 interface StudentActivityMapper {
-    fun studentActivityWebRequestToDto(webRequest: CreateStudentActivityWebRequest): CreateStudentActivityRequest
+    fun createStudentActivityWebRequestToDto(webRequest: CreateStudentActivityWebRequest): CreateStudentActivityRequest
 }
