@@ -31,8 +31,6 @@ class StudentActivity(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val approveStatus: ApproveStatus,
 
-    override val createdAt: LocalDateTime,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)", nullable = false)
     val student: Student,
