@@ -1,15 +1,19 @@
 package team.msg.domain.auth.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.exception.InvalidRefreshTokenException
 import team.msg.domain.auth.exception.MisMatchPasswordException
+import team.msg.domain.auth.exception.RefreshTokenNotFoundException
 import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
+import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
@@ -32,6 +36,7 @@ import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
 import team.msg.global.security.jwt.JwtTokenGenerator
+import team.msg.global.security.jwt.JwtTokenParser
 import java.util.*
 
 @Service
@@ -45,7 +50,9 @@ class AuthServiceImpl(
     private val professorRepository: ProfessorRepository,
     private val governmentRepository: GovernmentRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
-    private val jwtTokenGenerator: JwtTokenGenerator
+    private val jwtTokenGenerator: JwtTokenGenerator,
+    private val jwtTokenParser: JwtTokenParser,
+    private val refreshTokenRepository: RefreshTokenRepository
 ) : AuthService {
 
     /**
@@ -185,6 +192,23 @@ class AuthServiceImpl(
 
         if (user.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedUserException("아직 회원가입 대기 중인 유저입니다. info : [ user = ${user.name} ]")
+
+        return jwtTokenGenerator.generateToken(user.id, user.authority)
+    }
+
+    /**
+     * 토큰 재발급을 처리하는 메서드입니다.
+     * @param refreshToken
+     */
+    override fun reissueToken(request: String): TokenResponse {
+        val refreshToken = jwtTokenParser.parseRefreshToken(request)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $request ]")
+
+        val token = refreshTokenRepository.findByIdOrNull(refreshToken)
+            ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+
+        val user = userRepository.findByIdOrNull(token.userId)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${token.userId} ]")
 
         return jwtTokenGenerator.generateToken(user.id, user.authority)
     }
