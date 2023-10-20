@@ -46,7 +46,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/company-instructor").permitAll()
 
             // activity
-            .mvcMatchers(HttpMethod.POST, "/activity").hasAnyRole(ADMIN, STUDENT)
+            .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
 
             .anyRequest().authenticated()
             .and()
