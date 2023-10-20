@@ -78,4 +78,13 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             clubName = webRequest.clubName,
             company = webRequest.company
         )
+
+    /**
+     * 로그인 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    override fun loginWebRequestToDto(webRequest: LoginWebRequest): LoginRequest =
+        LoginRequest(
+            email = webRequest.email,
+            password = webRequest.password
+        )
 }

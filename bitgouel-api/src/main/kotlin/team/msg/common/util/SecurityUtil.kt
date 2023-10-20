@@ -9,4 +9,7 @@ class SecurityUtil(
 ) {
     fun passwordEncode(password: String): String =
         passwordEncoder.encode(password)
+
+    fun isPasswordMatch(currentPassword: String, encodedPassword: String): Boolean =
+        passwordEncoder.matches(currentPassword, encodedPassword)
 }

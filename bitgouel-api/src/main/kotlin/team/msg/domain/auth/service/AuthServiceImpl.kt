@@ -1,12 +1,19 @@
 package team.msg.domain.auth.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.exception.InvalidRefreshTokenException
+import team.msg.domain.auth.exception.MisMatchPasswordException
+import team.msg.domain.auth.exception.RefreshTokenNotFoundException
+import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.presentation.data.request.*
+import team.msg.domain.auth.presentation.data.response.TokenResponse
+import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
@@ -25,8 +32,11 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.security.jwt.JwtTokenGenerator
+import team.msg.global.security.jwt.JwtTokenParser
 import java.util.*
 
 @Service
@@ -39,11 +49,14 @@ class AuthServiceImpl(
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
     private val governmentRepository: GovernmentRepository,
-    private val companyInstructorRepository: CompanyInstructorRepository
+    private val companyInstructorRepository: CompanyInstructorRepository,
+    private val jwtTokenGenerator: JwtTokenGenerator,
+    private val jwtTokenParser: JwtTokenParser,
+    private val refreshTokenRepository: RefreshTokenRepository
 ) : AuthService {
 
     /**
-     * 학생 회원가입을 처리해주는 비지니스 로직입니다.
+     * 학생 회원가입을 처리하는 비지니스 로직입니다.
      * @param StudentSignUpRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -73,7 +86,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 취동샘 회원가입을 처리해주는 비지니스 로직입니다.
+     * 취동샘 회원가입을 처리하는 비지니스 로직입니다.
      * @param TeacherSignUpRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -97,7 +110,7 @@ class AuthServiceImpl(
     }
 
     /**
-     * 대학교수 회원가입을 처리해주는 비지니스 로직입니다.
+     * 대학교수 회원가입을 처리하는 비지니스 로직입니다.
      * @param ProfessorSignUpRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -122,9 +135,10 @@ class AuthServiceImpl(
     }
 
     /**
-     * 유관 기관 회원가입을 처리해주는 비지니스 로직입니다.
+     * 유관 기관 회원가입을 처리하는 비지니스 로직입니다.
      * @param GovernmentSignUpRequest
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
         val user = createUser(
             request.email,
@@ -146,9 +160,10 @@ class AuthServiceImpl(
     }
 
     /**
-     * 기업 강사 회원가입을 처리해주는 비지니스 로직입니다.
+     * 기업 강사 회원가입을 처리하는 비지니스 로직입니다.
      * @param CompanyInstructorSignUpRequest
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
         val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_COMPANY_INSTRUCTOR)
 
@@ -164,7 +179,42 @@ class AuthServiceImpl(
     }
 
     /**
-     * 유저 생성과 검증을 처리해주는 private 메서드입니다.
+     * 로그인을 처리하는 비지니스 로직입니다.
+     * @param LoginRequest
+     */
+    @Transactional(readOnly = true)
+    override fun login(request: LoginRequest): TokenResponse {
+        val user = userRepository.findByEmail(request.email)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+
+        if (!securityUtil.isPasswordMatch(request.password, user.password))
+            throw MisMatchPasswordException("비말번호가 일치하지 않습니다. info : [ password = ${request.password} ]")
+
+        if (user.approveStatus == ApproveStatus.PENDING)
+            throw UnApprovedUserException("아직 회원가입 대기 중인 유저입니다. info : [ user = ${user.name} ]")
+
+        return jwtTokenGenerator.generateToken(user.id, user.authority)
+    }
+
+    /**
+     * 토큰 재발급을 처리하는 메서드입니다.
+     * @param refreshToken
+     */
+    override fun reissueToken(refreshToken: String): TokenResponse {
+        val refreshToken = jwtTokenParser.parseRefreshToken(refreshToken)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+
+        val token = refreshTokenRepository.findByIdOrNull(refreshToken)
+            ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+
+        val user = userRepository.findByIdOrNull(token.userId)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${token.userId} ]")
+
+        return jwtTokenGenerator.generateToken(user.id, user.authority)
+    }
+
+    /**
+     * 유저 생성과 검증을 처리하는 private 메서드입니다.
      * @param email, name, phoneNumber, password, authority
      */
     private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
