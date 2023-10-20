@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
+import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.exception.InvalidRefreshTokenException
@@ -52,7 +53,8 @@ class AuthServiceImpl(
     private val companyInstructorRepository: CompanyInstructorRepository,
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val userUtil: UserUtil
 ) : AuthService {
 
     /**
@@ -218,11 +220,18 @@ class AuthServiceImpl(
      * @param requestToken
      */
     override fun logout(requestToken: String) {
+        val user = userUtil.queryCurrentUser()
+
         val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
             ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
 
         val token = refreshTokenRepository.findByIdOrNull(refreshToken)
             ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+
+        if (token.userId != user.id)
+            throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId =  ${token.userId} ]")
+
+        refreshTokenRepository.delete(token)
     }
 
     /**
