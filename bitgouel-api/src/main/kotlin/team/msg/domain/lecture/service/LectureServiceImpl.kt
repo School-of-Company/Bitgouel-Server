@@ -29,17 +29,17 @@ class LectureServiceImpl(
         }
 
         val lecture = Lecture(
-            UUID.randomUUID(),
-            user,
-            request.name,
-            request.startDate,
-            request.endDate,
-            request.completeDate,
-            request.content,
-            request.lectureType,
-            credit,
-            user.name,
-            request.maxRegisteredUser
+            id = UUID.randomUUID(),
+            user = user,
+            name = request.name,
+            startDate = request.startDate,
+            endDate = request.endDate,
+            completeDate = request.completeDate,
+            content = request.content,
+            lectureType = request.lectureType,
+            credit = credit,
+            instructor = user.name,
+            maxRegisteredUser = request.maxRegisteredUser
         )
 
         lectureRepository.save(lecture)
