@@ -1,4 +1,4 @@
-package team.msg.common
+package team.msg.common.init
 
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
