@@ -3,6 +3,6 @@ package team.msg.domain.auth.exception
 import team.msg.domain.auth.exception.constant.AuthErrorCode
 import team.msg.global.error.exception.BitgouelException
 
-class UnApprovedException(
+class UnApprovedUserException(
     message: String
-) : BitgouelException(message, AuthErrorCode.UNAPPROVED.status)
+) : BitgouelException(message, AuthErrorCode.UNAPPROVED_USER.status)

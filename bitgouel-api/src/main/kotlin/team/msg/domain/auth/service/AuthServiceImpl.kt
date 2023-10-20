@@ -7,7 +7,7 @@ import team.msg.common.util.SecurityUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.exception.MisMatchPasswordException
-import team.msg.domain.auth.exception.UnApprovedException
+import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.club.exception.ClubNotFoundException
@@ -183,7 +183,7 @@ class AuthServiceImpl(
             throw MisMatchPasswordException("바말번호가 일치하지 않습니다. info : [ password = ${request.password} ]")
 
         if (user.approveStatus == ApproveStatus.PENDING)
-            throw UnApprovedException("아직 회원가입 대기 중인 유저입니다. info : [ user = ${user.name} ]")
+            throw UnApprovedUserException("아직 회원가입 대기 중인 유저입니다. info : [ user = ${user.name} ]")
 
         return jwtTokenGenerator.generateToken(user.id, user.authority)
     }
