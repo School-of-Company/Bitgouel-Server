@@ -40,6 +40,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/government").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/company-instructor").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/login").permitAll()
+            .mvcMatchers(HttpMethod.PATCH, "/auth").permitAll()
 
             .anyRequest().authenticated()
             .and()

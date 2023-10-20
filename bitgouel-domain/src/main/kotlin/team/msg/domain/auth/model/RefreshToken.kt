@@ -5,9 +5,10 @@ import org.springframework.data.redis.core.RedisHash
 import org.springframework.data.redis.core.TimeToLive
 import team.msg.domain.user.enums.Authority
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 @RedisHash("refresh_token")
-class RefreshToken(
+data class RefreshToken(
     @Id
     val token: String,
 
@@ -15,6 +16,6 @@ class RefreshToken(
 
     val authority: Authority,
 
-    @TimeToLive
+    @TimeToLive(unit = TimeUnit.SECONDS)
     val expiredAt: Int
 )
