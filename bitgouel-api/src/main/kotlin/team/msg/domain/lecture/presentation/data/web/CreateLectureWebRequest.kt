@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull
 import team.msg.domain.lecture.enum.LectureType
 import java.time.LocalDateTime
 
-data class LectureCreateWebRequest(
+data class CreateLectureWebRequest(
     @field:NotBlank
     val name: String,
 

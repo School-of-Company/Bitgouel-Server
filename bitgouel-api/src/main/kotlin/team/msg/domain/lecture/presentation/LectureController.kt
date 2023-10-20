@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
-import team.msg.domain.lecture.presentation.data.web.LectureCreateWebRequest
+import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
 import team.msg.domain.lecture.service.LectureService
 
 @RestController
@@ -18,8 +18,8 @@ class LectureController(
     private val lectureService: LectureService
 ) {
     @PostMapping
-    fun lectureCreate(@Valid @RequestBody webRequest: LectureCreateWebRequest) : ResponseEntity<Void> {
-        lectureService.lectureCreate(lectureRequestMapper.lectureCreateWebRequestToDto(webRequest))
+    fun createLecture(@Valid @RequestBody webRequest: CreateLectureWebRequest) : ResponseEntity<Void> {
+        lectureService.createLecture(lectureRequestMapper.createLectureWebRequestToDto(webRequest))
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }

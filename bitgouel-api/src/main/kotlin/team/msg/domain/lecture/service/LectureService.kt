@@ -1,7 +1,7 @@
 package team.msg.domain.lecture.service
 
-import team.msg.domain.lecture.presentation.data.request.LectureCreateRequest
+import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 
 interface LectureService {
-    fun lectureCreate(request: LectureCreateRequest)
+    fun createLecture(request: CreateLectureRequest)
 }

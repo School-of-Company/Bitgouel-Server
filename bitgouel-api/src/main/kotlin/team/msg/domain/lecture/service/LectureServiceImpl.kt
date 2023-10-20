@@ -5,7 +5,7 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.model.Lecture
-import team.msg.domain.lecture.presentation.data.request.LectureCreateRequest
+import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.repository.LectureRepository
 import java.util.*
 
@@ -17,9 +17,9 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
-     * @param LectureCreateRequest
+     * @param CreateLectureRequest
      */
-    override fun lectureCreate(request: LectureCreateRequest) {
+    override fun createLecture(request: CreateLectureRequest) {
         val user = userUtil.queryCurrentUser()
 
         val credit = when(request.lectureType){

@@ -3,7 +3,7 @@ package team.msg.domain.lecture.presentation.data.request
 import team.msg.domain.lecture.enum.LectureType
 import java.time.LocalDateTime
 
-data class LectureCreateRequest (
+data class CreateLectureRequest (
     val name: String,
     val content: String,
     val startDate: LocalDateTime,
