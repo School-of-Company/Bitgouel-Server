@@ -30,7 +30,7 @@ class StudentActivityServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다.")
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. : [ name = ${user.name} ]")
 
         val teacher = teacherRepository.findByClub(student.club)
             ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다.")

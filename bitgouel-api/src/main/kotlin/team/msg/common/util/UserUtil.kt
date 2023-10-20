@@ -22,7 +22,7 @@ class UserUtil(
             principal.toString())
 
         val user = userRepository.findByIdOrNull(userId)
-            ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. : [ id = $userId ]")
 
         return user
     }
