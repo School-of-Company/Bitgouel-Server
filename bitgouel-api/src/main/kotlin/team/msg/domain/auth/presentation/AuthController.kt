@@ -3,6 +3,7 @@ package team.msg.domain.auth.presentation
 import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -62,7 +63,7 @@ class AuthController(
         return ResponseEntity.ok(response)
     }
 
-    @PostMapping
+    @DeleteMapping
     fun logout(@RequestHeader("RefreshToken") refreshToken: String): ResponseEntity<Void> {
         authService.logout(refreshToken)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
