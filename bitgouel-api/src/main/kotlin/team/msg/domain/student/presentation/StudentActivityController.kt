@@ -30,7 +30,8 @@ class StudentActivityController(
 
     @PatchMapping("/{id}")
     fun updateStudentActivity(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateStudentActivityWebRequest): ResponseEntity<Void> {
-        studentActivityService.updateStudentActivity(id, studentActivityMapper.updateStudentActivityWebRequestToDto(webRequest))
+        val request = studentActivityMapper.updateStudentActivityWebRequestToDto(webRequest)
+        studentActivityService.updateStudentActivity(id, request)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
