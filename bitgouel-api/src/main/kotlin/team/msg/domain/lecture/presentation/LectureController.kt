@@ -29,13 +29,13 @@ class LectureController(
     }
 
     @PatchMapping("/wait/{id}")
-    fun approveLecture(@PathVariable("id") id: UUID): ResponseEntity<Void> {
+    fun approveLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.approveLecture(id)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/wait/{id}")
-    fun rejectLecture(@PathVariable("id") id: UUID): ResponseEntity<Void> {
+    fun rejectLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.approveLecture(id)
         return ResponseEntity.noContent().build()
     }
