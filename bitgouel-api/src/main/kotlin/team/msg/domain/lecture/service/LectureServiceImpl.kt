@@ -1,9 +1,13 @@
 package team.msg.domain.lecture.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enum.LectureType
+import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
+import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.repository.LectureRepository
@@ -44,4 +48,48 @@ class LectureServiceImpl(
 
         lectureRepository.save(lecture)
     }
+
+    /**
+     * 강의 개설 신청을 수락하는 비지니스 로직입니다.
+     * @param UUID
+     */
+    override fun approveLecture(id: UUID) {
+        val lecture = queryLecture(id)
+
+        if(lecture.approveStatus == ApproveStatus.APPROVED)
+            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ uuid = $id ]")
+
+        val approveLecture = Lecture(
+            id = lecture.id,
+            user = lecture.user,
+            name = lecture.name,
+            startDate = lecture.startDate,
+            endDate = lecture.endDate,
+            completeDate = lecture.completeDate,
+            content = lecture.content,
+            lectureType = lecture.lectureType,
+            credit = lecture.credit,
+            instructor = lecture.instructor,
+            maxRegisteredUser = lecture.maxRegisteredUser,
+            approveStatus = ApproveStatus.APPROVED
+        )
+
+        lectureRepository.save(approveLecture)
+    }
+
+    /**
+     * 강의 개설 신청을 거절하는 비지니스 로직입니다.
+     * @param UUID
+     */
+    override fun rejectLecture(id: UUID) {
+        val lecture = queryLecture(id)
+
+        if(lecture.approveStatus == ApproveStatus.APPROVED)
+            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ uuid = $id ]")
+
+        lectureRepository.delete(lecture)
+    }
+
+    private fun queryLecture(id: UUID) = lectureRepository.findByIdOrNull(id)
+            ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ uuid = $id ]")
 }
