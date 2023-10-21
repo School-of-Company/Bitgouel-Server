@@ -57,7 +57,7 @@ class StudentActivityServiceImpl(
      * @param UpdateStudentActivityRequest
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun updateStudentActivity(id: UUID,request: UpdateStudentActivityRequest) {
+    override fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest) {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
