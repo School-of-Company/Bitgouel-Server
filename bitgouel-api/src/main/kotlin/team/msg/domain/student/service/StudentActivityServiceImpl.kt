@@ -72,7 +72,6 @@ class StudentActivityServiceImpl(
             content = request.content,
             credit = request.credit,
             activityDate = request.activityDate,
-            createdAt = studentActivity.createdAt,
             approveStatus = ApproveStatus.PENDING,
             student = studentActivity.student,
             teacher = studentActivity.teacher,
