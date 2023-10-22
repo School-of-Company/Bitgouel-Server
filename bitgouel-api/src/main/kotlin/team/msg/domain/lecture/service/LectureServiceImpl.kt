@@ -2,6 +2,7 @@ package team.msg.domain.lecture.service
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enum.LectureType
@@ -23,6 +24,7 @@ class LectureServiceImpl(
      * 강의 개설을 처리하는 비지니스 로직입니다.
      * @param CreateLectureRequest
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun createLecture(request: CreateLectureRequest) {
         val user = userUtil.queryCurrentUser()
 
@@ -53,6 +55,7 @@ class LectureServiceImpl(
      * 강의 개설 신청을 수락하는 비지니스 로직입니다.
      * @param UUID
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun approveLecture(id: UUID) {
         val lecture = queryLecture(id)
 
@@ -81,6 +84,7 @@ class LectureServiceImpl(
      * 강의 개설 신청을 거절하는 비지니스 로직입니다.
      * @param UUID
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun rejectLecture(id: UUID) {
         val lecture = queryLecture(id)
 
