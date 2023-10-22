@@ -60,7 +60,7 @@ class LectureServiceImpl(
         val lecture = queryLecture(id)
 
         if(lecture.approveStatus == ApproveStatus.APPROVED)
-            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ uuid = $id ]")
+            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
 
         val approveLecture = Lecture(
             id = lecture.id,
