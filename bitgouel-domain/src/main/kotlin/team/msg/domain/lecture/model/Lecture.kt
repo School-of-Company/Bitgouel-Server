@@ -38,7 +38,7 @@ class Lecture(
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(40)", nullable = false)
-    var lectureType: LectureType,
+    val lectureType: LectureType,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val credit: Int,
