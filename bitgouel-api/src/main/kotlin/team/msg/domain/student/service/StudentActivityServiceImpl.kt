@@ -1,9 +1,11 @@
 package team.msg.domain.student.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
@@ -20,12 +22,13 @@ class StudentActivityServiceImpl(
     private val userUtil: UserUtil,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
-    private val studentActivityRepository: StudentActivityRepository
+    private val studentActivityRepository: StudentActivityRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) : StudentActivityService {
 
     /**
-     * 학생 활동을 생성하는 비지니스 로직입니다
-     * @param CreateStudentActivityRequest
+     * 학생 활동을 생성하는 비지니스 로직입니다.
+     * @param 학생 활동을 생성하기 위해 데이터를 담은 request Dto
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createStudentActivity(request: CreateStudentActivityRequest) {
@@ -53,6 +56,7 @@ class StudentActivityServiceImpl(
 
     /**
      * 학생 활동을 업데이트하는 비지니스 로직입니다
+     * applicationEventPublisher로부터 학생 활동 업데이트 이벤트를 발행합니다.
      * @param UpdateStudentActivityRequest
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -72,6 +76,7 @@ class StudentActivityServiceImpl(
             activityDate = request.activityDate
         )
 
+        applicationEventPublisher.publishEvent(UpdateStudentActivityEvent(studentActivity))
         studentActivityRepository.save(updatedStudentActivity)
     }
 }
