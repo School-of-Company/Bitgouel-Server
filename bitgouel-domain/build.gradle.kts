@@ -13,6 +13,7 @@ bootJar.enabled = false
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis:2.7.5")
+    implementation("de.huxhorn.sulky:ulid:7.0")
 }
 
 allOpen {

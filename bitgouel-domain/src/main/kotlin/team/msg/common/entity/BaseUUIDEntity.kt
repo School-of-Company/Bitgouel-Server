@@ -9,6 +9,7 @@ import javax.persistence.PostPersist
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable
+import team.msg.common.ulid.ULIDGenerator
 import java.io.Serializable
 import java.util.*
 
@@ -20,6 +21,9 @@ abstract class BaseUUIDEntity(
     @Column(columnDefinition = "BINARY(16)", nullable = false)
     open val id: UUID
 ) : BaseTimeEntity(), Persistable<UUID> {
+
+    @Column(name = "ulid", updatable = false, unique = true)
+    private var ulid: String? = ULIDGenerator.generateULID()
 
     override fun getId(): UUID = id
 
