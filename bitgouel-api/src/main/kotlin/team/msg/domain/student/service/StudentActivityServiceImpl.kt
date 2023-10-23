@@ -38,7 +38,6 @@ class StudentActivityServiceImpl(
             ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다.")
 
         val studentActivity = StudentActivity(
-            id = UUID.randomUUID(),
             title = request.title,
             content = request.content,
             credit = request.credit,
@@ -66,15 +65,11 @@ class StudentActivityServiceImpl(
         val studentActivity = studentActivityRepository.findByIdAndStudent(id, student)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
-        val updatedStudentActivity = StudentActivity(
-            id = studentActivity.id,
+        val updatedStudentActivity = studentActivity.updateStudentActivity(
             title = request.title,
             content = request.content,
             credit = request.credit,
-            activityDate = request.activityDate,
-            approveStatus = ApproveStatus.PENDING,
-            student = studentActivity.student,
-            teacher = studentActivity.teacher,
+            activityDate = request.activityDate
         )
 
         studentActivityRepository.save(updatedStudentActivity)
