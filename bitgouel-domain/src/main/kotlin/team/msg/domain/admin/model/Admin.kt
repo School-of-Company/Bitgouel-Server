@@ -12,11 +12,11 @@ import java.util.*
 @Entity
 class Admin(
 
+    @get:JvmName("getIdentifier")
+    override var id: UUID,
+
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?
 
-) : BaseUUIDEntity() {
-
-    override fun getId(): UUID = id
-}
+) : BaseUUIDEntity(id)

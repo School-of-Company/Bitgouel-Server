@@ -19,6 +19,10 @@ import java.util.*
  */
 @Entity
 class StudentActivityHistory(
+
+    @get:JvmName("getIdentifier")
+    override var id: UUID,
+
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     var title: String,
 
@@ -45,8 +49,6 @@ class StudentActivityHistory(
 
     @Column(name = "student_activity_id", columnDefinition = "BINARY(16)", nullable = false)
     val studentActivityId: UUID
-) : BaseUUIDEntity() {
-
-    override fun getId(): UUID = id
+) : BaseUUIDEntity(id) {
 
 }

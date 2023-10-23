@@ -7,6 +7,7 @@ import team.msg.common.enum.ApproveStatus
 import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.model.StudentActivityHistory
 import team.msg.domain.student.repository.StudentActivityHistoryRepository
+import java.util.*
 
 @Component
 class StudentActivityEventHandler(
@@ -21,6 +22,7 @@ class StudentActivityEventHandler(
     fun updateStudentActivityHandler(event: UpdateStudentActivityEvent) {
         val studentActivity = event.studentActivity
         val studentActivityHistory = StudentActivityHistory(
+            id = UUID.randomUUID(),
             title = studentActivity.title,
             content = studentActivity.content,
             credit = studentActivity.credit,
