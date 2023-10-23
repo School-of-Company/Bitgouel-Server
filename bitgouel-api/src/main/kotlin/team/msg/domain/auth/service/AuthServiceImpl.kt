@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
+import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.exception.InvalidRefreshTokenException
@@ -52,12 +53,13 @@ class AuthServiceImpl(
     private val companyInstructorRepository: CompanyInstructorRepository,
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val userUtil: UserUtil
 ) : AuthService {
 
     /**
      * 학생 회원가입을 처리하는 비지니스 로직입니다.
-     * @param StudentSignUpRequest
+     * @param 학생 회원가입을 처리하기 위한 request dto 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
@@ -86,7 +88,7 @@ class AuthServiceImpl(
 
     /**
      * 취동샘 회원가입을 처리하는 비지니스 로직입니다.
-     * @param TeacherSignUpRequest
+     * @param 취동샘 회원가입을 처리하기 위한 request dto 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
@@ -109,7 +111,7 @@ class AuthServiceImpl(
 
     /**
      * 대학교수 회원가입을 처리하는 비지니스 로직입니다.
-     * @param ProfessorSignUpRequest
+     * @param 대학교수 회원가입을 처리하기 위한 request dto 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun professorSignUp(request: ProfessorSignUpRequest) {
@@ -133,7 +135,7 @@ class AuthServiceImpl(
 
     /**
      * 유관 기관 회원가입을 처리하는 비지니스 로직입니다.
-     * @param GovernmentSignUpRequest
+     * @param 유관 기관 회원가입을 처리하기 위한 request dto 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
@@ -157,7 +159,7 @@ class AuthServiceImpl(
 
     /**
      * 기업 강사 회원가입을 처리하는 비지니스 로직입니다.
-     * @param CompanyInstructorSignUpRequest
+     * @param 기업 강사 회원가입을 처리가히 위한 request dto 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
@@ -175,9 +177,9 @@ class AuthServiceImpl(
 
     /**
      * 로그인을 처리하는 비지니스 로직입니다.
-     * @param LoginRequest
+     * @param 로그인을 처리하기 위한 request dto 입니다.
      */
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun login(request: LoginRequest): TokenResponse {
         val user = userRepository.findByEmail(request.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
@@ -193,11 +195,12 @@ class AuthServiceImpl(
 
     /**
      * 토큰 재발급을 처리하는 메서드입니다.
-     * @param refreshToken
+     * @param 토큰 재발급을 처리하기 위한 refreshToken 입니다.
      */
-    override fun reissueToken(refreshToken: String): TokenResponse {
-        val refreshToken = jwtTokenParser.parseRefreshToken(refreshToken)
-            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    override fun reissueToken(requestToken: String): TokenResponse {
+        val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
 
         val token = refreshTokenRepository.findByIdOrNull(refreshToken)
             ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
@@ -209,8 +212,28 @@ class AuthServiceImpl(
     }
 
     /**
+     * 로그아웃을 처리하는 메서드입니다.
+     * @param 로그아웃을 처리하기 위한 refreshToken 입니다.
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun logout(requestToken: String) {
+        val user = userUtil.queryCurrentUser()
+
+        val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
+            ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
+
+        val token = refreshTokenRepository.findByIdOrNull(refreshToken)
+            ?: throw RefreshTokenNotFoundException("존재하지 않는 리프레시 토큰입니다. info : [ refreshToken = $refreshToken ]")
+
+        if (token.userId != user.id)
+            throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId =  ${token.userId} ]")
+
+        refreshTokenRepository.delete(token)
+    }
+
+    /**
      * 유저 생성과 검증을 처리하는 private 메서드입니다.
-     * @param email, name, phoneNumber, password, authority
+     * @param 유저 생성 및 검증하기 위한 email, name, phoneNumber, password, authority 입니다.
      */
     private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
         if (userRepository.existsByEmail(email))
@@ -233,7 +256,7 @@ class AuthServiceImpl(
 
     /**
      * 학교와 동아리 이름을 받아 동아리 객체를 리턴하는 private 메서드입니다.
-     * @param highSchool, clubName
+     * @param 동아리 객체를 리턴하기 위한 highSchool, clubName 입니다.
      */
     private fun queryClub(highSchool: HighSchool, clubName: String): Club {
         val school = schoolRepository.findByHighSchool(highSchool)
