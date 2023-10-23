@@ -38,7 +38,7 @@ class Lecture(
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(40)", nullable = false)
-    val lectureType: LectureType,
+    var lectureType: LectureType,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val credit: Int,
@@ -54,4 +54,9 @@ class Lecture(
     var approveStatus: ApproveStatus = ApproveStatus.PENDING
 ) : BaseUUIDEntity() {
     override fun getId(): UUID = id
+
+    fun updateApproveStatus(approveStatus: ApproveStatus): Lecture{
+        this.approveStatus = approveStatus
+        return this
+    }
 }

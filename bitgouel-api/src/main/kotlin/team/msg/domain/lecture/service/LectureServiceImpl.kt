@@ -61,20 +61,7 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.APPROVED)
             throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
 
-        val approveLecture = Lecture(
-            id = lecture.id,
-            user = lecture.user,
-            name = lecture.name,
-            startDate = lecture.startDate,
-            endDate = lecture.endDate,
-            completeDate = lecture.completeDate,
-            content = lecture.content,
-            lectureType = lecture.lectureType,
-            credit = lecture.credit,
-            instructor = lecture.instructor,
-            maxRegisteredUser = lecture.maxRegisteredUser,
-            approveStatus = ApproveStatus.APPROVED
-        )
+        val approveLecture = lecture.updateApproveStatus(ApproveStatus.APPROVED)
 
         lectureRepository.save(approveLecture)
     }
