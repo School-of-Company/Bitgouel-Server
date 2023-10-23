@@ -1,6 +1,5 @@
 package team.msg.domain.student.model
 
-import team.msg.common.entity.BaseUUIDEntity
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -8,10 +7,11 @@ import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.enum.ApproveStatus
 import team.msg.domain.teacher.model.Teacher
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Entity
 class StudentActivity(
@@ -31,7 +31,7 @@ class StudentActivity(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val approveStatus: ApproveStatus,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     val activityDate: LocalDateTime,
 
     @ManyToOne(fetch = FetchType.LAZY)
