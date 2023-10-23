@@ -57,7 +57,7 @@ class StudentActivityServiceImpl(
     /**
      * 학생 활동을 업데이트하는 비지니스 로직입니다
      * applicationEventPublisher로부터 학생 활동 업데이트 이벤트를 발행합니다.
-     * @param UpdateStudentActivityRequest
+     * @param 학생 활동을 수정하기 위해 데이터를 담은 request Dto와 학생 정보 활동 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest) {
