@@ -80,7 +80,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 삭제하기 위한 id 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
-    fun deleteStudentActivity(id: UUID) {
+    override fun deleteStudentActivity(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
