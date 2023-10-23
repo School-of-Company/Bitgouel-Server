@@ -208,6 +208,7 @@ class AuthServiceImpl(
         val user = userRepository.findByIdOrNull(token.userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${token.userId} ]")
 
+        refreshTokenRepository.deleteById(refreshToken)
         return jwtTokenGenerator.generateToken(user.id, user.authority)
     }
 
@@ -229,6 +230,14 @@ class AuthServiceImpl(
             throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId =  ${token.userId} ]")
 
         refreshTokenRepository.delete(token)
+    }
+
+    /**
+     * 회원탈퇴를 처리하는 메서드입니다.
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun withdraw() {
+        val user = userUtil.queryCurrentUser()
     }
 
     /**
