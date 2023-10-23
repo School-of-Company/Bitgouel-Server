@@ -14,28 +14,25 @@ import java.io.Serializable
 import java.util.*
 
 @MappedSuperclass
-abstract class BaseUUIDEntity : BaseTimeEntity(), Persistable<UUID> {
+abstract class BaseUUIDEntity(
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)", nullable = false)
-    private val id: UUID = UUID.randomUUID()
+    @get:JvmName(name = "getIdentifier")
+    open var id: UUID = UUID(0, 0)
+) : BaseTimeEntity(), Persistable<UUID> {
+
 
     @Column(name = "ulid", updatable = false, unique = true)
-    private var ulid: String? = ULIDGenerator.generateULID()
+    var ulid: String? = ULIDGenerator.generateULID()
 
-
-    @Transient
-    private var _isNew = true
-
-    override fun isNew(): Boolean = _isNew
-
-    @PostPersist
-    @PostLoad
-    protected fun load() {
-        _isNew = false
+    override fun isNew(): Boolean = (id == UUID(0,0)).also { new ->
+        if(new) id = UUID.randomUUID()
     }
+
+    override fun getId(): UUID? = id
 
     override fun equals(other: Any?): Boolean {
         if (other == null) {
@@ -46,14 +43,10 @@ abstract class BaseUUIDEntity : BaseTimeEntity(), Persistable<UUID> {
             return false
         }
 
-        return id == getIdentifier(other)
-    }
-
-    private fun getIdentifier(obj: Any): Serializable {
-        return if (obj is HibernateProxy) {
-            obj.hibernateLazyInitializer.identifier
+        return id == if (other is HibernateProxy) {
+            other.hibernateLazyInitializer.identifier
         } else {
-            (obj as BaseUUIDEntity).id
+            (other as BaseUUIDEntity).id
         }
     }
 

@@ -9,6 +9,9 @@ import javax.persistence.*
 @Entity
 class CompanyInstructor(
 
+    @get:JvmName("getIdentifier")
+    override var id: UUID,
+
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -20,6 +23,6 @@ class CompanyInstructor(
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val company: String
 
-) : BaseUUIDEntity() {
-    override fun getId(): UUID = id
+) : BaseUUIDEntity(id) {
+
 }

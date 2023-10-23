@@ -12,6 +12,9 @@ import java.util.*
 @Entity
 class User(
 
+    @get:JvmName("getIdentifier")
+    override var id: UUID,
+
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val email: String,
 
@@ -32,6 +35,4 @@ class User(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val approveStatus: ApproveStatus
 
-) : BaseUUIDEntity() {
-    override fun getId(): UUID = id
-}
+) : BaseUUIDEntity(id)

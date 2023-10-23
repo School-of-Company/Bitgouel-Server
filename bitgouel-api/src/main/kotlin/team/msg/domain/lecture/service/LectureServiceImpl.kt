@@ -22,7 +22,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
-     * @param CreateLectureRequest
+     * @param 생성할 강의의 데이터를 담은 request Dto
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createLecture(request: CreateLectureRequest) {
@@ -35,6 +35,7 @@ class LectureServiceImpl(
         }
 
         val lecture = Lecture(
+            id = UUID.randomUUID(),
             user = user,
             name = request.name,
             startDate = request.startDate,
@@ -52,7 +53,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설 신청을 수락하는 비지니스 로직입니다.
-     * @param UUID
+     * @param 승인할 강의의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun approveLecture(id: UUID) {
@@ -61,14 +62,26 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.APPROVED)
             throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
 
-        val approveLecture = lecture.updateApproveStatus(ApproveStatus.APPROVED)
+        val approveLecture = Lecture(
+            id = lecture.id,
+            user = lecture.user,
+            name = lecture.name,
+            startDate = lecture.startDate,
+            endDate = lecture.endDate,
+            completeDate = lecture.completeDate,
+            content = lecture.content,
+            lectureType = lecture.lectureType,
+            credit = lecture.credit,
+            instructor = lecture.user.name,
+            maxRegisteredUser = lecture.maxRegisteredUser
+        )
 
         lectureRepository.save(approveLecture)
     }
 
     /**
      * 강의 개설 신청을 거절하는 비지니스 로직입니다.
-     * @param UUID
+     * @param 거절할 강의의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun rejectLecture(id: UUID) {
