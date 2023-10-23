@@ -22,7 +22,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
-     * @param CreateLectureRequest
+     * @param 생성할 강의의 데이터를 담은 request Dto
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createLecture(request: CreateLectureRequest) {
@@ -53,7 +53,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설 신청을 수락하는 비지니스 로직입니다.
-     * @param UUID
+     * @param 승인할 강의의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun approveLecture(id: UUID) {
@@ -81,7 +81,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설 신청을 거절하는 비지니스 로직입니다.
-     * @param UUID
+     * @param 거절할 강의의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun rejectLecture(id: UUID) {
