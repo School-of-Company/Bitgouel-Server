@@ -6,12 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.auth.exception.AlreadyExistEmailException
-import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
-import team.msg.domain.auth.exception.InvalidRefreshTokenException
-import team.msg.domain.auth.exception.MisMatchPasswordException
-import team.msg.domain.auth.exception.RefreshTokenNotFoundException
-import team.msg.domain.auth.exception.UnApprovedUserException
+import team.msg.domain.auth.exception.*
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
@@ -238,6 +233,9 @@ class AuthServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun withdraw() {
         val user = userUtil.queryCurrentUser()
+
+
+        userRepository.delete(user)
     }
 
     /**
