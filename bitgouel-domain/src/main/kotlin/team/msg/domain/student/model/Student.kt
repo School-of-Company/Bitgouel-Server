@@ -48,4 +48,5 @@ class Student(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val studentRole: StudentRole
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id) {
+}

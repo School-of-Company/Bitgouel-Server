@@ -16,6 +16,9 @@ import java.util.*
 @Entity
 class StudentActivity(
 
+    @get:JvmName("getIdentifier")
+    override var id: UUID,
+
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     var title: String,
 
@@ -40,15 +43,4 @@ class StudentActivity(
     @JoinColumn(name = "teacher_id", columnDefinition = "BINARY(16)", nullable = false)
     val teacher: Teacher
 
-) : BaseUUIDEntity(){
-
-    override fun getId(): UUID = id
-
-    fun updateStudentActivity(title: String, content: String, credit: Int, activityDate: LocalDateTime): StudentActivity {
-        this.title = title
-        this.content = content
-        this.credit = credit
-        this.approveStatus = ApproveStatus.PENDING
-        return this
-    }
-}
+) : BaseUUIDEntity(id)
