@@ -16,7 +16,6 @@ import java.util.UUID
 
 @Entity
 class Lecture(
-    override val id: UUID,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
@@ -53,4 +52,6 @@ class Lecture(
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     var approveStatus: ApproveStatus = ApproveStatus.PENDING
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity() {
+    override fun getId(): UUID = id
+}

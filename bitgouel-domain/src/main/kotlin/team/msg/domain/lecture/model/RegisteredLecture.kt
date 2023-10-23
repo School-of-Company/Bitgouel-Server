@@ -12,7 +12,6 @@ import java.util.UUID
 
 @Entity
 class RegisteredLecture(
-    override val id: UUID,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)")
@@ -24,4 +23,6 @@ class RegisteredLecture(
 
     @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
     val completeDate: LocalDateTime
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity() {
+    override fun getId(): UUID = id
+}

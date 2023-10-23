@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
+import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
@@ -36,7 +38,6 @@ class StudentActivityServiceImpl(
             ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다.")
 
         val studentActivity = StudentActivity(
-            id = UUID.randomUUID(),
             title = request.title,
             content = request.content,
             credit = request.credit,
@@ -47,5 +48,30 @@ class StudentActivityServiceImpl(
         )
 
         studentActivityRepository.save(studentActivity)
+    }
+
+
+    /**
+     * 학생 활동을 업데이트하는 비지니스 로직입니다
+     * @param UpdateStudentActivityRequest
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest) {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+
+        val studentActivity = studentActivityRepository.findByIdAndStudent(id, student)
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        val updatedStudentActivity = studentActivity.updateStudentActivity(
+            title = request.title,
+            content = request.content,
+            credit = request.credit,
+            activityDate = request.activityDate
+        )
+
+        studentActivityRepository.save(updatedStudentActivity)
     }
 }

@@ -52,9 +52,11 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/company-instructor").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/login").permitAll()
             .mvcMatchers(HttpMethod.PATCH, "/auth").permitAll()
+            .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
+            .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasRole(STUDENT)
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
