@@ -27,13 +27,8 @@ class StudentActivityServiceImpl(
 ) : StudentActivityService {
 
     /**
-<<<<<<< HEAD
-     * 학생 활동을 생성하는 비지니스 로직입니다
-     * @param 학생활동을 생성하기 위한 request dto 입니다.
-=======
      * 학생 활동을 생성하는 비지니스 로직입니다.
      * @param 학생 활동을 생성하기 위해 데이터를 담은 request Dto
->>>>>>> 5b056486c13baf211319551fff90a57b4ba886d7
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createStudentActivity(request: CreateStudentActivityRequest) {
