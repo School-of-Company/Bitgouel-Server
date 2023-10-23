@@ -14,8 +14,6 @@ import java.util.UUID
 @Entity
 class Professor(
 
-    override val id: UUID,
-
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -27,5 +25,6 @@ class Professor(
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val university: String
 
-) : BaseUUIDEntity(id) {
+) : BaseUUIDEntity() {
+    override fun getId(): UUID = id
 }

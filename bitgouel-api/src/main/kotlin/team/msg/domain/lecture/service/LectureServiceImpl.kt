@@ -29,7 +29,6 @@ class LectureServiceImpl(
         }
 
         val lecture = Lecture(
-            id = UUID.randomUUID(),
             user = user,
             name = request.name,
             startDate = request.startDate,

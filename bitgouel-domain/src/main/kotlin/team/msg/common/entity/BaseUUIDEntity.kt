@@ -14,18 +14,17 @@ import java.io.Serializable
 import java.util.*
 
 @MappedSuperclass
-abstract class BaseUUIDEntity(
+abstract class BaseUUIDEntity : BaseTimeEntity(), Persistable<UUID> {
+
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)", nullable = false)
-    open val id: UUID
-) : BaseTimeEntity(), Persistable<UUID> {
+    private val id: UUID = UUID.randomUUID()
 
     @Column(name = "ulid", updatable = false, unique = true)
     private var ulid: String? = ULIDGenerator.generateULID()
 
-    override fun getId(): UUID = id
 
     @Transient
     private var _isNew = true

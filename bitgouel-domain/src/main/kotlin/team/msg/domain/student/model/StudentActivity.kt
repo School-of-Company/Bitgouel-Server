@@ -16,23 +16,21 @@ import java.util.*
 @Entity
 class StudentActivity(
 
-    override val id: UUID,
-
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
-    val title: String,
+    var title: String,
 
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
-    val content: String,
+    var content: String,
 
     @Column(columnDefinition = "INT", nullable = false)
-    val credit: Int,
+    var credit: Int,
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
-    val approveStatus: ApproveStatus,
+    var approveStatus: ApproveStatus,
 
     @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    val activityDate: LocalDateTime,
+    var activityDate: LocalDateTime,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)", nullable = false)
@@ -42,5 +40,15 @@ class StudentActivity(
     @JoinColumn(name = "teacher_id", columnDefinition = "BINARY(16)", nullable = false)
     val teacher: Teacher
 
-) : BaseUUIDEntity(id){
+) : BaseUUIDEntity(){
+
+    override fun getId(): UUID = id
+
+    fun updateStudentActivity(title: String, content: String, credit: Int, activityDate: LocalDateTime): StudentActivity {
+        this.title = title
+        this.content = content
+        this.credit = credit
+        this.approveStatus = ApproveStatus.PENDING
+        return this
+    }
 }
