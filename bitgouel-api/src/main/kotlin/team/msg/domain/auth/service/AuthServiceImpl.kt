@@ -74,6 +74,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val student = Student(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             grade = request.grade,
@@ -103,6 +104,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val teacher = Teacher(
+            id = UUID.randomUUID(),
             user = user,
             club = club
         )
@@ -126,6 +128,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val professor = Professor(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             university = request.university
@@ -150,6 +153,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val government = Government(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             governmentName = request.governmentName
@@ -168,6 +172,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val companyInstructor = CompanyInstructor(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             company = request.company
@@ -243,6 +248,7 @@ class AuthServiceImpl(
             throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
 
         val user = User(
+            id = UUID.randomUUID(),
             email = email,
             name = name,
             phoneNumber = phoneNumber,
@@ -267,4 +273,5 @@ class AuthServiceImpl(
 
         return club
     }
+
 }
