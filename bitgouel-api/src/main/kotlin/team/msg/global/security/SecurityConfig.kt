@@ -60,6 +60,8 @@ class SecurityConfig(
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
+            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasAnyRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasAnyRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()

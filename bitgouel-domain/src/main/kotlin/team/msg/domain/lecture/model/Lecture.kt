@@ -54,4 +54,9 @@ class Lecture(
     var approveStatus: ApproveStatus = ApproveStatus.PENDING
 ) : BaseUUIDEntity() {
     override fun getId(): UUID = id
+
+    fun updateApproveStatus(approveStatus: ApproveStatus): Lecture {
+        this.approveStatus = approveStatus
+        return this
+    }
 }
