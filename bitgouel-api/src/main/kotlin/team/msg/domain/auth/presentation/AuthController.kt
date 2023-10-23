@@ -75,7 +75,7 @@ class AuthController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @DeleteMapping
+    @DeleteMapping("/withdraw")
     fun withdraw(): ResponseEntity<Void> {
         authService.withdraw()
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()

@@ -240,6 +240,7 @@ class AuthServiceImpl(
         val user = userUtil.queryCurrentUser()
 
 
+
         userRepository.delete(user)
     }
 
