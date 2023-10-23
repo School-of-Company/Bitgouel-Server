@@ -184,7 +184,7 @@ class AuthServiceImpl(
      * 로그인을 처리하는 비지니스 로직입니다.
      * @param LoginRequest
      */
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun login(request: LoginRequest): TokenResponse {
         val user = userRepository.findByEmail(request.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
@@ -202,7 +202,7 @@ class AuthServiceImpl(
      * 토큰 재발급을 처리하는 메서드입니다.
      * @param requestToken
      */
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun reissueToken(requestToken: String): TokenResponse {
         val refreshToken = jwtTokenParser.parseRefreshToken(requestToken)
             ?: throw InvalidRefreshTokenException("유효하지 않은 리프레시 토큰입니다. info : [ refreshToken = $requestToken ]")
