@@ -82,10 +82,10 @@ class UserEventHandler(
                 professorRepository.delete(professor)
             }
             ROLE_COMPANY_INSTRUCTOR -> {
-                val company = companyInstructorRepository.findByUser(user)
+                val companyInstructor = companyInstructorRepository.findByUser(user)
                     ?: throw CompanyNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
 
-                companyInstructorRepository.delete(company)
+                companyInstructorRepository.delete(companyInstructor)
             }
             ROLE_GOVERNMENT -> {
                 val government = governmentRepository.findByUser(user)
@@ -96,7 +96,6 @@ class UserEventHandler(
 
             else -> throw UnApprovedUserException("회원가입 승인 대기 중인 유저입니다. info : [ userId = ${user.id} ]")
         }
-
 
         userRepository.delete(user)
     }
