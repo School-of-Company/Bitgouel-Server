@@ -18,7 +18,7 @@ import java.util.UUID
 @Entity
 class Student(
 
-    @get:JvmName("getIdentifier")
+    @get:JvmName(name = "getIdentifier")
     override var id: UUID,
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])

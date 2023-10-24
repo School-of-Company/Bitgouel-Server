@@ -5,5 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class TeacherNotFoundException(
     message: String
-) : BitgouelException(message, TeacherErrorCode.TEACHER_NOT_FOUND.status) {
-}
+) : BitgouelException(message, TeacherErrorCode.TEACHER_NOT_FOUND.status)

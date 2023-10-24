@@ -1,17 +1,13 @@
 package team.msg.domain.auth.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.auth.exception.AlreadyExistEmailException
-import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
-import team.msg.domain.auth.exception.InvalidRefreshTokenException
-import team.msg.domain.auth.exception.MisMatchPasswordException
-import team.msg.domain.auth.exception.RefreshTokenNotFoundException
-import team.msg.domain.auth.exception.UnApprovedUserException
+import team.msg.domain.auth.exception.*
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
@@ -33,6 +29,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -54,7 +51,8 @@ class AuthServiceImpl(
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) : AuthService {
 
     /**
@@ -213,6 +211,7 @@ class AuthServiceImpl(
         val user = userRepository.findByIdOrNull(token.userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${token.userId} ]")
 
+        refreshTokenRepository.deleteById(refreshToken)
         return jwtTokenGenerator.generateToken(user.id, user.authority)
     }
 
@@ -234,6 +233,18 @@ class AuthServiceImpl(
             throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId =  ${token.userId} ]")
 
         refreshTokenRepository.delete(token)
+    }
+
+    /**
+     * 회원탈퇴를 처리하는 메서드입니다.
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun withdraw() {
+        val user = userUtil.queryCurrentUser()
+
+        applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
+
+        userRepository.delete(user)
     }
 
     /**

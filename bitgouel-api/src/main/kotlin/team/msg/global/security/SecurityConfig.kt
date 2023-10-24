@@ -53,6 +53,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/login").permitAll()
             .mvcMatchers(HttpMethod.PATCH, "/auth").permitAll()
             .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/auth/withdraw").authenticated()
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)

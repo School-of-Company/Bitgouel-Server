@@ -23,6 +23,4 @@ class CompanyInstructor(
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val company: String
 
-) : BaseUUIDEntity(id) {
-
-}
+) : BaseUUIDEntity(id)
