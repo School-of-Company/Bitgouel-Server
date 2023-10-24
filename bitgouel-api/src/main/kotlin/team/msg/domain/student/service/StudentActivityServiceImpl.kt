@@ -86,7 +86,7 @@ class StudentActivityServiceImpl(
 
     /**
      * 학생활동을 삭제하는 비지니스 로직입니다.
-     * @param 학생활동을 삭제하기 위한 id 입니다.
+     * @param 학생활동을 삭제하기 위한 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteStudentActivity(id: UUID) {
@@ -96,6 +96,23 @@ class StudentActivityServiceImpl(
             ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
 
         val studentActivity = studentActivityRepository.findByIdAndStudent(id, student)
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        studentActivityRepository.delete(studentActivity)
+    }
+
+    /**
+     * 학생활동을 거절 및 삭제하는 비지니스 로직입니다.
+     * @param 학생활동을 삭제하기 위한 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun rejectStudentActivity(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val teacher = teacherRepository.findByUser(user)
+            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+
+        val studentActivity = studentActivityRepository.findByIdAndTeacher(id, teacher)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
         studentActivityRepository.delete(studentActivity)

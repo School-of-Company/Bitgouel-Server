@@ -8,4 +8,5 @@ interface StudentActivityService {
     fun createStudentActivity(request: CreateStudentActivityRequest)
     fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest)
     fun deleteStudentActivity(id: UUID)
+    fun rejectStudentActivity(id: UUID)
 }
