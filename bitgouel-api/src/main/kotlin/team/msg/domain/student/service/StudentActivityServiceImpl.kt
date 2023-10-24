@@ -129,14 +129,4 @@ class StudentActivityServiceImpl(
 
         studentActivityRepository.delete(studentActivity)
     }
-
-    /**
-     * 해당 학생이 유효한지 검증하는 private 함수
-     * @param 학생활동을 검증하기 위한 id
-     */
-    private fun validateStudent(id: UUID): StudentActivity {
-
-
-        return studentActivity
-    }
 }
