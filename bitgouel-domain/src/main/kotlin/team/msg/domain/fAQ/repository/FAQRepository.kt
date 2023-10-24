@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository
 import team.msg.domain.fAQ.model.FAQ
 import java.util.*
 
-interface FAQRepository : CrudRepository<FAQ,UUID> {
+interface FAQRepository : CrudRepository<FAQ, UUID> {
 }
