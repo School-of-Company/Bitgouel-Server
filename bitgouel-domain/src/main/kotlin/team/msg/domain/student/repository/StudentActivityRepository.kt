@@ -8,5 +8,6 @@ import java.util.*
 
 interface StudentActivityRepository : JpaRepository<StudentActivity, UUID> {
     fun findByIdAndStudent(id: UUID, student: Student): StudentActivity?
+    fun findAllByStudent(student: Student): List<StudentActivity>
     fun findByIdAndTeacher(id: UUID, teacher: Teacher): StudentActivity?
 }

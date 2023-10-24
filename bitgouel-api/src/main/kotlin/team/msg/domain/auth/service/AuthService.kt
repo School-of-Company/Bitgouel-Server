@@ -12,4 +12,5 @@ interface AuthService {
     fun login(request: LoginRequest): TokenResponse
     fun reissueToken(refreshToken: String): TokenResponse
     fun logout(refreshToken: String)
+    fun withdraw()
 }

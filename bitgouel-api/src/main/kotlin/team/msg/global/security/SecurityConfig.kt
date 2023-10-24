@@ -53,12 +53,13 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/auth/login").permitAll()
             .mvcMatchers(HttpMethod.PATCH, "/auth").permitAll()
             .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/auth/withdraw").authenticated()
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasRole(STUDENT)
-            .mvcMatchers(HttpMethod.DELETE, "/activity/{id}/reject").hasRole(TEACHER )
+            .mvcMatchers(HttpMethod.DELETE, "/activity/{id}/reject").hasRole(TEACHER)
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)

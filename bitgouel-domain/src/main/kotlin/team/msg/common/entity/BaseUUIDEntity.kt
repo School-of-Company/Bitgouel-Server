@@ -1,17 +1,13 @@
 package team.msg.common.entity
-
-import javax.persistence.Column
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.MappedSuperclass
-import javax.persistence.PostLoad
-import javax.persistence.PostPersist
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable
 import team.msg.common.ulid.ULIDGenerator
-import java.io.Serializable
 import java.util.*
+import javax.persistence.Column
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 abstract class BaseUUIDEntity(
@@ -23,7 +19,6 @@ abstract class BaseUUIDEntity(
     @get:JvmName(name = "getIdentifier")
     open var id: UUID = UUID(0, 0)
 ) : BaseTimeEntity(), Persistable<UUID> {
-
 
     @Column(name = "ulid", updatable = false, unique = true)
     var ulid: String? = ULIDGenerator.generateULID()
