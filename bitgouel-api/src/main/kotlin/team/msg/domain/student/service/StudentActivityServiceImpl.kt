@@ -65,16 +65,7 @@ class StudentActivityServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest) {
-        val user = userUtil.queryCurrentUser()
-
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
-
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
-
-        if(student.id != studentActivity.student.id)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
+        val studentActivity = validateStudent(id)
 
         val updatedStudentActivity = StudentActivity(
             id = studentActivity.id,
@@ -96,17 +87,8 @@ class StudentActivityServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteStudentActivity(id: UUID) {
-        val user = userUtil.queryCurrentUser()
-
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
-
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
-
-        if(student.id != studentActivity.student.id)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
-
+        val studentActivity = validateStudent(id)
+        
         studentActivityRepository.delete(studentActivity)
     }
 
@@ -128,5 +110,24 @@ class StudentActivityServiceImpl(
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
 
         studentActivityRepository.delete(studentActivity)
+    }
+
+    /**
+     * 해당 학생이 유효한지 검증하는 private 함수
+     * @param 학생활동을 검증하기 위한 id
+     */
+    private fun validateStudent(id: UUID): StudentActivity {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+
+        val studentActivity = studentActivityRepository.findByIdOrNull(id)
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        if(student.id != studentActivity.student.id)
+            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
+
+        return studentActivity
     }
 }
