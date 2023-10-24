@@ -71,7 +71,7 @@ class UserEventHandler(
             }
             ROLE_TEACHER -> {
                 val teacher = teacherRepository.findByUser(user)
-                    ?: throw TeacherNotFoundException("존재하지 않는 선생님 입니다. info : [ userId = ${user.id} ]")
+                    ?: throw TeacherNotFoundException("존재하지 않는 취동샘 입니다. info : [ userId = ${user.id} ]")
 
                 teacherRepository.delete(teacher)
             }
