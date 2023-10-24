@@ -1,5 +1,6 @@
 package team.msg.domain.auth.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +29,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -49,7 +51,8 @@ class AuthServiceImpl(
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) : AuthService {
 
     /**
@@ -239,7 +242,7 @@ class AuthServiceImpl(
     override fun withdraw() {
         val user = userUtil.queryCurrentUser()
 
-
+        applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
 
         userRepository.delete(user)
     }
