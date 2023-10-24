@@ -243,6 +243,8 @@ class AuthServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
+
+        userRepository.delete(user)
     }
 
     /**

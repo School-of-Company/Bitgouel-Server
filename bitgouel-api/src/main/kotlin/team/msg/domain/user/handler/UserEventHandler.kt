@@ -96,7 +96,5 @@ class UserEventHandler(
 
             else -> throw UnApprovedUserException("회원가입 승인 대기 중인 유저입니다. info : [ userId = ${user.id} ]")
         }
-
-        userRepository.delete(user)
     }
 }
