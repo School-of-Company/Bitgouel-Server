@@ -41,4 +41,10 @@ class StudentActivityController(
         studentActivityService.deleteStudentActivity(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
+
+    @DeleteMapping("/{id}/reject")
+    fun rejectStudentActivity(@PathVariable id: UUID): ResponseEntity<Void> {
+        studentActivityService.rejectStudentActivity(id)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
 }
