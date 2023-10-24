@@ -3,6 +3,7 @@ package team.msg.domain.student.presentation
 import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -32,6 +33,12 @@ class StudentActivityController(
     fun updateStudentActivity(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateStudentActivityWebRequest): ResponseEntity<Void> {
         val request = studentActivityMapper.updateStudentActivityWebRequestToDto(webRequest)
         studentActivityService.updateStudentActivity(id, request)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteStudentActivity(@PathVariable id: UUID): ResponseEntity<Void> {
+        studentActivityService.deleteStudentActivity(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
