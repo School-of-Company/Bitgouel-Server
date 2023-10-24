@@ -1,11 +1,13 @@
 package team.msg.domain.student.service
 
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.student.event.UpdateStudentActivityEvent
+import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
@@ -15,6 +17,7 @@ import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import java.util.*
 
 @Service
@@ -67,8 +70,11 @@ class StudentActivityServiceImpl(
         val student = studentRepository.findByUser(user)
             ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
 
-        val studentActivity = studentActivityRepository.findByIdAndStudent(id, student)
+        val studentActivity = studentActivityRepository.findByIdOrNull(id)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        if(student.id != studentActivity.student.id)
+            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
 
         val updatedStudentActivity = StudentActivity(
             id = studentActivity.id,
@@ -86,7 +92,7 @@ class StudentActivityServiceImpl(
 
     /**
      * 학생활동을 삭제하는 비지니스 로직입니다.
-     * @param 학생활동을 삭제하기 위한 id 입니다.
+     * @param 학생활동을 삭제하기 위한 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteStudentActivity(id: UUID) {
@@ -95,8 +101,31 @@ class StudentActivityServiceImpl(
         val student = studentRepository.findByUser(user)
             ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
 
-        val studentActivity = studentActivityRepository.findByIdAndStudent(id, student)
+        val studentActivity = studentActivityRepository.findByIdOrNull(id)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        if(student.id != studentActivity.student.id)
+            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
+
+        studentActivityRepository.delete(studentActivity)
+    }
+
+    /**
+     * 학생활동을 거절 및 삭제하는 비지니스 로직입니다.
+     * @param 학생활동을 삭제하기 위한 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun rejectStudentActivity(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val teacher = teacherRepository.findByUser(user)
+            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+
+        val studentActivity = studentActivityRepository.findByIdOrNull(id)
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        if(teacher.id != studentActivity.teacher.id)
+            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
 
         studentActivityRepository.delete(studentActivity)
     }
