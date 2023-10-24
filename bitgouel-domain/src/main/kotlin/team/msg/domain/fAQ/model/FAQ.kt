@@ -2,20 +2,19 @@ package team.msg.domain.fAQ.model
 
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.admin.model.Admin
-import java.util.*
 
 @Entity
 class FAQ(
 
-    @get:JvmName("getIdentifier")
-    override var id: UUID,
-
-    @Column(nullable = false)
-    val title: String,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long,
 
     @Column(nullable = false)
     val question: String,
@@ -27,4 +26,4 @@ class FAQ(
     @JoinColumn(name = "admin_id", columnDefinition = "BINARY(16)")
     val admin: Admin
 
-) : BaseUUIDEntity(id)
+)
