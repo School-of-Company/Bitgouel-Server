@@ -59,7 +59,7 @@ class UserEventHandler(
             }
             ROLE_ADMIN -> {
                 val admin = adminRepository.findByUser(user)
-                    ?: throw AdminNotFoundException("존재하지 않는 어드민 입니다. info : [userId = ${user.id} ]")
+                    ?: throw AdminNotFoundException("존재하지 않는 어드민 입니다. info : [ userId = ${user.id} ]")
 
                 adminRepository.delete(admin)
             }
@@ -89,7 +89,7 @@ class UserEventHandler(
             }
             ROLE_GOVERNMENT -> {
                 val government = governmentRepository.findByUser(user)
-                    ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [userId = ${user.id} ]")
+                    ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
 
                 governmentRepository.delete(government)
             }
