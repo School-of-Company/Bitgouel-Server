@@ -42,8 +42,7 @@ class FaqServiceImpl(
         val response = faqs.map {
             QueryAllFaqsResponse(
                 id = it.id,
-                question = it.question,
-                answer = it.answer
+                question = it.question
             )
         }
 
