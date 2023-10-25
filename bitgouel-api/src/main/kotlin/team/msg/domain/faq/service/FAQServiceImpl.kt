@@ -8,6 +8,7 @@ import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.repository.FaqRepository
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
+import team.msg.domain.faq.presentation.data.response.QueryAllFaqsResponse
 
 @Service
 class FaqServiceImpl(
@@ -32,5 +33,19 @@ class FaqServiceImpl(
         )
 
         faqRepository.save(faq)
+    }
+
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    override fun queryAllFaqs(): List<QueryAllFaqsResponse> {
+        val faqs = faqRepository.findAll()
+
+        val response = faqs.map {
+            QueryAllFaqsResponse(
+                id = it.id,
+                question = it.question
+            )
+        }
+
+        return response
     }
 }
