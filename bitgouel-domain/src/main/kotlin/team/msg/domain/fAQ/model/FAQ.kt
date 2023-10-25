@@ -17,10 +17,10 @@ class FAQ(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     val question: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     val answer: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
