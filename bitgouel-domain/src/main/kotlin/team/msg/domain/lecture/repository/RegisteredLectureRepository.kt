@@ -4,4 +4,6 @@ import org.springframework.data.repository.CrudRepository
 import team.msg.domain.lecture.model.RegisteredLecture
 import java.util.UUID
 
-interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>
+interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>{
+    fun findByLectureId(lectureId: UUID): List<RegisteredLecture>
+}
