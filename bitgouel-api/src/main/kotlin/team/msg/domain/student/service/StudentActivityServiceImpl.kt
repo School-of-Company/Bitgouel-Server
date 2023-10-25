@@ -1,6 +1,8 @@
 package team.msg.domain.student.service
 
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,6 +15,7 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
+import team.msg.domain.student.presentation.data.response.QueryAllStudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
@@ -160,4 +163,24 @@ class StudentActivityServiceImpl(
 
         studentActivityRepository.save(updatedStudentActivity)
     }
+
+    @Transactional(readOnly = true)
+    override fun listStudentActivity(pageable: Pageable): Page<QueryAllStudentActivityResponse> {
+        val user = userUtil.queryCurrentUser()
+
+        val studentActivities = studentActivityRepository.findAll(pageable)
+
+        val response = studentActivities.map {
+            QueryAllStudentActivityResponse(
+                activityId = it.id,
+                title = it.title,
+                approveStatus = it.approveStatus,
+                userId = user.id,
+                userName = user.name
+            )
+        }
+        
+        return response
+    }
+
 }
