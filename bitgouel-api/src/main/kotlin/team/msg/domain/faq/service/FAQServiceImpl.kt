@@ -22,6 +22,7 @@ class FAQServiceImpl(
         val admin = adminRepository.findByUser(user) ?: throw AdminNotFoundException("존재하지 않는 어드민입니다. info : [ userId = ${user.id} ]")
 
         val faq = FAQ(
+            id = 1,
             question = createFAQRequest.question,
             answer = createFAQRequest.answer,
             admin = admin
