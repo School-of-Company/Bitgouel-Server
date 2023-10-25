@@ -1,7 +1,7 @@
 package team.msg.domain.faq.service
 
-import team.msg.domain.faq.presentation.data.request.CreateFAQRequest
+import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
 
-interface FAQService {
-    fun createFAQ(createFAQRequest: CreateFAQRequest)
+interface FaqService {
+    fun createFAQ(createFAQRequest: CreateFaqRequest)
 }

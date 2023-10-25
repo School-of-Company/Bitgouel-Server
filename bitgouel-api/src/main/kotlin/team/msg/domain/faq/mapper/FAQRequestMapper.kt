@@ -1,8 +1,8 @@
 package team.msg.domain.faq.mapper
 
-import team.msg.domain.faq.presentation.data.request.CreateFAQRequest
-import team.msg.domain.faq.presentation.web.CreateFAQWebRequest
+import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
+import team.msg.domain.faq.presentation.web.CreateFaqWebRequest
 
-interface FAQRequestMapper {
-    fun createFAQWebRequestToDto(createFAQWebRequest: CreateFAQWebRequest): CreateFAQRequest
+interface FaqRequestMapper {
+    fun createFAQWebRequestToDto(createFAQWebRequest: CreateFaqWebRequest): CreateFaqRequest
 }

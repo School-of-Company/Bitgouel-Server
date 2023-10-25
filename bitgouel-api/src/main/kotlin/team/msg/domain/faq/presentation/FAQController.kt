@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import team.msg.domain.faq.mapper.FAQRequestMapper
-import team.msg.domain.faq.presentation.web.CreateFAQWebRequest
-import team.msg.domain.faq.service.FAQService
+import team.msg.domain.faq.mapper.FaqRequestMapper
+import team.msg.domain.faq.presentation.web.CreateFaqWebRequest
+import team.msg.domain.faq.service.FaqService
 
 @RestController
-@RequestMapping("/faq")
-class FAQController(
-    private val faqService: FAQService,
-    private val faqRequestMapper: FAQRequestMapper
+@RequestMapping("/FAQ")
+class FaqController(
+    private val faqService: FaqService,
+    private val faqRequestMapper: FaqRequestMapper
 ) {
     @PostMapping
-    fun createFAQ(@RequestBody @Valid webRequest: CreateFAQWebRequest): ResponseEntity<Void> {
+    fun createFAQ(@RequestBody @Valid webRequest: CreateFaqWebRequest): ResponseEntity<Void> {
         val request = faqRequestMapper.createFAQWebRequestToDto(webRequest)
         faqService.createFAQ(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()

@@ -2,7 +2,7 @@ package team.msg.domain.faq.presentation.web
 
 import javax.validation.constraints.NotBlank
 
-data class CreateFAQWebRequest(
+data class CreateFaqWebRequest(
     @field:NotBlank
     val question: String,
 

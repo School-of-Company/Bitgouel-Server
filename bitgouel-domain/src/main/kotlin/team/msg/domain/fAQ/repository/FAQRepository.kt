@@ -1,8 +1,8 @@
-package team.msg.domain.fAQ.repository
+package team.msg.domain.faq.repository
 
 import org.springframework.data.repository.CrudRepository
-import team.msg.domain.fAQ.model.FAQ
+import team.msg.domain.faq.model.Faq
 import java.util.*
 
-interface FAQRepository : CrudRepository<FAQ, UUID> {
+interface FaqRepository : CrudRepository<Faq, UUID> {
 }
