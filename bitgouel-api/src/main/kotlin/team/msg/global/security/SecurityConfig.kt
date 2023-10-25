@@ -69,7 +69,7 @@ class SecurityConfig(
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/FAQ").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "FAQ").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/FAQ").authenticated()
 
             .anyRequest().authenticated()
             .and()
