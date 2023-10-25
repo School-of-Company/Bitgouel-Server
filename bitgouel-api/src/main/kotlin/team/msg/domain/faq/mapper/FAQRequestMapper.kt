@@ -4,5 +4,5 @@ import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
 import team.msg.domain.faq.presentation.web.CreateFaqWebRequest
 
 interface FaqRequestMapper {
-    fun createFAQWebRequestToDto(createFAQWebRequest: CreateFaqWebRequest): CreateFaqRequest
+    fun createFaqWebRequestToDto(createFaqWebRequest: CreateFaqWebRequest): CreateFaqRequest
 }

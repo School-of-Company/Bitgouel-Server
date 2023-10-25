@@ -21,13 +21,13 @@ class FaqServiceImpl(
      * @param FAQ 등록을 처리하기 위한 request dto 입니다.
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun createFAQ(createFAQRequest: CreateFaqRequest) {
+    override fun createFaq(createFaqRequest: CreateFaqRequest) {
         val user = userUtil.queryCurrentUser()
         val admin = adminRepository.findByUser(user) ?: throw AdminNotFoundException("존재하지 않는 어드민입니다. info : [ userId = ${user.id} ]")
 
         val faq = Faq(
-            question = createFAQRequest.question,
-            answer = createFAQRequest.answer,
+            question = createFaqRequest.question,
+            answer = createFaqRequest.answer,
             admin = admin
         )
 
