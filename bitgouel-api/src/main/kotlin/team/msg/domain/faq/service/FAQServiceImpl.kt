@@ -1,14 +1,17 @@
 package team.msg.domain.faq.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.repository.AdminRepository
+import team.msg.domain.faq.exception.FaqNotFoundException
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.repository.FaqRepository
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
 import team.msg.domain.faq.presentation.data.response.QueryAllFaqsResponse
+import team.msg.domain.faq.presentation.data.response.QueryFaqDetailsResponse
 
 @Service
 class FaqServiceImpl(
@@ -47,5 +50,16 @@ class FaqServiceImpl(
         }
 
         return response
+    }
+
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    override fun queryFaqDetails(id: Long): QueryFaqDetailsResponse {
+        val faq = faqRepository.findByIdOrNull(id) ?: throw FaqNotFoundException("존재하지 않는 faq 입니다. info : [ faqId = $id ]")
+
+        return QueryFaqDetailsResponse(
+            id = faq.id,
+            question = faq.question,
+            answer = faq.answer
+        )
     }
 }
