@@ -9,14 +9,24 @@ import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
+import team.msg.domain.lecture.exception.MissSignUpAbleDateException
+import team.msg.domain.lecture.exception.NotApprovedLectureException
+import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.repository.LectureRepository
+import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.repository.StudentRepository
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
 class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
+    private val registeredLectureRepository: RegisteredLectureRepository,
+    private val studentRepository: StudentRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
@@ -48,6 +58,43 @@ class LectureServiceImpl(
         )
 
         lectureRepository.save(lecture)
+    }
+
+    /**
+     * 강의에 대해 수강신청하는 비지니스 로직입니다.
+     * @param UUID
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun signUpLecture(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByIdOrNull(user.id) ?:
+            throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, userName = ${user.name} ]")
+
+        val lecture = queryLecture(id)
+
+        if(lecture.approveStatus == ApproveStatus.PENDING)
+            throw NotApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
+
+        if(lecture.startDate.isBefore(LocalDateTime.now()))
+            throw MissSignUpAbleDateException("이른 강의 신청입니다. info : [ lectureStartDate = ${lecture.startDate}, currentDate = ${LocalDateTime.now()} ]")
+
+        if(lecture.endDate.isAfter(LocalDateTime.now()))
+            throw MissSignUpAbleDateException("늦은 강의 신청입니다. info : [ lectureEndDate = ${lecture.endDate}, currentDate = ${LocalDateTime.now()} ]")
+
+        val currentSignUpLectureStudent = registeredLectureRepository.findByLectureId(lecture.id).size
+
+        if(lecture.maxRegisteredUser == currentSignUpLectureStudent)
+            throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")
+
+        val registeredLecture = RegisteredLecture(
+            student = student,
+            lecture = lecture,
+            completeDate = lecture.completeDate
+        )
+
+        registeredLectureRepository.save(registeredLecture)
+
     }
 
     /**
