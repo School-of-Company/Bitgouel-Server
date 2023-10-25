@@ -28,6 +28,12 @@ class LectureController(
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
+    @PostMapping("/{id}")
+    fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Void> {
+        lectureService.signUpLecture(id)
+        return ResponseEntity.noContent().build()
+    }
+
     @PatchMapping("/{id}/approve")
     fun approveLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.approveLecture(id)
