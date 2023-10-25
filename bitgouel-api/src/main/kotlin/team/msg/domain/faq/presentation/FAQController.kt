@@ -18,7 +18,7 @@ class FaqController(
     private val faqRequestMapper: FaqRequestMapper
 ) {
     @PostMapping
-    fun createFAQ(@RequestBody @Valid webRequest: CreateFaqWebRequest): ResponseEntity<Void> {
+    fun createFaq(@RequestBody @Valid webRequest: CreateFaqWebRequest): ResponseEntity<Void> {
         val request = faqRequestMapper.createFaqWebRequestToDto(webRequest)
         faqService.createFaq(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
