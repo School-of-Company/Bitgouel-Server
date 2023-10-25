@@ -165,7 +165,7 @@ class StudentActivityServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun listStudentActivity(pageable: Pageable): Page<QueryAllStudentActivityResponse> {
+    override fun queryAllStudentActivity(pageable: Pageable): Page<QueryAllStudentActivityResponse> {
         val user = userUtil.queryCurrentUser()
 
         val studentActivities = studentActivityRepository.findAll(pageable)
@@ -179,7 +179,7 @@ class StudentActivityServiceImpl(
                 userName = user.name
             )
         }
-        
+
         return response
     }
 
