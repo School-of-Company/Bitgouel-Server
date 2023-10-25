@@ -14,7 +14,7 @@ import team.msg.domain.faq.presentation.web.CreateFaqWebRequest
 import team.msg.domain.faq.service.FaqService
 
 @RestController
-@RequestMapping("/FAQ")
+@RequestMapping("/faq")
 class FaqController(
     private val faqService: FaqService,
     private val faqRequestMapper: FaqRequestMapper
