@@ -1,4 +1,4 @@
-package team.msg.domain.fAQ.model
+package team.msg.domain.faq.model
 
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -11,16 +11,16 @@ import javax.persistence.ManyToOne
 import team.msg.domain.admin.model.Admin
 
 @Entity
-class FAQ(
+class Faq(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long = 0,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     val question: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     val answer: String,
 
     @ManyToOne(fetch = FetchType.LAZY)

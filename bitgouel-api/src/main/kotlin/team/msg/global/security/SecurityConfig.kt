@@ -67,6 +67,9 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasAnyRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasAnyRole(ADMIN)
 
+            // faq
+            .mvcMatchers(HttpMethod.POST, "/FAQ").hasRole(ADMIN)
+
             .anyRequest().authenticated()
             .and()
 
