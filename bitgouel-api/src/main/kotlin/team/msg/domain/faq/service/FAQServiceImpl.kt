@@ -38,6 +38,9 @@ class FaqServiceImpl(
         faqRepository.save(faq)
     }
 
+    /**
+     * FAQ 전제 조회를 처리하는 비지니스 로직입니다.
+     */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun queryAllFaqs(): List<QueryAllFaqsResponse> {
         val faqs = faqRepository.findAll()
@@ -52,6 +55,10 @@ class FaqServiceImpl(
         return response
     }
 
+    /**
+     * FAQ 상세 조회를 처리하는 비지니스 로직입니다.
+     * @param FAQ 를 상세 조회하기 위한 id 입니다.
+     */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun queryFaqDetails(id: Long): QueryFaqDetailsResponse {
         val faq = faqRepository.findByIdOrNull(id) ?: throw FaqNotFoundException("존재하지 않는 faq 입니다. info : [ faqId = $id ]")
