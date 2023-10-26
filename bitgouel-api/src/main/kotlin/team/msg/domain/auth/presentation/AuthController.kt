@@ -74,4 +74,10 @@ class AuthController(
         authService.logout(refreshToken)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
+
+    @DeleteMapping("/withdraw")
+    fun withdraw(): ResponseEntity<Void> {
+        authService.withdraw()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
 }

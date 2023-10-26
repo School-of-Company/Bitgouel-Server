@@ -1,17 +1,13 @@
 package team.msg.domain.auth.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.auth.exception.AlreadyExistEmailException
-import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
-import team.msg.domain.auth.exception.InvalidRefreshTokenException
-import team.msg.domain.auth.exception.MisMatchPasswordException
-import team.msg.domain.auth.exception.RefreshTokenNotFoundException
-import team.msg.domain.auth.exception.UnApprovedUserException
+import team.msg.domain.auth.exception.*
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
@@ -33,6 +29,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -54,7 +51,8 @@ class AuthServiceImpl(
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) : AuthService {
 
     /**
@@ -74,6 +72,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val student = Student(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             grade = request.grade,
@@ -103,6 +102,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val teacher = Teacher(
+            id = UUID.randomUUID(),
             user = user,
             club = club
         )
@@ -126,6 +126,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val professor = Professor(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             university = request.university
@@ -150,6 +151,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val government = Government(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             governmentName = request.governmentName
@@ -168,6 +170,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val companyInstructor = CompanyInstructor(
+            id = UUID.randomUUID(),
             user = user,
             club = club,
             company = request.company
@@ -208,6 +211,7 @@ class AuthServiceImpl(
         val user = userRepository.findByIdOrNull(token.userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${token.userId} ]")
 
+        refreshTokenRepository.deleteById(refreshToken)
         return jwtTokenGenerator.generateToken(user.id, user.authority)
     }
 
@@ -232,6 +236,18 @@ class AuthServiceImpl(
     }
 
     /**
+     * 회원탈퇴를 처리하는 메서드입니다.
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun withdraw() {
+        val user = userUtil.queryCurrentUser()
+
+        applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
+
+        userRepository.delete(user)
+    }
+
+    /**
      * 유저 생성과 검증을 처리하는 private 메서드입니다.
      * @param 유저 생성 및 검증하기 위한 email, name, phoneNumber, password, authority 입니다.
      */
@@ -243,6 +259,7 @@ class AuthServiceImpl(
             throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
 
         val user = User(
+            id = UUID.randomUUID(),
             email = email,
             name = name,
             phoneNumber = phoneNumber,
@@ -267,4 +284,5 @@ class AuthServiceImpl(
 
         return club
     }
+
 }

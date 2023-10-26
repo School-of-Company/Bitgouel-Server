@@ -32,7 +32,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
-     * @param 강의를 생성하기 위해 데이터를 담은 request dto
+     * @param 생성할 강의의 데이터를 담은 request Dto
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createLecture(request: CreateLectureRequest) {
@@ -45,6 +45,7 @@ class LectureServiceImpl(
         }
 
         val lecture = Lecture(
+            id = UUID.randomUUID(),
             user = user,
             name = request.name,
             startDate = request.startDate,
@@ -62,7 +63,7 @@ class LectureServiceImpl(
 
     /**
      * 강의에 대해 수강신청하는 비지니스 로직입니다.
-     * @param 강의에 수강신청을 하기 위한 강의 id
+     * @param 수강신청을 하기 위한 강의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun signUpLecture(id: UUID) {
@@ -88,6 +89,7 @@ class LectureServiceImpl(
             throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")
 
         val registeredLecture = RegisteredLecture(
+            id = UUID.randomUUID(),
             student = student,
             lecture = lecture,
             completeDate = lecture.completeDate
@@ -108,7 +110,20 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.APPROVED)
             throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
 
-        val approveLecture = lecture.updateApproveStatus(ApproveStatus.APPROVED)
+        val approveLecture = Lecture(
+            id = lecture.id,
+            user = lecture.user,
+            name = lecture.name,
+            startDate = lecture.startDate,
+            endDate = lecture.endDate,
+            completeDate = lecture.completeDate,
+            content = lecture.content,
+            lectureType =  lecture.lectureType,
+            credit = lecture.credit,
+            instructor = lecture.instructor,
+            maxRegisteredUser = lecture.maxRegisteredUser,
+            approveStatus = ApproveStatus.APPROVED
+        )
 
         lectureRepository.save(approveLecture)
     }
