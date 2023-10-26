@@ -20,12 +20,12 @@ data class CreateLectureWebRequest(
 
     @field:NotNull
     @FutureOrPresent
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val startDate: LocalDateTime,
 
     @field:NotNull
     @Future
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:s")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val endDate: LocalDateTime,
 
     @field:NotNull
