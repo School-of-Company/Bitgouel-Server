@@ -40,8 +40,8 @@ class FaqServiceImpl(
     }
 
     /**
-     * FAQ 전제 조회를 처리하는 비지니스 로직입니다.
-     */
+    * FAQ 전제 조회를 처리하는 비지니스 로직입니다.
+    */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun queryAllFaqs(): AllFaqResponse {
         val faqs = faqRepository.findAll()
@@ -54,7 +54,6 @@ class FaqServiceImpl(
 
         return response
     }
-
     /**
      * FAQ 상세 조회를 처리하는 비지니스 로직입니다.
      * @param FAQ 를 상세 조회하기 위한 id 입니다.
