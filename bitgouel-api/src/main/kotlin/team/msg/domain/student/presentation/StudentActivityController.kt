@@ -1,7 +1,6 @@
 package team.msg.domain.student.presentation
 
 import javax.validation.Valid
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.student.mapper.StudentActivityMapper
-import team.msg.domain.student.presentation.data.response.QueryAllStudentActivityResponse
+import team.msg.domain.student.presentation.data.response.AllStudentActivityResponse
 import team.msg.domain.student.presentation.data.web.CreateStudentActivityWebRequest
 import team.msg.domain.student.presentation.data.web.UpdateStudentActivityWebRequest
 import team.msg.domain.student.service.StudentActivityService
@@ -59,7 +58,7 @@ class StudentActivityController(
     }
 
     @GetMapping
-    fun queryAllStudentActivity(pageable: Pageable): ResponseEntity<Page<QueryAllStudentActivityResponse>> {
+    fun queryAllStudentActivity(pageable: Pageable): ResponseEntity<AllStudentActivityResponse> {
         val result = studentActivityService.queryAllStudentActivity(pageable)
         return ResponseEntity.status(HttpStatus.OK).body(result)
     }
