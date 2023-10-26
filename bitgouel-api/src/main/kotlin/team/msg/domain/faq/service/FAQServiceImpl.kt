@@ -15,7 +15,7 @@ import team.msg.domain.faq.presentation.data.response.FaqResponse
 import team.msg.domain.faq.repository.FaqRepository
 
 @Service
-class FAQServiceImpl(
+class FaqServiceImpl(
     private val faqRepository: FaqRepository,
     private val userUtil: UserUtil,
     private val adminRepository: AdminRepository
