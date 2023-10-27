@@ -164,8 +164,8 @@ class StudentActivityServiceImpl(
     }
 
     /**
-     * 학생활동을 승인하는 비즈니스 로직
-     * @param 학생활동을 승인하기 위한 id
+     * 학생활동을 전체 조회하는 비즈니스 로직
+     * @param 학생활동을 페이징 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
     override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivityResponse {
