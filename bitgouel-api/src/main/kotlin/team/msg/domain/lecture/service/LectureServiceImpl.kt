@@ -122,7 +122,7 @@ class LectureServiceImpl(
             endDate = lecture.endDate,
             completeDate = lecture.completeDate,
             content = lecture.content,
-            lectureType =  lecture.lectureType,
+            lectureType = lecture.lectureType,
             credit = lecture.credit,
             instructor = lecture.instructor,
             maxRegisteredUser = lecture.maxRegisteredUser,
