@@ -71,7 +71,7 @@ class LectureServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByIdOrNull(user.id)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, userName = ${user.name} ]")
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
 
         val lecture = queryLecture(id)
 
