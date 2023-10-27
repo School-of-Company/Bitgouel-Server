@@ -11,8 +11,8 @@ import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.MissSignUpAbleDateException
-import team.msg.domain.lecture.exception.NotApprovedLectureException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
+import team.msg.domain.lecture.exception.UnApprovedLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
@@ -70,13 +70,13 @@ class LectureServiceImpl(
     override fun signUpLecture(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByIdOrNull(user.id) ?:
-            throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, userName = ${user.name} ]")
+        val student = studentRepository.findByIdOrNull(user.id)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, userName = ${user.name} ]")
 
         val lecture = queryLecture(id)
 
         if(lecture.approveStatus == ApproveStatus.PENDING)
-            throw NotApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
+            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
         if(lecture.startDate.isBefore(LocalDateTime.now()))
             throw MissSignUpAbleDateException("이른 강의 신청입니다. info : [ lectureStartDate = ${lecture.startDate}, currentDate = ${LocalDateTime.now()} ]")
