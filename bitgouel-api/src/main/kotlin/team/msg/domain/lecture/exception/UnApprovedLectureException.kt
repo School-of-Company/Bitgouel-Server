@@ -5,4 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class UnApprovedLectureException(
     message: String
-) : BitgouelException(message, LectureErrorCode.NOT_APPROVED_LECTURE.status)
+) : BitgouelException(message, LectureErrorCode.UNAPPROVED_LECTURE.status)
