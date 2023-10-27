@@ -28,7 +28,8 @@ class FaqServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun createFaq(createFaqRequest: CreateFaqRequest) {
         val user = userUtil.queryCurrentUser()
-        val admin = adminRepository.findByUser(user) ?: throw AdminNotFoundException("존재하지 않는 어드민입니다. info : [ userId = ${user.id} ]")
+        val admin = adminRepository.findByUser(user)
+            ?: throw AdminNotFoundException("존재하지 않는 어드민입니다. info : [ userId = ${user.id} ]")
 
         val faq = Faq(
             question = createFaqRequest.question,
@@ -47,9 +48,7 @@ class FaqServiceImpl(
         val faqs = faqRepository.findAll()
 
         val response = AllFaqResponse(
-            faqs.map {
-                FaqResponse.of(it)
-            }
+            FaqResponse.listOf(faqs)
         )
 
         return response
@@ -60,8 +59,9 @@ class FaqServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun queryFaqDetails(id: Long): FaqDetailsResponse {
-        val faq = faqRepository.findByIdOrNull(id) ?: throw FaqNotFoundException("존재하지 않는 faq 입니다. info : [ faqId = $id ]")
+        val faq = faqRepository.findByIdOrNull(id)
+            ?: throw FaqNotFoundException("존재하지 않는 faq 입니다. info : [ faqId = $id ]")
 
-        return FaqDetailsResponse.of(faq)
+        return FaqResponse.detailOf(faq)
     }
 }

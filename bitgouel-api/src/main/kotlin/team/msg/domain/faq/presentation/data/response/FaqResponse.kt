@@ -7,9 +7,17 @@ data class FaqResponse(
     val question: String
 ) {
     companion object {
-        fun of(faq: Faq) = FaqResponse(
+        fun listOf(faqs: List<Faq>): List<FaqResponse> = faqs.map {
+            FaqResponse(
+                id = it.id,
+                question = it.question
+            )
+        }
+
+        fun detailOf(faq: Faq) = FaqDetailsResponse(
             id = faq.id,
-            question = faq.question
+            question = faq.question,
+            answer = faq.answer
         )
     }
 }
@@ -22,12 +30,4 @@ data class FaqDetailsResponse(
     val id: Long,
     val question: String,
     val answer: String
-) {
-    companion object {
-        fun of(faq: Faq) = FaqDetailsResponse(
-            id = faq.id,
-            question = faq.question,
-            answer = faq.answer
-        )
-    }
-}
+)
