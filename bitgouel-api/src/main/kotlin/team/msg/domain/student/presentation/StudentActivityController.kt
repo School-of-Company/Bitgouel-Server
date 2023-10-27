@@ -59,7 +59,7 @@ class StudentActivityController(
 
     @GetMapping
     fun queryAllStudentActivity(pageable: Pageable): ResponseEntity<AllStudentActivityResponse> {
-        val result = studentActivityService.queryAllStudentActivity(pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(result)
+        val response = studentActivityService.queryAllStudentActivity(pageable)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
