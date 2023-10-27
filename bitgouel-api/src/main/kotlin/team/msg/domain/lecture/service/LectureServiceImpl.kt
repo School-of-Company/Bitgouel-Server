@@ -7,6 +7,7 @@ import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
+import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.MissSignUpAbleDateException
@@ -82,6 +83,9 @@ class LectureServiceImpl(
 
         if(lecture.endDate.isAfter(LocalDateTime.now()))
             throw MissSignUpAbleDateException("늦은 강의 신청입니다. info : [ lectureEndDate = ${lecture.endDate}, currentDate = ${LocalDateTime.now()} ]")
+
+        if(registeredLectureRepository.existsByStudentAndLecture(student, lecture))
+            throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
 
         val currentSignUpLectureStudent = registeredLectureRepository.findAllByLecture(lecture).size
 

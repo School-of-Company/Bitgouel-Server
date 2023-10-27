@@ -9,5 +9,5 @@ import java.util.UUID
 interface RegisteredLectureRepository : CrudRepository<RegisteredLecture,UUID> {
     fun findAllByStudent(student: Student): List<RegisteredLecture>
     fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
-    fun findByStudentAndLecture(student: Student, lecture: Lecture): RegisteredLecture?
+    fun existsByStudentAndLecture(student: Student, lecture: Lecture): Boolean
 }
