@@ -5,4 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class MissSignUpAbleDateException (
     message: String
-) : BitgouelException(message, LectureErrorCode.MISS_SIGNUP_ABLE_DATE.status)
+) : BitgouelException(message, LectureErrorCode.MISS_SIGN_UP_ABLE_DATE.status)
