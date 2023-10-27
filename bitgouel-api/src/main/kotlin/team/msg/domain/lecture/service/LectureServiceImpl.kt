@@ -10,7 +10,7 @@ import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
-import team.msg.domain.lecture.exception.MissSignUpAbleDateException
+import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnApprovedLectureException
 import team.msg.domain.lecture.model.Lecture
@@ -79,10 +79,10 @@ class LectureServiceImpl(
             throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
         if(lecture.startDate.isBefore(LocalDateTime.now()))
-            throw MissSignUpAbleDateException("이른 강의 신청입니다. info : [ lectureStartDate = ${lecture.startDate}, currentDate = ${LocalDateTime.now()} ]")
+            throw NotAvailableSignUpDateException("이른 강의 신청입니다. info : [ lectureStartDate = ${lecture.startDate}, currentDate = ${LocalDateTime.now()} ]")
 
         if(lecture.endDate.isAfter(LocalDateTime.now()))
-            throw MissSignUpAbleDateException("늦은 강의 신청입니다. info : [ lectureEndDate = ${lecture.endDate}, currentDate = ${LocalDateTime.now()} ]")
+            throw NotAvailableSignUpDateException("늦은 강의 신청입니다. info : [ lectureEndDate = ${lecture.endDate}, currentDate = ${LocalDateTime.now()} ]")
 
         if(registeredLectureRepository.existsByStudentAndLecture(student, lecture))
             throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
