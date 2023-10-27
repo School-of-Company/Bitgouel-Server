@@ -83,7 +83,7 @@ class LectureServiceImpl(
         if(lecture.endDate.isAfter(LocalDateTime.now()))
             throw MissSignUpAbleDateException("늦은 강의 신청입니다. info : [ lectureEndDate = ${lecture.endDate}, currentDate = ${LocalDateTime.now()} ]")
 
-        val currentSignUpLectureStudent = registeredLectureRepository.findByLectureId(lecture.id).size
+        val currentSignUpLectureStudent = registeredLectureRepository.findAllByLecture(lecture).size
 
         if(lecture.maxRegisteredUser == currentSignUpLectureStudent)
             throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")
