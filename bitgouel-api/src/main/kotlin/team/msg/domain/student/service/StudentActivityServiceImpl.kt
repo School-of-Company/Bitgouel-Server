@@ -163,6 +163,10 @@ class StudentActivityServiceImpl(
         studentActivityRepository.save(updatedStudentActivity)
     }
 
+    /**
+     * 학생활동을 승인하는 비즈니스 로직
+     * @param 학생활동을 승인하기 위한 id
+     */
     @Transactional(readOnly = true)
     override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivityResponse {
         val user = userUtil.queryCurrentUser()
