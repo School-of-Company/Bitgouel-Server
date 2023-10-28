@@ -1,17 +1,14 @@
 package team.msg.domain.faq.presentation
 
-import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import team.msg.domain.faq.mapper.FaqRequestMapper
-import team.msg.domain.faq.presentation.data.response.QueryAllFaqsResponse
+import team.msg.domain.faq.presentation.data.response.AllFaqResponse
+import team.msg.domain.faq.presentation.data.response.FaqDetailsResponse
 import team.msg.domain.faq.presentation.web.CreateFaqWebRequest
 import team.msg.domain.faq.service.FaqService
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/faq")
@@ -27,8 +24,14 @@ class FaqController(
     }
 
     @GetMapping
-    fun queryAllFaqs(): ResponseEntity<List<QueryAllFaqsResponse>> {
+    fun queryAllFaqs(): ResponseEntity<AllFaqResponse> {
         val response = faqService.queryAllFaqs()
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/{id}")
+    fun queryFaqDetails(@PathVariable id: Long): ResponseEntity<FaqDetailsResponse> {
+        val response = faqService.queryFaqDetails(id)
         return ResponseEntity.ok(response)
     }
 }

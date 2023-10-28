@@ -69,7 +69,8 @@ class SecurityConfig(
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "/faq").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/faq").permitAll()
+            .mvcMatchers(HttpMethod.GET, "/faq/{id}").permitAll()
 
             .anyRequest().authenticated()
             .and()
