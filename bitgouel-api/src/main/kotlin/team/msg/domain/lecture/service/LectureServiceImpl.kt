@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.lecture.enum.LectureStatus
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
@@ -78,11 +79,8 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
-        if(lecture.startDate.isBefore(LocalDateTime.now()))
-            throw NotAvailableSignUpDateException("이른 강의 신청입니다. info : [ lectureStartDate = ${lecture.startDate}, currentDate = ${LocalDateTime.now()} ]")
-
-        if(lecture.endDate.isAfter(LocalDateTime.now()))
-            throw NotAvailableSignUpDateException("늦은 강의 신청입니다. info : [ lectureEndDate = ${lecture.endDate}, currentDate = ${LocalDateTime.now()} ]")
+        if(lecture.getLectureStatus() == LectureStatus.CLOSE)
+            throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
         if(registeredLectureRepository.existsByStudentAndLecture(student, lecture))
             throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
