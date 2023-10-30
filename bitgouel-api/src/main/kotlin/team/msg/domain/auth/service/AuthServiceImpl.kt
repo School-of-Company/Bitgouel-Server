@@ -124,7 +124,7 @@ class AuthServiceImpl(
             request.name,
             request.phoneNumber,
             request.password,
-            Authority.ROLE_TEACHER
+            Authority.ROLE_BBOZZAK
         )
 
         val club = queryClub(request.highSchool, request.clubName)
