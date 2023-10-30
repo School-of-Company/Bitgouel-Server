@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.repository.BbozzakRepository
+import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
@@ -14,12 +18,14 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
-import team.msg.domain.student.presentation.data.response.AllStudentActivityResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityListResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
+import team.msg.global.exception.ForbiddenException
 import java.util.*
 
 @Service
@@ -27,6 +33,10 @@ class StudentActivityServiceImpl(
     private val userUtil: UserUtil,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
+    private val bbozzakRepository: BbozzakRepository,
+    private val professorRepository: ProfessorRepository,
+    private val governmentRepository: GovernmentRepository,
+    private val companyInstructorRepository: CompanyInstructorRepository,
     private val studentActivityRepository: StudentActivityRepository,
     private val applicationEventPublisher: ApplicationEventPublisher
 ) : StudentActivityService {
@@ -168,12 +178,12 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivityResponse {
+    override fun queryAllStudentActivity(pageable: Pageable): StudentActivityListResponse {
         val user = userUtil.queryCurrentUser()
 
         val studentActivities = studentActivityRepository.findAll(pageable)
 
-        val response = AllStudentActivityResponse(
+        val response = StudentActivityListResponse(
             studentActivities.map {
                 StudentActivityResponse.of(it, user)
             }
@@ -181,4 +191,35 @@ class StudentActivityServiceImpl(
         return response
     }
 
+    /**
+     * 학생활동을 학생 단위로 조회하는 비즈니스 로직
+     * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
+     */
+    @Transactional(readOnly = true)
+    override fun queryStudentActivityByStudent(studentId: UUID, pageable: Pageable): StudentActivityListResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByIdOrNull(studentId)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ studentId = $studentId ]")
+
+        if(!when(user.authority) {
+                Authority.ROLE_TEACHER -> teacherRepository.existsByClubAndUser(student.club, user)
+                Authority.ROLE_BBOZZAK -> bbozzakRepository.existsByClubAndUser(student.club, user)
+                Authority.ROLE_PROFESSOR -> professorRepository.existsByClubAndUser(student.club, user)
+                Authority.ROLE_COMPANY_INSTRUCTOR -> companyInstructorRepository.existsByClubAndUser(student.club, user)
+                Authority.ROLE_GOVERNMENT -> governmentRepository.existsByClubAndUser(student.club, user)
+                else -> throw ForbiddenException("접근 권한이 없는 역할입니다. info : [ authority = ${user.authority} ]")
+            })
+            throw ForbiddenStudentActivityException("해당 학생의 학생 활동에 대한 접근 권한이 없습니다. info : [ userId = ${user.id}, studentId = $studentId ]")
+
+        val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
+
+        val response = StudentActivityListResponse(
+            studentActivities.map {
+                StudentActivityResponse.of(it, user)
+            }
+        )
+
+        return response
+    }
 }

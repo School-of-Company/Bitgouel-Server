@@ -10,7 +10,7 @@ import java.util.*
 
 interface StudentActivityRepository : JpaRepository<StudentActivity, UUID> {
     fun findAllByStudent(student: Student): List<StudentActivity>
-    fun findAllByStudent(student: Student, pageable: Pageable): List<StudentActivity>
+    fun findAllByStudent(student: Student, pageable: Pageable): Page<StudentActivity>
     @EntityGraph(attributePaths = ["student"])
     override fun findAll(pageable: Pageable): Page<StudentActivity>
 }
