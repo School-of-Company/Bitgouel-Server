@@ -14,14 +14,17 @@ data class StudentActivityResponse(
     val approveStatus: ApproveStatus
 ) {
     companion object {
-        fun of(studentActivity: StudentActivity, user: User) =
-            StudentActivityResponse(
-                activityId = studentActivity.id,
-                title = studentActivity.title,
-                userId = user.id,
-                username = user.name,
-                approveStatus = user.approveStatus
-            )
+        fun of(studentActivities: Page<StudentActivity>, user: User) =
+            studentActivities.map {
+                StudentActivityResponse(
+                    activityId = it.id,
+                    title = it.title,
+                    userId = user.id,
+                    username = user.name,
+                    approveStatus = user.approveStatus
+                )
+            }
+
     }
 }
 
