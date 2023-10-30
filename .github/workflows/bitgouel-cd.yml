@@ -55,7 +55,7 @@ jobs:
       - name: Deploy
         run: |
           aws deploy create-deployment \
-          --application-name Bitgouel_Server \
+          --application-name bitgouel-main-server \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name bitgouel-deploy-group \
           --file-exists-behavior OVERWRITE \
