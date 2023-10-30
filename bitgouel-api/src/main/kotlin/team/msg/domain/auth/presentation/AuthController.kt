@@ -1,20 +1,13 @@
 package team.msg.domain.auth.presentation
 
-import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import team.msg.domain.auth.mapper.AuthRequestMapper
-import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.presentation.data.web.*
 import team.msg.domain.auth.service.AuthService
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/auth")
