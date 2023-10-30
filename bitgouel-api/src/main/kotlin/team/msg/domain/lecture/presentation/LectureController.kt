@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
-import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
+import team.msg.domain.lecture.presentation.web.CreateLectureWebRequest
 import team.msg.domain.lecture.service.LectureService
 import java.util.*
 

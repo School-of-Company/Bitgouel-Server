@@ -2,7 +2,7 @@ package team.msg.domain.lecture.mapper
 
 import org.springframework.stereotype.Component
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
-import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
+import team.msg.domain.lecture.presentation.web.CreateLectureWebRequest
 
 @Component
 class LectureRequestMapperImpl : LectureRequestMapper{
