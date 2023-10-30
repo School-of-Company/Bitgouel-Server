@@ -8,5 +8,5 @@ import java.util.UUID
 
 interface BbozzakRepository : CrudRepository<Bbozzak,UUID> {
     fun findByUser(user: User): Bbozzak?
-    fun existsByClubAndUser(club: Club,user: User): Boolean
+    fun existsByClubAndUser(club: Club, user: User): Boolean
 }
