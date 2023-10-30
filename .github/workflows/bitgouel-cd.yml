@@ -59,5 +59,5 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name bitgouel-deploy-group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=bitgouel-deploy-bucket,bundleType=zip,key=bitgouel/$GITHUB_SHA.zip \
+          --s3-location bucket=bitgouel-deploy-bucket,bundleType=zip,key=Bitgouel_Server/$GITHUB_SHA.zip \
           --region ap-northeast-2 \
