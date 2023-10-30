@@ -9,4 +9,5 @@ import java.util.UUID
 interface TeacherRepository : CrudRepository<Teacher, UUID> {
     fun findByClub(club: Club): Teacher?
     fun findByUser(user: User): Teacher?
+    fun existsByClubAndUser(club: Club, user: User): Boolean
 }
