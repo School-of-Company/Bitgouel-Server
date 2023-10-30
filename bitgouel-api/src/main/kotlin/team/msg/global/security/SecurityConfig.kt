@@ -68,8 +68,9 @@ class SecurityConfig(
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
-            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasAnyRole(ADMIN)
-            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasAnyRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
+            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasRole(ADMIN)
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)

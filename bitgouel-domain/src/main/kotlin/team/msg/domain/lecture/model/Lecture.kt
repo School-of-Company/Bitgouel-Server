@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.enum.ApproveStatus
+import team.msg.domain.lecture.enum.LectureStatus
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
@@ -55,4 +56,13 @@ class Lecture(
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     var approveStatus: ApproveStatus = ApproveStatus.PENDING
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id) {
+    fun getLectureStatus(): LectureStatus {
+        val currentTime = LocalDateTime.now()
+
+        return if(startDate.isAfter(currentTime) && endDate.isBefore(currentTime))
+            LectureStatus.OPEN
+        else
+            LectureStatus.CLOSE
+    }
+}

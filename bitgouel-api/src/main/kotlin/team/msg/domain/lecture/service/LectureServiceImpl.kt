@@ -5,18 +5,30 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.lecture.enum.LectureStatus
 import team.msg.domain.lecture.enum.LectureType
 import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
+import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
+import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
+import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
+import team.msg.domain.lecture.exception.UnApprovedLectureException
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.repository.LectureRepository
+import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.repository.StudentRepository
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
 class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
+    private val registeredLectureRepository: RegisteredLectureRepository,
+    private val studentRepository: StudentRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
@@ -52,8 +64,46 @@ class LectureServiceImpl(
     }
 
     /**
+     * 강의에 대해 수강신청하는 비지니스 로직입니다.
+     * @param 수강신청을 하기 위한 강의 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun signUpLecture(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByIdOrNull(user.id)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+
+        val lecture = queryLecture(id)
+
+        if(lecture.approveStatus == ApproveStatus.PENDING)
+            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
+
+        if(lecture.getLectureStatus() == LectureStatus.CLOSE)
+            throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
+
+        if(registeredLectureRepository.existsByStudentAndLecture(student, lecture))
+            throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
+
+        val currentSignUpLectureStudent = registeredLectureRepository.findAllByLecture(lecture).size
+
+        if(lecture.maxRegisteredUser <= currentSignUpLectureStudent)
+            throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")
+
+        val registeredLecture = RegisteredLecture(
+            id = UUID.randomUUID(),
+            student = student,
+            lecture = lecture,
+            completeDate = lecture.completeDate
+        )
+
+        registeredLectureRepository.save(registeredLecture)
+
+    }
+
+    /**
      * 강의 개설 신청을 수락하는 비지니스 로직입니다.
-     * @param 승인할 강의의 id
+     * @param 개설을 수락할 대기 상태의 강의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun approveLecture(id: UUID) {
@@ -72,8 +122,9 @@ class LectureServiceImpl(
             content = lecture.content,
             lectureType = lecture.lectureType,
             credit = lecture.credit,
-            instructor = lecture.user.name,
-            maxRegisteredUser = lecture.maxRegisteredUser
+            instructor = lecture.instructor,
+            maxRegisteredUser = lecture.maxRegisteredUser,
+            approveStatus = ApproveStatus.APPROVED
         )
 
         lectureRepository.save(approveLecture)
@@ -81,7 +132,7 @@ class LectureServiceImpl(
 
     /**
      * 강의 개설 신청을 거절하는 비지니스 로직입니다.
-     * @param 거절할 강의의 id
+     * @param 개설을 거절할 대기 상태의 강의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun rejectLecture(id: UUID) {
