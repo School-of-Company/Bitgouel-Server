@@ -56,7 +56,7 @@ jobs:
         run: |
           aws deploy create-deployment \
           --application-name bitgouel-codedeploy \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
           --deployment-group-name bitgouel-deploy-group \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=bitgouel-deploy-bucket,bundleType=zip,key=Bitgouel_Server/$GITHUB_SHA.zip \
