@@ -44,6 +44,9 @@ class SecurityConfig(
                 CorsUtils.isPreFlightRequest(request)
             }).permitAll()
 
+            // health
+            .mvcMatchers(HttpMethod.GET, "/").permitAll()
+
             // auth
             .mvcMatchers(HttpMethod.POST, "/auth/student").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/teacher").permitAll()
@@ -61,6 +64,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}/approve").hasRole(TEACHER)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}/reject").hasRole(TEACHER)
+            .mvcMatchers(HttpMethod.GET, "/activity").hasRole(ADMIN)
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
@@ -69,7 +73,8 @@ class SecurityConfig(
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "/faq").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/faq").permitAll()
+            .mvcMatchers(HttpMethod.GET, "/faq/{id}").permitAll()
 
             .anyRequest().authenticated()
             .and()

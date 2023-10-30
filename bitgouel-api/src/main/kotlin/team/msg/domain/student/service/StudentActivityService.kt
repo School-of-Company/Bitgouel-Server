@@ -1,8 +1,10 @@
 package team.msg.domain.student.service
 
+import org.springframework.data.domain.Pageable
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
-import java.util.UUID
+import team.msg.domain.student.presentation.data.response.AllStudentActivityResponse
+import java.util.*
 
 interface StudentActivityService {
     fun createStudentActivity(request: CreateStudentActivityRequest)
@@ -10,4 +12,5 @@ interface StudentActivityService {
     fun deleteStudentActivity(id: UUID)
     fun rejectStudentActivity(id: UUID)
     fun approveStudentActivity(id: UUID)
+    fun queryAllStudentActivity(pageable: Pageable): AllStudentActivityResponse
 }
