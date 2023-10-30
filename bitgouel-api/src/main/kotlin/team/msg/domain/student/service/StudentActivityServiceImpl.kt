@@ -1,6 +1,7 @@
 package team.msg.domain.student.service
 
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,11 +14,12 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
+import team.msg.domain.student.presentation.data.response.AllStudentActivityResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.enums.Authority
 import java.util.*
 
 @Service
@@ -160,4 +162,23 @@ class StudentActivityServiceImpl(
 
         studentActivityRepository.save(updatedStudentActivity)
     }
+
+    /**
+     * 학생활동을 전체 조회하는 비즈니스 로직
+     * @param 학생활동을 페이징 처리하기 위한 pageable
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivityResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val studentActivities = studentActivityRepository.findAll(pageable)
+
+        val response = AllStudentActivityResponse(
+            studentActivities.map {
+                StudentActivityResponse.of(it, user)
+            }
+        )
+        return response
+    }
+
 }

@@ -64,6 +64,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}/approve").hasRole(TEACHER)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}/reject").hasRole(TEACHER)
+            .mvcMatchers(HttpMethod.GET, "/activity").hasRole(ADMIN)
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
