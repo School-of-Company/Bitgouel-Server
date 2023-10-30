@@ -87,7 +87,7 @@ class LectureServiceImpl(
 
         val currentSignUpLectureStudent = registeredLectureRepository.findAllByLecture(lecture).size
 
-        if(lecture.maxRegisteredUser == currentSignUpLectureStudent)
+        if(lecture.maxRegisteredUser <= currentSignUpLectureStudent)
             throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")
 
         val registeredLecture = RegisteredLecture(
@@ -120,7 +120,7 @@ class LectureServiceImpl(
             endDate = lecture.endDate,
             completeDate = lecture.completeDate,
             content = lecture.content,
-            lectureType =  lecture.lectureType,
+            lectureType = lecture.lectureType,
             credit = lecture.credit,
             instructor = lecture.instructor,
             maxRegisteredUser = lecture.maxRegisteredUser,
