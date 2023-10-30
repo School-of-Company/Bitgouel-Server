@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.auth.mapper.AuthRequestMapper
+import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.presentation.data.web.*
 import team.msg.domain.auth.service.AuthService
@@ -32,6 +33,13 @@ class AuthController(
     fun teacherSignUp(@RequestBody @Valid webRequest: TeacherSignUpWebRequest): ResponseEntity<Void> {
         val request = authRequestMapper.teacherSignUpWebRequestToDto(webRequest)
         authService.teacherSignUp(request)
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/bbozzak")
+    fun bbozzakSignUp(@RequestBody @Valid webRequest: BbozzakSignUpWebRequest) : ResponseEntity<Void> {
+        val request = authRequestMapper.bbozzakSignUpWebRequestToDto(webRequest)
+        authService.bbozzakSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 

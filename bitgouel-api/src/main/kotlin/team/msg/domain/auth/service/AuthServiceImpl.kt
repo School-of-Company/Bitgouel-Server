@@ -12,7 +12,7 @@ import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.bbozzak.model.Bbozzak
-import team.msg.domain.bbozzak.presentation.request.BbozzakSignUpRequest
+import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club

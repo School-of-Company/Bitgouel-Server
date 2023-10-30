@@ -2,7 +2,7 @@ package team.msg.domain.auth.service
 
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
-import team.msg.domain.bbozzak.presentation.request.BbozzakSignUpRequest
+import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
 
 interface AuthService {
     fun studentSignUp(studentSignUpRequest: StudentSignUpRequest)

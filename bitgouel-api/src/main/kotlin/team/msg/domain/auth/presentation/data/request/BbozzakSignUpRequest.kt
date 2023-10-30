@@ -1,4 +1,4 @@
-package team.msg.domain.bbozzak.presentation.request
+package team.msg.domain.auth.presentation.data.request
 
 import team.msg.domain.school.enums.HighSchool
 
