@@ -11,6 +11,9 @@ import team.msg.domain.auth.exception.*
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
+import team.msg.domain.bbozzak.model.Bbozzak
+import team.msg.domain.bbozzak.presentation.request.BbozzakSignUpRequest
+import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
@@ -52,7 +55,8 @@ class AuthServiceImpl(
     private val jwtTokenParser: JwtTokenParser,
     private val refreshTokenRepository: RefreshTokenRepository,
     private val userUtil: UserUtil,
-    private val applicationEventPublisher: ApplicationEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,
+    private val bbozzakRepository: BbozzakRepository
 ) : AuthService {
 
     /**
@@ -108,6 +112,31 @@ class AuthServiceImpl(
         )
         teacherRepository.save(teacher)
     }
+
+    /**
+     * 뽀짝샘 회원가입을 처리하는 비지니스 로직입니다.
+     * @param 뽀짝샘 회원가입을 처리하기 위한 request dto 입니다.
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun bbozzakSignUp(request: BbozzakSignUpRequest) {
+        val user = createUser(
+            request.email,
+            request.name,
+            request.phoneNumber,
+            request.password,
+            Authority.ROLE_TEACHER
+        )
+
+        val club = queryClub(request.highSchool, request.clubName)
+
+        val bbozzak = Bbozzak(
+            id = UUID.randomUUID(),
+            user = user,
+            club = club
+        )
+        bbozzakRepository.save(bbozzak)
+    }
+
 
     /**
      * 대학교수 회원가입을 처리하는 비지니스 로직입니다.
