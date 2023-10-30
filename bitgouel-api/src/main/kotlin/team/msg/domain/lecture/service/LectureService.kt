@@ -1,14 +1,15 @@
 package team.msg.domain.lecture.service
 
-import team.msg.domain.lecture.enum.LectureStatus
+import org.springframework.data.domain.Pageable
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.response.AllLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import java.util.UUID
 
 interface LectureService {
     fun createLecture(request: CreateLectureRequest)
-    fun queryAllLectures(status: LectureStatus): AllLecturesResponse
+    fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): AllLecturesResponse
     fun queryLectureDetails(id: UUID): LectureDetailsResponse
     fun signUpLecture(id: UUID)
     fun approveLecture(id: UUID)
