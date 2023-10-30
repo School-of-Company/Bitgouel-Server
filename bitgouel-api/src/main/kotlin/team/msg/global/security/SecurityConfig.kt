@@ -50,6 +50,7 @@ class SecurityConfig(
             // auth
             .mvcMatchers(HttpMethod.POST, "/auth/student").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/teacher").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/auth/bbozzak").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/professor").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/government").permitAll()
             .mvcMatchers(HttpMethod.POST, "/auth/company-instructor").permitAll()
@@ -69,8 +70,9 @@ class SecurityConfig(
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
-            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasAnyRole(ADMIN)
-            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasAnyRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
+            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasRole(ADMIN)
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)

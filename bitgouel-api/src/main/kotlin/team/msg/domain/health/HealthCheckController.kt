@@ -1,6 +1,7 @@
 package team.msg.domain.health
 
 import org.springframework.core.env.Environment
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -10,6 +11,6 @@ class HealthCheckController(
 ) {
 
     @GetMapping
-    fun healthCheck() = "Bitgouel Server is OK, PORT = ${env.getProperty("server.port")}"
+    fun healthCheck() = ResponseEntity.ok("Bitgouel Server is OK, PORT = ${env.getProperty("server.port")}")
 
 }
