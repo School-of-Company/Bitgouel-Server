@@ -6,7 +6,7 @@ on:
 
 env:
   S3_BUCKET_NAME: bitgouel-deploy-bucket
-  PROJECT_NAME: Bitgouel Server
+  PROJECT_NAME: Bitgouel_Server
 
 jobs:
   build:
