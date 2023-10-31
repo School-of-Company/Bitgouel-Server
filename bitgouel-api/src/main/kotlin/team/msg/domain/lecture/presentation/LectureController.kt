@@ -34,8 +34,8 @@ class LectureController(
     }
 
     @GetMapping
-    fun queryAllLectures(pageable: Pageable, queryAllLecturesWebRequest: QueryAllLecturesWebRequest): ResponseEntity<AllLecturesResponse>{
-        val request = lectureRequestMapper.queryLectureWebRequestToDto(queryAllLecturesWebRequest)
+    fun queryAllLectures(pageable: Pageable, WebRequest: QueryAllLecturesWebRequest): ResponseEntity<AllLecturesResponse>{
+        val request = lectureRequestMapper.queryLectureWebRequestToDto(WebRequest)
         val response = lectureService.queryAllLectures(pageable, request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
