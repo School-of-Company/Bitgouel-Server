@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.service
 
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,10 +18,15 @@ import team.msg.domain.lecture.exception.UnApprovedLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.response.AllLecturesResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
+import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.user.enums.Authority
 import java.time.LocalDateTime
 import java.util.*
 
@@ -61,6 +67,36 @@ class LectureServiceImpl(
         )
 
         lectureRepository.save(lecture)
+    }
+
+    /**
+     * 강의를 조회하는 비지니스 로직입니다.
+     * @param 조회할 강의의 승인 상태를 담은 request dto와 pageable dto
+     * @return 조회한 강의의 정보를 담은 list dto
+     */
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): AllLecturesResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val approveStatus = queryAllLectureRequest.approveStatus
+        val lectureType = queryAllLectureRequest.lectureType
+
+        val lectures = when(user.authority) {
+            Authority.ROLE_ADMIN -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, approveStatus, lectureType)
+            else -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, ApproveStatus.APPROVED, lectureType)
+        }
+
+        val response = AllLecturesResponse(
+            lectures.map {
+                LectureResponse.of(it, registeredLectureRepository.findAllByLecture(it).size)
+            }
+        )
+
+        return response
+    }
+
+    override fun queryLectureDetails(id: UUID): LectureDetailsResponse {
+        TODO("Not yet implemented")
     }
 
     /**
