@@ -27,7 +27,6 @@ class LectureRequestMapperImpl : LectureRequestMapper{
      */
     override fun queryLectureWebRequestToDto(webRequest: QueryAllLecturesWebRequest) = QueryAllLectureRequest(
         lectureType = webRequest.lectureType,
-        lectureStatus = webRequest.lectureStatus,
         approveStatus = webRequest.approveStatus
     )
 }
