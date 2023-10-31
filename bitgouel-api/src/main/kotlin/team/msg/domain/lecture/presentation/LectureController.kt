@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
 import team.msg.domain.lecture.presentation.data.response.AllLecturesResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.web.CreateLectureWebRequest
 import team.msg.domain.lecture.presentation.web.QueryAllLecturesWebRequest
 import team.msg.domain.lecture.service.LectureService
@@ -43,6 +44,12 @@ class LectureController(
     fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.signUpLecture(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/{id}")
+    fun queryLectureDetails(@PathVariable id: UUID): ResponseEntity<LectureDetailsResponse> {
+        val response = lectureService.queryLectureDetails(id)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     @PatchMapping("/{id}/approve")
