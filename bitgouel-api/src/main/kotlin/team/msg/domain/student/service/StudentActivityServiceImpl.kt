@@ -214,7 +214,7 @@ class StudentActivityServiceImpl(
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
         val response = StudentActivityListResponse(
-            StudentActivityResponse.of(studentActivities, user)
+            StudentActivityResponse.of(studentActivities, student.user!!)
         )
 
         return response
