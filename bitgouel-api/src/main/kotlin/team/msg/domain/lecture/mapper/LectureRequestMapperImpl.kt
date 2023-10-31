@@ -26,7 +26,7 @@ class LectureRequestMapperImpl : LectureRequestMapper{
      * Lecture list 검색 web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
      */
     override fun queryLectureWebRequestToDto(webRequest: QueryAllLecturesWebRequest) = QueryAllLectureRequest(
-        lectureType = webRequest.lectureType,
-        approveStatus = webRequest.approveStatus
+        lectureType = webRequest.type,
+        approveStatus = webRequest.status
     )
 }

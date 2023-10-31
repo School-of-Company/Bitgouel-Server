@@ -7,8 +7,8 @@ import team.msg.domain.lecture.enum.LectureType
 
 data class QueryAllLecturesWebRequest(
     @Enumerated(EnumType.STRING)
-    val lectureType: LectureType?,
+    val type: LectureType?,
 
     @Enumerated(EnumType.STRING)
-    val approveStatus: ApproveStatus?
+    val status: ApproveStatus?
 )
