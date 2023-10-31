@@ -43,7 +43,7 @@ class LectureController(
     @PostMapping("/{id}")
     fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.signUpLecture(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @GetMapping("/{id}")
@@ -55,12 +55,12 @@ class LectureController(
     @PatchMapping("/{id}/approve")
     fun approveLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.approveLecture(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @DeleteMapping("/{id}/delete")
     fun rejectLecture(@PathVariable id: UUID): ResponseEntity<Void> {
         lectureService.approveLecture(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
