@@ -30,7 +30,7 @@ data class LectureResponse(
             maxRegisteredUser = lecture.maxRegisteredUser
         )
 
-        fun detailOf(lecture: Lecture, headCount: Int, lecturer: String): LectureDetailsResponse = LectureDetailsResponse(
+        fun detailOf(lecture: Lecture, headCount: Int): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
             createAt = lecture.createdAt,
@@ -41,7 +41,7 @@ data class LectureResponse(
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
             maxRegisteredUser = lecture.maxRegisteredUser,
-            lecturer = lecturer,
+            lecturer = lecture.user.name,
             credit = lecture.credit
         )
     }

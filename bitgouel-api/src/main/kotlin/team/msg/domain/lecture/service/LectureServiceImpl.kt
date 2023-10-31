@@ -95,8 +95,20 @@ class LectureServiceImpl(
         return response
     }
 
+    /**
+     * 강의에 대한 상세정보를 조회하는 비지니스 로직입니다.
+     * @param 상세 조회할 강의의 id
+     * @return 강의의 상세조회 정보를 담은 detail dto
+     */
+    @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun queryLectureDetails(id: UUID): LectureDetailsResponse {
-        TODO("Not yet implemented")
+        val lecture = queryLecture(id)
+
+        val headCount = registeredLectureRepository.findAllByLecture(lecture).size
+
+        val response = LectureResponse.detailOf(lecture, headCount)
+
+        return response
     }
 
     /**
