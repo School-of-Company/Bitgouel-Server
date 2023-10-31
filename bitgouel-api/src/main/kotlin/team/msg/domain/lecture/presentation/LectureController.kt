@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
 import team.msg.domain.lecture.presentation.data.response.AllLecturesResponse
@@ -34,7 +33,7 @@ class LectureController(
     }
 
     @GetMapping
-    fun queryAllLectures(pageable: Pageable, @RequestParam(required = false) queryAllLecturesWebRequest: QueryAllLecturesWebRequest): ResponseEntity<AllLecturesResponse>{
+    fun queryAllLectures(pageable: Pageable, queryAllLecturesWebRequest: QueryAllLecturesWebRequest): ResponseEntity<AllLecturesResponse>{
         val request = lectureRequestMapper.queryLectureWebRequestToDto(queryAllLecturesWebRequest)
         val response = lectureService.queryAllLectures(pageable, request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
