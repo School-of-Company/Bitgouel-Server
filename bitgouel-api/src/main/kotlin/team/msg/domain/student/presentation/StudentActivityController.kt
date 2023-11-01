@@ -63,7 +63,7 @@ class StudentActivityController(
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
-    @GetMapping("/student/{student_id}")
+    @GetMapping("/{student_id}")
     fun queryStudentActivityByStudent(@PathVariable("student_id") studentId: UUID, pageable: Pageable): ResponseEntity<StudentActivityListResponse> {
         val response = studentActivityService.queryStudentActivityByStudent(studentId, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
