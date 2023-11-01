@@ -33,10 +33,6 @@ class StudentActivityServiceImpl(
     private val userUtil: UserUtil,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
-    private val bbozzakRepository: BbozzakRepository,
-    private val professorRepository: ProfessorRepository,
-    private val governmentRepository: GovernmentRepository,
-    private val companyInstructorRepository: CompanyInstructorRepository,
     private val studentActivityRepository: StudentActivityRepository,
     private val applicationEventPublisher: ApplicationEventPublisher
 ) : StudentActivityService {
