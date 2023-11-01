@@ -201,15 +201,11 @@ class StudentActivityServiceImpl(
         val student = studentRepository.findByIdOrNull(studentId)
             ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ studentId = $studentId ]")
 
-        if(!when(user.authority) {
-                Authority.ROLE_TEACHER -> teacherRepository.existsByClubAndUser(student.club, user)
-                Authority.ROLE_BBOZZAK -> bbozzakRepository.existsByClubAndUser(student.club, user)
-                Authority.ROLE_PROFESSOR -> professorRepository.existsByClubAndUser(student.club, user)
-                Authority.ROLE_COMPANY_INSTRUCTOR -> companyInstructorRepository.existsByClubAndUser(student.club, user)
-                Authority.ROLE_GOVERNMENT -> governmentRepository.existsByClubAndUser(student.club, user)
-                else -> throw ForbiddenException("접근 권한이 없는 역할입니다. info : [ authority = ${user.authority} ]")
-            })
-            throw ForbiddenStudentActivityException("해당 학생의 학생 활동에 대한 접근 권한이 없습니다. info : [ userId = ${user.id}, studentId = $studentId ]")
+        val teacher = teacherRepository.findByUser(user)
+            ?: throw TeacherNotFoundException("취업동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} username = ${user.name} ]")
+
+        if(student.club != teacher.club)
+            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
