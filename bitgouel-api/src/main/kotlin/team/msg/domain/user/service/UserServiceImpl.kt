@@ -1,6 +1,5 @@
 package team.msg.domain.user.service
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.exception.AdminNotFoundException
@@ -83,25 +82,25 @@ class UserServiceImpl(
         return UserResponse.pageOf(user, organization)
     }
 
-    private fun findStudent(user: User) = studentRepository.findByIdOrNull(user.id)
+    private fun findStudent(user: User) = studentRepository.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findTeacher(user: User) = teacherRepository.findByIdOrNull(user.id)
+    private fun findTeacher(user: User) = teacherRepository.findByUser(user)
         ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findBbozzak(user: User) = bbozzakRepository.findByIdOrNull(user.id)
+    private fun findBbozzak(user: User) = bbozzakRepository.findByUser(user)
         ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다.  info : [ userId = ${user.id} ]")
 
-    private fun findProfessor(user: User) = professorRepository.findByIdOrNull(user.id)
+    private fun findProfessor(user: User) = professorRepository.findByUser(user)
         ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findCompanyInstructor(user: User) = companyInstructorRepository.findByIdOrNull(user.id)
+    private fun findCompanyInstructor(user: User) = companyInstructorRepository.findByUser(user)
         ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findGovernment(user: User) = governmentRepository.findByIdOrNull(user.id)
+    private fun findGovernment(user: User) = governmentRepository.findByUser(user)
         ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findAdmin(user: User) = adminRepository.findByIdOrNull(user.id)
+    private fun findAdmin(user: User) = adminRepository.findByUser(user)
         ?: throw AdminNotFoundException("어드민을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private fun findSchool(club: Club) = club.school.highSchool
