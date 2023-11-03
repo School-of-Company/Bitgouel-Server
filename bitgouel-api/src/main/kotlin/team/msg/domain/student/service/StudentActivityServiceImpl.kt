@@ -194,7 +194,7 @@ class StudentActivityServiceImpl(
     override fun queryStudentActivityByStudent(studentId: UUID, pageable: Pageable): StudentActivityListResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByIdOrNull(studentId)
+        val student = studentRepository.findStudentById(studentId)
             ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ studentId = $studentId ]")
 
         val teacher = teacherRepository.findByUser(user)
