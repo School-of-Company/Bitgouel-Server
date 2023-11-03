@@ -28,6 +28,6 @@ data class StudentActivityResponse(
     }
 }
 
-data class StudentActivityListResponse(
+data class AllStudentActivitiesResponse(
     val activities: Page<StudentActivityResponse>
 )

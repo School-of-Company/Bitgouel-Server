@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enum.ApproveStatus
 import team.msg.common.util.UserUtil
-import team.msg.domain.bbozzak.repository.BbozzakRepository
-import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
@@ -18,14 +14,12 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
-import team.msg.domain.student.presentation.data.response.StudentActivityListResponse
+import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.enums.Authority
-import team.msg.global.exception.ForbiddenException
 import java.util.*
 
 @Service
@@ -174,12 +168,12 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryAllStudentActivity(pageable: Pageable): StudentActivityListResponse {
+    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val studentActivities = studentActivityRepository.findAll(pageable)
 
-        val response = StudentActivityListResponse(
+        val response = AllStudentActivitiesResponse(
             StudentActivityResponse.of(studentActivities, user)
         )
         
@@ -191,7 +185,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryStudentActivityByStudent(studentId: UUID, pageable: Pageable): StudentActivityListResponse {
+    override fun queryStudentActivityByStudent(studentId: UUID, pageable: Pageable): AllStudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findStudentById(studentId)
@@ -205,7 +199,7 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = StudentActivityListResponse(
+        val response = AllStudentActivitiesResponse(
             StudentActivityResponse.of(studentActivities, student.user!!)
         )
 
