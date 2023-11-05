@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.student.mapper.StudentActivityMapper
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.MyStudentActivitiesByStudentResponse
+import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
 import team.msg.domain.student.presentation.data.web.CreateStudentActivityWebRequest
 import team.msg.domain.student.presentation.data.web.UpdateStudentActivityWebRequest
 import team.msg.domain.student.service.StudentActivityService
@@ -65,7 +66,7 @@ class StudentActivityController(
     }
 
     @GetMapping("/{student_id}")
-    fun queryStudentActivityByStudent(@PathVariable("student_id") studentId: UUID, pageable: Pageable): ResponseEntity<AllStudentActivitiesResponse> {
+    fun queryStudentActivityByStudent(@PathVariable("student_id") studentId: UUID, pageable: Pageable): ResponseEntity<StudentActivitiesByStudentResponse> {
         val response = studentActivityService.queryStudentActivitiesByStudent(studentId, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }

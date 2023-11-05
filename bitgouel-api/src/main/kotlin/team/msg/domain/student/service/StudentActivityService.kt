@@ -5,6 +5,7 @@ import team.msg.domain.student.presentation.data.request.CreateStudentActivityRe
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.MyStudentActivitiesByStudentResponse
+import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
 import java.util.*
 
 interface StudentActivityService {
@@ -14,6 +15,6 @@ interface StudentActivityService {
     fun rejectStudentActivity(id: UUID)
     fun approveStudentActivity(id: UUID)
     fun queryAllStudentActivity(pageable: Pageable): AllStudentActivitiesResponse
-    fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): AllStudentActivitiesResponse
+    fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesByStudentResponse
     fun queryMyStudentActivity(pageable: Pageable): MyStudentActivitiesByStudentResponse
 }
