@@ -14,7 +14,7 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
-import team.msg.domain.student.presentation.data.response.AllStudentActivityResponse
+import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
@@ -168,17 +168,41 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivityResponse {
+    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val studentActivities = studentActivityRepository.findAll(pageable)
 
-        val response = AllStudentActivityResponse(
-            studentActivities.map {
-                StudentActivityResponse.of(it, user)
-            }
+        val response = AllStudentActivitiesResponse(
+            StudentActivityResponse.of(studentActivities, user)
         )
+        
         return response
     }
 
+    /**
+     * 학생활동을 학생 단위로 조회하는 비즈니스 로직
+     * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
+     */
+    @Transactional(readOnly = true)
+    override fun queryStudentActivityByStudent(studentId: UUID, pageable: Pageable): AllStudentActivitiesResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findStudentById(studentId)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ studentId = $studentId ]")
+
+        val teacher = teacherRepository.findByUser(user)
+            ?: throw TeacherNotFoundException("취업동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} username = ${user.name} ]")
+
+        if(student.club != teacher.club)
+            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+
+        val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
+
+        val response = AllStudentActivitiesResponse(
+            StudentActivityResponse.of(studentActivities, student.user!!)
+        )
+
+        return response
+    }
 }

@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.user.model.User
-import java.util.UUID
+import java.util.*
 
 interface TeacherRepository : CrudRepository<Teacher, UUID> {
     fun findByClub(club: Club): Teacher?
