@@ -31,3 +31,11 @@ data class StudentActivityResponse(
 data class AllStudentActivitiesResponse(
     val activities: Page<StudentActivityResponse>
 )
+
+data class StudentActivitiesByStudentResponse(
+    val activities: Page<StudentActivityResponse>
+)
+
+data class MyStudentActivitiesByStudentResponse(
+    val activities: Page<StudentActivityResponse>
+)
