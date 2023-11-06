@@ -15,10 +15,6 @@ import team.msg.domain.school.enums.HighSchool
 class ClubController(
     private val clubService: ClubService
 ) {
-    /**
-     * 모든 동아리를 조회하는 비즈니스 로직
-     * @param 동아리를 조회하기 위한 학교 이름
-     */
     @GetMapping
     fun queryAllClubs(@RequestParam("highSchool") highSchool: HighSchool): ResponseEntity<AllClubResponse> {
         val response = clubService.queryAllClubsService(highSchool)

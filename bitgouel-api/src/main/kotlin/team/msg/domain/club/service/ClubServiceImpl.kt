@@ -15,6 +15,10 @@ class ClubServiceImpl(
     private val schoolRepository: SchoolRepository
 ) : ClubService {
 
+    /**
+     * 모든 동아리를 조회하는 비즈니스 로직
+     * @param 동아리를 조회하기 위한 학교 이름
+     */
     @Transactional(readOnly = true, rollbackFor = [Exception::class])
     override fun queryAllClubsService(highSchool: HighSchool): AllClubResponse {
         val school = schoolRepository.findByHighSchool(highSchool)
