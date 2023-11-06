@@ -11,6 +11,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
     implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.security:spring-security-test")
+    implementation("com.querydsl:querydsl-jpa:5.0.0")
 
     implementation(project(":bitgouel-domain"))
 }
