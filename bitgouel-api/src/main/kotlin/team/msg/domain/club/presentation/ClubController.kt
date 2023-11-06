@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.club.presentation.data.response.AllClubResponse
 import team.msg.domain.club.service.ClubService
-import team.msg.domain.school.model.School
+import team.msg.domain.school.enums.HighSchool
 
 @RestController
 @RequestMapping("/club")
@@ -16,8 +16,8 @@ class ClubController(
     private val clubService: ClubService
 ) {
     @GetMapping
-    fun queryAllClubs(@RequestParam school: School): ResponseEntity<AllClubResponse> {
-        val response = clubService.queryAllClubsService(school)
+    fun queryAllClubs(@RequestParam("highSchool") highSchool: HighSchool): ResponseEntity<AllClubResponse> {
+        val response = clubService.queryAllClubsService(highSchool)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
