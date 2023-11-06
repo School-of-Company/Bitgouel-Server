@@ -22,7 +22,7 @@ class ClubServiceImpl(
     @Transactional(readOnly = true, rollbackFor = [Exception::class])
     override fun queryAllClubsService(highSchool: HighSchool): AllClubResponse {
         val school = schoolRepository.findByHighSchool(highSchool)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool")
+            ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool ]")
 
         val clubs = clubRepository.findAllBySchool(school)
 
