@@ -187,7 +187,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryStudentActivitiesByStudent(studentId: UUID,pageable: Pageable): StudentActivitiesByStudentResponse {
+    override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesByStudentResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findStudentById(studentId)
