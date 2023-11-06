@@ -60,20 +60,20 @@ class StudentActivityController(
     }
 
     @GetMapping
-    fun queryAllStudentActivity(pageable: Pageable): ResponseEntity<AllStudentActivitiesResponse> {
-        val response = studentActivityService.queryAllStudentActivity(pageable)
+    fun queryAllStudentActivities(pageable: Pageable): ResponseEntity<AllStudentActivitiesResponse> {
+        val response = studentActivityService.queryAllStudentActivities(pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     @GetMapping("/{student_id}")
-    fun queryStudentActivityByStudent(@PathVariable("student_id") studentId: UUID, pageable: Pageable): ResponseEntity<StudentActivitiesByStudentResponse> {
+    fun queryStudentActivitiesByStudent(@PathVariable("student_id") studentId: UUID, pageable: Pageable): ResponseEntity<StudentActivitiesByStudentResponse> {
         val response = studentActivityService.queryStudentActivitiesByStudent(studentId, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     @GetMapping("/my")
     fun queryMyStudentActivities(pageable: Pageable): ResponseEntity<MyStudentActivitiesByStudentResponse> {
-        val response = studentActivityService.queryMyStudentActivity(pageable)
+        val response = studentActivityService.queryMyStudentActivities(pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }

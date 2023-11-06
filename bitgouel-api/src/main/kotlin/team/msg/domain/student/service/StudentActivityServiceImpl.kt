@@ -170,7 +170,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivitiesResponse {
+    override fun queryAllStudentActivities(pageable: Pageable): AllStudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val studentActivities = studentActivityRepository.findAll(pageable)
@@ -209,7 +209,7 @@ class StudentActivityServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun queryMyStudentActivity(pageable: Pageable): MyStudentActivitiesByStudentResponse {
+    override fun queryMyStudentActivities(pageable: Pageable): MyStudentActivitiesByStudentResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
