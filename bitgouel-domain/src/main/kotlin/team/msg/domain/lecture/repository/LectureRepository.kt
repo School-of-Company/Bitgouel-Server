@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
-import team.msg.common.enum.ApproveStatus
-import team.msg.domain.lecture.enum.LectureType
+import team.msg.common.enums.ApproveStatus
+import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 import java.util.*
 

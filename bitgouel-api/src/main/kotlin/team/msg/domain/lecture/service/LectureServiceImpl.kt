@@ -4,10 +4,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import team.msg.common.enum.ApproveStatus
+import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
-import team.msg.domain.lecture.enum.LectureStatus
-import team.msg.domain.lecture.enum.LectureType
+import team.msg.domain.lecture.enums.LectureStatus
+import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.InvalidLectureTypeException

@@ -8,7 +8,7 @@ import javax.validation.constraints.FutureOrPresent
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
-import team.msg.domain.lecture.enum.LectureType
+import team.msg.domain.lecture.enums.LectureType
 import java.time.LocalDateTime
 
 data class CreateLectureWebRequest(

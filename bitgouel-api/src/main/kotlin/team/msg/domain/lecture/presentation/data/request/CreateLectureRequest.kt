@@ -1,6 +1,6 @@
 package team.msg.domain.lecture.presentation.data.request
 
-import team.msg.domain.lecture.enum.LectureType
+import team.msg.domain.lecture.enums.LectureType
 import java.time.LocalDateTime
 
 data class CreateLectureRequest (

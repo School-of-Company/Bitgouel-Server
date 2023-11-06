@@ -1,4 +1,4 @@
-package team.msg.common.enum
+package team.msg.common.enums
 
 /**
  * PENDING - 승인 대기중
