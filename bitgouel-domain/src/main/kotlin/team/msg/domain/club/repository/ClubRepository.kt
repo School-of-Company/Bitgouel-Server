@@ -6,4 +6,5 @@ import team.msg.domain.school.model.School
 
 interface ClubRepository : JpaRepository<Club, Long> {
     fun findByNameAndSchool(name: String, school: School): Club?
+    fun findAllBySchool(school: School): List<Club>
 }
