@@ -208,6 +208,10 @@ class StudentActivityServiceImpl(
         return response
     }
 
+    /**
+     * 학생 자신의 학생활동을 조회하는 비즈니스 로직
+     * @param 페이징을 처리하기 위한 pageable
+     */
     @Transactional(readOnly = true)
     override fun queryMyStudentActivities(pageable: Pageable): MyStudentActivitiesByStudentResponse {
         val user = userUtil.queryCurrentUser()
