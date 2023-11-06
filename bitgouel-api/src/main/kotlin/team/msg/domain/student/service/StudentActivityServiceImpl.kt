@@ -176,7 +176,7 @@ class StudentActivityServiceImpl(
         val studentActivities = studentActivityRepository.findAll(pageable)
 
         val response = AllStudentActivitiesResponse(
-            StudentActivityResponse.of(studentActivities, user)
+            StudentActivityResponse.pageOf(studentActivities, user)
         )
         
         return response
@@ -202,7 +202,7 @@ class StudentActivityServiceImpl(
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
         val response = StudentActivitiesByStudentResponse(
-            StudentActivityResponse.of(studentActivities, student.user!!)
+            StudentActivityResponse.pageOf(studentActivities, student.user!!)
         )
 
         return response
@@ -222,7 +222,7 @@ class StudentActivityServiceImpl(
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
         val response = MyStudentActivitiesByStudentResponse(
-            StudentActivityResponse.of(studentActivities, user)
+            StudentActivityResponse.pageOf(studentActivities, user)
         )
 
         return response
