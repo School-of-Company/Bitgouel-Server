@@ -12,7 +12,7 @@ import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
 import team.msg.domain.faq.presentation.data.response.AllFaqResponse
 import team.msg.domain.faq.presentation.data.response.FaqDetailsResponse
 import team.msg.domain.faq.presentation.data.response.FaqResponse
-import team.msg.domain.fAQ.repository.FaqRepository
+import team.msg.domain.faq.repository.FaqRepository
 
 @Service
 class FaqServiceImpl(
