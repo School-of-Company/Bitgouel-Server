@@ -59,6 +59,10 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/auth/withdraw").authenticated()
 
+            // club
+            .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/club/{id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasRole(STUDENT)
