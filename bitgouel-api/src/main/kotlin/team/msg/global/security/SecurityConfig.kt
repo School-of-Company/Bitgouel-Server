@@ -85,6 +85,9 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/faq").permitAll()
             .mvcMatchers(HttpMethod.GET, "/faq/{id}").permitAll()
 
+            // user
+            .mvcMatchers(HttpMethod.GET, "/user").authenticated()
+
             .anyRequest().authenticated()
             .and()
 
