@@ -89,7 +89,7 @@ class LectureServiceImpl(
         val response = AllLecturesResponse(
             lectures.map {
                 val headCount = if(it.approveStatus == ApproveStatus.APPROVED)
-                    registeredLectureRepository.findAllByLecture(it).size
+                    registeredLectureRepository.countByLecture(it)
                 else
                     0
                 LectureResponse.of(it,headCount)
@@ -108,7 +108,7 @@ class LectureServiceImpl(
     override fun queryLectureDetails(id: UUID): LectureDetailsResponse {
         val lecture = queryLecture(id)
 
-        val headCount = registeredLectureRepository.findAllByLecture(lecture).size
+        val headCount = registeredLectureRepository.countByLecture(lecture)
 
         val response = LectureResponse.detailOf(lecture, headCount)
 
@@ -137,7 +137,7 @@ class LectureServiceImpl(
         if(registeredLectureRepository.existsByStudentAndLecture(student, lecture))
             throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
 
-        val currentSignUpLectureStudent = registeredLectureRepository.findAllByLecture(lecture).size
+        val currentSignUpLectureStudent = registeredLectureRepository.countByLecture(lecture)
 
         if(lecture.maxRegisteredUser <= currentSignUpLectureStudent)
             throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")

@@ -8,6 +8,6 @@ import java.util.UUID
 
 interface RegisteredLectureRepository : CrudRepository<RegisteredLecture,UUID> {
     fun findAllByStudent(student: Student): List<RegisteredLecture>
-    fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
     fun existsByStudentAndLecture(student: Student, lecture: Lecture): Boolean
+    fun countByLecture(lecture: Lecture): Int
 }
