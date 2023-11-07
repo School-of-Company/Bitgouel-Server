@@ -24,7 +24,7 @@ class ClubServiceImpl(
      * 모든 동아리를 조회하는 비즈니스 로직
      * @param 동아리를 조회하기 위한 학교 이름
      */
-    @Transactional(readOnly = true, rollbackFor = [Exception::class])
+    @Transactional(readOnly = true)
     override fun queryAllClubsService(highSchool: HighSchool): AllClubResponse {
         val school = schoolRepository.findByHighSchool(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool ]")
@@ -42,13 +42,14 @@ class ClubServiceImpl(
      * 동아리를 상세 조회하는 비즈니스 로직
      * @param 동아리를 상세 조회하기 위한 id
      */
+    @Transactional(readOnly = true)
     override fun queryClubDetailsService(id: Long): ClubDetailsResponse {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
 
-        val studentHeadCount = studentRepository.countByClub(club).toInt()
+        val headCount = studentRepository.countByClub(club).toInt()
 
-        val response = ClubResponse.detailOf(club, club.school.highSchool, studentHeadCount)
+        val response = ClubResponse.detailOf(club, club.school.highSchool, headCount)
 
         return response
     }
