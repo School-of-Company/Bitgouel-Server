@@ -10,6 +10,7 @@ import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
+import team.msg.domain.user.model.QUser.user
 
 @Component
 class LectureRepositoryCustomImpl(
@@ -18,6 +19,8 @@ class LectureRepositoryCustomImpl(
     override fun findAllByApproveStatusAndLectureType(pageable: Pageable, approveStatus: ApproveStatus?, lectureType: LectureType?): Page<Lecture> {
         val response = queryFactory
             .selectFrom(lecture)
+            .leftJoin(lecture.user, user)
+            .fetchJoin()
             .where(
                 eqLectureType(lectureType),
                 eqApproveStatus(approveStatus)
