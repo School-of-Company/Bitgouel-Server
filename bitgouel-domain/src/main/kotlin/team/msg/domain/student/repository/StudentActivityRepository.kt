@@ -9,8 +9,13 @@ import team.msg.domain.student.model.StudentActivity
 import java.util.*
 
 interface StudentActivityRepository : JpaRepository<StudentActivity, UUID> {
+
+    @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
     fun findAllByStudent(student: Student): List<StudentActivity>
+
+    @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
     fun findAllByStudent(student: Student, pageable: Pageable): Page<StudentActivity>
-    @EntityGraph(attributePaths = ["student"])
+
+    @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
     override fun findAll(pageable: Pageable): Page<StudentActivity>
 }
