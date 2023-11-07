@@ -15,7 +15,6 @@ import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
-import team.msg.domain.student.presentation.data.response.MyStudentActivitiesByStudentResponse
 import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
@@ -213,7 +212,7 @@ class StudentActivityServiceImpl(
      * @param 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryMyStudentActivities(pageable: Pageable): MyStudentActivitiesByStudentResponse {
+    override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesByStudentResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
@@ -221,7 +220,7 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = MyStudentActivitiesByStudentResponse(
+        val response = StudentActivitiesByStudentResponse(
             StudentActivityResponse.pageOf(studentActivities, user)
         )
 

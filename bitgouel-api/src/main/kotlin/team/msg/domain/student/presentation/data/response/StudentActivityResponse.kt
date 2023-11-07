@@ -35,7 +35,3 @@ data class AllStudentActivitiesResponse(
 data class StudentActivitiesByStudentResponse(
     val activities: Page<StudentActivityResponse>
 )
-
-data class MyStudentActivitiesByStudentResponse(
-    val activities: Page<StudentActivityResponse>
-)
