@@ -59,6 +59,10 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/auth/withdraw").authenticated()
 
+            // club
+            .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/club/{id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasRole(STUDENT)
@@ -71,7 +75,9 @@ class SecurityConfig(
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/lecture").authenticated()
             .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
+            .mvcMatchers(HttpMethod.GET, "/lecture/{id}").authenticated()
             .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasRole(ADMIN)
 
