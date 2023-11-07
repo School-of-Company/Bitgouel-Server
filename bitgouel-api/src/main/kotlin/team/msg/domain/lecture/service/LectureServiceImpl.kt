@@ -24,8 +24,6 @@ import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.student.exception.StudentNotFoundException
-import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
 import java.time.LocalDateTime
 import java.util.*
@@ -34,7 +32,6 @@ import java.util.*
 class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
-    private val studentRepository: StudentRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
