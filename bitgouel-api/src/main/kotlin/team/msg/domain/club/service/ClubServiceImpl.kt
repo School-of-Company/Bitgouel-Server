@@ -10,10 +10,8 @@ import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
-import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.repository.StudentRepository
-import team.msg.domain.user.repository.UserRepository
 
 @Service
 class ClubServiceImpl(

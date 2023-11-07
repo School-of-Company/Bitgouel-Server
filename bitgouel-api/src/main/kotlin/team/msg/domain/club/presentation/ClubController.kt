@@ -23,7 +23,7 @@ class ClubController(
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     fun queryClubDetails(@PathVariable id: Long): ResponseEntity<ClubDetailsResponse> {
         val response = clubService.queryClubDetailsService(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
