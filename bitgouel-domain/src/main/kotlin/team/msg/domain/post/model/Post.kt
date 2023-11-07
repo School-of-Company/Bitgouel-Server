@@ -6,7 +6,7 @@ import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
-import javax.persistence.OneToOne
+import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.user.model.User
@@ -17,9 +17,12 @@ class Post (
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = false, insertable = false, updatable = false)
     val user: User,
+
+    @Column(name = "user_id")
+    val userId: UUID,
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     var title: String,
