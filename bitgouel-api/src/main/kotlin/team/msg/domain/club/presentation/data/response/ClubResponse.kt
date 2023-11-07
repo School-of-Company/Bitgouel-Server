@@ -15,10 +15,10 @@ data class ClubResponse(
             )
         }
 
-        fun detailOf(club: Club, highSchool: HighSchool, headCount: Int) = ClubDetailsResponse(
+        fun detailOf(club: Club, highSchool: HighSchool, studentHeadCount: Int) = ClubDetailsResponse(
                 clubName = club.name,
                 highSchoolName = highSchool.schoolName,
-                headCount = headCount
+                headCount = studentHeadCount
             )
     }
 }
