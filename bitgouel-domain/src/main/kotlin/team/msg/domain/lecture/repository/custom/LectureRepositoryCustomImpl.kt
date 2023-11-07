@@ -9,6 +9,7 @@ import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.user.model.QUser.user
+import java.util.Objects.isNull
 
 @Component
 class LectureRepositoryCustomImpl(
@@ -27,13 +28,9 @@ class LectureRepositoryCustomImpl(
             .limit(pageable.pageSize.toLong())
             .fetch())
 
-    private fun eqLectureType(lectureType: LectureType?): BooleanExpression? {
-        lectureType ?: return null
-        return lecture.lectureType.eq(lectureType)
-    }
+    private fun eqLectureType(lectureType: LectureType?): BooleanExpression? =
+        if(isNull(lectureType)) null else lecture.lectureType.eq(lectureType)
 
-    private fun eqApproveStatus(approveStatus: ApproveStatus?): BooleanExpression? {
-        approveStatus ?: return null
-        return lecture.approveStatus.eq(approveStatus)
-    }
+    private fun eqApproveStatus(approveStatus: ApproveStatus?): BooleanExpression? =
+        if(isNull(approveStatus)) null else lecture.approveStatus.eq(approveStatus)
 }
