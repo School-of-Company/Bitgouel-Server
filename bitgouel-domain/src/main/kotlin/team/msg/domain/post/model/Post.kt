@@ -27,8 +27,8 @@ class Post (
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     var content: String,
 
-    @Column(columnDefinition = "VARCHAR(2083)", nullable = false)
-    var link: String,
+    @Column(columnDefinition = "VARCHAR(2083)", nullable = true)
+    var link: String?,
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
