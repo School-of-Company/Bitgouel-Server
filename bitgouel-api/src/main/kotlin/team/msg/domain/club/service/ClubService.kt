@@ -5,4 +5,5 @@ import team.msg.domain.school.enums.HighSchool
 
 interface ClubService {
     fun queryAllClubsService(highSchool: HighSchool): AllClubResponse
+    fun queryClubDetailsService(id: Long)
 }
