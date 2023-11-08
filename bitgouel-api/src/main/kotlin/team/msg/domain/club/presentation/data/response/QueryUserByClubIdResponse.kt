@@ -2,7 +2,6 @@ package team.msg.domain.club.presentation.data.response
 
 import team.msg.domain.student.model.Student
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.model.User
 import java.util.UUID
 
 data class QueryUserByClubIdResponse(
@@ -11,11 +10,11 @@ data class QueryUserByClubIdResponse(
     val authority: Authority
 ) {
     companion object {
-        fun listOf(users: List<Student>): List<QueryUserByClubIdResponse> = users.map {
+        fun listOf(students: List<Student>): List<QueryUserByClubIdResponse> = students.map {
             QueryUserByClubIdResponse(
-                id = it.id,
-                name = it.name,
-                authority = it.authority
+                id = it.user!!.id,
+                name = it.user!!.name,
+                authority = it.user!!.authority
             )
         }
     }
