@@ -4,9 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.club.exception.ClubNotFoundException
-import team.msg.domain.club.presentation.data.response.AllClubResponse
-import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
-import team.msg.domain.club.presentation.data.response.ClubResponse
+import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
@@ -52,5 +50,20 @@ class ClubServiceImpl(
         val response = ClubResponse.detailOf(club, club.school.highSchool, headCount)
 
         return response
+    }
+
+    /**
+     * 동아리를의 학생 리스트를 조회하는 비즈니스 로직
+     * @param 동아리에 속한 학생 리스트를 조회하기 위한 id
+     */
+    override fun queryAllUsersByClubId(id: Long): QueryAllUsersByClubIdResponse {
+        val club = clubRepository.findByIdOrNull(id)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
+
+        val students = studentRepository.findAllByClub(club)
+
+        return QueryAllUsersByClubIdResponse(
+            QueryUserByClubIdResponse.listOf(students)
+        )
     }
 }
