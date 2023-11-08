@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.club.presentation.data.response.AllClubResponse
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
-import team.msg.domain.club.presentation.data.response.QueryAllUsersByClubIdResponse
+import team.msg.domain.club.presentation.data.response.QueryAllStudentsByClubIdResponse
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.school.enums.HighSchool
 
@@ -30,9 +30,9 @@ class ClubController(
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
-    @GetMapping("/{id}")
-    fun queryUserByClubId(@PathVariable id: Long): ResponseEntity<QueryAllUsersByClubIdResponse> {
-        val response = clubService.queryAllUsersByClubId(id)
+    @GetMapping("/{id}/member")
+    fun queryUserByClubId(@PathVariable id: Long): ResponseEntity<QueryAllStudentsByClubIdResponse> {
+        val response = clubService.queryAllStudentsByClubId(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
