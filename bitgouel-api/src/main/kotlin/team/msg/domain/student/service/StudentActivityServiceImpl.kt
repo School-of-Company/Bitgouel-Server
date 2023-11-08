@@ -15,6 +15,7 @@ import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
+import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
@@ -168,13 +169,13 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryAllStudentActivity(pageable: Pageable): AllStudentActivitiesResponse {
+    override fun queryAllStudentActivities(pageable: Pageable): AllStudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val studentActivities = studentActivityRepository.findAll(pageable)
 
         val response = AllStudentActivitiesResponse(
-            StudentActivityResponse.of(studentActivities, user)
+            StudentActivityResponse.pageOf(studentActivities, user)
         )
         
         return response
@@ -185,7 +186,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryStudentActivityByStudent(studentId: UUID, pageable: Pageable): AllStudentActivitiesResponse {
+    override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesByStudentResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findStudentById(studentId)
@@ -199,10 +200,31 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = AllStudentActivitiesResponse(
-            StudentActivityResponse.of(studentActivities, student.user!!)
+        val response = StudentActivitiesByStudentResponse(
+            StudentActivityResponse.pageOf(studentActivities, student.user!!)
         )
 
         return response
     }
+
+    /**
+     * 학생 자신의 학생활동을 조회하는 비즈니스 로직
+     * @param 페이징을 처리하기 위한 pageable
+     */
+    @Transactional(readOnly = true)
+    override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesByStudentResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+
+        val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
+
+        val response = StudentActivitiesByStudentResponse(
+            StudentActivityResponse.pageOf(studentActivities, user)
+        )
+
+        return response
+    }
+
 }

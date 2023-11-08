@@ -14,7 +14,7 @@ data class StudentActivityResponse(
     val approveStatus: ApproveStatus
 ) {
     companion object {
-        fun of(studentActivities: Page<StudentActivity>, user: User): Page<StudentActivityResponse> =
+        fun pageOf(studentActivities: Page<StudentActivity>,user: User): Page<StudentActivityResponse> =
             studentActivities.map {
                 StudentActivityResponse(
                     activityId = it.id,
@@ -29,5 +29,9 @@ data class StudentActivityResponse(
 }
 
 data class AllStudentActivitiesResponse(
+    val activities: Page<StudentActivityResponse>
+)
+
+data class StudentActivitiesByStudentResponse(
     val activities: Page<StudentActivityResponse>
 )
