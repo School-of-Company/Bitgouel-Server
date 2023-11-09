@@ -3,7 +3,7 @@ package team.msg.domain.post.presentation.web
 import javax.validation.constraints.Max
 import javax.validation.constraints.NotBlank
 
-data class CreateInformPostWebRequest(
+data class CreatePostWebRequest(
     @field:NotBlank
     @Max(100)
     val title: String,
