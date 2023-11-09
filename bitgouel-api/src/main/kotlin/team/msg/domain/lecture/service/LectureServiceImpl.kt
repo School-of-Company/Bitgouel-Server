@@ -88,10 +88,7 @@ class LectureServiceImpl(
 
         val response = AllLecturesResponse(
             lectures.map {
-                val headCount = if(it.approveStatus == ApproveStatus.APPROVED)
-                    registeredLectureRepository.countByLecture(it)
-                else
-                    0
+                val headCount = registeredLectureRepository.countByLecture(it)
                 LectureResponse.of(it,headCount)
             }
         )
