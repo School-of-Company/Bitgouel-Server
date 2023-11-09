@@ -57,13 +57,13 @@ class ClubServiceImpl(
      * @param 동아리에 속한 학생 리스트를 조회하기 위한 id
      */
     @Transactional(readOnly = true)
-    override fun queryAllStudentsByClubId(id: Long): AllStudentsByClubIdResponse {
+    override fun queryAllStudentsByClubId(id: Long): AllStudentsResponse {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
 
         val students = studentRepository.findAllByClub(club)
 
-        val response = AllStudentsByClubIdResponse(
+        val response = AllStudentsResponse(
             ClubResponse.listOfStudent(students)
         )
 

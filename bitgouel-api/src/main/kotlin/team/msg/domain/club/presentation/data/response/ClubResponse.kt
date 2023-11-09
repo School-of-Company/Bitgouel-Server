@@ -24,7 +24,7 @@ data class ClubResponse(
         )
 
         fun listOfStudent(students: List<Student>) = students.map {
-            StudentByClubIdResponse(
+            StudentResponse(
                 id = it.user!!.id,
                 name = it.user!!.name,
                 authority = it.user!!.authority
@@ -43,12 +43,12 @@ data class ClubDetailsResponse(
     val headCount: Int
 )
 
-data class StudentByClubIdResponse(
+data class StudentResponse(
     val id: UUID,
     val name: String,
     val authority: Authority
 )
 
-data class AllStudentsByClubIdResponse(
-    val students: List<StudentByClubIdResponse>
+data class AllStudentsResponse(
+    val students: List<StudentResponse>
 )
