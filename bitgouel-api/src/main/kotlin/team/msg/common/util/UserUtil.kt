@@ -17,9 +17,11 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.exception.InvalidRoleException
 import team.msg.global.security.principal.AuthDetails
 import java.util.*
 
@@ -48,24 +50,70 @@ class UserUtil(
         return user
     }
 
-    fun findStudentByUser(user: User) = studentRepository.findByUser(user)
+    fun getAuthorityEntityAndOrganization(user: User) =
+        when(user.authority) {
+            Authority.ROLE_STUDENT -> {
+                val student = findStudentByUser(user)
+                val club = student.club
+                val school = club.school
+                val organization = "${school.highSchool.schoolName} ${club.name} 동아리 ${student.grade}학년 ${student.classRoom}반 ${student.number}번"
+                Pair(student, organization)
+            }
+            Authority.ROLE_TEACHER -> {
+                val teacher = findTeacherByUser(user)
+                val club = teacher.club
+                val school = club.school
+                val organization = "${school.highSchool.schoolName} ${club.name} 동아리"
+                Pair(teacher, organization)
+            }
+            Authority.ROLE_BBOZZAK -> {
+                val bbozzak = findBbozzakByUser(user)
+                val club = bbozzak.club
+                val school = club.school
+                val organization = "${school.highSchool.schoolName} ${club.name} 동아리"
+                Pair(bbozzak, organization)
+            }
+            Authority.ROLE_PROFESSOR -> {
+                val professor = findProfessorByUser(user)
+                val organization = professor.university
+                Pair(professor, organization)
+            }
+            Authority.ROLE_COMPANY_INSTRUCTOR -> {
+                val companyInstructor = findCompanyInstructorByUser(user)
+                val organization = companyInstructor.company
+                Pair(companyInstructor, organization)
+            }
+            Authority.ROLE_GOVERNMENT -> {
+                val government = findGovernmentByUser(user)
+                val organization = government.governmentName
+                Pair(government, organization)
+            }
+            Authority.ROLE_ADMIN -> {
+                val admin = findAdminByUser(user)
+                val organization = "교육청"
+                Pair(admin, organization)
+            }
+            else -> throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority}]")
+        }
+
+    private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    fun findTeacherByUser(user: User) = teacherRepository.findByUser(user)
+    private fun findTeacherByUser(user: User) = teacherRepository.findByUser(user)
         ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    fun findBbozzakByUser(user: User) = bbozzakRepository.findByUser(user)
+    private fun findBbozzakByUser(user: User) = bbozzakRepository.findByUser(user)
         ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다.  info : [ userId = ${user.id} ]")
 
-    fun findProfessorByUser(user: User) = professorRepository.findByUser(user)
+    private fun findProfessorByUser(user: User) = professorRepository.findByUser(user)
         ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
+    private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
         ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
+    private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
         ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    fun findAdminByUser(user: User) = adminRepository.findByUser(user)
+    private fun findAdminByUser(user: User) = adminRepository.findByUser(user)
         ?: throw AdminNotFoundException("어드민을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 }
