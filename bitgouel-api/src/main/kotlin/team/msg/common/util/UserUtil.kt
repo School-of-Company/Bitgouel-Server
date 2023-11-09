@@ -3,6 +3,7 @@ package team.msg.common.util
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
@@ -50,8 +51,13 @@ class UserUtil(
         return user
     }
 
-    fun getAuthorityEntityAndOrganization(user: User) =
-        when(user.authority) {
+    /**
+     * 유저의 권한에 따라 권한 엔티티를 반환하는 함수입니다.
+     * @param 권한 엔티티를 얻고자 하는 유저
+     * @return 유저에 따른 권한 엔티티
+     */
+    fun getAuthorityEntityAndOrganization(user: User): Pair<BaseUUIDEntity, String> {
+        return when (user.authority) {
             Authority.ROLE_STUDENT -> {
                 val student = findStudentByUser(user)
                 val club = student.club
@@ -93,8 +99,10 @@ class UserUtil(
                 val organization = "교육청"
                 Pair(admin, organization)
             }
+
             else -> throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority}]")
         }
+    }
 
     private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
