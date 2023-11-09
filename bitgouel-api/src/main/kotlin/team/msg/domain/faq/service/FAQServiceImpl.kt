@@ -4,6 +4,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
+import team.msg.domain.admin.exception.AdminNotFoundException
+import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.faq.exception.FaqNotFoundException
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
@@ -16,6 +18,7 @@ import team.msg.domain.faq.repository.FaqRepository
 class FaqServiceImpl(
     private val faqRepository: FaqRepository,
     private val userUtil: UserUtil,
+    private val adminRepository: AdminRepository
 ) : FaqService {
 
     /**
@@ -26,7 +29,8 @@ class FaqServiceImpl(
     override fun createFaq(createFaqRequest: CreateFaqRequest) {
         val user = userUtil.queryCurrentUser()
 
-        val admin = userUtil.findAdminByUser(user)
+        val admin = adminRepository.findByUser(user)
+            ?: throw AdminNotFoundException("어드민을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
         val faq = Faq(
             question = createFaqRequest.question,

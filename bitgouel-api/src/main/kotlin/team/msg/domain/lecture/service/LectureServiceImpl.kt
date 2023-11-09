@@ -24,6 +24,8 @@ import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
 import java.time.LocalDateTime
 import java.util.*
@@ -32,6 +34,7 @@ import java.util.*
 class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
+    private val studentRepository: StudentRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
@@ -116,7 +119,8 @@ class LectureServiceImpl(
     override fun signUpLecture(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
-        val student = userUtil.findStudentByUser(user)
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
         val lecture = queryLecture(id)
 
