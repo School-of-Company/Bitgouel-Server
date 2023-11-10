@@ -9,25 +9,29 @@ import java.util.*
 data class LectureResponse(
     val id: UUID,
     val name: String,
+    val content: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
     val completeDate: LocalDateTime,
     val lectureType: LectureType,
     val lectureStatus: LectureStatus,
     val headCount: Int,
-    val maxRegisteredUser: Int
+    val maxRegisteredUser: Int,
+    val lecturer: String
 ) {
     companion object {
         fun of(lecture: Lecture, headCount: Int): LectureResponse = LectureResponse(
             id = lecture.id,
             name = lecture.name,
+            content = lecture.content,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
             completeDate = lecture.completeDate,
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
-            maxRegisteredUser = lecture.maxRegisteredUser
+            maxRegisteredUser = lecture.maxRegisteredUser,
+            lecturer = lecture.instructor
         )
 
         fun detailOf(lecture: Lecture, headCount: Int): LectureDetailsResponse = LectureDetailsResponse(
@@ -41,7 +45,7 @@ data class LectureResponse(
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
             maxRegisteredUser = lecture.maxRegisteredUser,
-            lecturer = lecture.user.name,
+            lecturer = lecture.instructor,
             credit = lecture.credit
         )
     }
