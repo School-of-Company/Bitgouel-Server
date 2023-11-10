@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.admin.model.Admin
 import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
@@ -24,6 +25,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.global.exception.InvalidRoleException
 import java.util.*
 
 @Service
@@ -244,6 +246,7 @@ class StudentActivityServiceImpl(
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
         when(entity) {
+            is Admin -> {}
             is Student -> {
                 if(entity != studentActivity.student)
                     throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
@@ -252,6 +255,7 @@ class StudentActivityServiceImpl(
                 if(entity != studentActivity.teacher)
                     throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
             }
+            else -> throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
 
         val response = StudentActivityResponse.detailOf(studentActivity)
