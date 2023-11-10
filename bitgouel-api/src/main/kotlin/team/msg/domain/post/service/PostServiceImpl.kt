@@ -21,8 +21,7 @@ class PostServiceImpl(
             content = request.content,
             link = request.link,
             feedType = request.feedType,
-            userId = user.id,
-            user = user
+            userId = user.id
         )
 
         postRepository.save(post)
