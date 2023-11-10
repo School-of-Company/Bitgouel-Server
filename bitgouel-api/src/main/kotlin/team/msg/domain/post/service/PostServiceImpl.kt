@@ -13,6 +13,10 @@ class PostServiceImpl(
     private val postRepository: PostRepository,
     private val userUtil: UserUtil
 ) : PostService {
+    /**
+     * 게시글을 생성하는 비지니스 로직입니다.
+     * @param 게시글 생성에 필요한 정보가 담긴 dto
+     */
     @Transactional(rollbackFor = [Exception::class])
     override fun createPostService(request: CreatePostRequestData) {
         val user = userUtil.queryCurrentUser()
