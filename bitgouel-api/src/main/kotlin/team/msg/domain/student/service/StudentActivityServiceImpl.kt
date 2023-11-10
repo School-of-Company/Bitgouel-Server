@@ -16,7 +16,7 @@ import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
-import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
+import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityDetailResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
@@ -189,7 +189,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesByStudentResponse {
+    override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findStudentById(studentId)
@@ -203,7 +203,7 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = StudentActivitiesByStudentResponse(
+        val response = StudentActivitiesResponse(
             StudentActivityResponse.pageOf(studentActivities, student.user!!)
         )
 
@@ -215,7 +215,7 @@ class StudentActivityServiceImpl(
      * @param 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesByStudentResponse {
+    override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
@@ -223,7 +223,7 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = StudentActivitiesByStudentResponse(
+        val response = StudentActivitiesResponse(
             StudentActivityResponse.pageOf(studentActivities, user)
         )
 

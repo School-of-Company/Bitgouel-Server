@@ -42,7 +42,7 @@ data class AllStudentActivitiesResponse(
     val activities: Page<StudentActivityResponse>
 )
 
-data class StudentActivitiesByStudentResponse(
+data class StudentActivitiesResponse(
     val activities: Page<StudentActivityResponse>
 )
 
