@@ -230,7 +230,11 @@ class StudentActivityServiceImpl(
         return response
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * 학생 활동의 상세 정보를 조회하는 비즈니스 로직
+     * @param 학생 활동을 조회하기 위한 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
     override fun queryStudentActivityDetail(id: UUID): StudentActivityDetailResponse {
         val user = userUtil.queryCurrentUser()
 
