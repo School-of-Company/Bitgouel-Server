@@ -41,17 +41,17 @@ class DataInitializer(
 
     /**
      * ApplicationReadyEvent가 발행되면 initData가 실행됩니다.
-     * school, club의 데이터 count가 0이라면 데이터 삽입이 실행됩니다.
+     * school, club id = 1인 엔티티가 존재하면 Data Init을 실행하지 않는다.
      */
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
     fun initData() {
-        if(schoolRepository.count() == 0L) {
+        if(schoolRepository.existsOne(1)) {
             log.info("=== RUN Init School Data ===")
             initSchool()
         }
 
-        if(clubRepository.count() == 0L) {
+        if(clubRepository.existsOne(1)) {
             log.info("=== RUN Init Club Data ===")
             initClub()
         }

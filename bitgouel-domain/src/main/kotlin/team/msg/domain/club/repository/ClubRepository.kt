@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import team.msg.domain.club.model.Club
 import team.msg.domain.school.model.School
 
-interface ClubRepository : JpaRepository<Club, Long> {
+interface ClubRepository : JpaRepository<Club, Long>, CustomClubRepository {
     @EntityGraph(attributePaths = ["school"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByNameAndSchool(name: String, school: School): Club?
 
