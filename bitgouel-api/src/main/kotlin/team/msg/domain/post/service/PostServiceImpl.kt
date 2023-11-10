@@ -1,6 +1,7 @@
 package team.msg.domain.post.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.post.model.Post
 import team.msg.domain.post.presentation.data.request.CreatePostRequestData
@@ -12,6 +13,7 @@ class PostServiceImpl(
     private val postRepository: PostRepository,
     private val userUtil: UserUtil
 ) : PostService {
+    @Transactional(rollbackFor = [Exception::class])
     override fun createPostService(request: CreatePostRequestData) {
         val user = userUtil.queryCurrentUser()
 
