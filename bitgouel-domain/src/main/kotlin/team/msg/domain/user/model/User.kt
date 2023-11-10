@@ -5,7 +5,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
-import team.msg.common.enum.ApproveStatus
+import team.msg.common.enums.ApproveStatus
 import team.msg.domain.user.enums.Authority
 import java.util.*
 

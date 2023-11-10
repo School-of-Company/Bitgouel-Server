@@ -1,7 +1,7 @@
 package team.msg.domain.student.model
 
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.common.enum.ApproveStatus
+import team.msg.common.enums.ApproveStatus
 import team.msg.domain.teacher.model.Teacher
 import java.time.LocalDateTime
 import java.util.*

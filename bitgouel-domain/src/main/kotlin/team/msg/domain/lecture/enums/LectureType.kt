@@ -1,4 +1,4 @@
-package team.msg.domain.lecture.enum
+package team.msg.domain.lecture.enums
 
 /**
  * MUTUAL_CREDIT_RECOGNITION_PROGRAM - 상호학점인정교육과정

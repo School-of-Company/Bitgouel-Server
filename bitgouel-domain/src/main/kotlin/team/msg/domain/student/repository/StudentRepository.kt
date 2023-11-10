@@ -1,7 +1,6 @@
 package team.msg.domain.student.repository
 
 import org.springframework.data.jpa.repository.EntityGraph
-import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.student.model.Student

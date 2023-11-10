@@ -1,7 +1,7 @@
 package team.msg.domain.lecture.presentation.data.response
 import org.springframework.data.domain.Page
-import team.msg.domain.lecture.enum.LectureStatus
-import team.msg.domain.lecture.enum.LectureType
+import team.msg.domain.lecture.enums.LectureStatus
+import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 import java.time.LocalDateTime
 import java.util.*

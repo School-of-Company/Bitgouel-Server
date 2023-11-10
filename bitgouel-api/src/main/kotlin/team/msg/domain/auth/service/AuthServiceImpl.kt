@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import team.msg.common.enum.ApproveStatus
+import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.*

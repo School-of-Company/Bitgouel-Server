@@ -3,7 +3,7 @@ package team.msg.domain.student.handler
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
-import team.msg.common.enum.ApproveStatus
+import team.msg.common.enums.ApproveStatus
 import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.model.StudentActivityHistory
 import team.msg.domain.student.repository.StudentActivityHistoryRepository

@@ -8,9 +8,9 @@ import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.common.enum.ApproveStatus
-import team.msg.domain.lecture.enum.LectureStatus
-import team.msg.domain.lecture.enum.LectureType
+import team.msg.common.enums.ApproveStatus
+import team.msg.domain.lecture.enums.LectureStatus
+import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
 import java.util.UUID

@@ -13,6 +13,9 @@ bootJar.enabled = false
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis:2.7.5")
+
+    implementation("com.querydsl:querydsl-jpa:5.0.0")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
 }
 
 allOpen {
