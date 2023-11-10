@@ -241,7 +241,7 @@ class StudentActivityServiceImpl(
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
 
         val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다")
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
         when(entity) {
             is Student -> {
