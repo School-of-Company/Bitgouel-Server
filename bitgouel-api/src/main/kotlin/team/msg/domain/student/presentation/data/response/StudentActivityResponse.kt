@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.user.model.User
+import java.time.LocalDateTime
 import java.util.*
 
 data class StudentActivityResponse(
@@ -25,6 +26,15 @@ data class StudentActivityResponse(
                 )
             }
 
+        fun detailOf(studentActivity: StudentActivity): StudentActivityDetailResponse =
+            StudentActivityDetailResponse(
+                id = studentActivity.id,
+                title = studentActivity.title,
+                content = studentActivity.content,
+                credit = studentActivity.credit,
+                activityDate = studentActivity.activityDate,
+                modifiedAt = studentActivity.modifiedAt
+            )
     }
 }
 
@@ -34,4 +44,13 @@ data class AllStudentActivitiesResponse(
 
 data class StudentActivitiesByStudentResponse(
     val activities: Page<StudentActivityResponse>
+)
+
+data class StudentActivityDetailResponse(
+    val id: UUID,
+    val title: String,
+    val content: String,
+    val credit: Int,
+    val activityDate: LocalDateTime,
+    val modifiedAt: LocalDateTime
 )
