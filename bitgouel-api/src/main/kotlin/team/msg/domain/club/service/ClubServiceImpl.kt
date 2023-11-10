@@ -9,6 +9,8 @@ import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
+import team.msg.domain.student.presentation.data.response.AllStudentsResponse
+import team.msg.domain.student.presentation.data.response.StudentResponse
 import team.msg.domain.student.repository.StudentRepository
 
 @Service
@@ -64,7 +66,7 @@ class ClubServiceImpl(
         val students = studentRepository.findAllByClub(club)
 
         val response = AllStudentsResponse(
-            ClubResponse.listOfStudent(students)
+            StudentResponse.listOf(students)
         )
 
         return response

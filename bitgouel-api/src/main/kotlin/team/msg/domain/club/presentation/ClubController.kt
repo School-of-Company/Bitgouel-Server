@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.club.presentation.data.response.AllClubResponse
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
-import team.msg.domain.club.presentation.data.response.AllStudentsResponse
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.student.presentation.data.response.AllStudentsResponse
 
 @RestController
 @RequestMapping("/club")
