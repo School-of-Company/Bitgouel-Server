@@ -11,15 +11,18 @@ import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityDetailResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import java.util.*
 
@@ -227,4 +230,28 @@ class StudentActivityServiceImpl(
         return response
     }
 
+    @Transactional(readOnly = true)
+    override fun queryStudentActivityDetail(id: UUID): StudentActivityDetailResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val entity = userUtil.getAuthorityEntityAndOrganization(user).first
+
+        val studentActivity = studentActivityRepository.findByIdOrNull(id)
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다")
+
+        when(entity) {
+            is Student -> {
+                if(entity != studentActivity.student)
+                    throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+            is Teacher -> {
+                if(entity != studentActivity.teacher)
+                    throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+        }
+
+        val response = StudentActivityResponse.detailOf(studentActivity)
+
+        return response
+    }
 }
