@@ -46,12 +46,12 @@ class DataInitializer(
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
     fun initData() {
-        if(schoolRepository.existsOne(1)) {
+        if(!schoolRepository.existsOne(1)) {
             log.info("=== RUN Init School Data ===")
             initSchool()
         }
 
-        if(clubRepository.existsOne(1)) {
+        if(!clubRepository.existsOne(1)) {
             log.info("=== RUN Init Club Data ===")
             initClub()
         }
