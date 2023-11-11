@@ -1,7 +1,6 @@
 package team.msg.domain.club.presentation.data.response
 
 import team.msg.domain.club.model.Club
-import team.msg.domain.school.enums.HighSchool
 
 data class ClubResponse(
     val id: Long,
@@ -15,9 +14,9 @@ data class ClubResponse(
             )
         }
 
-        fun detailOf(club: Club, highSchool: HighSchool, headCount: Int) = ClubDetailsResponse(
+        fun detailOf(club: Club, headCount: Int) = ClubDetailsResponse(
             clubName = club.name,
-            highSchoolName = highSchool.schoolName,
+            highSchoolName = club.school.highSchool.schoolName,
             headCount = headCount
         )
     }
