@@ -11,6 +11,7 @@ import team.msg.domain.club.presentation.data.response.AllClubResponse
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.student.presentation.data.response.AllStudentsResponse
 
 @RestController
 @RequestMapping("/club")
@@ -26,6 +27,12 @@ class ClubController(
     @GetMapping("/{id}")
     fun queryClubDetails(@PathVariable id: Long): ResponseEntity<ClubDetailsResponse> {
         val response = clubService.queryClubDetailsService(id)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/{id}/member")
+    fun queryUserByClubId(@PathVariable id: Long): ResponseEntity<AllStudentsResponse> {
+        val response = clubService.queryAllStudentsByClubId(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
