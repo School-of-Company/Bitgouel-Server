@@ -261,7 +261,7 @@ class StudentActivityServiceImpl(
             is Bbozzak, 
             is Professor, 
             is CompanyInstructor, 
-            is Government ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
+            is Government ->  throw ForbiddenStudentActivityException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
         
         val response = StudentActivityResponse.detailOf(studentActivity)
