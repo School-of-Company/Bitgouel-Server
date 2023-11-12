@@ -7,19 +7,26 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.model.Bbozzak
+import team.msg.domain.company.model.CompanyInstructor
+import team.msg.domain.government.model.Government
+import team.msg.domain.professor.model.Professor
 import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
-import team.msg.domain.student.presentation.data.response.StudentActivitiesByStudentResponse
+import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import java.util.*
 
@@ -186,7 +193,7 @@ class StudentActivityServiceImpl(
      * @param 학생활동을 조회하기 위한 학생 id 및 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesByStudentResponse {
+    override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findStudentById(studentId)
@@ -200,7 +207,7 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = StudentActivitiesByStudentResponse(
+        val response = StudentActivitiesResponse(
             StudentActivityResponse.pageOf(studentActivities, student.user!!)
         )
 
@@ -212,7 +219,7 @@ class StudentActivityServiceImpl(
      * @param 페이징을 처리하기 위한 pageable
      */
     @Transactional(readOnly = true)
-    override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesByStudentResponse {
+    override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository.findByUser(user)
@@ -220,11 +227,43 @@ class StudentActivityServiceImpl(
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
-        val response = StudentActivitiesByStudentResponse(
+        val response = StudentActivitiesResponse(
             StudentActivityResponse.pageOf(studentActivities, user)
         )
 
         return response
     }
 
+    /**
+     * 학생 활동의 상세 정보를 조회하는 비즈니스 로직
+     * @param 학생 활동을 조회하기 위한 id
+     */
+    @Transactional(readOnly = true)
+    override fun queryStudentActivityDetail(id: UUID): StudentActivityDetailsResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val entity = userUtil.getAuthorityEntityAndOrganization(user).first
+
+        val studentActivity = studentActivityRepository.findByIdOrNull(id)
+            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+        when(entity) {
+            is Student -> {
+                if(entity != studentActivity.student)
+                    throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+            is Teacher -> {
+                if(entity != studentActivity.teacher)
+                    throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+            is Bbozzak, 
+            is Professor, 
+            is CompanyInstructor, 
+            is Government ->  throw ForbiddenStudentActivityException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
+        }
+        
+        val response = StudentActivityResponse.detailOf(studentActivity)
+
+        return response
+    }
 }
