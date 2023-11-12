@@ -26,8 +26,8 @@ data class StudentActivityResponse(
                 )
             }
 
-        fun detailOf(studentActivity: StudentActivity): StudentActivityDetailResponse =
-            StudentActivityDetailResponse(
+        fun detailOf(studentActivity: StudentActivity): StudentActivityDetailsResponse =
+            StudentActivityDetailsResponse(
                 id = studentActivity.id,
                 title = studentActivity.title,
                 content = studentActivity.content,
@@ -46,7 +46,7 @@ data class StudentActivitiesResponse(
     val activities: Page<StudentActivityResponse>
 )
 
-data class StudentActivityDetailResponse(
+data class StudentActivityDetailsResponse(
     val id: UUID,
     val title: String,
     val content: String,

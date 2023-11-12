@@ -5,7 +5,7 @@ import team.msg.domain.student.presentation.data.request.CreateStudentActivityRe
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
-import team.msg.domain.student.presentation.data.response.StudentActivityDetailResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityDetailsResponse
 import java.util.*
 
 interface StudentActivityService {
@@ -17,5 +17,5 @@ interface StudentActivityService {
     fun queryAllStudentActivities(pageable: Pageable): AllStudentActivitiesResponse
     fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesResponse
     fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesResponse
-    fun queryStudentActivityDetail(id: UUID): StudentActivityDetailResponse
+    fun queryStudentActivityDetail(id: UUID): StudentActivityDetailsResponse
 }

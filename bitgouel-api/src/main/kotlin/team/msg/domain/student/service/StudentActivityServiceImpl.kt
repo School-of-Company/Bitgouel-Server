@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
-import team.msg.domain.admin.model.Admin
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
@@ -22,14 +21,13 @@ import team.msg.domain.student.presentation.data.request.CreateStudentActivityRe
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
-import team.msg.domain.student.presentation.data.response.StudentActivityDetailResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.global.exception.InvalidRoleException
 import java.util.*
 
 @Service
@@ -241,7 +239,7 @@ class StudentActivityServiceImpl(
      * @param 학생 활동을 조회하기 위한 id
      */
     @Transactional(readOnly = true)
-    override fun queryStudentActivityDetail(id: UUID): StudentActivityDetailResponse {
+    override fun queryStudentActivityDetail(id: UUID): StudentActivityDetailsResponse {
         val user = userUtil.queryCurrentUser()
 
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
