@@ -26,7 +26,7 @@ class CertificationServiceImpl(
      * @param 자격증을 소지한 학생 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun createCertification(studentId: UUID, createCertificationRequest: CreateCertificationRequest) {
+    override fun createCertification(studentId: UUID,request: CreateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
 
         when (user.authority) {
@@ -49,8 +49,8 @@ class CertificationServiceImpl(
         val certification = Certification(
             id = UUID.randomUUID(),
             studentId = studentId,
-            name = createCertificationRequest.name,
-            acquisitionDate = createCertificationRequest.acquisitionDate
+            name = request.name,
+            acquisitionDate = request.acquisitionDate
         )
 
         certificationRepository.save(certification)

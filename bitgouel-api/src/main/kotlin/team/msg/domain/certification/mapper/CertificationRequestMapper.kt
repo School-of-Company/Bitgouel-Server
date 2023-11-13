@@ -4,5 +4,5 @@ import team.msg.domain.certification.presentation.data.request.CreateCertificati
 import team.msg.domain.certification.presentation.data.web.CreateCertificationWebRequest
 
 interface CertificationRequestMapper {
-    fun createCertificationWebRequestToDto(createCertificationWebRequest: CreateCertificationWebRequest): CreateCertificationRequest
+    fun createCertificationWebRequestToDto(webRequest: CreateCertificationWebRequest): CreateCertificationRequest
 }
