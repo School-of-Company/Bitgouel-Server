@@ -12,7 +12,7 @@ import java.util.*
 @Service
 class CertificationServiceImpl(
     private val certificationRepository: CertificationRepository,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
 ) : CertificationService {
     /**
      * 자격증에 대한 정보를 작성하는 비지니스 로직입니다.
