@@ -6,6 +6,9 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.post.model.Post
 import team.msg.domain.post.presentation.data.request.CreatePostRequestData
 import team.msg.domain.post.repository.PostRepository
+import team.msg.domain.post.enums.FeedType
+import team.msg.domain.user.enums.Authority
+import team.msg.global.exception.ForbiddenException
 import java.util.UUID
 
 @Service
@@ -20,6 +23,15 @@ class PostServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun createPostService(request: CreatePostRequestData) {
         val user = userUtil.queryCurrentUser()
+
+        when(user.authority){
+            Authority.ROLE_ADMIN -> {}
+            Authority.ROLE_COMPANY_INSTRUCTOR,
+            Authority.ROLE_GOVERNMENT,
+            Authority.ROLE_PROFESSOR,
+            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.INFORM) throw ForbiddenException("공지를 작성할 권한이 없습니다. info : [ userAuthority = ${user.authority} ]")
+            else -> throw ForbiddenException("글을 작성할 권한이 없습니다. info : [ userAuthority = ${user.authority} ]")
+        }
 
         val post = Post(
             id = UUID.randomUUID(),
