@@ -1,4 +1,4 @@
-package team.msg.common.aop
+package team.msg.common.aop.log
 
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.ProceedingJoinPoint
