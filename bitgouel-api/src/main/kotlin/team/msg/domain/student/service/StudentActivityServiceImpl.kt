@@ -114,7 +114,7 @@ class StudentActivityServiceImpl(
         val studentActivity = studentActivityRepository.findByIdOrNull(id)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
-        if(student.id != studentActivity.student.id)
+        if(student != studentActivity.student)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
 
         studentActivityRepository.delete(studentActivity)
@@ -134,7 +134,7 @@ class StudentActivityServiceImpl(
         val studentActivity = studentActivityRepository.findByIdOrNull(id)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
-        if(teacher.id != studentActivity.teacher.id)
+        if(teacher != studentActivity.teacher)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
 
         studentActivityRepository.delete(studentActivity)
@@ -154,7 +154,7 @@ class StudentActivityServiceImpl(
         val studentActivity = studentActivityRepository.findByIdOrNull(id)
             ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
 
-        if(teacher.id != studentActivity.teacher.id)
+        if(teacher != studentActivity.teacher)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
 
         val updatedStudentActivity = StudentActivity(
