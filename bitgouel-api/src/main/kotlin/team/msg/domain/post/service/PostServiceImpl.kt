@@ -25,7 +25,6 @@ class PostServiceImpl(
             id = UUID.randomUUID(),
             title = request.title,
             content = request.content,
-            link = request.link,
             feedType = request.feedType,
             userId = user.id
         )

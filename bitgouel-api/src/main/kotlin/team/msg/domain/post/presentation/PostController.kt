@@ -4,6 +4,7 @@ import javax.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.mapper.PostRequestMapper
@@ -16,15 +17,9 @@ class PostController(
     private val postService: PostService,
     private val postRequestMapper: PostRequestMapper
 ) {
-    @PostMapping("/inform")
-    fun createInformPost(@RequestBody @Valid webRequest: CreatePostWebRequest){
-        val request = postRequestMapper.createPostWebRequestToDto(webRequest, FeedType.INFORM)
-        postService.createPostService(request)
-    }
-
-    @PostMapping("/employment")
-    fun createEmploymentPost(@RequestBody @Valid webRequest: CreatePostWebRequest){
-        val request = postRequestMapper.createPostWebRequestToDto(webRequest, FeedType.EMPLOYMENT)
+    @PostMapping
+    fun createInformPost(@RequestBody @Valid webRequest: CreatePostWebRequest, @RequestParam(name = "type") FeedType: FeedType){
+        val request = postRequestMapper.createPostWebRequestToDto(webRequest, FeedType)
         postService.createPostService(request)
     }
 }
