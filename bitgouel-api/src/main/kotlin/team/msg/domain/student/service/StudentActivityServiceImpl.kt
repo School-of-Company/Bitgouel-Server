@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
+import team.msg.domain.club.model.Club
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.professor.model.Professor
@@ -28,6 +29,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.model.User
 import java.util.*
 
 @Service
@@ -47,11 +49,9 @@ class StudentActivityServiceImpl(
     override fun createStudentActivity(request: CreateStudentActivityRequest) {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val student = studentRepository findByUser user
 
-        val teacher = teacherRepository.findByClub(student.club)
-            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다.")
+        val teacher = teacherRepository findByClub student.club
 
         val studentActivity = StudentActivity(
             id = UUID.randomUUID(),
@@ -77,11 +77,9 @@ class StudentActivityServiceImpl(
     override fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest) {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val student = studentRepository findByUser user
 
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+        val studentActivity = studentActivityRepository findById id
 
         if(student.id != studentActivity.student.id)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
@@ -108,11 +106,9 @@ class StudentActivityServiceImpl(
     override fun deleteStudentActivity(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val student = studentRepository findByUser user
 
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+        val studentActivity = studentActivityRepository findById id
 
         if(student != studentActivity.student)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
@@ -128,11 +124,9 @@ class StudentActivityServiceImpl(
     override fun rejectStudentActivity(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
-        val teacher = teacherRepository.findByUser(user)
-            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val teacher = teacherRepository findByUser user
 
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+        val studentActivity = studentActivityRepository findById id
 
         if(teacher != studentActivity.teacher)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
@@ -148,11 +142,9 @@ class StudentActivityServiceImpl(
     override fun approveStudentActivity(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
-        val teacher = teacherRepository.findByUser(user)
-            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val teacher = teacherRepository findByUser user
 
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+        val studentActivity = studentActivityRepository findById id
 
         if(teacher != studentActivity.teacher)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
@@ -196,11 +188,9 @@ class StudentActivityServiceImpl(
     override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findStudentById(studentId)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ studentId = $studentId ]")
+        val student = studentRepository findByUser user
 
-        val teacher = teacherRepository.findByUser(user)
-            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val teacher = teacherRepository findByUser user
 
         if(student.club != teacher.club)
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
@@ -222,8 +212,7 @@ class StudentActivityServiceImpl(
     override fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id}, username = ${user.name} ]")
+        val student = studentRepository findByUser user
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
@@ -244,8 +233,7 @@ class StudentActivityServiceImpl(
 
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
 
-        val studentActivity = studentActivityRepository.findByIdOrNull(id)
-            ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+        val studentActivity = studentActivityRepository findById id
 
         when(entity) {
             is Student -> {
@@ -266,4 +254,20 @@ class StudentActivityServiceImpl(
 
         return response
     }
+
+    /**
+     * find ?: throw 로직을 단순화시킨 infix 함수들입니다.
+     */
+    private infix fun StudentRepository.findByUser(user: User): Student =
+        this.findByUser(user) ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun StudentActivityRepository.findById(id: UUID): StudentActivity =
+        this.findByIdOrNull(id) ?: throw StudentActivityNotFoundException("학생 활동을 찾을 수 없습니다. info : [ studentActivityId = $id ]")
+
+    private infix fun TeacherRepository.findByUser(user: User): Teacher =
+        this.findByUser(user) ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun TeacherRepository.findByClub(club: Club): Teacher =
+        this.findByClub(club) ?: throw TeacherNotFoundException("관련 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
+
 }
