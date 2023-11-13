@@ -32,7 +32,7 @@ class CertificationServiceImpl(
         when (user.authority) {
             Authority.ROLE_TEACHER -> {
                 val teacher = teacherRepository.findByUser(user)
-                    ?: throw TeacherNotFoundException("존재하지 않는 선생님입니다. info : [ userId = ${user.id}")
+                    ?: throw TeacherNotFoundException("존재하지 않는 선생님입니다. info : [ userId = ${user.id} ]")
                 val student = studentRepository.findStudentById(studentId)
                     ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ studentId = $studentId ]")
 
