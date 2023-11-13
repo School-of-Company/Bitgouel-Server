@@ -19,7 +19,7 @@ class Post (
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     var title: String,
 
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     var content: String,
 
     @Enumerated(EnumType.STRING)
