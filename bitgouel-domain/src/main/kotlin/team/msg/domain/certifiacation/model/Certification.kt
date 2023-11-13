@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.user.model.User
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.*
 
 @Entity
@@ -23,7 +23,7 @@ class Certification(
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     val name: String,
 
-    @Column(columnDefinition = "DATETIME(6)", nullable = false)
-    val acquisitionDate: LocalDateTime,
+    @Column(columnDefinition = "DATE", nullable = false)
+    val acquisitionDate: LocalDate,
 
 ) : BaseUUIDEntity(id)
