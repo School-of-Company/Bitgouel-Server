@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.post.model.Post
-import team.msg.domain.post.presentation.data.request.CreatePostRequestData
+import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.user.enums.Authority
@@ -21,7 +21,7 @@ class PostServiceImpl(
      * @param 게시글 생성에 필요한 정보가 담긴 dto
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun createPostService(request: CreatePostRequestData) {
+    override fun createPostService(request: CreatePostRequest) {
         val user = userUtil.queryCurrentUser()
 
         when(user.authority){
