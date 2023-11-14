@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class CreateStudentActivityWebRequest(
@@ -19,6 +20,6 @@ data class CreateStudentActivityWebRequest(
     val credit: Int,
 
     @field:NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    val activityDate: LocalDateTime
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    val activityDate: LocalDate
 )

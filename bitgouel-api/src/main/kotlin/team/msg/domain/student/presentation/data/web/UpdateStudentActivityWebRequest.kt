@@ -1,22 +1,25 @@
 package team.msg.domain.student.presentation.data.web
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import javax.validation.constraints.Max
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
-import java.time.LocalDateTime
+import javax.validation.constraints.Size
+import java.time.LocalDate
 
 data class UpdateStudentActivityWebRequest(
     @field:NotBlank
-    @field:Max(100)
+    @field:Size(max = 100)
     val title: String,
 
     @field:NotBlank
-    @field:Max(1000)
+    @field:Size(max = 1000)
     val content: String,
 
     @field:NotNull
     val credit: Int,
 
     @field:NotNull
-    val activityDate: LocalDateTime
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    val activityDate: LocalDate
 )
