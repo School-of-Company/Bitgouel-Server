@@ -60,6 +60,8 @@ class CertificationServiceImpl(
 
     /**
      * 선생님이 자격증 리스트를 조회하는 비지니스 로직입니다.
+     * @param 자격증 리스트를 조회하기 위한 학생 id
+     * @return 학생의 자격증 리스트
      */
     @Transactional(readOnly = true)
     override fun queryCertifications(studentId: UUID): CertificationsResponse {
