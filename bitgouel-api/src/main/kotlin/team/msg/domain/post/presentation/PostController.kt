@@ -18,8 +18,8 @@ class PostController(
     private val postRequestMapper: PostRequestMapper
 ) {
     @PostMapping
-    fun createPost(@RequestBody @Valid webRequest: CreatePostWebRequest){
-        val request = postRequestMapper.createPostWebRequestToDto(webRequest)
+    fun createPost(@RequestBody @Valid webRequest: CreatePostWebRequest, @RequestParam(name = "type") FeedType: FeedType){
+        val request = postRequestMapper.createPostWebRequestToDto(webRequest, FeedType)
         postService.createPostService(request)
     }
 }
