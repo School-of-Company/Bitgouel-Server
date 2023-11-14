@@ -19,5 +19,5 @@ class Link (
     val post: Post,
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    val content: String
+    val url: String
 ) : BaseUUIDEntity(id)

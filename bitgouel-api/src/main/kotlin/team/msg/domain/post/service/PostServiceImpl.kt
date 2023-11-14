@@ -50,7 +50,7 @@ class PostServiceImpl(
             Link(
                 id = UUID.randomUUID(),
                 post = postEntity,
-                content = it
+                url = it
             )
         }
 
