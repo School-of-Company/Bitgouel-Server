@@ -1,5 +1,6 @@
 package team.msg.domain.certification.presentation
 
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,7 +18,7 @@ class CertificationController(
     private val certificationRequestMapper: CertificationRequestMapper
 ) {
     @PostMapping
-    fun createCertification(@RequestBody webRequest: CreateCertificationWebRequest): ResponseEntity<Void> {
+    fun createCertification(@RequestBody @Valid webRequest: CreateCertificationWebRequest): ResponseEntity<Void> {
         val request = certificationRequestMapper.createCertificationWebRequestToDto(webRequest)
         certificationService.createCertification(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
