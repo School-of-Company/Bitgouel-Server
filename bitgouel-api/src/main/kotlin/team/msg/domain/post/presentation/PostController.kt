@@ -1,6 +1,8 @@
 package team.msg.domain.post.presentation
 
 import javax.validation.Valid
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,8 +18,9 @@ class PostController(
     private val postRequestMapper: PostRequestMapper
 ) {
     @PostMapping
-    fun createPost(@RequestBody @Valid webRequest: CreatePostWebRequest){
+    fun createPost(@RequestBody @Valid webRequest: CreatePostWebRequest): ResponseEntity<Void> {
         val request = postRequestMapper.createPostWebRequestToDto(webRequest)
-        postService.createPostService(request)
+        postService.createPost(request)
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
