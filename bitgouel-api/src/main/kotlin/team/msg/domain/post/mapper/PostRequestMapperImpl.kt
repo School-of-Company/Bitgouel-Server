@@ -10,10 +10,10 @@ class PostRequestMapperImpl : PostRequestMapper {
     /**
      * post 생성 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
      */
-    override fun createPostWebRequestToDto(webRequest: CreatePostWebRequest, feedType: FeedType) = CreatePostRequest(
+    override fun createPostWebRequestToDto(webRequest: CreatePostWebRequest) = CreatePostRequest(
         title = webRequest.title,
         content = webRequest.content,
         link = webRequest.link.map { it.url },
-        feedType = feedType
+        feedType = webRequest.feedType
     )
 }

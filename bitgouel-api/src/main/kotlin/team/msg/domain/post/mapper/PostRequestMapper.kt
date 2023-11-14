@@ -5,5 +5,5 @@ import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.presentation.web.CreatePostWebRequest
 
 interface PostRequestMapper {
-    fun createPostWebRequestToDto(webRequest: CreatePostWebRequest,feedType: FeedType): CreatePostRequest
+    fun createPostWebRequestToDto(webRequest: CreatePostWebRequest): CreatePostRequest
 }
