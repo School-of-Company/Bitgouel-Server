@@ -88,6 +88,9 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/faq").permitAll()
             .mvcMatchers(HttpMethod.GET, "/faq/{id}").permitAll()
 
+            // certification
+            .mvcMatchers(HttpMethod.POST, "/certification/{student_id}").hasRole(STUDENT)
+
             // user
             .mvcMatchers(HttpMethod.GET, "/user").authenticated()
 
