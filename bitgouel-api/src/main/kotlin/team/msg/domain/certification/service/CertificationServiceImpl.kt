@@ -6,9 +6,14 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
+import team.msg.domain.certification.presentation.data.response.AllCertificationsResponse
+import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.util.*
 
@@ -16,7 +21,8 @@ import java.util.*
 class CertificationServiceImpl(
     private val certificationRepository: CertificationRepository,
     private val studentRepository: StudentRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val teacherRepository: TeacherRepository,
 ) : CertificationService {
 
     /**
@@ -36,6 +42,22 @@ class CertificationServiceImpl(
         )
 
         certificationRepository.save(certification)
+    }
+
+    @Transactional(readOnly = true)
+    override fun queryAllCertifications(): AllCertificationsResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
+
+        val certifications = certificationRepository.findAllByStudentId(student.id)
+
+        val response = AllCertificationsResponse(
+            CertificationResponse.listOf(certifications)
+        )
+
+        return response
     }
 
     private infix fun StudentRepository.findByUer(user: User): Student =
