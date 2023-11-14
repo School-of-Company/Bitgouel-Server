@@ -11,9 +11,6 @@ import team.msg.domain.certification.presentation.data.response.CertificationRes
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
-import team.msg.domain.teacher.exception.TeacherNotFoundException
-import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.util.*
 
@@ -21,8 +18,7 @@ import java.util.*
 class CertificationServiceImpl(
     private val certificationRepository: CertificationRepository,
     private val studentRepository: StudentRepository,
-    private val userUtil: UserUtil,
-    private val teacherRepository: TeacherRepository,
+    private val userUtil: UserUtil
 ) : CertificationService {
 
     /**
@@ -44,12 +40,14 @@ class CertificationServiceImpl(
         certificationRepository.save(certification)
     }
 
+    /**
+     * 자격증 리스트를 조회하는 비지니스 로직입니다.
+     */
     @Transactional(readOnly = true)
     override fun queryAllCertifications(): AllCertificationsResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
+        val student = studentRepository findByUer user
 
         val certifications = certificationRepository.findAllByStudentId(student.id)
 
