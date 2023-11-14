@@ -73,7 +73,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/activity/my").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasRole(TEACHER)
 
-            .mvcMatchers(HttpMethod.POST, "/post/inform").hasRole(ADMIN)
+            // post
             .mvcMatchers(HttpMethod.POST, "/post/employment").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
 
             // lecture
