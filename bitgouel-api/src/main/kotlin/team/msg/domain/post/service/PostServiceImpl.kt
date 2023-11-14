@@ -7,6 +7,8 @@ import team.msg.domain.post.model.Post
 import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
+import team.msg.domain.post.model.Link
+import team.msg.domain.post.repository.LinkRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.global.exception.ForbiddenException
 import java.util.UUID
@@ -14,6 +16,7 @@ import java.util.UUID
 @Service
 class PostServiceImpl(
     private val postRepository: PostRepository,
+    private val linkRepository: LinkRepository,
     private val userUtil: UserUtil
 ) : PostService {
     /**
@@ -41,6 +44,16 @@ class PostServiceImpl(
             userId = user.id
         )
 
-        postRepository.save(post)
+        val postEntity = postRepository.save(post)
+
+        val links = request.link.map {
+            Link(
+                id = UUID.randomUUID(),
+                post = postEntity,
+                content = it
+            )
+        }
+
+        linkRepository.saveAll(links)
     }
 }
