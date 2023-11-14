@@ -36,7 +36,7 @@ class CertificationController(
 
     @GetMapping("/{student_id}")
     fun queryCertifications(@PathVariable("student_id") studentId: UUID): ResponseEntity<CertificationsResponse> {
-        val response = certificationService.queryCertifications()
+        val response = certificationService.queryCertifications(studentId)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
