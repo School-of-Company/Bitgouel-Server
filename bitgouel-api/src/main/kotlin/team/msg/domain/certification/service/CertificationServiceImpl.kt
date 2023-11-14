@@ -2,17 +2,21 @@ package team.msg.domain.certification.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.user.model.User
 import java.util.*
 
 @Service
 class CertificationServiceImpl(
     private val certificationRepository: CertificationRepository,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
+    private val userUtil: UserUtil
 ) : CertificationService {
 
     /**
@@ -20,12 +24,13 @@ class CertificationServiceImpl(
      * @param 자격증을 소지한 학생 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun createCertification(studentId: UUID, request: CreateCertificationRequest) {
-        studentRepository existOne studentId
+    override fun createCertification(request: CreateCertificationRequest) {
+        val user = userUtil.queryCurrentUser()
+        val student = studentRepository findByUer user
 
         val certification = Certification(
             id = UUID.randomUUID(),
-            studentId = studentId,
+            studentId = student.id,
             name = request.name,
             acquisitionDate = request.acquisitionDate
         )
@@ -33,8 +38,7 @@ class CertificationServiceImpl(
         certificationRepository.save(certification)
     }
 
-    private infix fun StudentRepository.existOne(studentId: UUID) {
-        if (!this.existOne(studentId))
-            throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ studentId = $studentId ]")
-    }
+    private infix fun StudentRepository.findByUer(user: User): Student =
+        this.findByUser(user)
+            ?: throw StudentNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
 }

@@ -7,7 +7,7 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.user.model.User
 import java.util.*
 
-interface StudentRepository : CrudRepository<Student, UUID>, CustomStudentRepository {
+interface StudentRepository : CrudRepository<Student, UUID> {
 
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByUser(user: User): Student?
