@@ -13,7 +13,7 @@ class PostRequestMapperImpl : PostRequestMapper {
     override fun createPostWebRequestToDto(webRequest: CreatePostWebRequest) = CreatePostRequest(
         title = webRequest.title,
         content = webRequest.content,
-        link = webRequest.link.map { it.url },
+        link = webRequest.link?.map { it.url },
         feedType = webRequest.feedType
     )
 }

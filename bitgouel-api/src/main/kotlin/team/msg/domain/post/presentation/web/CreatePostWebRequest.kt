@@ -1,6 +1,5 @@
 package team.msg.domain.post.presentation.web
 
-import javax.persistence.Enumerated
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.NotBlank
@@ -18,9 +17,8 @@ data class CreatePostWebRequest(
     @Max(2000)
     val content: String,
 
-    @field:NotNull
     @field:Valid
-    val link: List<LinkWebRequest>,
+    val link: List<LinkWebRequest>?,
 
     @field:NotNull
     val feedType: FeedType
