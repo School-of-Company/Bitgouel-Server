@@ -1,11 +1,17 @@
 package team.msg.domain.student.model
 
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.teacher.model.Teacher
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.*
-import javax.persistence.*
 
 /**
  * StudentActivity의 History를 저장하는 엔티티입니다.
@@ -29,8 +35,8 @@ class StudentActivityHistory(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     var approveStatus: ApproveStatus,
 
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    var activityDate: LocalDateTime,
+    @Column(columnDefinition = "DATE", nullable = false)
+    var activityDate: LocalDate,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)", nullable = false)
