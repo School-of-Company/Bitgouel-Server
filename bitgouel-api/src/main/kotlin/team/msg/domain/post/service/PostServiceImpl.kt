@@ -21,7 +21,7 @@ class PostServiceImpl(
      * @param 게시글 생성에 필요한 정보가 담긴 dto
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun createPostService(request: CreatePostRequest) {
+    override fun createPost(request: CreatePostRequest) {
         val user = userUtil.queryCurrentUser()
 
         when(user.authority){
