@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.user.model.User
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -51,6 +52,6 @@ data class StudentActivityDetailsResponse(
     val title: String,
     val content: String,
     val credit: Int,
-    val activityDate: LocalDateTime,
+    val activityDate: LocalDate,
     val modifiedAt: LocalDateTime
 )

@@ -3,6 +3,7 @@ package team.msg.domain.student.model
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.teacher.model.Teacher
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -26,8 +27,8 @@ class StudentActivity(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     var approveStatus: ApproveStatus,
 
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
-    var activityDate: LocalDateTime,
+    @Column(columnDefinition = "DATE", nullable = false)
+    var activityDate: LocalDate,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)", nullable = false)
