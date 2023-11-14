@@ -8,15 +8,12 @@ import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
-import team.msg.domain.post.model.Link
-import team.msg.domain.post.repository.LinkRepository
 import team.msg.domain.user.enums.Authority
 import java.util.UUID
 
 @Service
 class PostServiceImpl(
     private val postRepository: PostRepository,
-    private val linkRepository: LinkRepository,
     private val userUtil: UserUtil
 ) : PostService {
     /**
@@ -36,25 +33,18 @@ class PostServiceImpl(
             else -> "게시글을 작성할 권한이 없습니다." info user.authority
         }
 
+        val link: List<String> = request.link ?: mutableListOf()
+
         val post = Post(
             id = UUID.randomUUID(),
             title = request.title,
             content = request.content,
             feedType = request.feedType,
+            link = link,
             userId = user.id
         )
 
-        val postEntity = postRepository.save(post)
-
-        val links = request.link.map {
-            Link(
-                id = UUID.randomUUID(),
-                post = postEntity,
-                url = it
-            )
-        }
-
-        linkRepository.saveAll(links)
+        postRepository.save(post)
     }
 
     infix fun String.info(authority: Authority): Nothing =

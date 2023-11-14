@@ -1,9 +1,12 @@
 package team.msg.domain.post.model
 
+import javax.persistence.CollectionTable
 import javax.persistence.Column
+import javax.persistence.ElementCollection
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.JoinColumn
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.post.enums.FeedType
 import java.util.*
@@ -21,6 +24,13 @@ class Post (
 
     @Column(columnDefinition = "TEXT", nullable = false)
     var content: String,
+
+    @ElementCollection
+    @CollectionTable(
+        name = "Link",
+        joinColumns = [JoinColumn(name = "post_id")]
+    )
+    val link: List<String>,
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
