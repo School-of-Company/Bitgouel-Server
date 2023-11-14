@@ -7,10 +7,10 @@ import team.msg.domain.post.model.Post
 import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
+import team.msg.domain.post.exception.ForbiddenPostException
 import team.msg.domain.post.model.Link
 import team.msg.domain.post.repository.LinkRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.global.exception.ForbiddenException
 import java.util.UUID
 
 @Service
@@ -32,8 +32,8 @@ class PostServiceImpl(
             Authority.ROLE_COMPANY_INSTRUCTOR,
             Authority.ROLE_GOVERNMENT,
             Authority.ROLE_PROFESSOR,
-            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.INFORM) throw ForbiddenException("공지를 작성할 권한이 없습니다. info : [ userAuthority = ${user.authority} ]")
-            else -> throw ForbiddenException("글을 작성할 권한이 없습니다. info : [ userAuthority = ${user.authority} ]")
+            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.INFORM) "공지를 작성할 권한이 없습니다." info user.authority
+            else -> "게시글을 작성할 권한이 없습니다." info user.authority
         }
 
         val post = Post(
@@ -56,4 +56,8 @@ class PostServiceImpl(
 
         linkRepository.saveAll(links)
     }
+
+    infix fun String.info(authority: Authority): Nothing =
+        throw ForbiddenPostException("$this info: [ userAuthority = $authority ]")
+
 }
