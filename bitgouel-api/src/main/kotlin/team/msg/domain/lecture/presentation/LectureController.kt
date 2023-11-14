@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
-import team.msg.domain.lecture.presentation.data.response.AllLecturesResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.web.CreateLectureWebRequest
 import team.msg.domain.lecture.presentation.web.QueryAllLecturesWebRequest
@@ -34,7 +34,7 @@ class LectureController(
     }
 
     @GetMapping
-    fun queryAllLectures(pageable: Pageable, WebRequest: QueryAllLecturesWebRequest): ResponseEntity<AllLecturesResponse>{
+    fun queryAllLectures(pageable: Pageable, WebRequest: QueryAllLecturesWebRequest): ResponseEntity<LecturesResponse>{
         val request = lectureRequestMapper.queryLectureWebRequestToDto(WebRequest)
         val response = lectureService.queryAllLectures(pageable, request)
         return ResponseEntity.status(HttpStatus.OK).body(response)

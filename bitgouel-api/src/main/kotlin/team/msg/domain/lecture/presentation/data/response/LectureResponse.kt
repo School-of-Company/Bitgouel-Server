@@ -54,7 +54,7 @@ data class LectureResponse(
     }
 }
 
-data class AllLecturesResponse(
+data class LecturesResponse(
     val lectures: Page<LectureResponse>
 )
 

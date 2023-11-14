@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import team.msg.domain.club.presentation.data.response.AllClubResponse
+import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.school.enums.HighSchool
@@ -19,7 +19,7 @@ class ClubController(
     private val clubService: ClubService
 ) {
     @GetMapping
-    fun queryAllClubs(@RequestParam("highSchool") highSchool: HighSchool): ResponseEntity<AllClubResponse> {
+    fun queryAllClubs(@RequestParam("highSchool") highSchool: HighSchool): ResponseEntity<ClubsResponse> {
         val response = clubService.queryAllClubsService(highSchool)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
