@@ -28,7 +28,7 @@ class CertificationController(
 
     @GetMapping
     fun queryAllCertifications(): ResponseEntity<CertificationsResponse> {
-        val response = certificationService.queryAllCertifications()
+        val response = certificationService.queryCertifications()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }

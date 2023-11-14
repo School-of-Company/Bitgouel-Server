@@ -6,8 +6,8 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
-import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
+import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -41,15 +41,29 @@ class CertificationServiceImpl(
     }
 
     /**
-     * 자격증 리스트를 조회하는 비지니스 로직입니다.
+     * 학생이 자격증 리스트를 조회하는 비지니스 로직입니다.
      */
     @Transactional(readOnly = true)
-    override fun queryAllCertifications(): CertificationsResponse {
+    override fun queryCertifications(): CertificationsResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository findByUer user
 
-        val certifications = certificationRepository.findAllByStudentId(student.id)
+        val certifications = certificationRepository findAllByStudentId student.id
+
+        val response = CertificationsResponse(
+            CertificationResponse.listOf(certifications)
+        )
+
+        return response
+    }
+
+    /**
+     * 선생님이 자격증 리스트를 조회하는 비지니스 로직입니다.
+     */
+    @Transactional(readOnly = true)
+    override fun queryCertifications(studentId: UUID): CertificationsResponse {
+        val certifications = certificationRepository findAllByStudentId studentId
 
         val response = CertificationsResponse(
             CertificationResponse.listOf(certifications)
@@ -61,4 +75,7 @@ class CertificationServiceImpl(
     private infix fun StudentRepository.findByUer(user: User): Student =
         this.findByUser(user)
             ?: throw StudentNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun CertificationRepository.findAllByStudentId(studentId: UUID): List<Certification> =
+        this.findAllByStudentId(studentId)
 }
