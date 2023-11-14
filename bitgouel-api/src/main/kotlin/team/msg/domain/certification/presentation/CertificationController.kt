@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.certification.mapper.CertificationRequestMapper
-import team.msg.domain.certification.presentation.data.response.AllCertificationsResponse
+import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.certification.presentation.data.web.CreateCertificationWebRequest
 import team.msg.domain.certification.service.CertificationService
 
@@ -27,7 +27,7 @@ class CertificationController(
     }
 
     @GetMapping
-    fun queryAllCertifications(): ResponseEntity<AllCertificationsResponse> {
+    fun queryAllCertifications(): ResponseEntity<CertificationsResponse> {
         val response = certificationService.queryAllCertifications()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }

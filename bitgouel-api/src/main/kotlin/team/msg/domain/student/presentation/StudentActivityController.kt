@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.student.mapper.StudentActivityMapper
-import team.msg.domain.student.presentation.data.response.AllStudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityDetailsResponse
 import team.msg.domain.student.presentation.data.web.CreateStudentActivityWebRequest
@@ -60,7 +59,7 @@ class StudentActivityController(
     }
 
     @GetMapping
-    fun queryAllStudentActivities(pageable: Pageable): ResponseEntity<AllStudentActivitiesResponse> {
+    fun queryAllStudentActivities(pageable: Pageable): ResponseEntity<StudentActivitiesResponse> {
         val response = studentActivityService.queryAllStudentActivities(pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }

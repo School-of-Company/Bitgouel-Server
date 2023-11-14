@@ -25,13 +25,13 @@ class ClubServiceImpl(
      * @param 동아리를 조회하기 위한 학교 이름
      */
     @Transactional(readOnly = true)
-    override fun queryAllClubsService(highSchool: HighSchool): AllClubResponse {
+    override fun queryAllClubsService(highSchool: HighSchool): ClubsResponse {
         val school = schoolRepository.findByHighSchool(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool ]")
 
         val clubs = clubRepository.findAllBySchool(school)
 
-        val response = AllClubResponse(
+        val response = ClubsResponse(
             ClubResponse.listOf(clubs)
         )
 

@@ -6,7 +6,7 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
-import team.msg.domain.certification.presentation.data.response.AllCertificationsResponse
+import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
@@ -44,14 +44,14 @@ class CertificationServiceImpl(
      * 자격증 리스트를 조회하는 비지니스 로직입니다.
      */
     @Transactional(readOnly = true)
-    override fun queryAllCertifications(): AllCertificationsResponse {
+    override fun queryAllCertifications(): CertificationsResponse {
         val user = userUtil.queryCurrentUser()
 
         val student = studentRepository findByUer user
 
         val certifications = certificationRepository.findAllByStudentId(student.id)
 
-        val response = AllCertificationsResponse(
+        val response = CertificationsResponse(
             CertificationResponse.listOf(certifications)
         )
 

@@ -38,10 +38,6 @@ data class StudentActivityResponse(
     }
 }
 
-data class AllStudentActivitiesResponse(
-    val activities: Page<StudentActivityResponse>
-)
-
 data class StudentActivitiesResponse(
     val activities: Page<StudentActivityResponse>
 )

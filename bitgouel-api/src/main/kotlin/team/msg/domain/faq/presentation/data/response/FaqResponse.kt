@@ -22,7 +22,7 @@ data class FaqResponse(
     }
 }
 
-data class AllFaqResponse(
+data class FaqsResponse(
     val faq: List<FaqResponse>
 )
 

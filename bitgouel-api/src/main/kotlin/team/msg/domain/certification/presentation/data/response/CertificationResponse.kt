@@ -20,6 +20,6 @@ data class CertificationResponse(
     }
 }
 
-data class AllCertificationsResponse(
+data class CertificationsResponse(
     val certifications: List<CertificationResponse>
 )

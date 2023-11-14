@@ -9,7 +9,7 @@ import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.faq.exception.FaqNotFoundException
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
-import team.msg.domain.faq.presentation.data.response.AllFaqResponse
+import team.msg.domain.faq.presentation.data.response.FaqsResponse
 import team.msg.domain.faq.presentation.data.response.FaqDetailsResponse
 import team.msg.domain.faq.presentation.data.response.FaqResponse
 import team.msg.domain.faq.repository.FaqRepository
@@ -45,10 +45,10 @@ class FaqServiceImpl(
     * FAQ 전제 조회를 처리하는 비지니스 로직입니다.
     */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
-    override fun queryAllFaqs(): AllFaqResponse {
+    override fun queryAllFaqs(): FaqsResponse {
         val faqs = faqRepository.findAll()
 
-        val response = AllFaqResponse(
+        val response = FaqsResponse(
             FaqResponse.listOf(faqs)
         )
 
