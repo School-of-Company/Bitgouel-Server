@@ -32,7 +32,7 @@ class PostServiceImpl(
             else -> {}
         }
 
-        val link: List<String> = request.link ?: mutableListOf()
+        val link = request.link ?: mutableListOf()
 
         val post = Post(
             id = UUID.randomUUID(),
