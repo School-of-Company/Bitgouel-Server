@@ -5,12 +5,16 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
+import team.msg.domain.certification.exception.ForbiddenCertificationException
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
+import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.model.User
 import java.util.*
 
@@ -18,7 +22,8 @@ import java.util.*
 class CertificationServiceImpl(
     private val certificationRepository: CertificationRepository,
     private val studentRepository: StudentRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val teacherRepository: TeacherRepository
 ) : CertificationService {
 
     /**
@@ -65,6 +70,15 @@ class CertificationServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun queryCertifications(studentId: UUID): CertificationsResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val teacher = teacherRepository findByUser user
+
+        val student = studentRepository findStudentById studentId
+
+        if (student.club != teacher.club)
+            throw ForbiddenCertificationException("자격증을 조회할 권한이 없습니다. info : [ club = ${teacher.club} ]")
+
         val certifications = certificationRepository findAllByStudentId studentId
 
         val response = CertificationsResponse(
@@ -78,6 +92,14 @@ class CertificationServiceImpl(
         this.findByUser(user)
             ?: throw StudentNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
 
+    private infix fun StudentRepository.findStudentById(studentId: UUID): Student =
+        this.findStudentById(studentId)
+            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ studentId = $studentId ]")
+
     private infix fun CertificationRepository.findAllByStudentId(studentId: UUID): List<Certification> =
         this.findAllByStudentId(studentId)
+
+    private infix fun TeacherRepository.findByUser(user: User): Teacher =
+        this.findByUser(user)
+            ?: throw TeacherNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
 }
