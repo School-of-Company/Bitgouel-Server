@@ -25,12 +25,11 @@ class PostServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         when(user.authority){
-            Authority.ROLE_ADMIN -> {}
             Authority.ROLE_COMPANY_INSTRUCTOR,
             Authority.ROLE_GOVERNMENT,
             Authority.ROLE_PROFESSOR,
             Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.INFORM) "공지를 작성할 권한이 없습니다." info user.authority
-            else -> "게시글을 작성할 권한이 없습니다." info user.authority
+            else -> {}
         }
 
         val link: List<String> = request.link ?: mutableListOf()
