@@ -60,7 +60,7 @@ class Lecture(
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
 
-        return if(startDate.isAfter(currentTime) && endDate.isBefore(currentTime))
+        return if(currentTime.isAfter(startDate) && currentTime.isBefore(endDate))
             LectureStatus.OPEN
         else
             LectureStatus.CLOSE
