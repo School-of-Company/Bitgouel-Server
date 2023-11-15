@@ -46,7 +46,8 @@ class PostServiceImpl(
         postRepository.save(post)
     }
 
-    infix fun String.info(authority: Authority): Nothing =
+    infix fun String.info(authority: Authority) {
         throw ForbiddenPostException("$this info: [ userAuthority = $authority ]")
+    }
 
 }
