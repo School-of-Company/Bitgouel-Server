@@ -99,7 +99,7 @@ class CertificationServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun updateCertification(id: UUID, updateCertificationRequest: UpdateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
-        val student = studentRepository findByUer user
+        val student = studentRepository findByUser user
 
         val certification = certificationRepository findById id
 
