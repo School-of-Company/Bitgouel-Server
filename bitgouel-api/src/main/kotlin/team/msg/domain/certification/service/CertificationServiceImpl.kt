@@ -116,7 +116,7 @@ class CertificationServiceImpl(
         certificationRepository.save(updateCertification)
     }
 
-    private infix fun StudentRepository.findByUer(user: User): Student =
+    private infix fun StudentRepository.findByUser(user: User): Student =
         this.findByUser(user)
             ?: throw StudentNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
 
