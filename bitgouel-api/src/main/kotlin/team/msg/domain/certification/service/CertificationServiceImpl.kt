@@ -1,12 +1,15 @@
 package team.msg.domain.certification.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
+import team.msg.domain.certification.exception.CertificationNotFoundException
 import team.msg.domain.certification.exception.ForbiddenCertificationException
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
+import team.msg.domain.certification.presentation.data.request.UpdateCertificationRequest
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -47,6 +50,7 @@ class CertificationServiceImpl(
 
     /**
      * 학생이 자격증 리스트를 조회하는 비지니스 로직입니다.
+     * @return 학생의 자격증 리스트
      */
     @Transactional(readOnly = true)
     override fun queryCertifications(): CertificationsResponse {
@@ -86,6 +90,27 @@ class CertificationServiceImpl(
         )
 
         return response
+    }
+
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateCertification(id: UUID, updateCertificationRequest: UpdateCertificationRequest) {
+        val user = userUtil.queryCurrentUser()
+        val student = studentRepository findByUer user
+
+        val certification = certificationRepository.findByIdOrNull(id)
+            ?: throw CertificationNotFoundException("존재하지 않는 자격증입니다. info : [ certificationId = $id ]")
+
+        if (student.id != certification.studentId)
+            throw ForbiddenCertificationException("자격증을 수정할 권한이 없습니다. info : [ studentId = ${student.id} ]")
+
+        val updateCertification = Certification(
+            id = certification.id,
+            studentId = certification.studentId,
+            name = updateCertificationRequest.name,
+            acquisitionDate = updateCertificationRequest.acquisitionDate
+        )
+
+        certificationRepository.save(updateCertification)
     }
 
     private infix fun StudentRepository.findByUer(user: User): Student =

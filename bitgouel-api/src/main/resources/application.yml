@@ -14,6 +14,7 @@ spring:
       ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
+        format_sql: true
         default_batch_fetch_size: 1000
 
   datasource:
