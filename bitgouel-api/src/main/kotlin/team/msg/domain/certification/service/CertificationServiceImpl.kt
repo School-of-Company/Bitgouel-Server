@@ -36,7 +36,7 @@ class CertificationServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun createCertification(request: CreateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
-        val student = studentRepository findByUer user
+        val student = studentRepository findByUser user
 
         val certification = Certification(
             id = UUID.randomUUID(),
@@ -56,7 +56,7 @@ class CertificationServiceImpl(
     override fun queryCertifications(): CertificationsResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository findByUer user
+        val student = studentRepository findByUser user
 
         val certifications = certificationRepository findAllByStudentId student.id
 
