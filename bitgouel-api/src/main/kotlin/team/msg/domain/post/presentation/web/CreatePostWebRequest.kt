@@ -1,7 +1,6 @@
 package team.msg.domain.post.presentation.web
 
 import javax.validation.Valid
-import javax.validation.constraints.Max
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -10,11 +9,11 @@ import team.msg.domain.post.enums.FeedType
 
 data class CreatePostWebRequest(
     @field:NotBlank
-    @Max(100)
+    @field:Size(max=100)
     val title: String,
 
     @field:NotBlank
-    @Max(2000)
+    @field:Size(max=2000)
     val content: String,
 
     @field:Valid
