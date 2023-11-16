@@ -92,13 +92,16 @@ class CertificationServiceImpl(
         return response
     }
 
+    /**
+     * 자격증을 수정하는 비지니스 로직입니다.
+     * @param 자격증 id, 수정할 자격증의 내용
+     */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateCertification(id: UUID, updateCertificationRequest: UpdateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
         val student = studentRepository findByUer user
 
-        val certification = certificationRepository.findByIdOrNull(id)
-            ?: throw CertificationNotFoundException("존재하지 않는 자격증입니다. info : [ certificationId = $id ]")
+        val certification = certificationRepository findById id
 
         if (student.id != certification.studentId)
             throw ForbiddenCertificationException("자격증을 수정할 권한이 없습니다. info : [ studentId = ${student.id} ]")
@@ -123,6 +126,10 @@ class CertificationServiceImpl(
 
     private infix fun CertificationRepository.findAllByStudentId(studentId: UUID): List<Certification> =
         this.findAllByStudentId(studentId)
+
+    private infix fun CertificationRepository.findById(id: UUID): Certification =
+        this.findByIdOrNull(id)
+            ?: throw CertificationNotFoundException("존재하지 않는 자격증입니다. info : [ certificationId = $id ]")
 
     private infix fun TeacherRepository.findByUser(user: User): Teacher =
         this.findByUser(user)
