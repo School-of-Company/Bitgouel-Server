@@ -118,7 +118,7 @@ class CertificationServiceImpl(
 
     private infix fun StudentRepository.findByUer(user: User): Student =
         this.findByUser(user)
-            ?: throw StudentNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
+            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
 
     private infix fun StudentRepository.findStudentById(studentId: UUID): Student =
         this.findStudentById(studentId)
@@ -133,5 +133,5 @@ class CertificationServiceImpl(
 
     private infix fun TeacherRepository.findByUser(user: User): Teacher =
         this.findByUser(user)
-            ?: throw TeacherNotFoundException("존재하지 않는 유저입니다. info : [ userId = ${user.id} ]")
+            ?: throw TeacherNotFoundException("존재하지 않는 선생님입니다. info : [ userId = ${user.id} ]")
 }
