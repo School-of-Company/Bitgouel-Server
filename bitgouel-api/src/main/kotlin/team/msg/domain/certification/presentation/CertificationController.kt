@@ -1,19 +1,15 @@
 package team.msg.domain.certification.presentation
 
-import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import team.msg.domain.certification.mapper.CertificationRequestMapper
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.certification.presentation.data.web.CreateCertificationWebRequest
+import team.msg.domain.certification.presentation.data.web.UpdateCertificationWebRequest
 import team.msg.domain.certification.service.CertificationService
-import java.util.UUID
+import java.util.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/certification")
@@ -38,5 +34,12 @@ class CertificationController(
     fun queryCertifications(@PathVariable("student_id") studentId: UUID): ResponseEntity<CertificationsResponse> {
         val response = certificationService.queryCertifications(studentId)
         return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @PatchMapping("/{id}")
+    fun updateCertification(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateCertificationWebRequest): ResponseEntity<Void> {
+        val request = certificationRequestMapper.updateCertificationWebRequestToDto(webRequest)
+        certificationService.updateCertification(id, request)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
