@@ -16,6 +16,6 @@ class UserController (
     @GetMapping
     fun queryUserPage(): ResponseEntity<UserPageResponse> {
         val response = userService.queryUserPageService()
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 }
