@@ -1,5 +1,6 @@
 package team.msg.domain.admin.presentation
 
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -15,8 +16,8 @@ class AdminController(
     private val adminService: AdminService
 ) {
     @GetMapping
-    fun queryUser(@RequestParam keyword: String = ""): ResponseEntity<UsersResponse> {
-        val response = adminService.queryUsers(keyword)
+    fun queryUser(@RequestParam keyword: String = "", pageable: Pageable): ResponseEntity<UsersResponse> {
+        val response = adminService.queryUsers(keyword, pageable)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
