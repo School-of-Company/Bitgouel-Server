@@ -19,7 +19,7 @@ import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
-import team.msg.domain.lecture.presentation.data.response.AllLecturesResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.repository.LectureRepository
@@ -75,7 +75,7 @@ class LectureServiceImpl(
      * @return 조회한 강의의 정보를 담은 list dto
      */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
-    override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): AllLecturesResponse {
+    override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse {
         val user = userUtil.queryCurrentUser()
 
         val approveStatus = queryAllLectureRequest.approveStatus
@@ -86,7 +86,7 @@ class LectureServiceImpl(
             else -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, ApproveStatus.APPROVED, lectureType)
         }
 
-        val response = AllLecturesResponse(
+        val response = LecturesResponse(
             lectures.map {
                 val headCount = registeredLectureRepository.countByLecture(it)
                 LectureResponse.of(it,headCount)

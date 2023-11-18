@@ -22,7 +22,7 @@ data class ClubResponse(
     }
 }
 
-data class AllClubResponse(
+data class ClubsResponse(
     val club: List<ClubResponse>
 )
 
