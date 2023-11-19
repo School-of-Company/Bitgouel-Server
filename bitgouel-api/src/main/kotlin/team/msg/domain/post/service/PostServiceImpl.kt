@@ -51,12 +51,12 @@ class PostServiceImpl(
 
     /**
      * 게시글 리스트를 조회하는 비지니스 로직입니다.
-     * @param 게시글 리스트를 페이징 처리하기 위한 pageable
+     * @param 가져올 게시글 유형과 게시글 리스트를 페이징 처리하기 위한 pageable
      * @return 페이징 처리된 게시글 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryPosts(pageable: Pageable): PostsResponse {
-        val posts = postRepository.findAll(pageable)
+    override fun queryPosts(type: FeedType, pageable: Pageable): PostsResponse {
+        val posts = postRepository.findAllByFeedType(type, pageable)
 
         val response = PostResponse.pageOf(posts)
 
