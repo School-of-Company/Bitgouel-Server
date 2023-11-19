@@ -22,7 +22,7 @@ class CustomUserRepositoryImpl(
             )
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
-            .orderBy(user.authority.asc())
+            .orderBy(user.name.asc())
             .fetch()
 
         return PageImpl(users)
