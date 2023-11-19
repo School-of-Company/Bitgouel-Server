@@ -1,5 +1,6 @@
 package team.msg.domain.post.service
 
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
@@ -8,6 +9,8 @@ import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
+import team.msg.domain.post.presentation.data.response.PostResponse
+import team.msg.domain.post.presentation.data.response.PostsResponse
 import team.msg.domain.user.enums.Authority
 import java.util.UUID
 
@@ -44,6 +47,20 @@ class PostServiceImpl(
         )
 
         postRepository.save(post)
+    }
+
+    /**
+     * 게시글 리스트를 조회하는 비지니스 로직입니다.
+     * @param 게시글 리스트를 페이징 처리하기 위한 pageable
+     * @return 페이징 처리된 게시글 리스트
+     */
+    @Transactional(readOnly = true)
+    override fun queryPosts(pageable: Pageable): PostsResponse {
+        val posts = postRepository.findAll(pageable)
+
+        val response = PostResponse.pageOf(posts)
+
+        return response
     }
 
     infix fun String.info(authority: Authority) {
