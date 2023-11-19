@@ -3,7 +3,7 @@ package team.msg.domain.admin.presentation.data.web
 import org.springframework.web.bind.annotation.RequestParam
 import team.msg.domain.user.enums.Authority
 
-class QueryUsersWebRequest(
+data class QueryUsersWebRequest(
     @RequestParam(required = false)
     val keyword: String = "",
 
