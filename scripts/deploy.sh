@@ -10,9 +10,6 @@ git pull origin master
 echo "> Project Build"
 ./gradlew clean bitgouel-api:build
 
-echo "> Build 파일 복사"
-
-
 CURRENT_PID=$(lsof -i tcp:8080 | awk `NR!=1 {print$2}`)
 if [ -z "$CURRENT_PID" ]; then
     echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
