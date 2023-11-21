@@ -19,11 +19,11 @@ data class PostResponse (
                         title = it.title,
                         modifiedAt = it.modifiedAt,
                     )
-                }
+                }.toList()
             )
     }
 }
 
 data class PostsResponse(
-    val posts: Page<PostResponse>
+    val posts: List<PostResponse>
 )
