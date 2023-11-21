@@ -9,8 +9,8 @@ data class PostResponse (
     val id: UUID,
     val title: String,
     val modifiedAt: LocalDateTime,
-){
-    companion object{
+) {
+    companion object {
         fun pageOf(posts: Page<Post>) =
             PostsResponse(
                 posts.map {
