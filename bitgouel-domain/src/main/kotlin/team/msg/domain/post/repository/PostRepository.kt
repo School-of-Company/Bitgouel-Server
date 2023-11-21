@@ -8,5 +8,5 @@ import team.msg.domain.post.model.Post
 import java.util.UUID
 
 interface PostRepository : JpaRepository<Post, UUID> {
-    fun findAllByFeedType(feedType: FeedType,pageable: Pageable): Page<Post>
+    fun findAllByFeedType(feedType: FeedType, pageable: Pageable): Page<Post>
 }
