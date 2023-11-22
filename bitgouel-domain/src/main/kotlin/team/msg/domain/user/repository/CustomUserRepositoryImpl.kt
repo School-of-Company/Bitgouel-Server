@@ -25,7 +25,15 @@ class CustomUserRepositoryImpl(
             .orderBy(user.authority.asc(), user.name.asc())
             .fetch()
 
-        return PageImpl(users)
+        val countQuery = queryFactory
+            .select(user.count())
+            .where(
+                nameLike(keyword),
+                authorityEq(authority)
+            )
+            .from(user)
+
+        return PageableExecutionUtils.getPage(users, pageable) { countQuery.fetchOne()!! }
     }
 
     private fun nameLike(keyword: String): BooleanExpression? =
