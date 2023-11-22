@@ -11,14 +11,17 @@ data class PostResponse (
     val modifiedAt: LocalDateTime,
 ) {
     companion object {
+        fun of(post: Post) =
+            PostResponse(
+                id = post.id,
+                title = post.title,
+                modifiedAt = post.modifiedAt,
+            )
+
         fun pageOf(posts: Page<Post>) =
             PostsResponse(
                 posts.map {
-                    PostResponse(
-                        id = it.id,
-                        title = it.title,
-                        modifiedAt = it.modifiedAt,
-                    )
+                    of(it)
                 }.toList()
             )
     }
