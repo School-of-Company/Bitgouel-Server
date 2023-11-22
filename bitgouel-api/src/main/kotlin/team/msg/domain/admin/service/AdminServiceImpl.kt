@@ -16,7 +16,7 @@ class AdminServiceImpl(
      * @param 유저를 검색하기 위한 keyword 및 페이징을 처리하기 위한 pageable
      * @return 페이징된 학생 정보를 담은 Dto
      */
-    override fun queryUsers(request: QueryUsersRequest,pageable: Pageable): UsersResponse {
+    override fun queryUsers(request: QueryUsersRequest, pageable: Pageable): UsersResponse {
         val users = userRepository.query(request.keyword, request.authority, pageable)
 
         return UserResponse.pageOf(users)
