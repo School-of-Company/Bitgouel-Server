@@ -11,6 +11,7 @@ import java.util.*
 data class StudentActivityResponse(
     val activityId: UUID,
     val title: String,
+    val activityDate: LocalDate,
     val userId: UUID,
     val username: String,
     val approveStatus: ApproveStatus
@@ -21,6 +22,7 @@ data class StudentActivityResponse(
                 StudentActivityResponse(
                     activityId = it.id,
                     title = it.title,
+                    activityDate = it.activityDate,
                     userId = user.id,
                     username = user.name,
                     approveStatus = it.approveStatus
