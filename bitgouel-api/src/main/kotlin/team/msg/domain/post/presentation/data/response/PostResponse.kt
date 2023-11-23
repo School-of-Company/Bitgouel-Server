@@ -22,11 +22,11 @@ data class PostResponse (
             PostsResponse(
                 posts.map {
                     of(it)
-                }.toList()
+                }
             )
     }
 }
 
 data class PostsResponse(
-    val posts: List<PostResponse>
+    val posts: Page<PostResponse>
 )
