@@ -62,21 +62,21 @@ class UserUtil(
                 val student = findStudentByUser(user)
                 val club = student.club
                 val school = club.school
-                val organization = "${school.highSchool.schoolName} ${club.name} 동아리 ${student.grade}학년 ${student.classRoom}반 ${student.number}번"
+                val organization = "${school.highSchool.schoolName}/${club.name}/${student.grade}학년 ${student.classRoom}반 ${student.number}번"
                 Pair(student, organization)
             }
             Authority.ROLE_TEACHER -> {
                 val teacher = findTeacherByUser(user)
                 val club = teacher.club
                 val school = club.school
-                val organization = "${school.highSchool.schoolName} ${club.name} 동아리"
+                val organization = "${school.highSchool.schoolName}/${club.name}"
                 Pair(teacher, organization)
             }
             Authority.ROLE_BBOZZAK -> {
                 val bbozzak = findBbozzakByUser(user)
                 val club = bbozzak.club
                 val school = club.school
-                val organization = "${school.highSchool.schoolName} ${club.name} 동아리"
+                val organization = "${school.highSchool.schoolName}/${club.name}"
                 Pair(bbozzak, organization)
             }
             Authority.ROLE_PROFESSOR -> {
