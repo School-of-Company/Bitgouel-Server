@@ -1,4 +1,4 @@
-REPOSITORY=/home/ec2-user/
+REPOSITORY=/home/ec2-user
 PROJECT_NAME=Bitgouel-Server
 JAR_PATH=$REPOSITORY/$PROJECT_NAME/bitgouel-api/build/libs/bitgouel-api-0.0.1-SNAPSHOT.jar
 
