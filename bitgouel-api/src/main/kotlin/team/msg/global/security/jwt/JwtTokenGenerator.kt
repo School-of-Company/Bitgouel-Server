@@ -23,7 +23,7 @@ class JwtTokenGenerator(
         val accessExpiredAt = getAccessTokenExpiredAt()
         val refreshExpiredAt = getRefreshTokenExpiredAt()
         refreshTokenRepository.save(RefreshToken(refreshToken, userId, authority, jwtProperties.refreshExpiration))
-        return TokenResponse(accessToken, refreshToken, accessExpiredAt, refreshExpiredAt)
+        return TokenResponse(accessToken, refreshToken, accessExpiredAt, refreshExpiredAt, authority)
     }
 
     private fun generateAccessToken(userId: UUID, secret: Key, authority: Authority): String =

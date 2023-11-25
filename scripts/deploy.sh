@@ -1,24 +1,25 @@
-#!/bin/bash
-BUILD_JAR=$(ls /home/ec2-user/Bitgouel-Server/bitgouel-api/build/libs/*.jar)
-JAR_NAME=$(basename $BUILD_JAR)
-echo "> build 파일명: $JAR_NAME" >> /home/ec2-user/deploy.log
+REPOSITORY=/home/ec2-user
+PROJECT_NAME=Bitgouel-Server
+JAR_PATH=$REPOSITORY/$PROJECT_NAME/bitgouel-api/build/libs/bitgouel-api-0.0.1-SNAPSHOT.jar
 
-echo "> build 파일 복사" >> /home/ec2-user/deploy.log
-DEPLOY_PATH=/home/ec2-user/
-cp $BUILD_JAR $DEPLOY_PATH
+cd $REPOSITORY/$PROJECT_NAME/
 
-echo "> 현재 실행중인 애플리케이션 pid 확인" >> /home/ec2-user/deploy.log
-CURRENT_PID=$(pgrep -f $JAR_NAME)
+echo "> Git Pull"
+git pull origin master
 
-if [ -z $CURRENT_PID ]
-then
-  echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다." >> /home/ec2-user/deploy.log
+echo "> Project Build"
+./gradlew clean bitgouel-api:build
+
+CURRENT_PID=$(lsof -i tcp:8080)
+if [ -z "$CURRENT_PID" ]; then
+    echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
 else
-  echo "> kill -15 $CURRENT_PID"
-  kill -15 $CURRENT_PID
-  sleep 5
+    echo "> kill -9 $CURRENT_PID"
+    kill -9 $CURRENT_PID
+    sleep 5
 fi
 
-DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
-echo "> DEPLOY_JAR 배포"    >> /home/ec2-user/deploy.log
-nohup java -jar $DEPLOY_JAR --logging.file.path=/home/ec2-user/ --logging.level.org.hibernate.SQL=DEBUG >> /home/ec2-user/deploy.log 2>/home/ec2-user/deploy_err.log &
+echo "> 애플리케이션 배포"
+JAR_NAME=$(ls -tr $JAR_PATH | tail -n 1)
+echo "> JAR NAME: $JAR_NAME"
+nohup java -jar $JAR_NAME  --logging.file.path=/home/ec2-user/ --logging.level.org.hibernate.SQL=DEBUG >> /home/ec2-user/deploy.log 2>/home/ec2-user/deploy_err.log &
