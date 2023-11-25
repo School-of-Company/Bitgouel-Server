@@ -8,18 +8,15 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepScope
-import org.springframework.batch.core.launch.JobLauncher
-import org.springframework.batch.core.repository.JobRepository
 import org.springframework.batch.item.ItemProcessor
-import org.springframework.batch.item.ItemWriter
 import org.springframework.batch.item.database.JdbcCursorItemReader
 import org.springframework.batch.item.database.JpaItemWriter
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.BeanPropertyRowMapper
+import team.msg.common.listener.BatchStepExecutionListener
 import team.msg.common.logger.LoggerDelegator
 import team.msg.common.util.ParamUtil
 import team.msg.domain.student.enums.StudentRole
@@ -35,6 +32,7 @@ class GraduateStudentJobConfiguration(
     private val parameter: GraduateJobParameter,
     private val jobBuilderFactory: JobBuilderFactory,
     private val stepBuilderFactory: StepBuilderFactory,
+    private val batchStepExecutionListener: BatchStepExecutionListener,
     private val dataSource: DataSource,
     private val entityManagerFactory: EntityManagerFactory
 ) {
@@ -68,12 +66,43 @@ class GraduateStudentJobConfiguration(
     @Bean
     fun graduateStudentJob(): Job {
         return jobBuilderFactory.get(JOB_NAME)
-            .start(graduateStudentStep())
+            .preventRestart() // 재시작 false
+            .start(graduateStudentStep()) // 졸업생 전환 step 시작
+            .on("FAILED") // 만약 할당 Step이 실패한다면
+            .to(clearStudentStep()) // 초기화 Step
+            .on("FAILED") // 초기화 Step 실패시
+            .fail() // Job 실패
+            .on("*") // 초기화 Step 결과가 FAILED를 제외한 모든 경우엔
+            .end() // Flow 종료
+            .from(graduateStudentStep()) // 할당 Job으로부터
+            .on("*") // FAIL을 제외한 모든 경우엔
+            .end() // Flow 종료
+            .end() // Job 종료
             .build();
     }
 
+    @Bean
+    @JobScope
     fun graduateStudentStep(): Step {
+        return stepBuilderFactory.get(JOB_NAME + "_graduate_step")
+            .chunk<Student, Student>(CHUNK_SIZE)
+            .reader(graduateStudentItemReader())
+            .processor(graduateStudentItemProcessor())
+            .writer(graduateStudentItemWriter())
+            .listener(batchStepExecutionListener)
+            .build()
+    }
 
+    @Bean
+    @JobScope
+    fun clearStudentStep(): Step {
+        return stepBuilderFactory.get(JOB_NAME + "_clear_step")
+            .chunk<Student, Student>(CHUNK_SIZE)
+            .reader(graduateStudentItemReader())
+            .processor(clearStudentItemProcessor())
+            .writer(graduateStudentItemWriter())
+            .listener(batchStepExecutionListener)
+            .build()
     }
 
     @Bean
