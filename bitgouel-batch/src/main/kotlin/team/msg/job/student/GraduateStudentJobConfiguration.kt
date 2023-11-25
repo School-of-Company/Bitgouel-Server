@@ -174,8 +174,8 @@ class GraduateStudentJobConfiguration(
         val cohort = parameter.cohort
 
         log.info("""
-            STUDENT READ를 시작합니다. 시작 날짜 = ${parameter.jobStartDate}
-            졸업 예정 기수: ${startDateCohort}, parameter.cohort = $cohort
+            STUDENT READ를 시작합니다. 시작 날짜: ${parameter.jobStartDate}
+            졸업 예정 기수: ${startDateCohort}, parameter.cohort: $cohort
             parameter.cohort == 졸업 예정 기수: ${startDateCohort == cohort}
             """)
     }
