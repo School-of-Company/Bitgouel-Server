@@ -37,7 +37,7 @@ class GraduateStudentJobConfiguration(
     private val entityManagerFactory: EntityManagerFactory
 ) {
 
-    val log by LoggerDelegator()
+    private val log by LoggerDelegator()
 
     companion object {
         const val CHUNK_SIZE: Int = 50 // 변경될 수 있음
