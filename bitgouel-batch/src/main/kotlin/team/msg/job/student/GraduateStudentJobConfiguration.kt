@@ -4,6 +4,7 @@ import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import team.msg.common.util.ParamUtil
 
 @Configuration
 class GraduateStudentJobConfiguration(
@@ -20,10 +21,12 @@ class GraduateStudentJobConfiguration(
     @JobScope
     fun parameter(
         @Value("#{jobParameters[VERSION]}") version: Int,
+        @Value("#{jobParameters[DATE_TIME]}") startDate: String,
         @Value("#{jobParameters[PERIOD]}") period: Int
     ) : GraduateJobParameter {
         return GraduateJobParameter(
             version = version,
+            jobStartDate = ParamUtil.strDateTimeToLocalDateTime(startDate),
             period = period
         )
     }
