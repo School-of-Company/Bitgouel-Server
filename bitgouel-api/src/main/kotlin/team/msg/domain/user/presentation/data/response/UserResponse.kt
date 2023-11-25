@@ -20,14 +20,16 @@ data class UserResponse (
             organization = organization
         )
 
+        fun of(user: User) = AdminUserResponse(
+            id = user.id,
+            name = user.name,
+            authority = user.authority,
+            approveStatus = user.approveStatus
+        )
+
         fun pageOf(users: Page<User>) = UsersResponse(
             users.map {
-                AdminUserResponse(
-                    id = it.id,
-                    name = it.name,
-                    authority = it.authority,
-                    approveStatus = it.approveStatus
-                )
+                of(it)
             }
         )
     }
