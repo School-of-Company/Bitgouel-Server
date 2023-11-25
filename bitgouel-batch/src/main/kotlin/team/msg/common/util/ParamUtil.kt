@@ -13,8 +13,7 @@ class ParamUtil {
 
         fun strDateTimeToLocalDateTime(strDateTime: String): LocalDateTime {
             try {
-                val zonedDateTime =
-                    ZonedDateTime.parse(strDateTime, format)
+                val zonedDateTime = ZonedDateTime.parse(strDateTime, format)
                 return zonedDateTime.toLocalDateTime()
             } catch (e: DateTimeParseException) {
                 throw IllegalArgumentException("유효하지 않은 format의 Date: $strDateTime", e)
