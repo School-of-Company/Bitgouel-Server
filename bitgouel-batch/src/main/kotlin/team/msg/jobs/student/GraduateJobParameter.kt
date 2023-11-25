@@ -1,4 +1,4 @@
-package team.msg.job.student
+package team.msg.jobs.student
 
 import team.msg.common.parameter.BaseJobParameter
 import java.time.LocalDateTime

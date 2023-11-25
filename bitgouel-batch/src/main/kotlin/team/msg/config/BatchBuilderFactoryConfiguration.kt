@@ -1,4 +1,4 @@
-package team.msg.configuration
+package team.msg.config
 
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory

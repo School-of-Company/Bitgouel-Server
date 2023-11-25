@@ -1,4 +1,4 @@
-package team.msg.job.student
+package team.msg.jobs.student
 
 import javax.persistence.EntityManagerFactory
 import javax.sql.DataSource
