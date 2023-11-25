@@ -108,6 +108,7 @@ class GraduateStudentJobConfiguration(
     @Bean
     @StepScope
     fun graduateStudentItemReader(): JdbcCursorItemReader<Student> {
+        logCohort()
         return JdbcCursorItemReaderBuilder<Student>()
             .sql("SELECT s " +
                     "FROM STUDENT s WHERE s.studentRole = STUDENT " +
@@ -166,6 +167,17 @@ class GraduateStudentJobConfiguration(
                 studentRole = StudentRole.STUDENT
             )
         }
+    }
+
+    private fun logCohort() {
+        val startDateCohort = parameter.jobStartDate.year - 2023
+        val cohort = parameter.cohort
+
+        log.info("""
+            STUDENT READ를 시작합니다. 시작 날짜 = ${parameter.jobStartDate}
+            졸업 예정 기수: ${startDateCohort}, parameter.cohort = $cohort
+            parameter.cohort == 졸업 예정 기수: ${startDateCohort == cohort}
+            """)
     }
 
 }
