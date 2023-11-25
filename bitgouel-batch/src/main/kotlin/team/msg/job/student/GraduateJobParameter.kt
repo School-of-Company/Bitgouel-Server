@@ -6,5 +6,5 @@ import java.time.LocalDateTime
 class GraduateJobParameter(
     override val version: Int,
     val jobStartDate: LocalDateTime,
-    val period: Int
+    val cohort: Int
 ) : BaseJobParameter(version)
