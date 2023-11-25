@@ -15,7 +15,7 @@ class BatchStepExecutionListener : StepExecutionListener {
         log.info("Before Step of JobExecutionListener")
     }
 
-    override fun afterStep(stepExecution: StepExecution): ExitStatus? {
+    override fun afterStep(stepExecution: StepExecution): ExitStatus {
         log.info("After Step of JobExecutionListener")
 
         if(stepExecution.exitStatus.exitCode == ExitStatus.FAILED.exitCode) {
