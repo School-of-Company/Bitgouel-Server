@@ -16,6 +16,7 @@ import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.repository.StudentActivityHistoryRepository
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
@@ -26,9 +27,9 @@ import team.msg.domain.user.repository.UserRepository
 
 @Component
 class UserEventHandler(
-    private val userRepository: UserRepository,
     private val studentRepository: StudentRepository,
     private val studentActivityRepository: StudentActivityRepository,
+    private val studentActivityHistoryRepository: StudentActivityHistoryRepository,
     private val bbozzakRepository: BbozzakRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
@@ -51,9 +52,11 @@ class UserEventHandler(
                 val student = studentRepository.findByUser(user)
                     ?: throw StudentNotFoundException("존재하지 않는 학생 입니다. info : [ userId = ${user.id} ]")
                 val studentActivity = studentActivityRepository.findAllByStudent(student)
+                val studentActivityHistory = studentActivityHistoryRepository.findAllByStudent(student)
                 val registeredLecture = registeredLectureRepository.findAllByStudent(student)
 
                 studentActivityRepository.deleteAll(studentActivity)
+                studentActivityHistoryRepository.deleteAll(studentActivityHistory)
                 registeredLectureRepository.deleteAll(registeredLecture)
                 studentRepository.delete(student)
             }
