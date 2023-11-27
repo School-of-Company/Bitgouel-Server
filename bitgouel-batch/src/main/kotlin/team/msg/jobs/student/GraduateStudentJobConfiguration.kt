@@ -123,7 +123,7 @@ class GraduateStudentJobConfiguration(
                     log.info("Before Step of ClearStudentStep")
                 }
 
-                override fun afterStep(stepExecution: StepExecution): ExitStatus? {
+                override fun afterStep(stepExecution: StepExecution): ExitStatus {
                     log.info("After Step of GraduateStudentStep")
 
                     if(stepExecution.exitStatus.exitCode == ExitStatus.FAILED.exitCode) {
