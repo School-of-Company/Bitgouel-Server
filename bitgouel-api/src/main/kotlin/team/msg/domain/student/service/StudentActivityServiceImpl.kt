@@ -187,7 +187,7 @@ class StudentActivityServiceImpl(
     override fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository findByUser user
+        val student = studentRepository findById studentId
 
         val teacher = teacherRepository findByUser user
 
