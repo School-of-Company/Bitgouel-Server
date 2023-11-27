@@ -1,17 +1,16 @@
 package team.msg.domain.student.repository.custom.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import team.msg.domain.student.model.QStudentActivity
-import team.msg.domain.student.model.Student
+import team.msg.domain.student.model.QStudentActivity.studentActivity
 import team.msg.domain.student.repository.custom.CustomStudentActivityRepository
+import java.util.*
 
 class CustomStudentActivityRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomStudentActivityRepository {
-    override fun deleteAllByStudent(student: Student) {
-        val studentActivity = QStudentActivity.studentActivity
+    override fun deleteAllByStudent(studentId: UUID) {
         queryFactory.delete(studentActivity)
-            .where(QStudentActivity.studentActivity.student.id.eq(student.id))
+            .where(studentActivity.student.id.eq(studentId))
             .execute()
     }
 }
