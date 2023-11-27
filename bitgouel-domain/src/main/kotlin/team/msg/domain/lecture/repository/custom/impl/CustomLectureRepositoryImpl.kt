@@ -10,6 +10,7 @@ import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.repository.custom.CustomLectureRepository
 import team.msg.domain.user.model.QUser.user
+import java.util.*
 import java.util.Objects.isNull
 
 @Component
@@ -28,6 +29,12 @@ class CustomLectureRepositoryImpl(
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch())
+
+    override fun deleteAllByUserId(userId: UUID) {
+        queryFactory.delete(lecture)
+            .where(lecture.user.id.eq(userId))
+            .execute()
+    }
 
     private fun eqLectureType(lectureType: LectureType?): BooleanExpression? =
         if(isNull(lectureType)) null else lecture.lectureType.eq(lectureType)
