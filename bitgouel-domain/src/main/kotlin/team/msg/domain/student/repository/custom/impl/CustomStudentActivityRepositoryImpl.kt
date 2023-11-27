@@ -8,7 +8,7 @@ import java.util.*
 class CustomStudentActivityRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomStudentActivityRepository {
-    override fun deleteAllByStudent(studentId: UUID) {
+    override fun deleteAllByStudentId(studentId: UUID) {
         queryFactory.delete(studentActivity)
             .where(studentActivity.student.id.eq(studentId))
             .execute()
