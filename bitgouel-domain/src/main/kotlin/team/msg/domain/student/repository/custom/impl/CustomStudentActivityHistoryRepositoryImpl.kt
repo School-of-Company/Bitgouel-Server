@@ -11,7 +11,7 @@ class CustomStudentActivityHistoryRepositoryImpl(
     override fun deleteAllByStudent(student: Student) {
         val studentActivityHistory = QStudentActivityHistory.studentActivityHistory
         queryFactory.delete(studentActivityHistory)
-            .where(studentActivityHistory.student.eq(student))
+            .where(studentActivityHistory.student.id.eq(student.id))
             .execute()
     }
 }

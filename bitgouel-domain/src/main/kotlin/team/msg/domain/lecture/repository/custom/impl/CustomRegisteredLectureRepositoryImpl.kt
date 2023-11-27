@@ -11,7 +11,7 @@ class CustomRegisteredLectureRepositoryImpl(
     override fun deleteAllByStudent(student: Student) {
         val registeredLecture = QRegisteredLecture.registeredLecture
         queryFactory.delete(registeredLecture)
-            .where(registeredLecture.student.eq(student))
+            .where(registeredLecture.student.id.eq(student.id))
             .execute()
     }
 }
