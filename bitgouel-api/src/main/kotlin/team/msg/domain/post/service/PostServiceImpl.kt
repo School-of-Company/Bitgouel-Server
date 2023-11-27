@@ -72,7 +72,7 @@ class PostServiceImpl(
 
     /**
      * 게시글을 상세조회하는 비지니스 로직입니다.
-     * @param id 게시글을 상세 조회하기 위한 id
+     * @param 게시글을 상세 조회하기 위한 게시글 id
      * @return 상세조회한 게시글의 정보를 담은 dto
      */
     @Transactional(readOnly = true)
