@@ -2,8 +2,11 @@ package team.msg.jobs.student
 
 import javax.persistence.EntityManagerFactory
 import javax.sql.DataSource
+import org.springframework.batch.core.ExitStatus
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
+import org.springframework.batch.core.StepExecution
+import org.springframework.batch.core.StepExecutionListener
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.JobScope
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
@@ -32,7 +35,6 @@ class GraduateStudentJobConfiguration(
     private val parameter: GraduateJobParameter,
     private val jobBuilderFactory: JobBuilderFactory,
     private val stepBuilderFactory: StepBuilderFactory,
-    private val batchStepExecutionListener: BatchStepExecutionListener,
     private val dataSource: DataSource,
     private val entityManagerFactory: EntityManagerFactory
 ) {
@@ -89,7 +91,22 @@ class GraduateStudentJobConfiguration(
             .reader(graduateStudentItemReader())
             .processor(graduateStudentItemProcessor())
             .writer(graduateStudentItemWriter())
-            .listener(batchStepExecutionListener)
+            .listener(object: StepExecutionListener {
+                override fun beforeStep(stepExecution: StepExecution) {
+                    log.info("Before Step of GraduateStudentStep")
+                }
+
+                override fun afterStep(stepExecution: StepExecution): ExitStatus {
+                    log.info("After Step of GraduateStudentStep")
+
+                    if(stepExecution.exitStatus.exitCode == ExitStatus.FAILED.exitCode) {
+                        log.error("GraduateStudentStep FAILED!!")
+                        return ExitStatus.FAILED
+                    }
+
+                    return ExitStatus.COMPLETED
+                }
+            })
             .build()
     }
 
@@ -101,7 +118,23 @@ class GraduateStudentJobConfiguration(
             .reader(graduateStudentItemReader())
             .processor(clearStudentItemProcessor())
             .writer(graduateStudentItemWriter())
-            .listener(batchStepExecutionListener)
+            .listener(object: StepExecutionListener {
+                override fun beforeStep(stepExecution: StepExecution) {
+                    log.info("Before Step of ClearStudentStep")
+                }
+
+                override fun afterStep(stepExecution: StepExecution): ExitStatus {
+                    log.info("After Step of ClearStudentStep")
+
+                    if(stepExecution.exitStatus.exitCode == ExitStatus.FAILED.exitCode) {
+                        log.error("ClearStudentStep FAILED!!")
+                        return ExitStatus.FAILED
+                    }
+
+                    return ExitStatus.COMPLETED
+                }
+
+            })
             .build()
     }
 
@@ -112,7 +145,9 @@ class GraduateStudentJobConfiguration(
         return JdbcCursorItemReaderBuilder<Student>()
             .sql("SELECT s " +
                     "FROM STUDENT s WHERE s.studentRole = STUDENT " +
-                    "AND s.cohort = ${parameter.cohort}"
+                    "AND s.cohort = ${parameter.cohort} " +
+                    "ORDER BY s.class_room ASC, " +
+                    "s.number ASC"
             ).rowMapper(BeanPropertyRowMapper(Student::class.java))
             .fetchSize(CHUNK_SIZE)
             .dataSource(dataSource)
