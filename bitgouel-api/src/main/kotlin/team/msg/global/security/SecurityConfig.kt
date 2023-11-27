@@ -78,6 +78,7 @@ class SecurityConfig(
             // post
             .mvcMatchers(HttpMethod.POST, "/post").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
             .mvcMatchers(HttpMethod.GET, "/post").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/post/{id}").authenticated()
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
