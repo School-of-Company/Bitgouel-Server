@@ -1,7 +1,8 @@
-package team.msg.domain.school.repository
+package team.msg.domain.school.repository.custom.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import team.msg.domain.school.model.QSchool.school
+import team.msg.domain.school.repository.custom.CustomSchoolRepository
 
 class CustomSchoolRepositoryImpl(
     private val queryFactory: JPAQueryFactory

@@ -1,4 +1,4 @@
-package team.msg.domain.user.repository
+package team.msg.domain.user.repository.custom
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

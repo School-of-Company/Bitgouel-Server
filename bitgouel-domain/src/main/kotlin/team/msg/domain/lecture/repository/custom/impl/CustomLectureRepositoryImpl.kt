@@ -1,4 +1,4 @@
-package team.msg.domain.lecture.repository.custom
+package team.msg.domain.lecture.repository.custom.impl
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.QLecture.lecture
+import team.msg.domain.lecture.repository.custom.CustomLectureRepository
 import team.msg.domain.user.model.QUser.user
 import java.util.Objects.isNull
 
 @Component
-class LectureRepositoryCustomImpl(
+class CustomLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
-) : LectureRepositoryCustom {
+) : CustomLectureRepository {
     override fun findAllByApproveStatusAndLectureType(pageable: Pageable, approveStatus: ApproveStatus?, lectureType: LectureType?) = PageImpl(
         queryFactory
             .selectFrom(lecture)
