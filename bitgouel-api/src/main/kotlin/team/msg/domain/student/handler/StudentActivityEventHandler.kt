@@ -44,7 +44,7 @@ class StudentActivityEventHandler(
     fun approveStudentActivityHandler(event: ApproveStudentActivityEvent) {
         val studentActivity = event.studentActivity
 
-        studentActivityHistoryRepository.deleteAllByStudent(studentActivity.id)
+        studentActivityHistoryRepository.deleteAllByStudentId(studentActivity.id)
 
         val latestStudentActivityHistory = studentActivity.run {
             StudentActivityHistory(
