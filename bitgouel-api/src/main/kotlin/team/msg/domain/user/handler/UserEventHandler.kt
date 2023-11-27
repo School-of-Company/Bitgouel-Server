@@ -4,26 +4,33 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 import team.msg.domain.admin.exception.AdminNotFoundException
+import team.msg.domain.admin.model.Admin
 import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
+import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
+import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentActivityHistoryRepository
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority.*
 import team.msg.domain.user.event.WithdrawUserEvent
-import team.msg.domain.user.repository.UserRepository
+import team.msg.domain.user.model.User
 
 @Component
 class UserEventHandler(
@@ -49,8 +56,7 @@ class UserEventHandler(
 
         when (user.authority) {
             ROLE_STUDENT -> {
-                val student = studentRepository.findByUser(user)
-                    ?: throw StudentNotFoundException("존재하지 않는 학생 입니다. info : [ userId = ${user.id} ]")
+                val student = studentRepository findByUser user
 
                 studentActivityRepository.deleteAllByStudent(student.id)
                 studentActivityHistoryRepository.deleteAllByStudent(student.id)
@@ -58,38 +64,32 @@ class UserEventHandler(
                 studentRepository.delete(student)
             }
             ROLE_ADMIN -> {
-                val admin = adminRepository.findByUser(user)
-                    ?: throw AdminNotFoundException("존재하지 않는 어드민 입니다. info : [ userId = ${user.id} ]")
+                val admin = adminRepository findByUser user
 
                 adminRepository.delete(admin)
             }
             ROLE_BBOZZAK -> {
-                val bbozzak = bbozzakRepository.findByUser(user)
-                    ?: throw BbozzakNotFoundException("존재하지 않는 뽀짝샘 입니다. info : [ userId = ${user.id} ]")
+                val bbozzak = bbozzakRepository findByUser user
 
                 bbozzakRepository.delete(bbozzak)
             }
             ROLE_TEACHER -> {
-                val teacher = teacherRepository.findByUser(user)
-                    ?: throw TeacherNotFoundException("존재하지 않는 취동샘 입니다. info : [ userId = ${user.id} ]")
+                val teacher = teacherRepository findByUser user
 
                 teacherRepository.delete(teacher)
             }
             ROLE_PROFESSOR -> {
-                val professor = professorRepository.findByUser(user)
-                    ?: throw ProfessorNotFoundException("존재하지 않는 대학 교수 입니다. info : [ userId = ${user.id} ]")
+                val professor = professorRepository findByUser user
 
                 professorRepository.delete(professor)
             }
             ROLE_COMPANY_INSTRUCTOR -> {
-                val companyInstructor = companyInstructorRepository.findByUser(user)
-                    ?: throw CompanyNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
+                val companyInstructor = companyInstructorRepository findByUser user
 
                 companyInstructorRepository.delete(companyInstructor)
             }
             ROLE_GOVERNMENT -> {
-                val government = governmentRepository.findByUser(user)
-                    ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
+                val government = governmentRepository findByUser user
 
                 governmentRepository.delete(government)
             }
@@ -97,4 +97,25 @@ class UserEventHandler(
             else -> throw UnApprovedUserException("회원가입 승인 대기 중인 유저입니다. info : [ userId = ${user.id} ]")
         }
     }
+
+    private infix fun StudentRepository.findByUser(user: User): Student =
+        this.findByUser(user) ?: throw StudentNotFoundException("존재하지 않는 학생 입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun AdminRepository.findByUser(user: User): Admin =
+        this.findByUser(user) ?: throw AdminNotFoundException("존재하지 않는 어드민 입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun BbozzakRepository.findByUser(user: User): Bbozzak =
+        this.findByUser(user) ?: throw BbozzakNotFoundException("존재하지 않는 뽀짝샘 입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun TeacherRepository.findByUser(user: User): Teacher =
+        this.findByUser(user) ?: throw TeacherNotFoundException("존재하지 않는 취동샘 입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun ProfessorRepository.findByUser(user: User): Professor =
+        this.findByUser(user) ?: throw ProfessorNotFoundException("존재하지 않는 대학 교수 입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun CompanyInstructorRepository.findByUser(user: User): CompanyInstructor =
+        this.findByUser(user) ?: throw CompanyNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
+
+    private infix fun GovernmentRepository.findByUser(user: User): Government =
+        this.findByUser(user) ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
 }
