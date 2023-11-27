@@ -3,7 +3,6 @@ package team.msg.domain.post.presentation.data.response
 import org.springframework.data.domain.Page
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.model.Post
-import team.msg.domain.user.model.User
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -27,10 +26,10 @@ data class PostResponse (
                 }
             )
 
-        fun detailOf(post: Post, user: User) =
+        fun detailOf(post: Post, writer: String) =
             PostDetailsResponse(
                 title = post.title,
-                writer = user.name,
+                writer = writer,
                 content = post.content,
                 feedType = post.feedType,
                 modifiedAt = post.modifiedAt,

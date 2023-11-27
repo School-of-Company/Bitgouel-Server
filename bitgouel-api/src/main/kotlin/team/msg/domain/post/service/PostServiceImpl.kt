@@ -16,7 +16,6 @@ import team.msg.domain.post.presentation.data.response.PostResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
-import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
 import java.util.UUID
 
@@ -78,9 +77,9 @@ class PostServiceImpl(
     @Transactional(readOnly = true)
     override fun queryPostDetails(id: UUID): PostDetailsResponse {
         val post = postRepository findById id
-        val user = userRepository findById post.userId
+        val writer = userRepository findNameById  post.userId
 
-        val response = PostResponse.detailOf(post, user)
+        val response = PostResponse.detailOf(post, writer)
 
         return response
     }
@@ -93,7 +92,10 @@ class PostServiceImpl(
         ?: throw PostNotFoundException("게시글을 찾을 수 없습니다. info : [ postId = $id ]")
 
 
-    private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
-        ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+    private infix fun UserRepository.findNameById(id: UUID): String {
+        val userSummary = this.findNameById(id)
+            ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+        return userSummary.getName()
+    }
 
 }
