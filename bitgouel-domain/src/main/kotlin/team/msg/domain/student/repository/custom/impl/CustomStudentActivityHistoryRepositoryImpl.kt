@@ -5,7 +5,7 @@ import team.msg.domain.student.model.QStudentActivityHistory
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.custom.CustomStudentActivityHistoryRepository
 
-class CustomStudentActivityHistoryImpl(
+class CustomStudentActivityHistoryRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomStudentActivityHistoryRepository {
     override fun deleteAllByStudent(student: Student) {

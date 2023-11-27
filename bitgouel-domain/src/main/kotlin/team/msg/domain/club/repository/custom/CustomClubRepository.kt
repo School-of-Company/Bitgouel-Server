@@ -1,4 +1,4 @@
-package team.msg.domain.club.repository
+package team.msg.domain.club.repository.custom
 
 interface CustomClubRepository {
     fun existsOne(id: Long): Boolean

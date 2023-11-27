@@ -6,6 +6,6 @@ import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 
-interface LectureRepositoryCustom {
+interface CustomLectureRepository {
     fun findAllByApproveStatusAndLectureType(pageable: Pageable, approveStatus: ApproveStatus?, lectureType: LectureType?): Page<Lecture>
 }
