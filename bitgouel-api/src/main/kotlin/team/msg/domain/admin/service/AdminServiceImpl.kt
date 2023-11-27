@@ -38,7 +38,7 @@ class AdminServiceImpl(
         val user = userRepository findById userId
 
         if(user.approveStatus == ApproveStatus.APPROVED)
-            throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info [ userId = ${user.id} ]")
+            throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${user.id} ]")
 
         val approvedUser = user.run {
             User(
