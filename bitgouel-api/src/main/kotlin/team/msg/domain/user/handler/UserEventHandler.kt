@@ -10,13 +10,16 @@ import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
+import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.company.exception.CompanyNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -43,7 +46,10 @@ class UserEventHandler(
     private val companyInstructorRepository: CompanyInstructorRepository,
     private val governmentRepository: GovernmentRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
-    private val adminRepository: AdminRepository
+    private val adminRepository: AdminRepository,
+    private val lectureRepository: LectureRepository,
+    private val certificationRepository: CertificationRepository,
+    private val postRepository: PostRepository
 ) {
 
     /**
@@ -58,19 +64,22 @@ class UserEventHandler(
             ROLE_STUDENT -> {
                 val student = studentRepository findByUser user
 
-                studentActivityRepository.deleteAllByStudent(student.id)
-                studentActivityHistoryRepository.deleteAllByStudent(student.id)
-                registeredLectureRepository.deleteAllByStudent(student.id)
+                studentActivityRepository.deleteAllByStudentId(student.id)
+                studentActivityHistoryRepository.deleteAllByStudentId(student.id)
+                registeredLectureRepository.deleteAllByStudentId(student.id)
+                certificationRepository.deleteAllByStudentId(student.id)
                 studentRepository.delete(student)
             }
             ROLE_ADMIN -> {
                 val admin = adminRepository findByUser user
 
+                postRepository.deleteAllByUserId(user.id)
                 adminRepository.delete(admin)
             }
             ROLE_BBOZZAK -> {
                 val bbozzak = bbozzakRepository findByUser user
 
+                postRepository.deleteAllByUserId(user.id)
                 bbozzakRepository.delete(bbozzak)
             }
             ROLE_TEACHER -> {
@@ -81,16 +90,22 @@ class UserEventHandler(
             ROLE_PROFESSOR -> {
                 val professor = professorRepository findByUser user
 
+                lectureRepository.deleteAllByUserId(user.id)
+                postRepository.deleteAllByUserId(user.id)
                 professorRepository.delete(professor)
             }
             ROLE_COMPANY_INSTRUCTOR -> {
                 val companyInstructor = companyInstructorRepository findByUser user
 
+                lectureRepository.deleteAllByUserId(user.id)
+                postRepository.deleteAllByUserId(user.id)
                 companyInstructorRepository.delete(companyInstructor)
             }
             ROLE_GOVERNMENT -> {
                 val government = governmentRepository findByUser user
 
+                lectureRepository.deleteAllByUserId(user.id)
+                postRepository.deleteAllByUserId(user.id)
                 governmentRepository.delete(government)
             }
 

@@ -8,7 +8,7 @@ import java.util.*
 class CustomRegisteredLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomRegisteredLectureRepository {
-    override fun deleteAllByStudent(studentId: UUID) {
+    override fun deleteAllByStudentId(studentId: UUID) {
         queryFactory.delete(registeredLecture)
             .where(registeredLecture.student.id.eq(studentId))
             .execute()
