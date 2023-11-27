@@ -102,6 +102,7 @@ class SecurityConfig(
 
             //admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/admin/{user_id}").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()
