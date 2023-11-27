@@ -1,14 +1,14 @@
-package team.msg.domain.user.repository
+package team.msg.domain.user.repository.custom.impl
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.support.PageableExecutionUtils
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.QUser.user
 import team.msg.domain.user.model.User
+import team.msg.domain.user.repository.custom.CustomUserRepository
 
 class CustomUserRepositoryImpl(
     private val queryFactory: JPAQueryFactory
