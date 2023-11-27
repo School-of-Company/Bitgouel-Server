@@ -5,6 +5,6 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.student.model.StudentActivityHistory
 import java.util.UUID
 
-interface StudentActivityHistoryRepository : CrudRepository<StudentActivityHistory, UUID> {
+interface StudentActivityHistoryRepository : CrudRepository<StudentActivityHistory, UUID>, CustomStudentActivityHistoryRepository {
     fun findAllByStudent(student: Student): List<StudentActivityHistory>
 }

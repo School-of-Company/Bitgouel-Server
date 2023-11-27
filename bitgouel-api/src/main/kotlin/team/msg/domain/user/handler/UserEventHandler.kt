@@ -56,7 +56,7 @@ class UserEventHandler(
                 val registeredLecture = registeredLectureRepository.findAllByStudent(student)
 
                 studentActivityRepository.deleteAllByStudent(student)
-                studentActivityHistoryRepository.deleteAll(studentActivityHistory)
+                studentActivityHistoryRepository.deleteAllByStudent(student)
                 registeredLectureRepository.deleteAll(registeredLecture)
                 studentRepository.delete(student)
             }

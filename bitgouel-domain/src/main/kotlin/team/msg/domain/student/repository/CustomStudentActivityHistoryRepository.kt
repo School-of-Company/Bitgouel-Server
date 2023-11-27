@@ -1,7 +1,7 @@
 package team.msg.domain.student.repository
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User
+import team.msg.domain.student.model.Student
 
 interface CustomStudentActivityHistoryRepository {
-    fun deleteAllByUsers(users: List<User>)
+    fun deleteAllByStudent(student: Student)
 }
