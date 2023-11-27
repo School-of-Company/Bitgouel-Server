@@ -35,7 +35,6 @@ class GraduateStudentJobConfiguration(
     private val parameter: GraduateJobParameter,
     private val jobBuilderFactory: JobBuilderFactory,
     private val stepBuilderFactory: StepBuilderFactory,
-    private val batchStepExecutionListener: BatchStepExecutionListener,
     private val dataSource: DataSource,
     private val entityManagerFactory: EntityManagerFactory
 ) {
