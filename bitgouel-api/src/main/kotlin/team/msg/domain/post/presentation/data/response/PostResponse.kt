@@ -1,7 +1,9 @@
 package team.msg.domain.post.presentation.data.response
 
 import org.springframework.data.domain.Page
+import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.model.Post
+import team.msg.domain.user.model.User
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -24,9 +26,28 @@ data class PostResponse (
                     of(it)
                 }
             )
+
+        fun detailOf(post: Post, user: User) =
+            PostDetailsResponse(
+                title = post.title,
+                writer = user.name,
+                content = post.content,
+                feedType = post.feedType,
+                modifiedAt = post.modifiedAt,
+                links = post.link
+            )
     }
 }
 
 data class PostsResponse(
     val posts: Page<PostResponse>
+)
+
+data class PostDetailsResponse(
+    val title: String,
+    val writer: String,
+    val content: String,
+    val feedType: FeedType,
+    val modifiedAt: LocalDateTime,
+    val links: List<String>
 )
