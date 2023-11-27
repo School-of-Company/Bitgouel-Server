@@ -1,0 +1,65 @@
+name: BITGOUEL_BACKEND_CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          mysql database: 'bitgouel'
+          mysql user: 'bitgouel-admin'
+          mysql password: ${{ secrets.BITGOUEL_MYSQL_PASSWORD }}
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: 7
+          redis-port: 6379
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create application.yml
+        run: |
+          echo "${{ secrets.BITGOUEL_BACKEND_ENV }}" > ./bitgouel-api/src/main/resources/application.yml
+        shell: bash
+
+      - name: Run build with Gradle wrapper
+        run: ./gradlew clean bitgouel-api:build -i
+
+      - name: Bitgouel Server CI Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ success() }}
+        with:
+          title: ✅ Bitgouel-Server-CI 성공! ✅
+          webhook: ${{ secrets.BITGOUEL_DISCORD_WEBHOOK }}
+          color: 00FF00
+
+      - name: Bitgouel Server CI Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ failure() }}
+        with:
+          title: ❗️ Bitgouel-Server-CI 실패! ❗️
+          webhook: ${{ secrets.BITGOUEL_DISCORD_WEBHOOK }}
+          color: FF0000
