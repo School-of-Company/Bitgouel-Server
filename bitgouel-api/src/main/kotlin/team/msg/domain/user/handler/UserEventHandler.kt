@@ -51,13 +51,13 @@ class UserEventHandler(
             ROLE_STUDENT -> {
                 val student = studentRepository.findByUser(user)
                     ?: throw StudentNotFoundException("존재하지 않는 학생 입니다. info : [ userId = ${user.id} ]")
-                val studentActivity = studentActivityRepository.findAllByStudent(student)
-                val studentActivityHistory = studentActivityHistoryRepository.findAllByStudent(student)
-                val registeredLecture = registeredLectureRepository.findAllByStudent(student)
+//                val studentActivity = studentActivityRepository.findAllByStudent(student)
+//                val studentActivityHistory = studentActivityHistoryRepository.findAllByStudent(student)
+//                val registeredLecture = registeredLectureRepository.findAllByStudent(student)
 
                 studentActivityRepository.deleteAllByStudent(student)
                 studentActivityHistoryRepository.deleteAllByStudent(student)
-                registeredLectureRepository.deleteAll(registeredLecture)
+                registeredLectureRepository.deleteAllByStudent(student)
                 studentRepository.delete(student)
             }
             ROLE_ADMIN -> {
