@@ -10,7 +10,6 @@ class CustomStudentActivityRepositoryImpl(
 ) : CustomStudentActivityRepository {
     override fun deleteAllByStudent(student: Student) {
         val studentActivity = QStudentActivity.studentActivity
-        println("==============================")
         queryFactory.delete(studentActivity)
             .where(QStudentActivity.studentActivity.student.eq(student))
             .execute()
