@@ -42,9 +42,6 @@ class StudentActivityEventHandler(
      */
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun approveStudentActivityHandler(event: ApproveStudentActivityEvent) {
-        val studentActivity = event.studentActivity
-
-        studentActivityHistoryRepository.deleteAllByStudentActivityId(studentActivity.id)
-
+        studentActivityHistoryRepository.deleteAllByStudentActivityId(event.studentActivityId)
     }
 }

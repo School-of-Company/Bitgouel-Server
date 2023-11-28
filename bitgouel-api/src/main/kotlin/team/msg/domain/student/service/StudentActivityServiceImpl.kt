@@ -160,7 +160,7 @@ class StudentActivityServiceImpl(
             teacher = studentActivity.teacher
         )
 
-        applicationEventPublisher.publishEvent(ApproveStudentActivityEvent(studentActivity))
+        applicationEventPublisher.publishEvent(ApproveStudentActivityEvent(id))
         studentActivityRepository.save(updatedStudentActivity)
     }
 
