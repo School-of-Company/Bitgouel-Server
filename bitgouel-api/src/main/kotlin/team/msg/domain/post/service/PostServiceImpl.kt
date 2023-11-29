@@ -77,7 +77,7 @@ class PostServiceImpl(
     @Transactional(readOnly = true)
     override fun queryPostDetails(id: UUID): PostDetailsResponse {
         val post = postRepository findById id
-        val writer = userRepository findNameById  post.userId
+        val writer = userRepository findNameById post.userId
 
         val response = PostResponse.detailOf(post, writer)
 
