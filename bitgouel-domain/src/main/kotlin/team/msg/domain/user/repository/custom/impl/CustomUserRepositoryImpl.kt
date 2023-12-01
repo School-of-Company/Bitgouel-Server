@@ -10,6 +10,7 @@ import team.msg.domain.user.model.QUser.user
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.custom.CustomUserRepository
 import team.msg.domain.user.repository.custom.projection.QUserNameProjectionData
+import team.msg.domain.user.repository.custom.projection.UserNameProjectionData
 import java.util.*
 
 class CustomUserRepositoryImpl(
@@ -52,16 +53,11 @@ class CustomUserRepositoryImpl(
      * @param 이름을 조회할 유저의 id
      * @return 유저의 이름
      */
-    override fun queryNameById(id: UUID): String? {
-        val projectionData = queryFactory
+    override fun queryNameById(id: UUID): UserNameProjectionData? = queryFactory
             .select(QUserNameProjectionData(user.name))
             .where(user.id.eq(id))
             .from(user)
             .fetchOne()
-
-        return projectionData?.name
-    }
-
     private fun nameLike(keyword: String): BooleanExpression? =
         if(keyword == "") null else user.name.like(keyword)
 
