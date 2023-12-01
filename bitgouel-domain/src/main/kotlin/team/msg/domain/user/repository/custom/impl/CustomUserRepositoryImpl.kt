@@ -56,6 +56,7 @@ class CustomUserRepositoryImpl(
         val projectionData = queryFactory
             .select(QUserNameProjectionData(user.name))
             .where(user.id.eq(id))
+            .from(user)
             .fetchOne()
 
         return projectionData?.name
