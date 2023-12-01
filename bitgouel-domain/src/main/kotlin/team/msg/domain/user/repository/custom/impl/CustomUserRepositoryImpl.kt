@@ -9,6 +9,8 @@ import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.QUser.user
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.custom.CustomUserRepository
+import team.msg.domain.user.repository.custom.projection.QUserNameProjectionData
+import java.util.*
 
 class CustomUserRepositoryImpl(
     private val queryFactory: JPAQueryFactory
@@ -41,6 +43,22 @@ class CustomUserRepositoryImpl(
             .from(user)
 
         return PageableExecutionUtils.getPage(users, pageable) { countQuery.fetchOne()!! }
+    }
+
+    /**
+     * 요청된 유저 아이디에 따라 조회된 유저의 이름을 반환합니다.
+     * 조회된 유저가 없다면 null을 반환합니다.
+     *
+     * @param 이름을 조회할 유저의 id
+     * @return 유저의 이름
+     */
+    override fun queryNameById(id: UUID): String? {
+        val projectionData = queryFactory
+            .select(QUserNameProjectionData(user.name))
+            .where(user.id.eq(id))
+            .fetchOne()
+
+        return projectionData?.name
     }
 
     private fun nameLike(keyword: String): BooleanExpression? =
