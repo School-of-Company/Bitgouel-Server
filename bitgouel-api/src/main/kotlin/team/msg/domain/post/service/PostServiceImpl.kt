@@ -93,6 +93,6 @@ class PostServiceImpl(
 
 
     private infix fun UserRepository.findNameById(id: UUID): String = this.queryNameById(id)?.name
-            ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+        ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 
 }
