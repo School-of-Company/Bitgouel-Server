@@ -11,6 +11,7 @@ import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
 import team.msg.domain.post.exception.PostNotFoundException
+import team.msg.domain.post.presentation.data.request.UpdatePostRequest
 import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
@@ -53,6 +54,33 @@ class PostServiceImpl(
         )
 
         postRepository.save(post)
+    }
+
+    /**
+     * 게시글을 수정하는 비지니스 로직입니다.
+     * @param 게시글 id, 게시글을 수정하기 위한 데이터들을 담은 request Dto
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updatePost(id: UUID, request: UpdatePostRequest) {
+        val user = userUtil.queryCurrentUser()
+
+        val post = postRepository findById id
+
+        if(user.id != post.userId)
+            throw ForbiddenPostException("게시글은 본인만 수정할 수 있습니다. info : [ userId = ${user.id} ]")
+
+        val link = request.link ?: mutableListOf()
+
+        val updatePost = Post(
+            id = post.id,
+            title = request.title,
+            content = request.content,
+            feedType = post.feedType,
+            link = link,
+            userId = post.userId
+        )
+
+        postRepository.save(updatePost)
     }
 
     /**
