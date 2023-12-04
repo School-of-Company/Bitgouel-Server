@@ -16,6 +16,7 @@ import team.msg.domain.post.mapper.PostRequestMapper
 import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
 import team.msg.domain.post.presentation.web.CreatePostWebRequest
+import team.msg.domain.post.presentation.web.UpdatePostWebRequest
 import team.msg.domain.post.service.PostService
 import java.util.*
 
@@ -42,5 +43,12 @@ class PostController(
     fun queryPostDetails(@PathVariable id: UUID): ResponseEntity<PostDetailsResponse> {
         val response = postService.queryPostDetails(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/{id}")
+    fun updatePost(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdatePostWebRequest): ResponseEntity<Void> {
+        val request = postRequestMapper.updatePostWebRequestToDto(webRequest)
+        postService.updatePost(id, request)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
