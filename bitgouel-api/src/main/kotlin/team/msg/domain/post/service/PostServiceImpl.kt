@@ -1,6 +1,7 @@
 package team.msg.domain.post.service
 
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
@@ -9,14 +10,19 @@ import team.msg.domain.post.presentation.data.request.CreatePostRequest
 import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
+import team.msg.domain.post.exception.PostNotFoundException
+import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.UserNotFoundException
+import team.msg.domain.user.repository.UserRepository
 import java.util.UUID
 
 @Service
 class PostServiceImpl(
     private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
     private val userUtil: UserUtil
 ) : PostService {
     /**
@@ -63,8 +69,30 @@ class PostServiceImpl(
         return response
     }
 
+    /**
+     * 게시글을 상세조회하는 비지니스 로직입니다.
+     * @param 게시글을 상세 조회하기 위한 게시글 id
+     * @return 상세조회한 게시글의 정보를 담은 dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryPostDetails(id: UUID): PostDetailsResponse {
+        val post = postRepository findById id
+        val writer = userRepository findNameById post.userId
+
+        val response = PostResponse.detailOf(post, writer)
+
+        return response
+    }
+
     infix fun String.info(authority: Authority) {
         throw ForbiddenPostException("$this info: [ userAuthority = $authority ]")
     }
+
+    private infix fun PostRepository.findById(id: UUID): Post = this.findByIdOrNull(id)
+        ?: throw PostNotFoundException("게시글을 찾을 수 없습니다. info : [ postId = $id ]")
+
+
+    private infix fun UserRepository.findNameById(id: UUID): String = this.queryNameById(id)?.name
+            ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 
 }
