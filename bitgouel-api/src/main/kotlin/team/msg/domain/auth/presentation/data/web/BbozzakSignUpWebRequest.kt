@@ -17,6 +17,7 @@ data class BbozzakSignUpWebRequest(
     val name: String,
 
     @field:NotBlank
+    @field:Pattern(regexp = "^010[0-9]{8}\$")
     val phoneNumber: String,
 
     @field:Pattern(regexp = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$")

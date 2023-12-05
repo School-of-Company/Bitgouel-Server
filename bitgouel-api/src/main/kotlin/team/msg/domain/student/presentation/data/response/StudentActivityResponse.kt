@@ -30,14 +30,17 @@ data class StudentActivityResponse(
             }
 
         fun detailOf(studentActivity: StudentActivity): StudentActivityDetailsResponse =
-            StudentActivityDetailsResponse(
-                id = studentActivity.id,
-                title = studentActivity.title,
-                content = studentActivity.content,
-                credit = studentActivity.credit,
-                activityDate = studentActivity.activityDate,
-                modifiedAt = studentActivity.modifiedAt
-            )
+            studentActivity.run {
+                StudentActivityDetailsResponse(
+                    id = id,
+                    title = title,
+                    content = content,
+                    credit = credit,
+                    activityDate = activityDate,
+                    modifiedAt = modifiedAt,
+                    approveStatus = approveStatus
+                )
+            }
     }
 }
 
@@ -51,5 +54,6 @@ data class StudentActivityDetailsResponse(
     val content: String,
     val credit: Int,
     val activityDate: LocalDate,
-    val modifiedAt: LocalDateTime
+    val modifiedAt: LocalDateTime,
+    val approveStatus: ApproveStatus
 )
