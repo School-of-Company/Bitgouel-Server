@@ -17,7 +17,7 @@ data class CreatePostWebRequest(
     val content: String,
 
     @field:Valid
-    val link: List<LinkWebRequest>?,
+    val link: List<LinkWebRequest>,
 
     @field:NotNull
     val feedType: FeedType

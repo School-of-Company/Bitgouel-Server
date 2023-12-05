@@ -42,7 +42,7 @@ class PostServiceImpl(
             else -> {}
         }
 
-        val link = request.link ?: mutableListOf()
+        val link = request.link
 
         val post = Post(
             id = UUID.randomUUID(),
@@ -69,7 +69,7 @@ class PostServiceImpl(
         if(user.id != post.userId)
             throw ForbiddenPostException("게시글은 본인만 수정할 수 있습니다. info : [ userId = ${user.id} ]")
 
-        val link = request.link ?: mutableListOf()
+        val link = request.link
 
         val updatePost = Post(
             id = post.id,

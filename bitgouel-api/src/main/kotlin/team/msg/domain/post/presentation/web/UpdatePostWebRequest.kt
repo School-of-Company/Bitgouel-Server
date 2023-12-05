@@ -15,7 +15,7 @@ data class UpdatePostWebRequest(
     val content: String,
 
     @field:Valid
-    val link: List<LinkWebRequest>?
+    val link: List<LinkWebRequest>
 ){
     data class LinkWebRequest(
         @field:URL
