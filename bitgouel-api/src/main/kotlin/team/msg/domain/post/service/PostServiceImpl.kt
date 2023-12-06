@@ -37,14 +37,16 @@ class PostServiceImpl(
         if(request.feedType == FeedType.NOTICE && user.authority != Authority.ROLE_ADMIN)
            throw ForbiddenPostException("공지를 작성할 권한이 없습니다. info: [ userAuthority = ${user.authority} ]")
 
-        val post = Post(
-            id = UUID.randomUUID(),
-            title = request.title,
-            content = request.content,
-            feedType = request.feedType,
-            link = link,
-            userId = user.id
-        )
+        val post = request.run {
+            Post(
+                id = UUID.randomUUID(),
+                userId = user.id,
+                feedType = feedType,
+                title = title,
+                content = content,
+                link = link
+            )
+        }
 
         postRepository.save(post)
     }
@@ -62,15 +64,13 @@ class PostServiceImpl(
         if(user.id != post.userId)
             throw ForbiddenPostException("게시글은 본인만 수정할 수 있습니다. info : [ userId = ${user.id} ]")
 
-        val link = request.link
-
         val updatePost = Post(
             id = post.id,
+            userId = post.userId,
+            feedType = post.feedType,
             title = request.title,
             content = request.content,
-            feedType = post.feedType,
-            link = link,
-            userId = post.userId
+            link = request.link,
         )
 
         postRepository.save(updatePost)
