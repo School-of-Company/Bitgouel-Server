@@ -34,15 +34,8 @@ class PostServiceImpl(
     override fun createPost(request: CreatePostRequest) {
         val user = userUtil.queryCurrentUser()
 
-        when(user.authority){
-            Authority.ROLE_COMPANY_INSTRUCTOR,
-            Authority.ROLE_GOVERNMENT,
-            Authority.ROLE_PROFESSOR,
-            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.NOTICE) "공지를 작성할 권한이 없습니다." info user.authority
-            else -> {}
-        }
-
-        val link = request.link
+        if(request.feedType == FeedType.NOTICE && user.authority != Authority.ROLE_ADMIN)
+           throw ForbiddenPostException("공지를 작성할 권한이 없습니다. info: [ userAuthority = ${user.authority} ]")
 
         val post = Post(
             id = UUID.randomUUID(),
@@ -110,10 +103,6 @@ class PostServiceImpl(
         val response = PostResponse.detailOf(post, writer)
 
         return response
-    }
-
-    infix fun String.info(authority: Authority) {
-        throw ForbiddenPostException("$this info: [ userAuthority = $authority ]")
     }
 
     private infix fun PostRepository.findById(id: UUID): Post = this.findByIdOrNull(id)
