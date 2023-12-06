@@ -77,6 +77,22 @@ class PostServiceImpl(
     }
 
     /**
+     * 게시글을 삭제하는 비지니스 로직입니다.
+     * @param 게시글을 삭제하기 위한 게시글 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deletePost(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val post = postRepository findById id
+
+        if(user.id != post.userId && user.authority != Authority.ROLE_ADMIN)
+            throw ForbiddenPostException("게시글은 본인과 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id} ]")
+
+        postRepository.delete(post)
+    }
+
+    /**
      * 게시글 리스트를 조회하는 비지니스 로직입니다.
      * @param 가져올 게시글 유형과 게시글 리스트를 페이징 처리하기 위한 pageable
      * @return 페이징 처리된 게시글 리스트
