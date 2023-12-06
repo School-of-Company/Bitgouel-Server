@@ -38,7 +38,7 @@ class PostServiceImpl(
             Authority.ROLE_COMPANY_INSTRUCTOR,
             Authority.ROLE_GOVERNMENT,
             Authority.ROLE_PROFESSOR,
-            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.INFORM) "공지를 작성할 권한이 없습니다." info user.authority
+            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.NOTICE) "공지를 작성할 권한이 없습니다." info user.authority
             else -> {}
         }
 
