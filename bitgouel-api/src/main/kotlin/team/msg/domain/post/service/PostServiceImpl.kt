@@ -87,7 +87,7 @@ class PostServiceImpl(
         val post = postRepository findById id
 
         if(user.id != post.userId && user.authority != Authority.ROLE_ADMIN)
-            throw ForbiddenPostException("게시글은 본인과 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id} ]")
+           throw ForbiddenPostException("게시글은 작성자 또는 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id} ]")
 
         postRepository.delete(post)
     }
