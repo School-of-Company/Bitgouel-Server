@@ -76,7 +76,7 @@ class LectureServiceImpl(
      * @param 조회할 강의의 승인 상태를 담은 request dto와 pageable dto
      * @return 조회한 강의의 정보를 담은 list dto
      */
-    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    @Transactional(readOnly = true)
     override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse {
         val user = userUtil.queryCurrentUser()
 
@@ -103,7 +103,7 @@ class LectureServiceImpl(
      * @param 상세 조회할 강의의 id
      * @return 강의의 상세조회 정보를 담은 detail dto
      */
-    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    @Transactional(readOnly = true)
     override fun queryLectureDetails(id: UUID): LectureDetailsResponse {
         val user = userUtil.queryCurrentUser()
 
