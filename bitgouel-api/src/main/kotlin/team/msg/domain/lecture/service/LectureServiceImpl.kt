@@ -25,8 +25,10 @@ import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.model.User
 import java.time.LocalDateTime
 import java.util.*
 
@@ -103,7 +105,9 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun queryLectureDetails(id: UUID): LectureDetailsResponse {
-        val lecture = queryLecture(id)
+        val user = userUtil.queryCurrentUser()
+
+        val lecture = lectureRepository findById id
 
         val headCount = registeredLectureRepository.countByLecture(lecture)
 
@@ -120,10 +124,9 @@ class LectureServiceImpl(
     override fun signUpLecture(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        val student = studentRepository findByUser user
 
-        val lecture = queryLecture(id)
+        val lecture = lectureRepository findById id
 
         if(lecture.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
@@ -156,7 +159,7 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun approveLecture(id: UUID) {
-        val lecture = queryLecture(id)
+        val lecture = lectureRepository findById id
 
         if(lecture.approveStatus == ApproveStatus.APPROVED)
             throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
@@ -185,7 +188,7 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun rejectLecture(id: UUID) {
-        val lecture = queryLecture(id)
+        val lecture = lectureRepository findById id
 
         if(lecture.approveStatus == ApproveStatus.APPROVED)
             throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
@@ -193,6 +196,9 @@ class LectureServiceImpl(
         lectureRepository.delete(lecture)
     }
 
-    private fun queryLecture(id: UUID) = lectureRepository.findByIdOrNull(id)
-            ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
+    private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
+        ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
+
+    private infix fun StudentRepository.findByUser(user: User): Student = this.findByUser(user)
+        ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 }
