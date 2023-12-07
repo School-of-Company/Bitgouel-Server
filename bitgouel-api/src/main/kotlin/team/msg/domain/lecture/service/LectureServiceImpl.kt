@@ -113,7 +113,7 @@ class LectureServiceImpl(
 
         val isRegistered = if(user.authority == Authority.ROLE_STUDENT) {
             val student = studentRepository findByUser user
-            registeredLectureRepository.existsByStudentAndLecture(student, lecture)
+            registeredLectureRepository.existsOne(student.id, lecture.id)
         } else false
 
         val response = LectureResponse.detailOf(lecture, headCount, isRegistered)
@@ -139,7 +139,7 @@ class LectureServiceImpl(
         if(lecture.getLectureStatus() == LectureStatus.CLOSE)
             throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
-        if(registeredLectureRepository.existsByStudentAndLecture(student, lecture))
+        if(registeredLectureRepository.existsOne(student.id, lecture.id))
             throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
 
         val currentSignUpLectureStudent = registeredLectureRepository.countByLecture(lecture)
