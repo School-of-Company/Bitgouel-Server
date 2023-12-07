@@ -111,7 +111,12 @@ class LectureServiceImpl(
 
         val headCount = registeredLectureRepository.countByLecture(lecture)
 
-        val response = LectureResponse.detailOf(lecture, headCount)
+        val isRegistered = if(user.authority == Authority.ROLE_STUDENT) {
+            val student = studentRepository findByUser user
+            registeredLectureRepository.existsByStudentAndLecture(student, lecture)
+        } else false
+
+        val response = LectureResponse.detailOf(lecture, headCount, isRegistered)
 
         return response
     }

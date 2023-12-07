@@ -37,7 +37,7 @@ data class LectureResponse(
             lecturer = lecture.instructor
         )
 
-        fun detailOf(lecture: Lecture, headCount: Int): LectureDetailsResponse = LectureDetailsResponse(
+        fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
             createAt = lecture.createdAt,
@@ -49,6 +49,7 @@ data class LectureResponse(
             approveStatus = lecture.approveStatus,
             headCount = headCount,
             maxRegisteredUser = lecture.maxRegisteredUser,
+            isRegistered = isRegistered,
             lecturer = lecture.instructor,
             credit = lecture.credit
         )
@@ -71,6 +72,7 @@ data class LectureDetailsResponse(
     val approveStatus: ApproveStatus,
     val headCount: Int,
     val maxRegisteredUser: Int,
+    val isRegistered: Boolean,
     val lecturer: String,
     val credit: Int
 )
