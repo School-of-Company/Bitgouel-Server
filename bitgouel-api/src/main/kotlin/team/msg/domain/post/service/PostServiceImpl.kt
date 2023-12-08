@@ -11,6 +11,7 @@ import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
 import team.msg.domain.post.exception.PostNotFoundException
+import team.msg.domain.post.presentation.data.request.UpdatePostRequest
 import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
@@ -33,26 +34,46 @@ class PostServiceImpl(
     override fun createPost(request: CreatePostRequest) {
         val user = userUtil.queryCurrentUser()
 
-        when(user.authority){
-            Authority.ROLE_COMPANY_INSTRUCTOR,
-            Authority.ROLE_GOVERNMENT,
-            Authority.ROLE_PROFESSOR,
-            Authority.ROLE_BBOZZAK -> if (request.feedType == FeedType.INFORM) "공지를 작성할 권한이 없습니다." info user.authority
-            else -> {}
+        if(request.feedType == FeedType.NOTICE && user.authority != Authority.ROLE_ADMIN)
+           throw ForbiddenPostException("공지를 작성할 권한이 없습니다. info: [ userAuthority = ${user.authority} ]")
+
+        val post = request.run {
+            Post(
+                id = UUID.randomUUID(),
+                userId = user.id,
+                feedType = feedType,
+                title = title,
+                content = content,
+                link = link
+            )
         }
 
-        val link = request.link ?: mutableListOf()
+        postRepository.save(post)
+    }
 
-        val post = Post(
-            id = UUID.randomUUID(),
+    /**
+     * 게시글을 수정하는 비지니스 로직입니다.
+     * @param 게시글 id, 게시글을 수정하기 위한 데이터들을 담은 request Dto
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updatePost(id: UUID, request: UpdatePostRequest) {
+        val user = userUtil.queryCurrentUser()
+
+        val post = postRepository findById id
+
+        if(user.id != post.userId)
+            throw ForbiddenPostException("게시글은 본인만 수정할 수 있습니다. info : [ userId = ${user.id} ]")
+
+        val updatePost = Post(
+            id = post.id,
+            userId = post.userId,
+            feedType = post.feedType,
             title = request.title,
             content = request.content,
-            feedType = request.feedType,
-            link = link,
-            userId = user.id
+            link = request.link,
         )
 
-        postRepository.save(post)
+        postRepository.save(updatePost)
     }
 
     /**
@@ -84,15 +105,11 @@ class PostServiceImpl(
         return response
     }
 
-    infix fun String.info(authority: Authority) {
-        throw ForbiddenPostException("$this info: [ userAuthority = $authority ]")
-    }
-
     private infix fun PostRepository.findById(id: UUID): Post = this.findByIdOrNull(id)
         ?: throw PostNotFoundException("게시글을 찾을 수 없습니다. info : [ postId = $id ]")
 
 
     private infix fun UserRepository.findNameById(id: UUID): String = this.queryNameById(id)?.name
-            ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+        ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 
 }

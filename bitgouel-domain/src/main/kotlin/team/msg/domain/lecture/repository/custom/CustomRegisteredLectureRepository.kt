@@ -4,4 +4,5 @@ import java.util.*
 
 interface CustomRegisteredLectureRepository {
     fun deleteAllByStudentId(studentId: UUID)
+    fun existsOne(studentId: UUID,lectureId: UUID): Boolean
 }
