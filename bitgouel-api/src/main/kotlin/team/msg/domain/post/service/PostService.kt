@@ -11,6 +11,7 @@ import java.util.UUID
 interface PostService {
     fun createPost(request: CreatePostRequest)
     fun updatePost(id: UUID, request: UpdatePostRequest)
+    fun deletePost(id: UUID)
     fun queryPosts(type: FeedType, pageable: Pageable): PostsResponse
     fun queryPostDetails(id: UUID): PostDetailsResponse
 }
