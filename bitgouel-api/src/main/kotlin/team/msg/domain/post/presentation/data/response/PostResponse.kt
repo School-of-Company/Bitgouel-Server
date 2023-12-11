@@ -33,7 +33,7 @@ data class PostResponse (
                 content = post.content,
                 feedType = post.feedType,
                 modifiedAt = post.modifiedAt,
-                links = post.link
+                links = post.links
             )
     }
 }

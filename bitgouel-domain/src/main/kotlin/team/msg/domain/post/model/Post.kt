@@ -30,7 +30,7 @@ class Post (
         name = "Link",
         joinColumns = [JoinColumn(name = "post_id")]
     )
-    val link: List<String>,
+    val links: List<String>,
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
