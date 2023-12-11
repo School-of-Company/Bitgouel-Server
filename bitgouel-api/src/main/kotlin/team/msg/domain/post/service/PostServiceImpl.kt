@@ -44,7 +44,7 @@ class PostServiceImpl(
                 feedType = feedType,
                 title = title,
                 content = content,
-                link = links
+                links = links
             )
         }
 
@@ -70,7 +70,7 @@ class PostServiceImpl(
             feedType = post.feedType,
             title = request.title,
             content = request.content,
-            link = request.links,
+            links = request.links,
         )
 
         postRepository.save(updatePost)
