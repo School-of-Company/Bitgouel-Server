@@ -15,7 +15,7 @@ class PostRequestMapperImpl : PostRequestMapper {
         CreatePostRequest(
             title = title,
             content = content,
-            link = link.map { it.url },
+            links = links.map { it.url },
             feedType = feedType
         )
     }
@@ -27,7 +27,7 @@ class PostRequestMapperImpl : PostRequestMapper {
         UpdatePostRequest(
             title = title,
             content = content,
-            link = link.map { it.url }
+            links = links.map { it.url }
         )
     }
 }
