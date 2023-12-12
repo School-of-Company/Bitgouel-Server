@@ -88,12 +88,14 @@ class PostServiceImpl(
 
         when(post.feedType){
             FeedType.EMPLOYMENT -> {
-                if(user.id != post.userId)
-                    if(user.authority != Authority.ROLE_ADMIN)
+                if (user.authority != Authority.ROLE_ADMIN) {
+                    if (user.id != post.userId) {
                         throw ForbiddenPostException("게시글은 작성자 또는 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id}, authority = ${user.authority} ]")
+                    }
+                }
             }
             FeedType.NOTICE -> {
-                if(user.authority != Authority.ROLE_ADMIN)
+                if (user.authority != Authority.ROLE_ADMIN)
                     throw ForbiddenPostException("공지는 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id}, authority = ${user.authority} ]")
             }
         }
