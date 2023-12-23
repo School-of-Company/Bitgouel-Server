@@ -1,11 +1,13 @@
 package team.msg.domain.admin.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
+import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
@@ -16,7 +18,8 @@ import java.util.*
 
 @Service
 class AdminServiceImpl(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) : AdminService {
     /**
      * 유저를 전체 조회 및 이름으로 조회하는 비즈니스 로직입니다
@@ -54,6 +57,23 @@ class AdminServiceImpl(
 
         userRepository.save(approvedUser)
     }
+
+    /**
+     * 회원가입 대기 중인 유저를 거절하는 비즈니스 로직입니다
+     * @param 거절할 유저를 검색하기 위한 userId
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun rejectUser(userId: UUID) {
+        val user = userRepository findById  userId
+
+        if(user.approveStatus == ApproveStatus.APPROVED)
+            throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${user.id} ]")
+
+        applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
+
+        userRepository.delete(user)
+    }
+
 
     private infix fun UserRepository.findById(id: UUID): User =
         this.findByIdOrNull(id) ?: throw UserNotFoundException("유저를 찾을 수 없습니다. Info [ userId = $id ]")
