@@ -2,6 +2,7 @@ package team.msg.domain.admin.presentation
 
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,4 +33,9 @@ class AdminController(
         return ResponseEntity.noContent().build()
     }
 
+    @DeleteMapping("/{user_id}")
+    fun rejectUser(@PathVariable("user_id") userId: UUID): ResponseEntity<Void> {
+        adminService.rejectUser(userId)
+        return ResponseEntity.noContent().build()
+    }
 }
