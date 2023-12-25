@@ -64,7 +64,7 @@ class AdminServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun rejectUser(userId: UUID) {
-        val user = userRepository findById  userId
+        val user = userRepository findById userId
 
         if(user.approveStatus == ApproveStatus.APPROVED)
             throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${user.id} ]")
