@@ -78,6 +78,7 @@ class AdminServiceImpl(
     /**
      * 유저의 상세 정보를 조회하는 비즈니스 로직입니다
      * @param 유저를 조회하기 위한 userId
+     * @return 조회한 user의 정보를 담은 dto
      */
     @Transactional(readOnly = true)
     override fun queryUserDetails(userId: UUID): UserDetailsResponse {
