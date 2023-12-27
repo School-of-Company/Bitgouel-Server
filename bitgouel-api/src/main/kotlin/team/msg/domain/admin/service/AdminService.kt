@@ -8,4 +8,5 @@ import java.util.UUID
 interface AdminService {
     fun queryUsers(request: QueryUsersRequest, pageable: Pageable): UsersResponse
     fun approveUser(userId: UUID)
+    fun rejectUser(userId: UUID)
 }

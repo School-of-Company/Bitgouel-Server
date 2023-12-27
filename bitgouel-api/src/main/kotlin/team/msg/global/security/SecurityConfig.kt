@@ -78,6 +78,9 @@ class SecurityConfig(
             // post
             .mvcMatchers(HttpMethod.POST, "/post").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
             .mvcMatchers(HttpMethod.GET, "/post").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/post/{id}").authenticated()
+            .mvcMatchers(HttpMethod.PATCH, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
@@ -104,6 +107,7 @@ class SecurityConfig(
             //admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/admin/{user_id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()
