@@ -6,18 +6,23 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
+import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.presentation.data.response.AllStudentsResponse
+import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentResponse
 import team.msg.domain.student.repository.StudentRepository
+import java.util.*
 
 @Service
 class ClubServiceImpl(
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
+    private val registeredLectureRepository: RegisteredLectureRepository
 ) : ClubService {
 
     /**
@@ -68,6 +73,26 @@ class ClubServiceImpl(
         val response = AllStudentsResponse(
             StudentResponse.listOf(students)
         )
+
+        return response
+    }
+
+    /**
+     * 동아리에 소속된 학생의 상세정보를 조회하는 비즈니스 로직
+     * @param 동아리 id, 동아리에 속한 상세정보를 조회할 학생 id
+     */
+    @Transactional(readOnly = true)
+    override fun queryStudentDetails(id: Long, studentId: UUID): StudentDetailsResponse {
+        val club = clubRepository.findByIdOrNull(id)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+
+        val student = studentRepository.findByIdAndClub(studentId, club)
+            ?: throw StudentNotFoundException("동아리에 존재하지 않는 학생입니다. info : [ clubId = $id, studentId = $studentId ]")
+
+        val credit = registeredLectureRepository.findAllByStudent(student)
+            .sumOf { it.lecture.credit }
+
+        val response = StudentResponse.detailOf(student, credit)
 
         return response
     }
