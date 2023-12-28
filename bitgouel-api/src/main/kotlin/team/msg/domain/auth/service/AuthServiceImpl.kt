@@ -286,7 +286,7 @@ class AuthServiceImpl(
         if (userRepository.existsByPhoneNumber(phoneNumber))
             throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
 
-        val user = User(
+        return User(
             id = UUID.randomUUID(),
             email = email,
             name = name,
@@ -295,8 +295,6 @@ class AuthServiceImpl(
             authority = authority,
             approveStatus = ApproveStatus.PENDING
         )
-
-        return userRepository.save(user)
     }
 
     /**
