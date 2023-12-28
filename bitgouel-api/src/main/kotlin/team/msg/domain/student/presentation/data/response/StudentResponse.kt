@@ -12,7 +12,7 @@ class StudentResponse(
     companion object {
         fun listOf(students: List<Student>) = students.map {
             StudentResponse(
-                id = it.user!!.id,
+                id = it.id,
                 name = it.user!!.name,
                 authority = it.user!!.authority
             )
