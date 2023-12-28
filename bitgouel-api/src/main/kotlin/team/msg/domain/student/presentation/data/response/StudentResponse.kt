@@ -17,9 +17,23 @@ class StudentResponse(
                 authority = it.user!!.authority
             )
         }
+
+        fun detailOf(student: Student, credit: Int) = StudentDetailsResponse(
+            name = student.user!!.name,
+            phoneNumber = student.user!!.phoneNumber,
+            email = student.user!!.email,
+            credit = credit
+        )
     }
 }
 
 data class AllStudentsResponse(
     val students: List<StudentResponse>
+)
+
+data class StudentDetailsResponse(
+    val name: String,
+    val phoneNumber: String,
+    val email: String,
+    val credit: Int
 )
