@@ -82,12 +82,12 @@ class ClubServiceImpl(
      * @param 동아리 id, 동아리에 속한 상세정보를 조회할 학생 id
      */
     @Transactional(readOnly = true)
-    override fun queryStudentDetails(id: Long, studentId: UUID): StudentDetailsResponse {
-        val club = clubRepository.findByIdOrNull(id)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+    override fun queryStudentDetails(clubId: Long, studentId: UUID): StudentDetailsResponse {
+        val club = clubRepository.findByIdOrNull(clubId)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $clubId ]")
 
         val student = studentRepository.findByIdAndClub(studentId, club)
-            ?: throw StudentNotFoundException("동아리에 존재하지 않는 학생입니다. info : [ clubId = $id, studentId = $studentId ]")
+            ?: throw StudentNotFoundException("동아리에 존재하지 않는 학생입니다. info : [ clubId = $clubId, studentId = $studentId ]")
 
         val credit = registeredLectureRepository.findAllByStudent(student)
             .sumOf { it.lecture.credit }
