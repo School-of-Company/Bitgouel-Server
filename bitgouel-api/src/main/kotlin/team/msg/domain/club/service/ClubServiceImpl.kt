@@ -21,8 +21,7 @@ import java.util.*
 class ClubServiceImpl(
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
-    private val studentRepository: StudentRepository,
-    private val registeredLectureRepository: RegisteredLectureRepository
+    private val studentRepository: StudentRepository
 ) : ClubService {
 
     /**
@@ -89,10 +88,7 @@ class ClubServiceImpl(
         val student = studentRepository.findByIdAndClub(studentId, club)
             ?: throw StudentNotFoundException("동아리에 존재하지 않는 학생입니다. info : [ clubId = $clubId, studentId = $studentId ]")
 
-        val credit = registeredLectureRepository.findAllByStudent(student)
-            .sumOf { it.lecture.credit }
-
-        val response = StudentResponse.detailOf(student, credit)
+        val response = StudentResponse.detailOf(student)
 
         return response
     }

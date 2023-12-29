@@ -18,11 +18,11 @@ class StudentResponse(
             )
         }
 
-        fun detailOf(student: Student, credit: Int) = StudentDetailsResponse(
+        fun detailOf(student: Student) = StudentDetailsResponse(
             name = student.user!!.name,
             phoneNumber = student.user!!.phoneNumber,
             email = student.user!!.email,
-            credit = credit
+            credit = student.credit
         )
     }
 }
