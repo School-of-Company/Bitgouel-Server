@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
-import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
@@ -27,6 +26,7 @@ class ClubServiceImpl(
     /**
      * 모든 동아리를 조회하는 비즈니스 로직
      * @param 동아리를 조회하기 위한 학교 이름
+     * @return 학교에 있는 취업동아리 리스트
      */
     @Transactional(readOnly = true)
     override fun queryAllClubsService(highSchool: HighSchool): ClubsResponse {
@@ -45,6 +45,7 @@ class ClubServiceImpl(
     /**
      * 동아리를 상세 조회하는 비즈니스 로직
      * @param 동아리를 상세 조회하기 위한 id
+     * @return 동아리 상세 정보를 담은 dto
      */
     @Transactional(readOnly = true)
     override fun queryClubDetailsService(id: Long): ClubDetailsResponse {
@@ -61,6 +62,7 @@ class ClubServiceImpl(
     /**
      * 동아리를의 학생 리스트를 조회하는 비즈니스 로직
      * @param 동아리에 속한 학생 리스트를 조회하기 위한 id
+     * @return 동아리에 속한 학생 리스트를 담은 dto
      */
     @Transactional(readOnly = true)
     override fun queryAllStudentsByClubId(id: Long): AllStudentsResponse {
@@ -79,6 +81,7 @@ class ClubServiceImpl(
     /**
      * 동아리에 소속된 학생의 상세정보를 조회하는 비즈니스 로직
      * @param 동아리 id, 동아리에 속한 상세정보를 조회할 학생 id
+     * @return 동아리에 속한 학생의 상세정보를 담은 dto
      */
     @Transactional(readOnly = true)
     override fun queryStudentDetails(clubId: Long, studentId: UUID): StudentDetailsResponse {
