@@ -1,4 +1,4 @@
-package team.msg.domain.lecture.presentation.web
+package team.msg.domain.lecture.presentation.data.web
 
 import javax.persistence.EnumType
 import javax.persistence.Enumerated

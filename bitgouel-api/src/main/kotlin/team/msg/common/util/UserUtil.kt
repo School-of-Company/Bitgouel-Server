@@ -53,7 +53,7 @@ class UserUtil(
     fun queryCurrentUser(): User {
         val userId = queryCurrentUserId()
 
-        return userRepository.findByIdOrNull()
+        return userRepository.findByIdOrNull(userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. : [ id = $userId ]")
     }
 
