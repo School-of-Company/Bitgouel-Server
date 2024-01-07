@@ -16,6 +16,11 @@ class InquiryServiceImpl(
     private val userRepository: UserRepository
 ) : InquiryService {
 
+    /**
+     * 문의 사항을 등록하는 비즈니스 로직입니다.
+     * @param question이 담겨있는 request
+     * @return Unit
+     */
     override fun createInquiry(request: CreateInquiryRequest) {
         val userId = userUtil.queryCurrentUserId()
 
