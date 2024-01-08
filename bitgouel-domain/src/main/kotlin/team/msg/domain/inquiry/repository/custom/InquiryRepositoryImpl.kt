@@ -13,9 +13,16 @@ class InquiryRepositoryImpl(
 ) : InquiryRepositoryCustom {
 
     override fun search(answerStatus: AnswerStatus?, keyword: String): List<Inquiry> {
-        TODO("Not yet implemented")
+        return jpaQueryFactory.selectFrom(inquiry)
+            .where(
+                answerStatusEq(answerStatus),
+                keywordLike(keyword)
+            ).fetch()
     }
 
+    private fun answerStatusEq(answerStatus: AnswerStatus?): BooleanExpression? =
+        if(answerStatus == null) null else inquiry.answerStatus.eq(answerStatus)
+
     private fun keywordLike(keyword: String): BooleanExpression? =
-        if(keyword == "") null else inquiry.question.like("%$keyword%")
+        if(keyword == "") null else inquiry.questionDetail.like("%$keyword%")
 }

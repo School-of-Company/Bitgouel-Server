@@ -36,7 +36,9 @@ class InquiryController(
     }
 
     @GetMapping("/all")
-    fun queryAllInquires(@RequestParam answerStatus: AnswerStatus? = null, @RequestParam keyword: String = ""): ResponseEntity<InquiryResponses> {
-
+    fun queryAllInquires(@RequestParam answerStatus: AnswerStatus? = null,
+                         @RequestParam keyword: String = ""): ResponseEntity<InquiryResponses> {
+        val response = inquiryService.queryAllInquiries(answerStatus,keyword)
+        return ResponseEntity.ok(response)
     }
 }

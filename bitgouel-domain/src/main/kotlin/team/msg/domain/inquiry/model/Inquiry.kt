@@ -20,8 +20,11 @@ class Inquiry(
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User,
 
-    @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val question: String,
+
+    @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
+    val questionDetail: String,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "answer_status", nullable = false)

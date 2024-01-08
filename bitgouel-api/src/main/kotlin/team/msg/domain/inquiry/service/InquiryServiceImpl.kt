@@ -15,8 +15,7 @@ import java.util.*
 @Service
 class InquiryServiceImpl(
     private val userUtil: UserUtil,
-    private val inquiryRepository: InquiryRepository,
-    private val userRepository: UserRepository
+    private val inquiryRepository: InquiryRepository
 ) : InquiryService {
 
     /**
@@ -31,12 +30,17 @@ class InquiryServiceImpl(
             id = UUID.randomUUID(),
             user = currentUser,
             question = request.question,
+            questionDetail = request.questionDetail,
             answerStatus = AnswerStatus.UNANSWERED
         )
 
         inquiryRepository.save(inquiry)
     }
 
+    /**
+     * 유저가 자신이 등록한 문의 사항을 조회하는 비즈니스 로직입니다.
+     * @return 자신이 등록한 문의사항 response
+     */
     override fun queryMyInquiries(): InquiryResponses {
         val currentUser = userUtil.queryCurrentUser()
 
@@ -45,7 +49,16 @@ class InquiryServiceImpl(
         return InquiryResponse.listOf(inquiries)
     }
 
+    /**
+     * 전체 문의 사항을 조회하는 비즈니스 로직입니다.
+     * 답변 상태, 키워드를 통해 필터링 합니다.
+     * @param 답변 여부 상태, 키워드
+     * @return 자신이 등록한 문의사항 response
+     */
     override fun queryAllInquiries(answerStatus: AnswerStatus?, keyword: String): InquiryResponses {
-        TODO("Not yet implemented")
+
+        val inquiries = inquiryRepository.search(answerStatus,keyword)
+
+        return InquiryResponse.listOf(inquiries)
     }
 }
