@@ -8,6 +8,9 @@ import team.msg.domain.inquiry.presentation.web.CreateInquiryWebRequest
 class InquiryMapperImpl : InquiryMapper {
 
     override fun createInquiryWebRequestToDto(webRequest: CreateInquiryWebRequest): CreateInquiryRequest =
-        CreateInquiryRequest(webRequest.question)
+        CreateInquiryRequest(
+            question = webRequest.question,
+            questionDetail = webRequest.questionDetail
+        )
 
 }

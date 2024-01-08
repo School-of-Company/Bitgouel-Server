@@ -18,7 +18,7 @@ import team.msg.domain.inquiry.repository.InquiryRepository
 
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenParser: JwtTokenParser,private val inquiryAnswerRepository: InquiryAnswerRepository,private val inquiryRepository: InquiryRepository
+    private val jwtTokenParser: JwtTokenParser
 ) {
     companion object {
         const val USER = "USER"
@@ -113,6 +113,8 @@ class SecurityConfig(
 
             // inquiry
             .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR, )
+            .mvcMatchers(HttpMethod.GET, "/all").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()
