@@ -23,14 +23,11 @@ class InquiryServiceImpl(
      * @return Unit
      */
     override fun createInquiry(request: CreateInquiryRequest) {
-        val userId = userUtil.queryCurrentUserId()
-
-        if(!userRepository.existsById(userId))
-            throw UserNotFoundException("존재하지 않는 유저입니다. : [ id = $userId ]")
+        val user = userUtil.queryCurrentUser()
 
         val inquiry = Inquiry(
             id = UUID.randomUUID(),
-            userId = userId,
+            user = user,
             question = request.question,
             answerStatus = AnswerStatus.UNANSWERED
         )

@@ -18,7 +18,7 @@ import team.msg.domain.inquiry.repository.InquiryRepository
 
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenParser: JwtTokenParser,private val inquiryAnswerRepository: InquiryAnswerRepository,private val inquiryRepository: InquiryRepository
+    private val jwtTokenParser: JwtTokenParser
 ) {
     companion object {
         const val USER = "USER"
