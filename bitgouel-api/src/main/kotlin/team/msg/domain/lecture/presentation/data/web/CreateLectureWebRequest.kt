@@ -1,4 +1,4 @@
-package team.msg.domain.lecture.presentation.web
+package team.msg.domain.lecture.presentation.data.web
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import javax.persistence.EnumType

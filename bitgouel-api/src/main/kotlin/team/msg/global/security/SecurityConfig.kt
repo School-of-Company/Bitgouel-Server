@@ -13,10 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
+import team.msg.domain.inquiry.repository.InquiryAnswerRepository
+import team.msg.domain.inquiry.repository.InquiryRepository
 
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenParser: JwtTokenParser
+    private val jwtTokenParser: JwtTokenParser,private val inquiryAnswerRepository: InquiryAnswerRepository,private val inquiryRepository: InquiryRepository
 ) {
     companion object {
         const val USER = "USER"
@@ -108,6 +110,9 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/admin/{user_id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
+
+            // inquiry
+            .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
 
             .anyRequest().authenticated()
             .and()

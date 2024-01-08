@@ -37,18 +37,24 @@ class UserUtil(
     private val governmentRepository: GovernmentRepository,
     private val adminRepository: AdminRepository
 ) {
-    fun queryCurrentUser(): User {
+
+    fun queryCurrentUserId(): UUID {
         val principal = SecurityContextHolder.getContext().authentication.principal
 
-        val userId = UUID.fromString(if(principal is AuthDetails)
-            principal.username
-        else
-            principal.toString())
+        val userId = if (principal is AuthDetails) {
+            UUID.fromString(principal.username)
+        } else {
+            UUID.fromString(principal.toString())
+        }
 
-        val user = userRepository.findByIdOrNull(userId)
+        return userId
+    }
+
+    fun queryCurrentUser(): User {
+        val userId = queryCurrentUserId()
+
+        return userRepository.findByIdOrNull(userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. : [ id = $userId ]")
-
-        return user
     }
 
     /**
