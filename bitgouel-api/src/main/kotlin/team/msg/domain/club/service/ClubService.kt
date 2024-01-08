@@ -12,5 +12,6 @@ interface ClubService {
     fun queryClubDetailsService(id: Long): ClubDetailsResponse
     fun queryMyClubDetailsService(): ClubDetailsResponse
     fun queryAllStudentsByClubId(id: Long): AllStudentsResponse
+    fun queryAllStudentsByMyClub(): AllStudentsResponse
     fun queryStudentDetails(clubId: Long, studentId: UUID): StudentDetailsResponse
 }

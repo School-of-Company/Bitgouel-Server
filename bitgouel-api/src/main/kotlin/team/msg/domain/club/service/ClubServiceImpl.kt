@@ -80,7 +80,7 @@ class ClubServiceImpl(
     }
 
     /**
-     * 동아리를의 학생 리스트를 조회하는 비즈니스 로직
+     * 동아리의 학생 리스트를 조회하는 비즈니스 로직
      * @param 동아리에 속한 학생 리스트를 조회하기 위한 id
      * @return 동아리에 속한 학생 리스트를 담은 dto
      */
@@ -90,6 +90,26 @@ class ClubServiceImpl(
             ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
 
         val students = studentRepository.findAllByClub(club)
+
+        val response = AllStudentsResponse(
+            StudentResponse.listOf(students)
+        )
+
+        return response
+    }
+
+    /**
+     * 동아리의 학생 리스트를 조회하는 비즈니스 로직
+     * @return 동아리에 속한 학생 리스트를 담은 dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllStudentsByMyClub(): AllStudentsResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
+
+        val students = studentRepository.findAllByClub(student.club)
 
         val response = AllStudentsResponse(
             StudentResponse.listOf(students)
