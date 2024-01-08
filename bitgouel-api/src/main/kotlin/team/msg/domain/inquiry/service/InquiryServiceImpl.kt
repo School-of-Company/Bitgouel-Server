@@ -2,6 +2,7 @@ package team.msg.domain.inquiry.service
 
 import org.springframework.stereotype.Service
 import team.msg.common.util.UserUtil
+import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
 import team.msg.domain.inquiry.repository.InquiryRepository
@@ -30,7 +31,8 @@ class InquiryServiceImpl(
         val inquiry = Inquiry(
             id = UUID.randomUUID(),
             userId = userId,
-            question = request.question
+            question = request.question,
+            answerStatus = AnswerStatus.UNANSWERED
         )
 
         inquiryRepository.save(inquiry)
