@@ -3,6 +3,7 @@ package team.msg.domain.club.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.util.UserUtil
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
@@ -20,7 +21,8 @@ import java.util.*
 class ClubServiceImpl(
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
+    private val userUtil: UserUtil
 ) : ClubService {
 
     /**
@@ -55,6 +57,24 @@ class ClubServiceImpl(
         val headCount = studentRepository.countByClub(club).toInt()
 
         val response = ClubResponse.detailOf(club, headCount)
+
+        return response
+    }
+
+    /**
+     * 자신이 속한 동아리를 상세 조회하는 비즈니스 로직
+     * @return 동아리 상세 정보를 담은 dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryMyClubDetailsService(): ClubDetailsResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository.findByUser(user)
+            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
+
+        val headCount = studentRepository.countByClub(student.club).toInt()
+
+        val response = ClubResponse.detailOf(student.club, headCount)
 
         return response
     }
