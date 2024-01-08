@@ -4,13 +4,15 @@ import team.msg.domain.club.model.Club
 
 data class ClubResponse(
     val id: Long,
-    val name: String
+    val name: String,
+    val schoolName: String
 ) {
     companion object {
         fun listOf(clubs: List<Club>): List<ClubResponse> = clubs.map {
             ClubResponse(
                 id = it.id,
-                name = it.name
+                name = it.name,
+                schoolName = it.school.highSchool.schoolName
             )
         }
 
