@@ -2,6 +2,8 @@ package team.msg.domain.school.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.domain.club.presentation.data.response.ClubResponse
+import team.msg.domain.club.presentation.data.response.SchoolToClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.presentation.data.response.SchoolResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
@@ -22,11 +24,12 @@ class SchoolServiceImpl(
         val schools = schoolRepository.findAll()
 
         val response = SchoolsResponse(
-            school = schools.map {
+            schools = schools.map {
+                val clubs = clubRepository.findAllBySchool(it)
                 SchoolResponse(
                     id = it.id,
                     schoolName = it.highSchool.schoolName,
-                    clubs = clubRepository.findAllBySchool(it)
+                    clubs = ClubResponse.schoolOf(clubs)
                 )
             }
         )
