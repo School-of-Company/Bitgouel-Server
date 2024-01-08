@@ -7,5 +7,5 @@ import team.msg.domain.inquiry.presentation.response.InquiryResponses
 interface InquiryService {
     fun createInquiry(request: CreateInquiryRequest)
     fun queryMyInquiries(): InquiryResponses
-    fun queryAllInquiries(answerStatus: AnswerStatus, keyword: String): InquiryResponses
+    fun queryAllInquiries(answerStatus: AnswerStatus?, keyword: String): InquiryResponses
 }

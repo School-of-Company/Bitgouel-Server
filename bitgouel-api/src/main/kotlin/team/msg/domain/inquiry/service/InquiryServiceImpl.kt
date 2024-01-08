@@ -45,7 +45,7 @@ class InquiryServiceImpl(
         return InquiryResponse.listOf(inquiries)
     }
 
-    override fun queryAllInquiries(answerStatus: AnswerStatus, keyword: String): InquiryResponses {
+    override fun queryAllInquiries(answerStatus: AnswerStatus?, keyword: String): InquiryResponses {
         TODO("Not yet implemented")
     }
 }

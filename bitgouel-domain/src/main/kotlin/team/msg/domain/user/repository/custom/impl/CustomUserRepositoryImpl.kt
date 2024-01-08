@@ -58,8 +58,9 @@ class CustomUserRepositoryImpl(
             .where(user.id.eq(id))
             .from(user)
             .fetchOne()
+
     private fun nameLike(keyword: String): BooleanExpression? =
-        if(keyword == "") null else user.name.like(keyword)
+        if(keyword == "") null else user.name.like("%$keyword%")
 
     private fun authorityEq(authority: Authority): BooleanExpression? =
         if(authority == Authority.ROLE_USER) null else user.authority.eq(authority)
