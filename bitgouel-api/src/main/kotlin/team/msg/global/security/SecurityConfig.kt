@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
+import team.msg.domain.inquiry.repository.InquiryAnswerRepository
+import team.msg.domain.inquiry.repository.InquiryRepository
 
 @EnableWebSecurity
 class SecurityConfig(
@@ -63,6 +65,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/{id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/club/{id}/member").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/club/{id}/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
@@ -80,6 +83,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/post").authenticated()
             .mvcMatchers(HttpMethod.GET, "/post/{id}").authenticated()
             .mvcMatchers(HttpMethod.PATCH, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
 
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
@@ -106,6 +110,13 @@ class SecurityConfig(
             //admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/admin/{user_id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/admin/{user_id}").hasRole(ADMIN)
+
+            // inquiry
+            .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
+            .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR, )
+            .mvcMatchers(HttpMethod.GET, "/all").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()

@@ -16,7 +16,7 @@ class Post (
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", columnDefinition = "BINARY(16)")
     val userId: UUID,
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
@@ -30,7 +30,7 @@ class Post (
         name = "Link",
         joinColumns = [JoinColumn(name = "post_id")]
     )
-    val link: List<String>,
+    val links: List<String>,
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)

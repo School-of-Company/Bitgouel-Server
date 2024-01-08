@@ -44,7 +44,7 @@ class PostServiceImpl(
                 feedType = feedType,
                 title = title,
                 content = content,
-                link = link
+                links = links
             )
         }
 
@@ -61,8 +61,16 @@ class PostServiceImpl(
 
         val post = postRepository findById id
 
-        if(user.id != post.userId)
-            throw ForbiddenPostException("게시글은 본인만 수정할 수 있습니다. info : [ userId = ${user.id} ]")
+        when(post.feedType){
+            FeedType.EMPLOYMENT -> {
+                if (user.id != post.userId)
+                    throw ForbiddenPostException("게시글은 본인만 수정할 수 있습니다. info : [ userId = ${user.id} ]")
+            }
+            FeedType.NOTICE -> {
+                if (user.authority != Authority.ROLE_ADMIN)
+                    throw ForbiddenPostException("공지는 관리자만 수정할 수 있습니다. info : [ userId = ${user.id}, authority = ${user.authority} ]")
+            }
+        }
 
         val updatePost = Post(
             id = post.id,
@@ -70,10 +78,37 @@ class PostServiceImpl(
             feedType = post.feedType,
             title = request.title,
             content = request.content,
-            link = request.link,
+            links = request.links,
         )
 
         postRepository.save(updatePost)
+    }
+
+    /**
+     * 게시글을 삭제하는 비지니스 로직입니다.
+     * @param 게시글을 삭제하기 위한 게시글 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deletePost(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val post = postRepository findById id
+
+        when(post.feedType){
+            FeedType.EMPLOYMENT -> {
+                if (user.authority != Authority.ROLE_ADMIN) {
+                    if (user.id != post.userId) {
+                        throw ForbiddenPostException("게시글은 작성자 또는 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id}, authority = ${user.authority} ]")
+                    }
+                }
+            }
+            FeedType.NOTICE -> {
+                if (user.authority != Authority.ROLE_ADMIN)
+                    throw ForbiddenPostException("공지는 관리자만 삭제할 수 있습니다. info : [ userId = ${user.id}, authority = ${user.authority} ]")
+            }
+        }
+
+        postRepository.delete(post)
     }
 
     /**
