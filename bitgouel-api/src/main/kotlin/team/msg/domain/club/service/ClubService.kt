@@ -10,6 +10,8 @@ import java.util.UUID
 interface ClubService {
     fun queryAllClubsService(highSchool: HighSchool): ClubsResponse
     fun queryClubDetailsService(id: Long): ClubDetailsResponse
+    fun queryMyClubDetailsService(): ClubDetailsResponse
     fun queryAllStudentsByClubId(id: Long): AllStudentsResponse
+    fun queryAllStudentsByMyClub(): AllStudentsResponse
     fun queryStudentDetails(clubId: Long, studentId: UUID): StudentDetailsResponse
 }

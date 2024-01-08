@@ -9,8 +9,6 @@ import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
 import team.msg.domain.inquiry.repository.InquiryRepository
-import team.msg.domain.user.exception.UserNotFoundException
-import team.msg.domain.user.repository.UserRepository
 import java.util.*
 
 @Service
@@ -47,7 +45,7 @@ class InquiryServiceImpl(
     override fun queryMyInquiries(): InquiryResponses {
         val currentUser = userUtil.queryCurrentUser()
 
-        val inquiries = inquiryRepository.findByUser(currentUser)
+        val inquiries = inquiryRepository.findAllByUser(currentUser)
 
         return InquiryResponse.listOf(inquiries)
     }

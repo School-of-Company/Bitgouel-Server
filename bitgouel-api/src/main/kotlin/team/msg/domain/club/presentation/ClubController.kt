@@ -32,9 +32,21 @@ class ClubController(
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
+    @GetMapping("/my")
+    fun queryMyClubDetails(): ResponseEntity<ClubDetailsResponse> {
+        val response = clubService.queryMyClubDetailsService()
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
     @GetMapping("/{id}/member")
-    fun queryUserByClubId(@PathVariable id: Long): ResponseEntity<AllStudentsResponse> {
+    fun queryUsersByClubId(@PathVariable id: Long): ResponseEntity<AllStudentsResponse> {
         val response = clubService.queryAllStudentsByClubId(id)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/my/member")
+    fun queryUsersByMyClub(): ResponseEntity<AllStudentsResponse> {
+        val response = clubService.queryAllStudentsByMyClub()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
