@@ -5,6 +5,8 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
+import team.msg.domain.inquiry.presentation.response.InquiryResponse
+import team.msg.domain.inquiry.presentation.response.InquiryResponses
 import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.repository.UserRepository
@@ -23,15 +25,27 @@ class InquiryServiceImpl(
      * @return Unit
      */
     override fun createInquiry(request: CreateInquiryRequest) {
-        val user = userUtil.queryCurrentUser()
+        val currentUser = userUtil.queryCurrentUser()
 
         val inquiry = Inquiry(
             id = UUID.randomUUID(),
-            user = user,
+            user = currentUser,
             question = request.question,
             answerStatus = AnswerStatus.UNANSWERED
         )
 
         inquiryRepository.save(inquiry)
+    }
+
+    override fun queryMyInquiries(): InquiryResponses {
+        val currentUser = userUtil.queryCurrentUser()
+
+        val inquiries = inquiryRepository.findByUser(currentUser)
+
+        return InquiryResponse.listOf(inquiries)
+    }
+
+    override fun queryAllInquiries(answerStatus: AnswerStatus, keyword: String): InquiryResponses {
+        TODO("Not yet implemented")
     }
 }
