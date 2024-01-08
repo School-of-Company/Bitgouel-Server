@@ -112,7 +112,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
 
             // inquiry
-            .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated() // TODO hasRole("USER")랑 별반 다를거 없지 않을까, 오히려 이게 낫지 않을까..? 얘기해보기
+            .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
             .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR, )
             .mvcMatchers(HttpMethod.GET, "/all").hasRole(ADMIN)
 
