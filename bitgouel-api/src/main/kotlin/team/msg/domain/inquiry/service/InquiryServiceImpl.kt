@@ -1,6 +1,7 @@
 package team.msg.domain.inquiry.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
@@ -23,6 +24,7 @@ class InquiryServiceImpl(
      * @param question이 담겨있는 request
      * @return Unit
      */
+    @Transactional
     override fun createInquiry(request: CreateInquiryRequest) {
         val currentUser = userUtil.queryCurrentUser()
 
@@ -41,6 +43,7 @@ class InquiryServiceImpl(
      * 유저가 자신이 등록한 문의 사항을 조회하는 비즈니스 로직입니다.
      * @return 자신이 등록한 문의사항 response
      */
+    @Transactional(readOnly = true)
     override fun queryMyInquiries(): InquiryResponses {
         val currentUser = userUtil.queryCurrentUser()
 
@@ -55,6 +58,7 @@ class InquiryServiceImpl(
      * @param 답변 여부 상태, 키워드
      * @return 자신이 등록한 문의사항 response
      */
+    @Transactional(readOnly = true)
     override fun queryAllInquiries(answerStatus: AnswerStatus?, keyword: String): InquiryResponses {
 
         val inquiries = inquiryRepository.search(answerStatus,keyword)
