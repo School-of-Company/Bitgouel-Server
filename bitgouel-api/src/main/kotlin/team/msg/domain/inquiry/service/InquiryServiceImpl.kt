@@ -10,7 +10,9 @@ import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.model.InquiryAnswer
+import team.msg.domain.inquiry.presentation.request.CreateInquiryAnswerRequest
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
+import team.msg.domain.inquiry.presentation.request.UpdateInquiryRequest
 import team.msg.domain.inquiry.presentation.response.InquiryDetailResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
@@ -137,6 +139,21 @@ class InquiryServiceImpl(
         }
 
         inquiryRepository.deleteById(id)
+    }
+
+    override fun updateInquiry(id: UUID, request: UpdateInquiryRequest) {
+        val currentUser = userUtil.queryCurrentUser()
+
+        val inquiry = inquiryRepository findById id
+
+        if(currentUser != inquiry.user)
+            throw ForbiddenCommandInquiryException("문의사항을 수정할 권한이 없습니다. info : [ userId = ${currentUser.id}, inquiryId = $id ]")
+
+        inquiryRepository.save(request.update(inquiry))
+    }
+
+    override fun replyInquiry(id: UUID, request: CreateInquiryAnswerRequest) {
+        TODO("Not yet implemented")
     }
 
     private infix fun InquiryRepository.findById(id: UUID): Inquiry =
