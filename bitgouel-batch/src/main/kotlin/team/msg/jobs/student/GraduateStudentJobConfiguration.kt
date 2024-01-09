@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.BeanPropertyRowMapper
-import team.msg.common.listener.BatchStepExecutionListener
 import team.msg.common.logger.LoggerDelegator
 import team.msg.common.util.ParamUtil
 import team.msg.domain.student.enums.StudentRole

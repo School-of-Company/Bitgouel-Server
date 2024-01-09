@@ -117,8 +117,11 @@ class SecurityConfig(
 
             // inquiry
             .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
-            .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR, )
-            .mvcMatchers(HttpMethod.GET, "/all").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR)
+            .mvcMatchers(HttpMethod.GET, "/inquiry/all").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/inquiry/{id}").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/inquiry/{id}").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/inquiry/{id}/reject").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()
