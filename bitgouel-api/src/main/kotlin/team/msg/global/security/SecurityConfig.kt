@@ -127,8 +127,6 @@ class SecurityConfig(
 
              // withdraw
             .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
-            // 추가적인 회원탈퇴 프로세스, 확장이 필요해보임, 졸업생으로 돌리는건 배치로 이루어져있지만 회원탈퇴는 그럴 필요 없어보임 사실 졸업생도 그렇고
-            // 요구사항에 맞춘 , 기술적 트레이드 오프를 고려하여 확장하기 바람 이 주석은 나중에 회원탈퇴 비즈니스가 확정되면 삭제해주세요
 
             .anyRequest().authenticated()
             .and()
