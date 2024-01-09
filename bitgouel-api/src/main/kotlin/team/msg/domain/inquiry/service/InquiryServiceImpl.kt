@@ -94,7 +94,7 @@ class InquiryServiceImpl(
             }
         }
 
-        val inquiryAnswer= if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
+        val inquiryAnswer = if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
             inquiryAnswerRepository findByInquiryId inquiry.id
         } else null
 
@@ -132,7 +132,7 @@ class InquiryServiceImpl(
         val inquiry = inquiryRepository findById id
 
         if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
-            val inquiryAnswer =  inquiryAnswerRepository findByInquiryId id
+            val inquiryAnswer = inquiryAnswerRepository findByInquiryId id
             inquiryAnswerRepository.delete(inquiryAnswer)
         }
 
