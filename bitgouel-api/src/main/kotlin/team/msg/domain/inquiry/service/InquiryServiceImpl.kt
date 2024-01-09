@@ -92,7 +92,7 @@ class InquiryServiceImpl(
     }
 
     /**
-     * 자신이 등록한 문의사항을 삭제하는 비즈니스로직입니다.
+     * 자신이 등록한 문의사항을 삭제하는 비즈니스 로직입니다.
      * 답변이 있다면 답변까지 함께 삭제합니다.
      * @param 문의사항 id
      */
@@ -113,8 +113,20 @@ class InquiryServiceImpl(
         inquiryRepository.deleteById(id)
     }
 
+    /**
+     * 문의사항을 삭제하는 어드민 비즈니스 로직입니다.
+     * 답변이 있다면 답변까지 함께 삭제합니다.
+     * @param 문의사항 id
+     */
     override fun rejectInquiry(id: UUID) {
-        TODO("Not yet implemented")
+        val inquiry = inquiryRepository findById id
+
+        if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
+            val inquiryAnswer =  inquiryAnswerRepository findByInquiryId id
+            inquiryAnswerRepository.delete(inquiryAnswer)
+        }
+
+        inquiryRepository.deleteById(id)
     }
 
     private infix fun InquiryRepository.findById(id: UUID): Inquiry =
