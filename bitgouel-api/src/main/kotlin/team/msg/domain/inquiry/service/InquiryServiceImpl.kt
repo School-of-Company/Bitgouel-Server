@@ -162,7 +162,7 @@ class InquiryServiceImpl(
      * 문의사항에 대한 답변을 등록하는 비즈니스 로직
      * @param 문의사항 id, 답변 request
      */
-    @Transactional
+    @Transactional(rollbackFor = [Exception::class])
     override fun replyInquiry(id: UUID, request: CreateInquiryAnswerRequest) {
         val currentUser = userUtil.queryCurrentUser()
 
