@@ -2,8 +2,8 @@ package team.msg.domain.withdraw.service
 
 import org.springframework.stereotype.Service
 import team.msg.domain.student.repository.StudentRepository
-import team.msg.domain.withdraw.presentation.WithdrawStudentResponse
-import team.msg.domain.withdraw.presentation.WithdrawStudentResponses
+import team.msg.domain.withdraw.presentation.data.response.WithdrawStudentResponse
+import team.msg.domain.withdraw.presentation.data.response.WithdrawStudentResponses
 import team.msg.domain.withdrow.repository.WithdrawStudentRepository
 
 @Service
@@ -13,7 +13,10 @@ class WithdrawServiceImpl(
 ) : WithdrawService {
 
 
-
+    /**
+     * 탈퇴예정 학생들을 기수로 검색하는 비즈니스 로직
+     * @param 학생 기수
+     */
     override fun queryWithdrawStudent(cohort: Int): WithdrawStudentResponses {
         val students = studentRepository.findAllByCohort(cohort)
 
