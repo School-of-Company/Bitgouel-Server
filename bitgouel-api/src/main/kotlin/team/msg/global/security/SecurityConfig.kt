@@ -122,6 +122,8 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/inquiry/{id}").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/inquiry/{id}").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/inquiry/{id}/reject").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/inquiry/{id}").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/inquiry/{id}/answer").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()
