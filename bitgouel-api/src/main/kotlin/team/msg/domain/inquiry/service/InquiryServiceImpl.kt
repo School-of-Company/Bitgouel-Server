@@ -122,7 +122,7 @@ class InquiryServiceImpl(
         val inquiry = inquiryRepository findById id
 
         if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
-            val inquiryAnswer =  inquiryAnswerRepository findByInquiryId id
+            val inquiryAnswer = inquiryAnswerRepository findByInquiryId id
             inquiryAnswerRepository.delete(inquiryAnswer)
         }
 
