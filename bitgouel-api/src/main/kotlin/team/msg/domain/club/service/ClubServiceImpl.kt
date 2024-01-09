@@ -4,17 +4,35 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
+import team.msg.domain.bbozzak.model.Bbozzak
+import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.model.CompanyInstructor
+import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.model.Government
+import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.professor.exception.ProfessorNotFoundException
+import team.msg.domain.professor.model.Professor
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
-import team.msg.domain.student.presentation.data.response.AllStudentsResponse
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentResponse
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
+import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.model.User
+import team.msg.global.exception.InvalidRoleException
 import java.util.*
 
 @Service
@@ -22,7 +40,12 @@ class ClubServiceImpl(
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
     private val studentRepository: StudentRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val teacherRepository: TeacherRepository,
+    private val bbozzakRepository: BbozzakRepository,
+    private val professorRepository: ProfessorRepository,
+    private val companyInstructorRepository: CompanyInstructorRepository,
+    private val governmentRepository: GovernmentRepository
 ) : ClubService {
 
     /**
@@ -50,70 +73,40 @@ class ClubServiceImpl(
      * @return 동아리 상세 정보를 담은 dto
      */
     @Transactional(readOnly = true)
-    override fun queryClubDetailsService(id: Long): ClubDetailsResponse {
+    override fun queryClubDetailsByIdService(id: Long): ClubDetailsResponse {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
 
-        val headCount = studentRepository.countByClub(club).toInt()
+        val students = studentRepository.findAllByClub(club)
 
-        val response = ClubResponse.detailOf(club, headCount)
+        val response = ClubResponse.detailOf(club, students.size, students)
 
         return response
     }
 
     /**
-     * 자신이 속한 동아리를 상세 조회하는 비즈니스 로직
+     * 동아리를 상세 조회하는 비즈니스 로직
      * @return 동아리 상세 정보를 담은 dto
      */
     @Transactional(readOnly = true)
     override fun queryMyClubDetailsService(): ClubDetailsResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
+        val entity = userUtil.getAuthorityEntityAndOrganization(user).first
 
-        val headCount = studentRepository.countByClub(student.club).toInt()
-
-        val response = ClubResponse.detailOf(student.club, headCount)
-
-        return response
-    }
-
-    /**
-     * 동아리의 학생 리스트를 조회하는 비즈니스 로직
-     * @param 동아리에 속한 학생 리스트를 조회하기 위한 id
-     * @return 동아리에 속한 학생 리스트를 담은 dto
-     */
-    @Transactional(readOnly = true)
-    override fun queryAllStudentsByClubId(id: Long): AllStudentsResponse {
-        val club = clubRepository.findByIdOrNull(id)
-            ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
+        val club = when(entity) {
+            is Student -> findTeacherByUser(user).club
+            is Teacher -> findStudentByUser(user).club
+            is Bbozzak -> findBbozzakByUser(user).club
+            is Professor -> findProfessorByUser(user).club
+            is CompanyInstructor -> findCompanyInstructorByUser(user).club
+            is Government -> findGovernmentByUser(user).club
+            else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
+        }
 
         val students = studentRepository.findAllByClub(club)
 
-        val response = AllStudentsResponse(
-            StudentResponse.listOf(students)
-        )
-
-        return response
-    }
-
-    /**
-     * 동아리의 학생 리스트를 조회하는 비즈니스 로직
-     * @return 동아리에 속한 학생 리스트를 담은 dto
-     */
-    @Transactional(readOnly = true)
-    override fun queryAllStudentsByMyClub(): AllStudentsResponse {
-        val user = userUtil.queryCurrentUser()
-
-        val student = studentRepository.findByUser(user)
-            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
-
-        val students = studentRepository.findAllByClub(student.club)
-
-        val response = AllStudentsResponse(
-            StudentResponse.listOf(students)
-        )
+        val response = ClubResponse.detailOf(club, students.size, students)
 
         return response
     }
@@ -135,4 +128,23 @@ class ClubServiceImpl(
 
         return response
     }
+
+    private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
+        ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private fun findTeacherByUser(user: User) = teacherRepository.findByUser(user)
+        ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private fun findBbozzakByUser(user: User) = bbozzakRepository.findByUser(user)
+        ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다.  info : [ userId = ${user.id} ]")
+
+    private fun findProfessorByUser(user: User) = professorRepository.findByUser(user)
+        ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
+        ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
+        ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
 }

@@ -27,10 +27,6 @@ class StudentResponse(
     }
 }
 
-data class AllStudentsResponse(
-    val students: List<StudentResponse>
-)
-
 data class StudentDetailsResponse(
     val name: String,
     val phoneNumber: String,

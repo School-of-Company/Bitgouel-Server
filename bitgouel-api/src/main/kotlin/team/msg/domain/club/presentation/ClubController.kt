@@ -2,18 +2,13 @@ package team.msg.domain.club.presentation
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import team.msg.domain.club.presentation.data.response.ClubsResponse
+import org.springframework.web.bind.annotation.*
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
+import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.school.enums.HighSchool
-import team.msg.domain.student.presentation.data.response.AllStudentsResponse
 import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/club")
@@ -28,25 +23,13 @@ class ClubController(
 
     @GetMapping("/{id}")
     fun queryClubDetails(@PathVariable id: Long): ResponseEntity<ClubDetailsResponse> {
-        val response = clubService.queryClubDetailsService(id)
+        val response = clubService.queryClubDetailsByIdService(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     @GetMapping("/my")
     fun queryMyClubDetails(): ResponseEntity<ClubDetailsResponse> {
         val response = clubService.queryMyClubDetailsService()
-        return ResponseEntity.status(HttpStatus.OK).body(response)
-    }
-
-    @GetMapping("/{id}/member")
-    fun queryUsersByClubId(@PathVariable id: Long): ResponseEntity<AllStudentsResponse> {
-        val response = clubService.queryAllStudentsByClubId(id)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
-    }
-
-    @GetMapping("/my/member")
-    fun queryUsersByMyClub(): ResponseEntity<AllStudentsResponse> {
-        val response = clubService.queryAllStudentsByMyClub()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
