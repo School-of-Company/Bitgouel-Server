@@ -95,8 +95,8 @@ class ClubServiceImpl(
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
 
         val club = when(entity) {
-            is Student -> findTeacherByUser(user).club
-            is Teacher -> findStudentByUser(user).club
+            is Student -> findStudentByUser(user).club
+            is Teacher -> findTeacherByUser(user).club
             is Bbozzak -> findBbozzakByUser(user).club
             is Professor -> findProfessorByUser(user).club
             is CompanyInstructor -> findCompanyInstructorByUser(user).club
