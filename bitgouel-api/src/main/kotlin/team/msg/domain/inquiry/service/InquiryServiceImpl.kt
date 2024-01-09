@@ -1,20 +1,31 @@
 package team.msg.domain.inquiry.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
+import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
+import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
+import team.msg.domain.inquiry.model.InquiryAnswer
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
+import team.msg.domain.inquiry.presentation.response.InquiryDetailResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
+import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
+import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
+import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.user.model.User
 import java.util.*
 
 @Service
 class InquiryServiceImpl(
     private val userUtil: UserUtil,
-    private val inquiryRepository: InquiryRepository
+    private val inquiryRepository: InquiryRepository,
+    private val inquiryAnswerRepository: InquiryAnswerRepository
 ) : InquiryService {
 
     /**
@@ -63,4 +74,31 @@ class InquiryServiceImpl(
 
         return InquiryResponse.listOf(inquiries)
     }
+
+    override fun queryInquiryDetail(id: UUID): InquiryDetailResponse {
+        val inquiry = inquiryRepository findById id
+
+        val inquiryAnswer= if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
+            inquiryAnswerRepository findByInquiryId inquiry.id
+        } else null
+
+        return InquiryResponse.detailOf(inquiry, inquiryAnswer)
+    }
+
+    override fun deleteInquiry(id: UUID) {
+        TODO("Not yet implemented")
+    }
+
+    override fun rejectInquiry(id: UUID) {
+        TODO("Not yet implemented")
+    }
+
+    private infix fun InquiryRepository.findById(id: UUID): Inquiry =
+        this.findByIdOrNull(id)
+            ?: throw InquiryNotFoundException("존재하지 않는 문의사항입니다. info : [ inquiryId = $id ]")
+
+    private infix fun InquiryAnswerRepository.findByInquiryId(inquiryId: UUID): InquiryAnswer =
+        this.findByInquiryId(inquiryId)
+            ?: throw InquiryAnswerNotFoundException("존재하지 않는 문의사항의 답변입니다. info : [ inquiryId = $inquiryId ]")
+
 }
