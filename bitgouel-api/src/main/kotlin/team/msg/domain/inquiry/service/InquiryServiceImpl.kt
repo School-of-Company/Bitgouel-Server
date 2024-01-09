@@ -19,6 +19,7 @@ import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.util.*
 
@@ -82,7 +83,16 @@ class InquiryServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun queryInquiryDetail(id: UUID): InquiryDetailResponse {
+        val currentUser = userUtil.queryCurrentUser()
         val inquiry = inquiryRepository findById id
+
+        when(currentUser.authority) {
+            Authority.ROLE_ADMIN -> {}
+            else -> {
+                if(inquiry.user != currentUser)
+                    throw ForbiddenCommandInquiryException("문의사항에 접근할 권한이 없습니다. info : [ userId = ${currentUser.id}, inquiryId = $id ]")
+            }
+        }
 
         val inquiryAnswer= if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
             inquiryAnswerRepository findByInquiryId inquiry.id
