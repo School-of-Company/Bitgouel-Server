@@ -84,7 +84,7 @@ class InquiryServiceImpl(
     override fun queryInquiryDetail(id: UUID): InquiryDetailResponse {
         val inquiry = inquiryRepository findById id
 
-        val inquiryAnswer= if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
+        val inquiryAnswer = if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
             inquiryAnswerRepository findByInquiryId inquiry.id
         } else null
 
