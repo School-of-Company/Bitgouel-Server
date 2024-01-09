@@ -5,24 +5,30 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
+import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
+import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentResponse
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
@@ -86,14 +92,16 @@ class ClubServiceImpl(
     override fun queryMyClubDetailsService(): ClubDetailsResponse {
         val user = userUtil.queryCurrentUser()
 
-        val club = when (user.authority) {
-            Authority.ROLE_TEACHER -> findTeacherByUser(user).club
-            Authority.ROLE_STUDENT -> findStudentByUser(user).club
-            Authority.ROLE_BBOZZAK -> findBbozzakByUser(user).club
-            Authority.ROLE_PROFESSOR -> findProfessorByUser(user).club
-            Authority.ROLE_COMPANY_INSTRUCTOR -> findCompanyInstructorByUser(user).club
-            Authority.ROLE_GOVERNMENT -> findGovernmentByUser(user).club
-            else -> throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority}]")
+        val entity = userUtil.getAuthorityEntityAndOrganization(user).first
+
+        val club = when(entity) {
+            is Student -> findTeacherByUser(user).club
+            is Teacher -> findStudentByUser(user).club
+            is Bbozzak -> findBbozzakByUser(user).club
+            is Professor -> findProfessorByUser(user).club
+            is CompanyInstructor -> findCompanyInstructorByUser(user).club
+            is Government -> findGovernmentByUser(user).club
+            else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
 
         val students = studentRepository.findAllByClub(club)
