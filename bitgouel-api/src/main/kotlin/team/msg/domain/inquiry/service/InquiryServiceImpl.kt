@@ -130,6 +130,7 @@ class InquiryServiceImpl(
      * 답변이 있다면 답변까지 함께 삭제합니다.
      * @param 문의사항 id
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun rejectInquiry(id: UUID) {
         val inquiry = inquiryRepository findById id
 
@@ -141,6 +142,11 @@ class InquiryServiceImpl(
         inquiryRepository.deleteById(id)
     }
 
+    /**
+     * 자신이 작성한 문의사항을 업데이트하는 비즈니스 로직.
+     * @param 문의사항 id, 업데이트할 문의사항 request
+     */
+    @Transactional(rollbackFor = [Exception::class])
     override fun updateInquiry(id: UUID, request: UpdateInquiryRequest) {
         val currentUser = userUtil.queryCurrentUser()
 
@@ -152,8 +158,25 @@ class InquiryServiceImpl(
         inquiryRepository.save(request.update(inquiry))
     }
 
+    /**
+     * 문의사항에 대한 답변을 등록하는 비즈니스 로직
+     * @param 문의사항 id, 답변 request
+     */
+    @Transactional
     override fun replyInquiry(id: UUID, request: CreateInquiryAnswerRequest) {
-        TODO("Not yet implemented")
+        val currentUser = userUtil.queryCurrentUser()
+
+        val inquiry = inquiryRepository findById id
+
+        val inquiryAnswer = InquiryAnswer(
+            id = UUID.randomUUID(),
+            answer = request.answer,
+            admin = currentUser,
+            inquiryId = inquiry.id
+        )
+
+        inquiry.replyInquiry()
+        inquiryAnswerRepository.save(inquiryAnswer)
     }
 
     private infix fun InquiryRepository.findById(id: UUID): Inquiry =

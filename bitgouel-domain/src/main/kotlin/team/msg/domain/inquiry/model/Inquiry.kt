@@ -28,5 +28,9 @@ class Inquiry(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "answer_status", nullable = false)
-    val answerStatus: AnswerStatus
-) : BaseUUIDEntity(id)
+    var answerStatus: AnswerStatus
+) : BaseUUIDEntity(id) {
+    fun replyInquiry() {
+        this.answerStatus = AnswerStatus.ANSWERED
+    }
+}
