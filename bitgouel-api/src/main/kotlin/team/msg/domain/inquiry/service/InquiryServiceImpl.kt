@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
+import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
 import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
@@ -31,9 +32,8 @@ class InquiryServiceImpl(
     /**
      * 문의 사항을 등록하는 비즈니스 로직입니다.
      * @param question이 담겨있는 request
-     * @return Unit
      */
-    @Transactional
+    @Transactional(rollbackFor = [Exception::class])
     override fun createInquiry(request: CreateInquiryRequest) {
         val currentUser = userUtil.queryCurrentUser()
 
@@ -75,6 +75,12 @@ class InquiryServiceImpl(
         return InquiryResponse.listOf(inquiries)
     }
 
+    /**
+     * 자신이 등록한 문의사항의 상세 정보를 조회하는 비즈니스 로직입니다.
+     * @param 문의사항 id
+     * @return 자신이 등록한 문의사항 detail
+     */
+    @Transactional(readOnly = true)
     override fun queryInquiryDetail(id: UUID): InquiryDetailResponse {
         val inquiry = inquiryRepository findById id
 
@@ -85,8 +91,26 @@ class InquiryServiceImpl(
         return InquiryResponse.detailOf(inquiry, inquiryAnswer)
     }
 
+    /**
+     * 자신이 등록한 문의사항을 삭제하는 비즈니스로직입니다.
+     * 답변이 있다면 답변까지 함께 삭제합니다.
+     * @param 문의사항 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
     override fun deleteInquiry(id: UUID) {
-        TODO("Not yet implemented")
+        val currentUser = userUtil.queryCurrentUser()
+
+        val inquiry = inquiryRepository findById id
+
+        if(currentUser != inquiry.user)
+            throw ForbiddenCommandInquiryException("문의사항을 삭제할 권한이 없습니다. info : [ userId = ${currentUser.id}, inquiryId = $id ]")
+
+        if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
+            val inquiryAnswer =  inquiryAnswerRepository findByInquiryId id
+            inquiryAnswerRepository.delete(inquiryAnswer)
+        }
+
+        inquiryRepository.deleteById(id)
     }
 
     override fun rejectInquiry(id: UUID) {
