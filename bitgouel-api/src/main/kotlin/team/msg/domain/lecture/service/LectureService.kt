@@ -12,6 +12,7 @@ interface LectureService {
     fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse
     fun queryLectureDetails(id: UUID): LectureDetailsResponse
     fun signUpLecture(id: UUID)
+    fun cancelSignUpLecture(id: UUID)
     fun approveLecture(id: UUID)
     fun rejectLecture(id: UUID)
 }
