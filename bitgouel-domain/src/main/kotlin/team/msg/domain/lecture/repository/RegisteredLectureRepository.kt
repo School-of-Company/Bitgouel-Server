@@ -14,5 +14,6 @@ interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>,
             "JOIN FETCH rl.lecture r WHERE rl.student = :student")
     fun findAllByStudent(student: Student): List<RegisteredLecture>
     fun existsByStudentAndLecture(student: Student, lecture: Lecture): Boolean
+    fun findByStudentAndLecture(student: Student, lecture: Lecture): RegisteredLecture?
     fun countByLecture(lecture: Lecture): Int
 }
