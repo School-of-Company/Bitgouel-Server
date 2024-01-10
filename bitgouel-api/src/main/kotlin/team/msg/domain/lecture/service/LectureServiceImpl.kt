@@ -137,7 +137,7 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
-        if(lecture.getLectureStatus() == LectureStatus.CLOSE)
+        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
         if(registeredLectureRepository.existsOne(student.id, lecture.id))
@@ -186,7 +186,7 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
-        if(lecture.getLectureStatus() == LectureStatus.CLOSE)
+        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청 취소가 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
         val registeredLecture = registeredLectureRepository.findByStudentAndLecture(student, lecture)
