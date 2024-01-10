@@ -18,11 +18,7 @@ import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
-import team.msg.domain.student.exception.StudentNotFoundException
-import team.msg.domain.student.model.Student
-import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.model.User
 import java.util.*
 
 @Service

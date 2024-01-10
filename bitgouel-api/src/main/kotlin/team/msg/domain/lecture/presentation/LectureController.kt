@@ -46,6 +46,12 @@ class LectureController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
+    @DeleteMapping("/{id}")
+    fun cancelSignUpLecture(@PathVariable id: UUID): ResponseEntity<Void> {
+        lectureService.cancelSignUpLecture(id)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+    }
+
     @GetMapping("/{id}")
     fun queryLectureDetails(@PathVariable id: UUID): ResponseEntity<LectureDetailsResponse> {
         val response = lectureService.queryLectureDetails(id)

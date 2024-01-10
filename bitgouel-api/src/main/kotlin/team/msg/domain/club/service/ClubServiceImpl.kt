@@ -30,7 +30,6 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import team.msg.global.exception.InvalidRoleException
 import java.util.*

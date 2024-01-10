@@ -79,7 +79,7 @@ class GraduateStudentJobConfiguration(
             .on("*") // FAIL을 제외한 모든 경우엔
             .end() // Flow 종료
             .end() // Job 종료
-            .build();
+            .build()
     }
 
     @Bean

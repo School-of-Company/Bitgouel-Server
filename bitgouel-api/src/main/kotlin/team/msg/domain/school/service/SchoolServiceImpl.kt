@@ -3,7 +3,6 @@ package team.msg.domain.school.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.club.presentation.data.response.ClubResponse
-import team.msg.domain.club.presentation.data.response.SchoolToClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.presentation.data.response.SchoolResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse

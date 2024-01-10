@@ -15,6 +15,7 @@ import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnApprovedLectureException
+import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
@@ -136,7 +137,7 @@ class LectureServiceImpl(
         if(lecture.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
-        if(lecture.getLectureStatus() == LectureStatus.CLOSE)
+        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
         if(registeredLectureRepository.existsOne(student.id, lecture.id))
@@ -165,6 +166,43 @@ class LectureServiceImpl(
             number = student.number,
             cohort = student.cohort,
             credit = student.credit + lecture.credit,
+            studentRole = student.studentRole
+        )
+
+        studentRepository.save(updateCreditStudent)
+    }
+    /**
+     * 강의에 대해 수강신청 취소하는 비지니스 로직입니다.
+     * @param 수강신청을 취소하기 위한 강의 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun cancelSignUpLecture(id: UUID) {
+        val user = userUtil.queryCurrentUser()
+
+        val student = studentRepository findByUser user
+
+        val lecture = lectureRepository findById id
+
+        if(lecture.approveStatus == ApproveStatus.PENDING)
+            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
+
+        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
+            throw NotAvailableSignUpDateException("수강신청 취소가 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
+
+        val registeredLecture = registeredLectureRepository.findByStudentAndLecture(student, lecture)
+            ?: throw UnSignedUpLectureException("신청하지 않은 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
+
+        registeredLectureRepository.delete(registeredLecture)
+
+        val updateCreditStudent = Student(
+            id = student.id,
+            user = student.user,
+            club = student.club,
+            grade = student.grade,
+            classRoom = student.classRoom,
+            number = student.number,
+            cohort = student.cohort,
+            credit = student.credit - lecture.credit,
             studentRole = student.studentRole
         )
 
