@@ -1,9 +1,5 @@
 package team.msg.global.security
 
-import team.msg.global.config.FilterConfig
-import team.msg.global.security.handler.CustomAccessDeniedHandler
-import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
-import team.msg.global.security.jwt.JwtTokenParser
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -13,8 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
-import team.msg.domain.inquiry.repository.InquiryAnswerRepository
-import team.msg.domain.inquiry.repository.InquiryRepository
+import team.msg.global.config.FilterConfig
+import team.msg.global.security.handler.CustomAccessDeniedHandler
+import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
+import team.msg.global.security.jwt.JwtTokenParser
 
 @EnableWebSecurity
 class SecurityConfig(
@@ -64,10 +62,11 @@ class SecurityConfig(
             // club
             .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/my").hasAnyRole(STUDENT, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
-            .mvcMatchers(HttpMethod.GET, "/club/{id}").hasAnyRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/club/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/{id}/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
 
-            .mvcMatchers(HttpMethod.GET, "/school").authenticated()
+            // school
+            .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
