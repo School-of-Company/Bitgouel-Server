@@ -13,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
-import team.msg.domain.inquiry.repository.InquiryAnswerRepository
-import team.msg.domain.inquiry.repository.InquiryRepository
 
 @EnableWebSecurity
 class SecurityConfig(
@@ -89,6 +87,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture").authenticated()
             .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
+            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/{id}").authenticated()
             .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasRole(ADMIN)
