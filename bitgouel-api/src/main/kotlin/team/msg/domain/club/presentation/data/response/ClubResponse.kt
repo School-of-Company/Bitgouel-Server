@@ -20,10 +20,10 @@ data class ClubResponse(
             )
         }
 
-        fun detailOf(club: Club, headCount: Int, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
+        fun detailOf(club: Club, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
             clubName = club.name,
             highSchoolName = club.school.highSchool.schoolName,
-            headCount = headCount,
+            headCount = students.size,
             students = students.map {
                 StudentResponse(
                     id = it.id,
