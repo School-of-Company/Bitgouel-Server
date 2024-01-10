@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.BeanPropertyRowMapper
-import team.msg.common.listener.BatchStepExecutionListener
 import team.msg.common.logger.LoggerDelegator
 import team.msg.common.util.ParamUtil
 import team.msg.domain.student.enums.StudentRole
@@ -80,7 +79,7 @@ class GraduateStudentJobConfiguration(
             .on("*") // FAIL을 제외한 모든 경우엔
             .end() // Flow 종료
             .end() // Job 종료
-            .build();
+            .build()
     }
 
     @Bean

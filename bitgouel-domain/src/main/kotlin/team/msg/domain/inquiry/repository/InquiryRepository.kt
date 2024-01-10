@@ -9,5 +9,5 @@ import java.util.UUID
 
 interface InquiryRepository : CrudRepository<Inquiry, UUID>, InquiryRepositoryCustom {
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
-    fun findByUser(user: User): List<Inquiry>
+    fun findAllByUser(user: User): List<Inquiry>
 }

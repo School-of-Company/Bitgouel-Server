@@ -1,9 +1,5 @@
 package team.msg.global.security
 
-import team.msg.global.config.FilterConfig
-import team.msg.global.security.handler.CustomAccessDeniedHandler
-import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
-import team.msg.global.security.jwt.JwtTokenParser
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -13,6 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsUtils
+import team.msg.global.config.FilterConfig
+import team.msg.global.security.handler.CustomAccessDeniedHandler
+import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
+import team.msg.global.security.jwt.JwtTokenParser
 
 @EnableWebSecurity
 class SecurityConfig(
@@ -61,9 +61,12 @@ class SecurityConfig(
 
             // club
             .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "/club/{id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
-            .mvcMatchers(HttpMethod.GET, "/club/{id}/member").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/club/my").hasAnyRole(STUDENT, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/club/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/{id}/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+
+            // school
+            .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasRole(STUDENT)
@@ -106,7 +109,7 @@ class SecurityConfig(
             // user
             .mvcMatchers(HttpMethod.GET, "/user").authenticated()
 
-            //admin
+            // admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/admin/{user_id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
@@ -114,8 +117,16 @@ class SecurityConfig(
 
             // inquiry
             .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
-            .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR, )
-            .mvcMatchers(HttpMethod.GET, "/all").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/inquiry").hasAnyRole(STUDENT, TEACHER, BBOZZAK, PROFESSOR, GOVERNMENT, COMPANY_INSTRUCTOR)
+            .mvcMatchers(HttpMethod.GET, "/inquiry/all").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/inquiry/{id}").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/inquiry/{id}").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/inquiry/{id}/reject").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/inquiry/{id}").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/inquiry/{id}/answer").hasRole(ADMIN)
+
+             // withdraw
+            .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
 
             .anyRequest().authenticated()
             .and()
