@@ -1,9 +1,10 @@
 package team.msg.domain.club.presentation.data.response
 
 import team.msg.domain.club.model.Club
-import team.msg.domain.school.model.School
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.presentation.data.response.StudentResponse
+import team.msg.domain.teacher.model.Teacher
+import team.msg.domain.teacher.presentation.data.response.TeacherResponse
 
 data class ClubResponse(
     val id: Long,
@@ -19,7 +20,7 @@ data class ClubResponse(
             )
         }
 
-        fun detailOf(club: Club, headCount: Int, students: List<Student>) = ClubDetailsResponse(
+        fun detailOf(club: Club, headCount: Int, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
             clubName = club.name,
             highSchoolName = club.school.highSchool.schoolName,
             headCount = headCount,
@@ -29,7 +30,11 @@ data class ClubResponse(
                     name = it.user!!.name,
                     authority = it.user!!.authority
                 )
-            }
+            },
+            teacher = TeacherResponse(
+                id = teacher?.id,
+                name = teacher?.user?.name
+            )
         )
 
         fun schoolOf(clubs: List<Club>) = clubs.map {
@@ -49,7 +54,8 @@ data class ClubDetailsResponse(
     val clubName: String,
     val highSchoolName: String,
     val headCount: Int,
-    val students: List<StudentResponse>
+    val students: List<StudentResponse>,
+    val teacher: TeacherResponse
 )
 
 data class SchoolToClubResponse(

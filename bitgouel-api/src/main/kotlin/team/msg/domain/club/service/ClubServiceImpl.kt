@@ -79,7 +79,10 @@ class ClubServiceImpl(
 
         val students = studentRepository.findAllByClub(club)
 
-        val response = ClubResponse.detailOf(club, students.size, students)
+        val teacher = teacherRepository.findByClub(club)
+//            ?: throw TeacherNotFoundException("존재하지 않는 선생님입니다. info : [ clubId = ${club.id} ]")
+
+        val response = ClubResponse.detailOf(club, students.size, students, teacher)
 
         return response
     }
@@ -106,7 +109,10 @@ class ClubServiceImpl(
 
         val students = studentRepository.findAllByClub(club)
 
-        val response = ClubResponse.detailOf(club, students.size, students)
+        val teacher = teacherRepository.findByClub(club)
+//            ?: throw TeacherNotFoundException("존재하지 않는 선생님입니다. info : [ clubId = ${club.id} ]")
+
+        val response = ClubResponse.detailOf(club, students.size, students, teacher)
 
         return response
     }
