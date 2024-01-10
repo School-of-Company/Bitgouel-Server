@@ -47,7 +47,7 @@ data class ClubResponse(
 }
 
 data class ClubsResponse(
-    val club: List<ClubResponse>
+    val clubs: List<ClubResponse>
 )
 
 data class ClubDetailsResponse(
