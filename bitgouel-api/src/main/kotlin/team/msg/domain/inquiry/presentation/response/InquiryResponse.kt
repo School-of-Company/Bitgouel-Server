@@ -3,6 +3,7 @@ package team.msg.domain.inquiry.presentation.response
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.model.InquiryAnswer
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -11,7 +12,7 @@ data class InquiryResponse(
     val question: String,
     val userId: UUID,
     val username: String,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDate,
     val answerStatus: AnswerStatus
 ) {
     companion object {
@@ -22,7 +23,7 @@ data class InquiryResponse(
                 question = inquiry.question,
                 userId = inquiry.user.id,
                 username = inquiry.user.name,
-                createdAt = inquiry.createdAt,
+                createdAt = inquiry.createdAt.toLocalDate(),
                 answerStatus = inquiry.answerStatus
             )
 
