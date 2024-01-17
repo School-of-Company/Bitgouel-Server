@@ -31,7 +31,7 @@ class UserServiceImpl(
 
     /**
      * 현재 로그인한 유저의 비밀번호를 변경하는 비지니스 로직입니다.
-     * @return 현재 비밀번호와 변경할 비밀번호 정보를 담은 dto
+     * @param 현재 비밀번호와 변경할 비밀번호 정보를 담은 dto
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun modifyPasswordService(request: ModifyPasswordRequest) {
