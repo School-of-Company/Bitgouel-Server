@@ -108,6 +108,7 @@ class SecurityConfig(
 
             // user
             .mvcMatchers(HttpMethod.GET, "/user").authenticated()
+            .mvcMatchers(HttpMethod.PATCH, "/user").authenticated()
 
             // admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
