@@ -37,21 +37,21 @@ class UserServiceImpl(
     override fun modifyPasswordService(request: ModifyPasswordRequest) {
         val user = userUtil.queryCurrentUser()
 
-        if(securityUtil.isPasswordMatch(request.currentPassword, user.password)){
-            val encodedNewPassword = securityUtil.passwordEncode(request.newPassword)
+        if(!securityUtil.isPasswordMatch(request.currentPassword, user.password))
+            throw MisMatchPasswordException("비밀번호가 일치하지 않습니다. info : [ password = ${request.currentPassword} ]")
 
-            val modifiedPasswordUser = User(
-                id = user.id,
-                email = user.email,
-                name = user.name,
-                phoneNumber = user.phoneNumber,
-                password = encodedNewPassword,
-                authority = user.authority,
-                approveStatus = user.approveStatus
-            )
+        val encodedNewPassword = securityUtil.passwordEncode(request.newPassword)
 
-            userRepository.save(modifiedPasswordUser)
-        } else throw MisMatchPasswordException("비밀번호가 일치하지 않습니다. info : [ password = ${request.currentPassword} ]")
+        val modifiedPasswordUser = User(
+            id = user.id,
+            email = user.email,
+            name = user.name,
+            phoneNumber = user.phoneNumber,
+            password = encodedNewPassword,
+            authority = user.authority,
+            approveStatus = user.approveStatus
+        )
 
+        userRepository.save(modifiedPasswordUser)
     }
 }
