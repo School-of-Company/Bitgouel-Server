@@ -38,12 +38,14 @@ class UserServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         if(securityUtil.isPasswordMatch(request.currentPassword, user.password)){
+            val encodedNewPassword = securityUtil.passwordEncode(request.newPassword)
+
             val modifiedPasswordUser = User(
                 id = user.id,
                 email = user.email,
                 name = user.name,
                 phoneNumber = user.phoneNumber,
-                password = request.newPassword,
+                password = encodedNewPassword,
                 authority = user.authority,
                 approveStatus = user.approveStatus
             )
