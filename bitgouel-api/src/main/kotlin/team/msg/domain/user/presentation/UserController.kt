@@ -25,7 +25,7 @@ class UserController (
     }
 
     @PatchMapping
-    fun modifyUserPassword(@RequestBody @Valid webRequest: ModifyPasswordWebRequest): ResponseEntity<Void> {
+    fun modifyPassword(@RequestBody @Valid webRequest: ModifyPasswordWebRequest): ResponseEntity<Void> {
         val request = userRequestMapper.modifyPasswordWebRequestToDto(webRequest)
         userService.modifyPasswordService(request)
         return ResponseEntity.noContent().build()
