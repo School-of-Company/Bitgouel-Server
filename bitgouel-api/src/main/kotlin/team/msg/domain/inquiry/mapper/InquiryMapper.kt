@@ -5,10 +5,13 @@ import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
 import team.msg.domain.inquiry.presentation.request.UpdateInquiryRequest
 import team.msg.domain.inquiry.presentation.web.CreateInquiryAnswerWebRequest
 import team.msg.domain.inquiry.presentation.web.CreateInquiryWebRequest
+import team.msg.domain.inquiry.presentation.request.QueryAllInquiresWebRequest
+import team.msg.domain.inquiry.presentation.web.QueryAllInquiresRequest
 import team.msg.domain.inquiry.presentation.web.UpdateInquiryWebRequest
 
 interface InquiryMapper {
     fun createInquiryWebRequestToDto(webRequest: CreateInquiryWebRequest): CreateInquiryRequest
     fun updateInquiryWebRequestToDto(webRequest: UpdateInquiryWebRequest): UpdateInquiryRequest
     fun createInquiryAnswerWebRequestToDto(webRequest: CreateInquiryAnswerWebRequest): CreateInquiryAnswerRequest
+    fun queryAllInquiresWebRequestToDto(webRequest: QueryAllInquiresWebRequest): QueryAllInquiresRequest
 }

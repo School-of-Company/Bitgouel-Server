@@ -24,5 +24,5 @@ class InquiryRepositoryImpl(
         if(answerStatus == null) null else inquiry.answerStatus.eq(answerStatus)
 
     private fun keywordLike(keyword: String): BooleanExpression? =
-        if(keyword == "") null else inquiry.question.like("%$keyword%")
+        if(keyword == "") null else inquiry.question.contains(keyword)
 }

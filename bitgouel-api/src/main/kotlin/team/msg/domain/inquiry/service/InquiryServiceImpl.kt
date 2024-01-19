@@ -16,6 +16,7 @@ import team.msg.domain.inquiry.presentation.request.UpdateInquiryRequest
 import team.msg.domain.inquiry.presentation.response.InquiryDetailResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
+import team.msg.domain.inquiry.presentation.web.QueryAllInquiresRequest
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.user.enums.Authority
@@ -67,9 +68,9 @@ class InquiryServiceImpl(
      * @return 자신이 등록한 문의사항 response
      */
     @Transactional(readOnly = true)
-    override fun queryAllInquiries(answerStatus: AnswerStatus?, keyword: String): InquiryResponses {
+    override fun queryAllInquiries(request: QueryAllInquiresRequest): InquiryResponses {
 
-        val inquiries = inquiryRepository.search(answerStatus,keyword)
+        val inquiries = inquiryRepository.search(request.answerStatus, request.keyword)
 
         return InquiryResponse.listOf(inquiries)
     }
