@@ -91,7 +91,7 @@ class ClubServiceImpl(
      * @return 동아리 상세 정보를 담은 dto
      */
     @Transactional(readOnly = true)
-    override fun queryMyClubDetailsService(): ClubDetailsResponse {
+    override fun queryMyClubDetailsService(): MyClubDetailsResponse {
         val user = userUtil.queryCurrentUser()
 
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
@@ -111,7 +111,7 @@ class ClubServiceImpl(
         val teacher = teacherRepository.findByClub(club)
 //            ?: throw TeacherNotFoundException("동아리를 전담하고 있는 선생님이 없습니다. info : [ clubId = ${club.id} ]")
 
-        val response = ClubResponse.detailOf(club, students, teacher)
+        val response = ClubResponse.myDetailOf(club, students, teacher)
 
         return response
     }
