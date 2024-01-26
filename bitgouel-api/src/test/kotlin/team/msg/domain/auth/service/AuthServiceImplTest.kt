@@ -1,6 +1,8 @@
 package team.msg.domain.auth.service
 
+import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.ints.exactly
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -10,24 +12,21 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.bbozzak.repository.BbozzakRepository
-import team.msg.domain.club.createClub
+import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.repository.ProfessorRepository
-import team.msg.domain.school.createSchool
 import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
-import team.msg.domain.student.createStudent
-import team.msg.domain.student.enums.StudentRole
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.createUser
+import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
 import team.msg.global.security.jwt.JwtTokenGenerator
 import team.msg.global.security.jwt.JwtTokenParser
-import java.util.*
-import com.appmattus.kotlinfixture.kotlinFixture
 
 class AuthServiceImplTest : BehaviorSpec({
 
@@ -68,65 +67,45 @@ class AuthServiceImplTest : BehaviorSpec({
 
     Given("StudentSignUpRequest 가 주어지면") {
         val email = "s22046@gsm.hs.kr"
-        val name = "박주홍"
         val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
         val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
         val clubName = "dev GSM"
-        val grade = 2
-        val classRoom = 3
-        val number = 6
-        val admissionNumber = 1
 
-        val user = createUser(
-            email = email,
-            name = name,
-            phoneNumber = phoneNumber,
-            password = encodedPassword
-        )
+        val request = fixture<StudentSignUpRequest> {
+            property(StudentSignUpRequest::email) { "s22046@gsm.hs.kr" }
+            property(StudentSignUpRequest::phoneNumber) { "01083149727" }
+            property(StudentSignUpRequest::password) { "123456789a@" }
+            property(StudentSignUpRequest::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
+            property(StudentSignUpRequest::clubName) { "dev GSM" }
+        }
+        val user = fixture<User> {
+            property(User::email) { email }
+            property(User::phoneNumber) { phoneNumber }
+            property(User::password) { encodedPassword }
+        }
+        val school = fixture<School> {
+            property(School::highSchool) { highSchool }
+        }
+        val club = fixture<Club> {
+            property(Club::school) { school }
+            property(Club::name) { clubName }
+        }
+        val student = fixture<Student> {
+            property(Student::user) { user }
+        }
 
-        val school = createSchool(
-            schoolId = 1L,
-            highSchool = highSchool
-        )
-
-        val club = createClub(
-            clubId = 1L,
-            school = school,
-            name = clubName
-        )
-
-        val student = createStudent(
-            studentId = UUID.randomUUID(),
-            user = user,
-            club = club,
-            grade = grade,
-            classRoom = classRoom,
-            number = number,
-            cohort = admissionNumber,
-            credit = 0,
-            studentRole = StudentRole.STUDENT
-        )
-
-        every { userRepository.existsByEmail(user.email) } returns false
-        every { userRepository.existsByPhoneNumber(user.phoneNumber) } returns false
-        every { schoolRepository.findByHighSchool(highSchool) } returns school
-        every { clubRepository.findByNameAndSchool(clubName, school) } returns club
-        every { securityUtil.passwordEncode(any()) } answers { encodedPassword }
+        every { userRepository.existsByEmail(request.email) } returns false
+        every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
+        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
+        every { securityUtil.passwordEncode(any()) } returns encodedPassword
         every { studentRepository.save(any()) } returns student
 
         When("학생 회원가입 요청을 하면") {
+            authServiceImpl.studentSignUp(request)
 
-            authServiceImpl.studentSignUp(StudentSignUpRequest(
-                email = user.email,
-                name = user.name,
-                phoneNumber = user.phoneNumber,
-                password = user.password,
-                highSchool = highSchool,
-                clubName, grade, classRoom, number, admissionNumber
-            ))
-
-            Then("User 가 저장이 되어야 한다.") {
+            Then("Student 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { studentRepository.save(any()) }
             }
         }
