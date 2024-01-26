@@ -27,6 +27,7 @@ import team.msg.domain.user.repository.UserRepository
 import team.msg.global.security.jwt.JwtTokenGenerator
 import team.msg.global.security.jwt.JwtTokenParser
 import java.util.*
+import com.appmattus.kotlinfixture.kotlinFixture
 
 class AuthServiceImplTest : BehaviorSpec({
 
@@ -62,6 +63,8 @@ class AuthServiceImplTest : BehaviorSpec({
         applicationEventPublisher,
         bbozzakRepository
     )
+
+    val fixture = kotlinFixture()
 
     Given("StudentSignUpRequest 가 주어지면") {
         val email = "s22046@gsm.hs.kr"
