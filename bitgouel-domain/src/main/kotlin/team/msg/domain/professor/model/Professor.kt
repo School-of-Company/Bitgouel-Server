@@ -6,6 +6,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.OneToOne
 import team.msg.domain.club.model.Club
 import team.msg.domain.user.model.User
@@ -21,7 +22,7 @@ class Professor(
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
