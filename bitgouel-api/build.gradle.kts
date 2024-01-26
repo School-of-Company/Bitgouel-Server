@@ -13,6 +13,10 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     implementation("com.querydsl:querydsl-jpa:5.0.0")
 
+    testImplementation("io.kotest:kotest-runner-junit5:5.3.2")
+    testImplementation("io.kotest:kotest-assertions-core:1.1.2")
+    testImplementation("io.mockk:mockk:1.12.0")
+
     implementation(project(":bitgouel-domain"))
 }
 
