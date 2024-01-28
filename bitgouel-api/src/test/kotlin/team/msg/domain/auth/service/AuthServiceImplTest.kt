@@ -106,6 +106,7 @@ class AuthServiceImplTest : BehaviorSpec({
             authServiceImpl.studentSignUp(request)
 
             Then("Student 가 저장이 되어야 한다.") {
+                verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { studentRepository.save(any()) }
             }
         }
