@@ -1,23 +1,28 @@
 package team.msg.domain.auth.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.ints.exactly
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
+import team.msg.domain.auth.exception.AlreadyExistEmailException
+import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.bbozzak.repository.BbozzakRepository
+import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.model.Student
@@ -29,6 +34,9 @@ import team.msg.global.security.jwt.JwtTokenGenerator
 import team.msg.global.security.jwt.JwtTokenParser
 
 class AuthServiceImplTest : BehaviorSpec({
+
+    isolationMode = IsolationMode.InstancePerLeaf
+    val fixture = kotlinFixture()
 
     val userRepository = mockk<UserRepository>()
     val securityUtil = mockk<SecurityUtil>()
@@ -63,8 +71,6 @@ class AuthServiceImplTest : BehaviorSpec({
         bbozzakRepository
     )
 
-    val fixture = kotlinFixture()
-
     Given("StudentSignUpRequest 가 주어지면") {
         val email = "s22046@gsm.hs.kr"
         val phoneNumber = "01083149727"
@@ -73,27 +79,15 @@ class AuthServiceImplTest : BehaviorSpec({
         val clubName = "dev GSM"
 
         val request = fixture<StudentSignUpRequest> {
-            property(StudentSignUpRequest::email) { "s22046@gsm.hs.kr" }
-            property(StudentSignUpRequest::phoneNumber) { "01083149727" }
-            property(StudentSignUpRequest::password) { "123456789a@" }
-            property(StudentSignUpRequest::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
-            property(StudentSignUpRequest::clubName) { "dev GSM" }
+            property(StudentSignUpRequest::email) { email }
+            property(StudentSignUpRequest::phoneNumber) { phoneNumber }
+            property(StudentSignUpRequest::highSchool) { highSchool }
+            property(StudentSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User> {
-            property(User::email) { email }
-            property(User::phoneNumber) { phoneNumber }
-            property(User::password) { encodedPassword }
-        }
-        val school = fixture<School> {
-            property(School::highSchool) { highSchool }
-        }
-        val club = fixture<Club> {
-            property(Club::school) { school }
-            property(Club::name) { clubName }
-        }
-        val student = fixture<Student> {
-            property(Student::user) { user }
-        }
+        val user = fixture<User>()
+        val school = fixture<School>()
+        val club = fixture<Club>()
+        val student = fixture<Student>()
 
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
@@ -108,6 +102,46 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("Student 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { studentRepository.save(any()) }
+            }
+        }
+
+        When("이미 존재하는 이메일로 학생 회원가입 요청을 하면") {
+            every { userRepository.existsByEmail(request.email) } returns true
+
+            Then("AlreadyExistEmailException 가 터져야 한다.") {
+                shouldThrow<AlreadyExistEmailException> {
+                    authServiceImpl.studentSignUp(request)
+                }
+            }
+        }
+
+        When("이미 존재하는 전화번호로 학생 회원가입 요청을 하면") {
+            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
+
+            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+                shouldThrow<AlreadyExistPhoneNumberException> {
+                    authServiceImpl.studentSignUp(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 학교로 학생 회원가입 요청을 하면") {
+            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+
+            Then("SchoolNotFoundException 가 터져야 한다.") {
+                shouldThrow<SchoolNotFoundException> {
+                    authServiceImpl.studentSignUp(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 동아리와 학교로 학생 회원가입 요청을 하면") {
+            every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
+
+            Then("ClubNotFoundException 가 터져야 한다.") {
+                shouldThrow<ClubNotFoundException> {
+                    authServiceImpl.studentSignUp(request)
+                }
             }
         }
     }
