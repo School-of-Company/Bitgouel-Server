@@ -9,6 +9,7 @@ import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
+import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.professor.model.Professor
@@ -38,7 +39,7 @@ class StudentActivityServiceImpl(
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
     private val studentActivityRepository: StudentActivityRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,private val clubRepository: ClubRepository
 ) : StudentActivityService {
 
     /**
@@ -245,7 +246,10 @@ class StudentActivityServiceImpl(
                 if(entity != studentActivity.teacher)
                     throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
             }
-            is Bbozzak, 
+            is Bbozzak -> {
+                if(entity.club != studentActivity.student.club)
+                    throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
             is Professor, 
             is CompanyInstructor, 
             is Government ->  throw ForbiddenStudentActivityException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
