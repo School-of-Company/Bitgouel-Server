@@ -303,4 +303,80 @@ class AuthServiceImplTest : BehaviorSpec({
             }
         }
     }
+
+    // professorSignUp 테스트 코드
+    Given("ProfessorSignUpRequest 가 주어지면") {
+        val email = "s22046@gsm.hs.kr"
+        val phoneNumber = "01083149727"
+        val encodedPassword = "123456789a@"
+        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
+        val clubName = "dev GSM"
+
+        val request = fixture<BbozzakSignUpRequest> {
+            property(StudentSignUpRequest::email) { email }
+            property(StudentSignUpRequest::phoneNumber) { phoneNumber }
+            property(StudentSignUpRequest::highSchool) { highSchool }
+            property(StudentSignUpRequest::clubName) { clubName }
+        }
+        val user = fixture<User>()
+        val school = fixture<School>()
+        val club = fixture<Club>()
+        val professor = fixture<Professor>()
+
+        every { userRepository.existsByEmail(request.email) } returns false
+        every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
+        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
+        every { securityUtil.passwordEncode(any()) } returns encodedPassword
+        every { professorRepository.save(any()) } returns professor
+
+        When("대학교수 회원가입 요청을 하면") {
+            authServiceImpl.bbozzakSignUp(request)
+
+            Then("Professor 가 저장이 되어야 한다.") {
+                verify(exactly = 0) { userRepository.save(any()) }
+                verify(exactly = 1) { professorRepository.save(any()) }
+            }
+        }
+
+        When("이미 존재하는 이메일로 대학교수 회원가입 요청을 하면") {
+            every { userRepository.existsByEmail(request.email) } returns true
+
+            Then("AlreadyExistEmailException 가 터져야 한다.") {
+                shouldThrow<AlreadyExistEmailException> {
+                    authServiceImpl.bbozzakSignUp(request)
+                }
+            }
+        }
+
+        When("이미 존재하는 전화번호로 대학교수 회원가입 요청을 하면") {
+            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
+
+            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+                shouldThrow<AlreadyExistPhoneNumberException> {
+                    authServiceImpl.bbozzakSignUp(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 학교로 대학교수 회원가입 요청을 하면") {
+            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+
+            Then("SchoolNotFoundException 가 터져야 한다.") {
+                shouldThrow<SchoolNotFoundException> {
+                    authServiceImpl.bbozzakSignUp(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 동아리와 학교로 대학교수 회원가입 요청을 하면") {
+            every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
+
+            Then("ClubNotFoundException 가 터져야 한다.") {
+                shouldThrow<ClubNotFoundException> {
+                    authServiceImpl.bbozzakSignUp(request)
+                }
+            }
+        }
+    }
 })
