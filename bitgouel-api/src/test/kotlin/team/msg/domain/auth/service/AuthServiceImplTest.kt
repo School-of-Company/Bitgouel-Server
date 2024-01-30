@@ -12,9 +12,7 @@ import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
-import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
-import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
-import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
+import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
@@ -22,6 +20,7 @@ import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -161,10 +160,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val clubName = "dev GSM"
 
         val request = fixture<TeacherSignUpRequest> {
-            property(StudentSignUpRequest::email) { email }
-            property(StudentSignUpRequest::phoneNumber) { phoneNumber }
-            property(StudentSignUpRequest::highSchool) { highSchool }
-            property(StudentSignUpRequest::clubName) { clubName }
+            property(TeacherSignUpRequest::email) { email }
+            property(TeacherSignUpRequest::phoneNumber) { phoneNumber }
+            property(TeacherSignUpRequest::highSchool) { highSchool }
+            property(TeacherSignUpRequest::clubName) { clubName }
         }
         val user = fixture<User>()
         val school = fixture<School>()
@@ -237,10 +236,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val clubName = "dev GSM"
 
         val request = fixture<BbozzakSignUpRequest> {
-            property(StudentSignUpRequest::email) { email }
-            property(StudentSignUpRequest::phoneNumber) { phoneNumber }
-            property(StudentSignUpRequest::highSchool) { highSchool }
-            property(StudentSignUpRequest::clubName) { clubName }
+            property(BbozzakSignUpRequest::email) { email }
+            property(BbozzakSignUpRequest::phoneNumber) { phoneNumber }
+            property(BbozzakSignUpRequest::highSchool) { highSchool }
+            property(BbozzakSignUpRequest::clubName) { clubName }
         }
         val user = fixture<User>()
         val school = fixture<School>()
@@ -293,7 +292,7 @@ class AuthServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("존재하지 않는 동아리와 학교로 뽀짝 선생님 회원가입 요청을 하면") {
+        When("존재하지 않는 동아리와 학교로 뽀짝 선생 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
             Then("ClubNotFoundException 가 터져야 한다.") {
@@ -312,11 +311,11 @@ class AuthServiceImplTest : BehaviorSpec({
         val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
         val clubName = "dev GSM"
 
-        val request = fixture<BbozzakSignUpRequest> {
-            property(StudentSignUpRequest::email) { email }
-            property(StudentSignUpRequest::phoneNumber) { phoneNumber }
-            property(StudentSignUpRequest::highSchool) { highSchool }
-            property(StudentSignUpRequest::clubName) { clubName }
+        val request = fixture<ProfessorSignUpRequest> {
+            property(ProfessorSignUpRequest::email) { email }
+            property(ProfessorSignUpRequest::phoneNumber) { phoneNumber }
+            property(ProfessorSignUpRequest::highSchool) { highSchool }
+            property(ProfessorSignUpRequest::clubName) { clubName }
         }
         val user = fixture<User>()
         val school = fixture<School>()
@@ -331,7 +330,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { professorRepository.save(any()) } returns professor
 
         When("대학교수 회원가입 요청을 하면") {
-            authServiceImpl.bbozzakSignUp(request)
+            authServiceImpl.professorSignUp(request)
 
             Then("Professor 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
@@ -344,7 +343,7 @@ class AuthServiceImplTest : BehaviorSpec({
 
             Then("AlreadyExistEmailException 가 터져야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.bbozzakSignUp(request)
+                    authServiceImpl.professorSignUp(request)
                 }
             }
         }
@@ -354,7 +353,7 @@ class AuthServiceImplTest : BehaviorSpec({
 
             Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.bbozzakSignUp(request)
+                    authServiceImpl.professorSignUp(request)
                 }
             }
         }
@@ -364,7 +363,7 @@ class AuthServiceImplTest : BehaviorSpec({
 
             Then("SchoolNotFoundException 가 터져야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
-                    authServiceImpl.bbozzakSignUp(request)
+                    authServiceImpl.professorSignUp(request)
                 }
             }
         }
@@ -374,7 +373,83 @@ class AuthServiceImplTest : BehaviorSpec({
 
             Then("ClubNotFoundException 가 터져야 한다.") {
                 shouldThrow<ClubNotFoundException> {
-                    authServiceImpl.bbozzakSignUp(request)
+                    authServiceImpl.professorSignUp(request)
+                }
+            }
+        }
+    }
+
+    // governmentSignUp 테스트 코드
+    Given("GovernmentSignUpRequest 가 주어지면") {
+        val email = "s22046@gsm.hs.kr"
+        val phoneNumber = "01083149727"
+        val encodedPassword = "123456789a@"
+        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
+        val clubName = "dev GSM"
+
+        val request = fixture<GovernmentSignUpRequest> {
+            property(GovernmentSignUpRequest::email) { email }
+            property(GovernmentSignUpRequest::phoneNumber) { phoneNumber }
+            property(GovernmentSignUpRequest::highSchool) { highSchool }
+            property(GovernmentSignUpRequest::clubName) { clubName }
+        }
+        val user = fixture<User>()
+        val school = fixture<School>()
+        val club = fixture<Club>()
+        val government = fixture<Government>()
+
+        every { userRepository.existsByEmail(request.email) } returns false
+        every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
+        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
+        every { securityUtil.passwordEncode(any()) } returns encodedPassword
+        every { governmentRepository.save(any()) } returns government
+
+        When("유관 기관 회원가입 요청을 하면") {
+            authServiceImpl.governmentSignUp(request)
+
+            Then("Government 가 저장이 되어야 한다.") {
+                verify(exactly = 0) { userRepository.save(any()) }
+                verify(exactly = 1) { governmentRepository.save(any()) }
+            }
+        }
+
+        When("이미 존재하는 이메일로 유관 기관 회원가입 요청을 하면") {
+            every { userRepository.existsByEmail(request.email) } returns true
+
+            Then("AlreadyExistEmailException 가 터져야 한다.") {
+                shouldThrow<AlreadyExistEmailException> {
+                    authServiceImpl.governmentSignUp(request)
+                }
+            }
+        }
+
+        When("이미 존재하는 전화번호로 유관 기관 회원가입 요청을 하면") {
+            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
+
+            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+                shouldThrow<AlreadyExistPhoneNumberException> {
+                    authServiceImpl.governmentSignUp(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 학교로 유관 기관 회원가입 요청을 하면") {
+            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+
+            Then("SchoolNotFoundException 가 터져야 한다.") {
+                shouldThrow<SchoolNotFoundException> {
+                    authServiceImpl.governmentSignUp(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 동아리와 학교로 유관 기관 회원가입 요청을 하면") {
+            every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
+
+            Then("ClubNotFoundException 가 터져야 한다.") {
+                shouldThrow<ClubNotFoundException> {
+                    authServiceImpl.governmentSignUp(request)
                 }
             }
         }

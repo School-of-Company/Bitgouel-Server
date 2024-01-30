@@ -193,7 +193,13 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
-        val user = createUser(request.email, request.name, request.phoneNumber, request.password, Authority.ROLE_COMPANY_INSTRUCTOR)
+        val user = createUser(
+            request.email,
+            request.name,
+            request.phoneNumber,
+            request.password,
+            Authority.ROLE_COMPANY_INSTRUCTOR
+        )
 
         val club = queryClub(request.highSchool, request.clubName)
 
