@@ -590,8 +590,8 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // reissueToken 테스트 코드
     Given("requestToken 이 주어지면") {
-        val request = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
-        val refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
+        val request = "refreshToken"
+        val refreshToken = "refreshToken"
         val token = fixture<RefreshToken> {
             property(RefreshToken::token) { request }
         }
@@ -645,8 +645,8 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // logout 테스트 코드
     Given("requestToken 이 주어지면") {
-        val request = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
-        val refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
+        val request = "refreshToken"
+        val refreshToken = "refreshToken"
         val token = fixture<RefreshToken> {
             property(RefreshToken::token) { request }
         }
