@@ -9,13 +9,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.auth.exception.AlreadyExistEmailException
-import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
-import team.msg.domain.auth.exception.MisMatchPasswordException
-import team.msg.domain.auth.exception.UnApprovedUserException
+import team.msg.domain.auth.exception.*
+import team.msg.domain.auth.model.RefreshToken
 import team.msg.domain.auth.presentation.data.request.*
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
@@ -38,6 +37,7 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
 import team.msg.global.security.jwt.JwtTokenGenerator
@@ -567,7 +567,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("비밀번호가 일치하지 않으면") {
             every { securityUtil.isPasswordMatch(any(), any()) } returns false
 
-            Then("MisMatchPasswordException 이 터져야 합니다.") {
+            Then("MisMatchPasswordException 이 터져야 한다.") {
                 shouldThrow<MisMatchPasswordException> {
                     authServiceImpl.login(request)
                 }
@@ -577,9 +577,64 @@ class AuthServiceImplTest : BehaviorSpec({
         When("ApproveStatus가 PENDING이라면") {
             every { userRepository.findByEmail(request.email) } returns pendingUser
 
-            Then("UnApprovedUserException 이 터져야 합니다.") {
+            Then("UnApprovedUserException 이 터져야 한다.") {
                 shouldThrow<UnApprovedUserException> {
                     authServiceImpl.login(request)
+                }
+            }
+        }
+    }
+
+    // reissueToken 테스트 코드
+    Given("requestToken 이 주어지면") {
+        val request = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
+        val refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
+        val token = fixture<RefreshToken> {
+            property(RefreshToken::token) { request }
+        }
+        val user = fixture<User>()
+        val response = fixture<TokenResponse>()
+
+        every { jwtTokenParser.parseRefreshToken(request) } returns refreshToken
+        every { refreshTokenRepository.findByIdOrNull(refreshToken) } returns token
+        every { userRepository.findByIdOrNull(token.userId) } returns user
+        every { refreshTokenRepository.deleteById(refreshToken) } returns Unit
+        every { jwtTokenGenerator.generateToken(user.id, user.authority) } returns response
+
+        When("토큰 재발급을 요청하면") {
+            val result = authServiceImpl.reissueToken(request)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("유효하지 않는 리프레시 토큰으로 요청했을 때") {
+            every { jwtTokenParser.parseRefreshToken(request) } returns null
+
+            Then("InvalidRefreshTokenException 이 터져야 한다.") {
+                shouldThrow<InvalidRefreshTokenException> {
+                    authServiceImpl.reissueToken(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 리프레시 토큰으로 요청했을 때") {
+            every { refreshTokenRepository.findByIdOrNull(refreshToken) } returns null
+
+            Then("RefreshTokenNotFoundException 이 터져야 한다.") {
+                shouldThrow<RefreshTokenNotFoundException> {
+                    authServiceImpl.reissueToken(request)
+                }
+            }
+        }
+
+        When("토큰의 유저가 존재하지 않을 때") {
+            every { userRepository.findByIdOrNull(token.userId) } returns null
+
+            Then("UserNotFoundException 이 터져야 한다.") {
+                shouldThrow<UserNotFoundException> {
+                    authServiceImpl.reissueToken(request)
                 }
             }
         }
