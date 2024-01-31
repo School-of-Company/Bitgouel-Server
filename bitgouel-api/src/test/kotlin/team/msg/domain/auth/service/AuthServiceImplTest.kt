@@ -564,6 +564,16 @@ class AuthServiceImplTest : BehaviorSpec({
             }
         }
 
+        When("이메일에 맞는 유저가 존재하지 않을 때") {
+            every { userRepository.findByEmail(any()) } returns null
+
+            Then("UserNotFoundException 이 터져야 한다.") {
+                shouldThrow<UserNotFoundException> {
+                    authServiceImpl.login(request)
+                }
+            }
+        }
+
         When("비밀번호가 일치하지 않으면") {
             every { securityUtil.isPasswordMatch(any(), any()) } returns false
 
