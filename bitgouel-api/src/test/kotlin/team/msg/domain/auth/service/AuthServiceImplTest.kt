@@ -94,7 +94,6 @@ class AuthServiceImplTest : BehaviorSpec({
             property(StudentSignUpRequest::highSchool) { highSchool }
             property(StudentSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val student = fixture<Student>()
@@ -170,7 +169,6 @@ class AuthServiceImplTest : BehaviorSpec({
             property(TeacherSignUpRequest::highSchool) { highSchool }
             property(TeacherSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val teacher = fixture<Teacher>()
@@ -246,7 +244,6 @@ class AuthServiceImplTest : BehaviorSpec({
             property(BbozzakSignUpRequest::highSchool) { highSchool }
             property(BbozzakSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val bbozzak = fixture<Bbozzak>()
@@ -322,7 +319,6 @@ class AuthServiceImplTest : BehaviorSpec({
             property(ProfessorSignUpRequest::highSchool) { highSchool }
             property(ProfessorSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val professor = fixture<Professor>()
@@ -398,7 +394,6 @@ class AuthServiceImplTest : BehaviorSpec({
             property(GovernmentSignUpRequest::highSchool) { highSchool }
             property(GovernmentSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val government = fixture<Government>()
@@ -474,7 +469,6 @@ class AuthServiceImplTest : BehaviorSpec({
             property(CompanyInstructorSignUpRequest::highSchool) { highSchool }
             property(CompanyInstructorSignUpRequest::clubName) { clubName }
         }
-        val user = fixture<User>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val companyInstructor = fixture<CompanyInstructor>()
