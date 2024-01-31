@@ -649,4 +649,60 @@ class AuthServiceImplTest : BehaviorSpec({
             }
         }
     }
+
+    // logout 테스트 코드
+    Given("requestToken 이 주어지면") {
+        val request = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
+        val refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjMDJjZDIzMC01ZTFkLTQwNGQtOGEwZC04M2U0ZjVjYTRjNDUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwNjcxNjQyNiwiZXhwIjoxNzA2NzIzNjI2fQ.304rxmypo4mwEloUJc_3MJronWi90N5-yVuZUw5SpRU"
+        val token = fixture<RefreshToken> {
+            property(RefreshToken::token) { request }
+        }
+        val user = fixture<User> {
+            property(User::id) { token.userId }
+        }
+        val invalidUser = fixture<User>()
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { jwtTokenParser.parseRefreshToken(request) } returns refreshToken
+        every { refreshTokenRepository.findByIdOrNull(refreshToken) } returns token
+        every { refreshTokenRepository.delete(token) } returns Unit
+
+        When("로그아웃을 요청하면") {
+            authServiceImpl.logout(request)
+
+            Then("RefreshToken이 삭제되어야 한다.") {
+                verify(exactly = 1) { refreshTokenRepository.delete(token) }
+            }
+        }
+
+        When("유효하지 않는 리프레시 토큰으로 요청했을 때") {
+            every { jwtTokenParser.parseRefreshToken(request) } returns null
+
+            Then("InvalidRefreshTokenException 이 터져야 한다.") {
+                shouldThrow<InvalidRefreshTokenException> {
+                    authServiceImpl.logout(request)
+                }
+            }
+        }
+
+        When("존재하지 않는 리프레시 토큰으로 요청했을 때") {
+            every { refreshTokenRepository.findByIdOrNull(refreshToken) } returns null
+
+            Then("RefreshTokenNotFoundException 이 터져야 한다.") {
+                shouldThrow<RefreshTokenNotFoundException> {
+                    authServiceImpl.logout(request)
+                }
+            }
+        }
+
+        When("토큰의 유저가 존재하지 않을 때") {
+            every { userUtil.queryCurrentUser() } returns invalidUser
+
+            Then("UserNotFoundException 이 터져야 한다.") {
+                shouldThrow<UserNotFoundException> {
+                    authServiceImpl.logout(request)
+                }
+            }
+        }
+    }
 })
