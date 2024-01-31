@@ -5,9 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
@@ -37,6 +35,7 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -702,6 +701,23 @@ class AuthServiceImplTest : BehaviorSpec({
                 shouldThrow<UserNotFoundException> {
                     authServiceImpl.logout(request)
                 }
+            }
+        }
+    }
+
+    // withdraw 테스트 코드
+    Given("현재 로그인한 User가 있다면") {
+        val user = fixture<User>()
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
+        every { userRepository.delete(user) } returns Unit
+
+        When("회원탈퇴를 요청하면") {
+            authServiceImpl.withdraw()
+
+            Then("User가 삭제되어야 한다.") {
+                verify(exactly = 1) { userRepository.delete(user) }
             }
         }
     }
