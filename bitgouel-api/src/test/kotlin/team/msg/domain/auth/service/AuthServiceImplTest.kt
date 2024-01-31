@@ -4,15 +4,20 @@ import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
+import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.exception.MisMatchPasswordException
+import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.presentation.data.request.*
+import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
@@ -527,6 +532,54 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("ClubNotFoundException 가 터져야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.companyInstructorSignUp(request)
+                }
+            }
+        }
+    }
+
+    // login 테스트 코드
+    Given("LoginRequest 가 주어지면") {
+        val password = "123456789a@"
+
+        val request = fixture<LoginRequest> {
+            property(LoginRequest::password) { password }
+        }
+        val response = fixture<TokenResponse>()
+        val user = fixture<User> {
+            property(User::approveStatus) { ApproveStatus.APPROVED }
+        }
+        val pendingUser = fixture<User> {
+            property(User::approveStatus) { ApproveStatus.PENDING }
+        }
+
+        every { userRepository.findByEmail(request.email) } returns user
+        every { securityUtil.isPasswordMatch(any(), any()) } returns true
+        every { jwtTokenGenerator.generateToken(user.id, user.authority) } returns response
+
+        When("로그인 요청을 하면") {
+            val result = authServiceImpl.login(request)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("비밀번호가 일치하지 않으면") {
+            every { securityUtil.isPasswordMatch(any(), any()) } returns false
+
+            Then("MisMatchPasswordException 이 터져야 합니다.") {
+                shouldThrow<MisMatchPasswordException> {
+                    authServiceImpl.login(request)
+                }
+            }
+        }
+
+        When("ApproveStatus가 PENDING이라면") {
+            every { userRepository.findByEmail(request.email) } returns pendingUser
+
+            Then("UnApprovedUserException 이 터져야 합니다.") {
+                shouldThrow<UnApprovedUserException> {
+                    authServiceImpl.login(request)
                 }
             }
         }
