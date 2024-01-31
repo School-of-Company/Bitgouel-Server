@@ -82,18 +82,9 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // studentSignUp 테스트 코드
     Given("StudentSignUpRequest 가 주어지면") {
-        val email = "s22046@gsm.hs.kr"
-        val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
-        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
-        val clubName = "dev GSM"
 
-        val request = fixture<StudentSignUpRequest> {
-            property(StudentSignUpRequest::email) { email }
-            property(StudentSignUpRequest::phoneNumber) { phoneNumber }
-            property(StudentSignUpRequest::highSchool) { highSchool }
-            property(StudentSignUpRequest::clubName) { clubName }
-        }
+        val request = fixture<StudentSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val student = fixture<Student>()
@@ -157,18 +148,9 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // teacherSignUp 테스트 코드
     Given("TeacherSignUpRequest 가 주어지면") {
-        val email = "s22046@gsm.hs.kr"
-        val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
-        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
-        val clubName = "dev GSM"
 
-        val request = fixture<TeacherSignUpRequest> {
-            property(TeacherSignUpRequest::email) { email }
-            property(TeacherSignUpRequest::phoneNumber) { phoneNumber }
-            property(TeacherSignUpRequest::highSchool) { highSchool }
-            property(TeacherSignUpRequest::clubName) { clubName }
-        }
+        val request = fixture<TeacherSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val teacher = fixture<Teacher>()
@@ -232,18 +214,9 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // bbozzakSignUp 테스트 코드
     Given("BbozzakSignUpRequest 가 주어지면") {
-        val email = "s22046@gsm.hs.kr"
-        val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
-        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
-        val clubName = "dev GSM"
 
-        val request = fixture<BbozzakSignUpRequest> {
-            property(BbozzakSignUpRequest::email) { email }
-            property(BbozzakSignUpRequest::phoneNumber) { phoneNumber }
-            property(BbozzakSignUpRequest::highSchool) { highSchool }
-            property(BbozzakSignUpRequest::clubName) { clubName }
-        }
+        val request = fixture<BbozzakSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val bbozzak = fixture<Bbozzak>()
@@ -307,18 +280,9 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // professorSignUp 테스트 코드
     Given("ProfessorSignUpRequest 가 주어지면") {
-        val email = "s22046@gsm.hs.kr"
-        val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
-        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
-        val clubName = "dev GSM"
 
-        val request = fixture<ProfessorSignUpRequest> {
-            property(ProfessorSignUpRequest::email) { email }
-            property(ProfessorSignUpRequest::phoneNumber) { phoneNumber }
-            property(ProfessorSignUpRequest::highSchool) { highSchool }
-            property(ProfessorSignUpRequest::clubName) { clubName }
-        }
+        val request = fixture<ProfessorSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val professor = fixture<Professor>()
@@ -382,18 +346,9 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // governmentSignUp 테스트 코드
     Given("GovernmentSignUpRequest 가 주어지면") {
-        val email = "s22046@gsm.hs.kr"
-        val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
-        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
-        val clubName = "dev GSM"
 
-        val request = fixture<GovernmentSignUpRequest> {
-            property(GovernmentSignUpRequest::email) { email }
-            property(GovernmentSignUpRequest::phoneNumber) { phoneNumber }
-            property(GovernmentSignUpRequest::highSchool) { highSchool }
-            property(GovernmentSignUpRequest::clubName) { clubName }
-        }
+        val request = fixture<GovernmentSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val government = fixture<Government>()
@@ -457,18 +412,9 @@ class AuthServiceImplTest : BehaviorSpec({
 
     // companyInstructorSignUp 테스트 코드
     Given("CompanyInstructorSignUpRequest 가 주어지면") {
-        val email = "s22046@gsm.hs.kr"
-        val phoneNumber = "01083149727"
         val encodedPassword = "123456789a@"
-        val highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL
-        val clubName = "dev GSM"
 
-        val request = fixture<CompanyInstructorSignUpRequest> {
-            property(CompanyInstructorSignUpRequest::email) { email }
-            property(CompanyInstructorSignUpRequest::phoneNumber) { phoneNumber }
-            property(CompanyInstructorSignUpRequest::highSchool) { highSchool }
-            property(CompanyInstructorSignUpRequest::clubName) { clubName }
-        }
+        val request = fixture<CompanyInstructorSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val companyInstructor = fixture<CompanyInstructor>()
