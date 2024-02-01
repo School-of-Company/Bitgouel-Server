@@ -58,7 +58,7 @@ class CertificationServiceImpl(
 
         val student = studentRepository findByUser user
 
-        val certifications = certificationRepository findAllByStudentId student.id
+        val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc student.id
 
         val response = CertificationsResponse(
             CertificationResponse.listOf(certifications)
@@ -83,7 +83,7 @@ class CertificationServiceImpl(
         if (student.club != teacher.club)
             throw ForbiddenCertificationException("자격증을 조회할 권한이 없습니다. info : [ club = ${teacher.club} ]")
 
-        val certifications = certificationRepository findAllByStudentId studentId
+        val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc studentId
 
         val response = CertificationsResponse(
             CertificationResponse.listOf(certifications)
@@ -124,8 +124,8 @@ class CertificationServiceImpl(
         this.findStudentById(studentId)
             ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ studentId = $studentId ]")
 
-    private infix fun CertificationRepository.findAllByStudentId(studentId: UUID): List<Certification> =
-        this.findAllByStudentId(studentId)
+    private infix fun CertificationRepository.findAllByStudentIdOrderByAcquisitionDateDesc(studentId: UUID): List<Certification> =
+        this.findAllByStudentIdOrderByAcquisitionDateDesc(studentId)
 
     private infix fun CertificationRepository.findById(id: UUID): Certification =
         this.findByIdOrNull(id)

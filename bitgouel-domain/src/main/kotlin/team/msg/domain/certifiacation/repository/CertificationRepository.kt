@@ -6,5 +6,5 @@ import team.msg.domain.certifiacation.repository.custom.CustomCertificationRepos
 import java.util.UUID
 
 interface CertificationRepository : CrudRepository<Certification, UUID>, CustomCertificationRepository {
-    fun findAllByStudentId(studentId: UUID): List<Certification>
+    fun findAllByStudentIdOrderByAcquisitionDateDesc(studentId: UUID): List<Certification>
 }
