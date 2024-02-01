@@ -34,7 +34,7 @@ class AdminController(
         return ResponseEntity.noContent().build()
     }
 
-    @DeleteMapping("/{user_id}")
+    @DeleteMapping("/{user_id}/reject")
     fun rejectUser(@PathVariable("user_id") userId: UUID): ResponseEntity<Void> {
         adminService.rejectUser(userId)
         return ResponseEntity.noContent().build()
@@ -44,5 +44,11 @@ class AdminController(
     fun queryUserDetails(@PathVariable("user_id") userId: UUID): ResponseEntity<UserDetailsResponse> {
         val response = adminService.queryUserDetails(userId)
         return ResponseEntity.ok(response)
+    }
+
+    @DeleteMapping("{user_id}")
+    fun forceWithdraw(@PathVariable("user_id") userId: UUID): ResponseEntity<Void> {
+        adminService.forceWithdraw(userId)
+        return ResponseEntity.noContent().build()
     }
 }
