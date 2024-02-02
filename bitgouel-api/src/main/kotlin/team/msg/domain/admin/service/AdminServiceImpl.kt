@@ -87,6 +87,19 @@ class AdminServiceImpl(
         return UserResponse.detailOf(user)
     }
 
+    /**
+     * 유저를 강제 탈퇴 시키는 비지니스 로직입니다
+     * @param 유저를 삭제하기 위한 userId
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun forceWithdraw(userId: UUID) {
+        val user = userRepository findById userId
+
+        applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
+
+        userRepository.delete(user)
+    }
+
 
     private infix fun UserRepository.findById(id: UUID): User =
         this.findByIdOrNull(id) ?: throw UserNotFoundException("유저를 찾을 수 없습니다. Info [ userId = $id ]")
