@@ -1,6 +1,6 @@
 package team.msg.domain.withdraw.presentation.data.response
 
-import team.msg.domain.withdrow.model.WithdrawStudent
+import team.msg.domain.withdraw.model.WithdrawStudent
 import java.util.UUID
 
 data class WithdrawStudentResponse(
