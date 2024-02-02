@@ -4,6 +4,7 @@ import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -11,9 +12,10 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.model.Admin
 import team.msg.domain.admin.repository.AdminRepository
-import team.msg.domain.auth.exception.AlreadyExistEmailException
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
+import team.msg.domain.faq.presentation.data.response.FaqResponse
+import team.msg.domain.faq.presentation.data.response.FaqsResponse
 import team.msg.domain.faq.repository.FaqRepository
 import team.msg.domain.user.model.User
 
@@ -32,7 +34,7 @@ class FaqServiceImplTest : BehaviorSpec({
     )
 
     // createFaq 테스트 코드
-    Given("CreateFaqRequest 가 주어지면") {
+    Given("CreateFaqRequest 가 주어질 때") {
         val user = fixture<User>()
         val admin = fixture<Admin>()
         val faq = fixture<Faq>()
@@ -50,13 +52,32 @@ class FaqServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("현재 유저가 어드민이 아니라면") {
+        When("현재 유저가 어드민이 아니라") {
             every { adminRepository.findByUser(user) } returns null
 
             Then("AdminNotFoundException 가 터져야 한다.") {
                 shouldThrow<AdminNotFoundException> {
                     faqServiceImpl.createFaq(request)
                 }
+            }
+        }
+    }
+
+    // queryAllFaqs 테스트 코드
+    Given("FAQ 가 주어질 때") {
+        val faq = fixture<Faq>()
+        val faqResponse = fixture<List<FaqResponse>>()
+        val response = fixture<FaqsResponse> {
+            property(FaqsResponse::faqs) { faqResponse }
+        }
+
+        every { faqRepository.findAll() } returns listOf(faq)
+
+        When("FAQ 전체 조회 요청을 하면") {
+            val result = faqServiceImpl.queryAllFaqs()
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
             }
         }
     }
