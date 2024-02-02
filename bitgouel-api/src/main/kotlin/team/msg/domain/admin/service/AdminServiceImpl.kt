@@ -89,6 +89,7 @@ class AdminServiceImpl(
 
     /**
      * 유저를 강제 탈퇴 시키는 비지니스 로직입니다
+     * @param 유저를 삭제하기 위한 userId
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun forceWithdraw(userId: UUID) {
