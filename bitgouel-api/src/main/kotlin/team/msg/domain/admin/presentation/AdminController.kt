@@ -46,7 +46,7 @@ class AdminController(
         return ResponseEntity.ok(response)
     }
 
-    @DeleteMapping("{user_id}")
+    @DeleteMapping("/{user_id}")
     fun forceWithdraw(@PathVariable("user_id") userId: UUID): ResponseEntity<Void> {
         adminService.forceWithdraw(userId)
         return ResponseEntity.noContent().build()
