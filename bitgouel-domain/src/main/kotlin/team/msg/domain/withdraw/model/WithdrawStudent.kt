@@ -1,4 +1,4 @@
-package team.msg.domain.withdrow.model
+package team.msg.domain.withdraw.model
 
 import javax.persistence.Column
 import javax.persistence.Entity

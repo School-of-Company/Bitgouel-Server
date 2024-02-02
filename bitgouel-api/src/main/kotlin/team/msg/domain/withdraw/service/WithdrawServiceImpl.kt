@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.withdraw.presentation.data.response.WithdrawStudentResponse
 import team.msg.domain.withdraw.presentation.data.response.WithdrawStudentResponses
-import team.msg.domain.withdrow.repository.WithdrawStudentRepository
+import team.msg.domain.withdraw.repository.WithdrawStudentRepository
 
 @Service
 class WithdrawServiceImpl(
