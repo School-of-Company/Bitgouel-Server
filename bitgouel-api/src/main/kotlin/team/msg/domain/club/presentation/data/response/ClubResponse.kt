@@ -24,13 +24,7 @@ data class ClubResponse(
             clubName = club.name,
             highSchoolName = club.school.highSchool.schoolName,
             headCount = students.size,
-            students = students.map {
-                StudentResponse(
-                    id = it.id,
-                    name = it.user!!.name,
-                    authority = it.user!!.authority
-                )
-            },
+            students = StudentResponse.listOf(students),
             teacher = TeacherResponse(
                 id = teacher?.id,
                 name = teacher?.user?.name
@@ -42,13 +36,7 @@ data class ClubResponse(
             clubName = club.name,
             highSchoolName = club.school.highSchool.schoolName,
             headCount = students.size,
-            students = students.map {
-                StudentResponse(
-                    id = it.id,
-                    name = it.user!!.name,
-                    authority = it.user!!.authority
-                )
-            },
+            students = StudentResponse.listOf(students),
             teacher = TeacherResponse(
                 id = teacher?.id,
                 name = teacher?.user?.name
