@@ -80,9 +80,7 @@ class FaqServiceImplTest : BehaviorSpec({
             property(FaqResponse::question) { question }
         }
         val response = fixture<FaqsResponse> {
-            property(FaqsResponse::faqs) {
-                listOf(faqResponse)
-            }
+            property(FaqsResponse::faqs) { listOf(faqResponse) }
         }
 
         every { faqRepository.findAll() } returns listOf(faq)
