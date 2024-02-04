@@ -20,7 +20,6 @@ import team.msg.domain.faq.presentation.data.response.FaqResponse
 import team.msg.domain.faq.presentation.data.response.FaqsResponse
 import team.msg.domain.faq.repository.FaqRepository
 import team.msg.domain.user.model.User
-import java.util.UUID
 
 class FaqServiceImplTest : BehaviorSpec({
 
@@ -67,27 +66,34 @@ class FaqServiceImplTest : BehaviorSpec({
     }
 
     // queryAllFaqs 테스트 코드
-//    Given("FAQ 가 주어질 때") {
-//        val faq = fixture<Faq>()
-//        val faqResponse = fixture<FaqResponse> {
-//            property(FaqResponse::id) { faq.id }
-//            property(FaqResponse::question) { faq.question }
-//        }
-//        val faqResponseList = listOf(faqResponse)
-//        val response = fixture<FaqsResponse> {
-//            property(FaqsResponse::faqs) { faqResponseList }
-//        }
-//
-//        every { faqRepository.findAll() } returns listOf(faq)
-//
-//        When("FAQ 전체 조회 요청을 하면") {
-//            val result = faqServiceImpl.queryAllFaqs()
-//
-//            Then("result와 response가 같아야 한다.") {
-//                result shouldBe response
-//            }
-//        }
-//    }
+    Given("FAQ 가 주어질 때") {
+        val fixturee = kotlinFixture()
+
+        val faqId = 1L
+        val question = "question"
+        val answer = "answer"
+        val faq = fixture<Faq> {
+            property(Faq::id) { faqId }
+            property(Faq::question) { question }
+            property(Faq::answer) { answer }
+        }
+        val faqResponse = fixture<FaqResponse>()
+        val response = fixture<FaqsResponse> {
+            property(FaqsResponse::faqs) {
+                listOf(faqResponse)
+            }
+        }
+
+        every { faqRepository.findAll() } returns listOf(faq)
+
+        When("FAQ 전체 조회 요청을 하면") {
+            val result = faqServiceImpl.queryAllFaqs()
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+    }
 
     // queryFaqDetails 테스트 코드
     Given("FAQ 가 주어질 때") {
