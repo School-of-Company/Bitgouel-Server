@@ -17,7 +17,6 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.appmattus.fixture:fixture:1.2.0")
-    testImplementation("com.appmattus.fixture:fixture-kotest:1.2.0")
 
     implementation(project(":bitgouel-domain"))
 }

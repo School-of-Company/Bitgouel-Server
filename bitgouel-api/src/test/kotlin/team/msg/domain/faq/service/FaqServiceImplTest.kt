@@ -1,10 +1,7 @@
 package team.msg.domain.faq.service
 
-import com.appmattus.kotlinfixture.kotest.checkAll
-import com.appmattus.kotlinfixture.kotest.forAll
 import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.config.configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
