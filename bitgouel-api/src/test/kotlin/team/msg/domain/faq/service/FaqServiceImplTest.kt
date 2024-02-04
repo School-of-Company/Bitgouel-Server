@@ -1,7 +1,10 @@
 package team.msg.domain.faq.service
 
+import com.appmattus.kotlinfixture.kotest.checkAll
+import com.appmattus.kotlinfixture.kotest.forAll
 import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.config.configuration
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -67,8 +70,6 @@ class FaqServiceImplTest : BehaviorSpec({
 
     // queryAllFaqs 테스트 코드
     Given("FAQ 가 주어질 때") {
-        val fixturee = kotlinFixture()
-
         val faqId = 1L
         val question = "question"
         val answer = "answer"
@@ -77,7 +78,10 @@ class FaqServiceImplTest : BehaviorSpec({
             property(Faq::question) { question }
             property(Faq::answer) { answer }
         }
-        val faqResponse = fixture<FaqResponse>()
+        val faqResponse = fixture<FaqResponse> {
+            property(FaqResponse::id) { faqId }
+            property(FaqResponse::question) { question }
+        }
         val response = fixture<FaqsResponse> {
             property(FaqsResponse::faqs) {
                 listOf(faqResponse)
