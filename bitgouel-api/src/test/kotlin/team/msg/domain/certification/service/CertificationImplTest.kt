@@ -8,11 +8,13 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.certification.exception.ForbiddenCertificationException
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
+import team.msg.domain.certification.presentation.data.request.UpdateCertificationRequest
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.club.model.Club
@@ -186,6 +188,55 @@ class CertificationImplTest : BehaviorSpec ({
             Then("ForbiddenCertificationException 가 터져야 한다.") {
                 shouldThrow<ForbiddenCertificationException> {
                     certificationServiceImpl.queryCertifications(request)
+                }
+            }
+        }
+    }
+
+    // updateCertification 테스트 코드
+    Given("certificationId와 updateCertificationRequest 가 주어질 때") {
+        val certificationId = UUID.randomUUID()
+        val request = fixture<UpdateCertificationRequest>()
+
+        val club = fixture<Club>()
+        val user = fixture<User>()
+        val invalidStudent = fixture<Student>()
+        val student = fixture<Student> {
+            property(Student::club) { club }
+        }
+        val certification = fixture<Certification> {
+            property(Certification::studentId) { student.id }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { studentRepository.findByUser(user) } returns student
+        every { certificationRepository.findByIdOrNull(certificationId) } returns certification
+        every { certificationRepository.save(certification) } returns certification
+
+        When("자격증 수정 요청을 하면") {
+            certificationServiceImpl.updateCertification(certificationId, request)
+
+            Then("result와 response가 같아야 한다.") {
+                verify(exactly = 1) { certificationRepository.save(certification) }
+            }
+        }
+
+        When("현재 유저가 학생이 아니라면") {
+            every { studentRepository.findByUser(user) } returns null
+
+            Then("StudentNotFoundException 가 터져야 한다.") {
+                shouldThrow<StudentNotFoundException> {
+                    certificationServiceImpl.updateCertification(certificationId, request)
+                }
+            }
+        }
+
+        When("자신의 자격증이 아니라면") {
+            every { studentRepository.findByUser(user) } returns invalidStudent
+
+            Then("ForbiddenCertificationException 가 터져야 한다.") {
+                shouldThrow<ForbiddenCertificationException> {
+                    certificationServiceImpl.updateCertification(certificationId, request)
                 }
             }
         }
