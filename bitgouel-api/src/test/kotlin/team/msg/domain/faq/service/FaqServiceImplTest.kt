@@ -54,7 +54,7 @@ class FaqServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("현재 유저가 어드민이 아니라면") {
+        When("현재 유저가 어드민이 아니라") {
             every { adminRepository.findByUser(user) } returns null
 
             Then("AdminNotFoundException 가 터져야 한다.") {
