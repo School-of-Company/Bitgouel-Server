@@ -2,6 +2,7 @@ package team.msg.domain.inquiry.model
 
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
@@ -16,7 +17,7 @@ class InquiryAnswer(
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     val answer: String,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", columnDefinition = "BINARY(16)", nullable = false)
     val admin: User,
 
