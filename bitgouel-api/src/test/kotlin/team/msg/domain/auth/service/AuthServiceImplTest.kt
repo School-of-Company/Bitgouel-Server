@@ -27,7 +27,6 @@ import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -108,7 +107,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 이메일로 학생 회원가입 요청을 하면") {
             every { userRepository.existsByEmail(request.email) } returns true
 
-            Then("AlreadyExistEmailException 가 터져야 한다.") {
+            Then("AlreadyExistEmailException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
                     authServiceImpl.studentSignUp(request)
                 }
@@ -118,7 +117,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 전화번호로 학생 회원가입 요청을 하면") {
             every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
 
-            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
                     authServiceImpl.studentSignUp(request)
                 }
@@ -138,7 +137,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 동아리와 학교로 학생 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
-            Then("ClubNotFoundException 가 터져야 한다.") {
+            Then("ClubNotFoundException이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.studentSignUp(request)
                 }
@@ -174,7 +173,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 이메일로 선생님 회원가입 요청을 하면") {
             every { userRepository.existsByEmail(request.email) } returns true
 
-            Then("AlreadyExistEmailException 가 터져야 한다.") {
+            Then("AlreadyExistEmailException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
                     authServiceImpl.teacherSignUp(request)
                 }
@@ -184,7 +183,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 전화번호로 선생님 회원가입 요청을 하면") {
             every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
 
-            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
                     authServiceImpl.teacherSignUp(request)
                 }
@@ -204,7 +203,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 동아리와 학교로 선생 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
-            Then("ClubNotFoundException 가 터져야 한다.") {
+            Then("ClubNotFoundException이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.teacherSignUp(request)
                 }
@@ -240,7 +239,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 이메일로 뽀짝 선생님 회원가입 요청을 하면") {
             every { userRepository.existsByEmail(request.email) } returns true
 
-            Then("AlreadyExistEmailException 가 터져야 한다.") {
+            Then("AlreadyExistEmailException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
                     authServiceImpl.bbozzakSignUp(request)
                 }
@@ -250,7 +249,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 전화번호로 뽀짝 선생님 회원가입 요청을 하면") {
             every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
 
-            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
                     authServiceImpl.bbozzakSignUp(request)
                 }
@@ -260,7 +259,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 학교로 뽀짝 선생님 회원가입 요청을 하면") {
             every { schoolRepository.findByHighSchool(request.highSchool) } returns null
 
-            Then("SchoolNotFoundException 가 터져야 한다.") {
+            Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
                     authServiceImpl.bbozzakSignUp(request)
                 }
@@ -270,7 +269,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 동아리와 학교로 뽀짝 선생 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
-            Then("ClubNotFoundException 가 터져야 한다.") {
+            Then("ClubNotFoundException이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.bbozzakSignUp(request)
                 }
@@ -306,7 +305,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 이메일로 대학교수 회원가입 요청을 하면") {
             every { userRepository.existsByEmail(request.email) } returns true
 
-            Then("AlreadyExistEmailException 가 터져야 한다.") {
+            Then("AlreadyExistEmailException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
                     authServiceImpl.professorSignUp(request)
                 }
@@ -316,7 +315,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 전화번호로 대학교수 회원가입 요청을 하면") {
             every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
 
-            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
                     authServiceImpl.professorSignUp(request)
                 }
@@ -326,7 +325,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 학교로 대학교수 회원가입 요청을 하면") {
             every { schoolRepository.findByHighSchool(request.highSchool) } returns null
 
-            Then("SchoolNotFoundException 가 터져야 한다.") {
+            Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
                     authServiceImpl.professorSignUp(request)
                 }
@@ -336,7 +335,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 동아리와 학교로 대학교수 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
-            Then("ClubNotFoundException 가 터져야 한다.") {
+            Then("ClubNotFoundException이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.professorSignUp(request)
                 }
@@ -372,7 +371,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 이메일로 유관 기관 회원가입 요청을 하면") {
             every { userRepository.existsByEmail(request.email) } returns true
 
-            Then("AlreadyExistEmailException 가 터져야 한다.") {
+            Then("AlreadyExistEmailException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
                     authServiceImpl.governmentSignUp(request)
                 }
@@ -382,7 +381,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 전화번호로 유관 기관 회원가입 요청을 하면") {
             every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
 
-            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
                     authServiceImpl.governmentSignUp(request)
                 }
@@ -392,7 +391,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 학교로 유관 기관 회원가입 요청을 하면") {
             every { schoolRepository.findByHighSchool(request.highSchool) } returns null
 
-            Then("SchoolNotFoundException 가 터져야 한다.") {
+            Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
                     authServiceImpl.governmentSignUp(request)
                 }
@@ -402,7 +401,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 동아리와 학교로 유관 기관 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
-            Then("ClubNotFoundException 가 터져야 한다.") {
+            Then("ClubNotFoundException이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.governmentSignUp(request)
                 }
@@ -438,7 +437,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 이메일로 기업 강사 회원가입 요청을 하면") {
             every { userRepository.existsByEmail(request.email) } returns true
 
-            Then("AlreadyExistEmailException 가 터져야 한다.") {
+            Then("AlreadyExistEmailException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistEmailException> {
                     authServiceImpl.companyInstructorSignUp(request)
                 }
@@ -448,7 +447,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이미 존재하는 전화번호로 기업 강사 회원가입 요청을 하면") {
             every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
 
-            Then("AlreadyExistPhoneNumberException 가 터져야 한다.") {
+            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
                 shouldThrow<AlreadyExistPhoneNumberException> {
                     authServiceImpl.companyInstructorSignUp(request)
                 }
@@ -458,7 +457,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 학교로 기업 강사 회원가입 요청을 하면") {
             every { schoolRepository.findByHighSchool(request.highSchool) } returns null
 
-            Then("SchoolNotFoundException 가 터져야 한다.") {
+            Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
                     authServiceImpl.companyInstructorSignUp(request)
                 }
@@ -468,7 +467,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 동아리와 학교로 기업 강 회원가입 요청을 하면") {
             every { clubRepository.findByNameAndSchool(request.clubName, school) } returns null
 
-            Then("ClubNotFoundException 가 터져야 한다.") {
+            Then("ClubNotFoundException이 발생해야 한다..") {
                 shouldThrow<ClubNotFoundException> {
                     authServiceImpl.companyInstructorSignUp(request)
                 }
@@ -506,7 +505,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("이메일에 맞는 유저가 존재하지 않을 때") {
             every { userRepository.findByEmail(any()) } returns null
 
-            Then("UserNotFoundException 이 터져야 한다.") {
+            Then("UserNotFoundException이 발생해야 한다.") {
                 shouldThrow<UserNotFoundException> {
                     authServiceImpl.login(request)
                 }
@@ -516,7 +515,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("비밀번호가 일치하지 않으면") {
             every { securityUtil.isPasswordMatch(any(), any()) } returns false
 
-            Then("MisMatchPasswordException 이 터져야 한다.") {
+            Then("MisMatchPasswordException이 발생해야 한다.") {
                 shouldThrow<MisMatchPasswordException> {
                     authServiceImpl.login(request)
                 }
@@ -526,7 +525,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("ApproveStatus가 PENDING이라면") {
             every { userRepository.findByEmail(request.email) } returns pendingUser
 
-            Then("UnApprovedUserException 이 터져야 한다.") {
+            Then("UnApprovedUserException이 발생해야 한다.") {
                 shouldThrow<UnApprovedUserException> {
                     authServiceImpl.login(request)
                 }
@@ -561,7 +560,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("유효하지 않는 리프레시 토큰으로 요청했을 때") {
             every { jwtTokenParser.parseRefreshToken(request) } returns null
 
-            Then("InvalidRefreshTokenException 이 터져야 한다.") {
+            Then("InvalidRefreshTokenException이 발생해야 한다.") {
                 shouldThrow<InvalidRefreshTokenException> {
                     authServiceImpl.reissueToken(request)
                 }
@@ -571,7 +570,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 리프레시 토큰으로 요청했을 때") {
             every { refreshTokenRepository.findByIdOrNull(refreshToken) } returns null
 
-            Then("RefreshTokenNotFoundException 이 터져야 한다.") {
+            Then("RefreshTokenNotFoundException이 발생해야 한다.") {
                 shouldThrow<RefreshTokenNotFoundException> {
                     authServiceImpl.reissueToken(request)
                 }
@@ -581,7 +580,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("토큰의 유저가 존재하지 않을 때") {
             every { userRepository.findByIdOrNull(token.userId) } returns null
 
-            Then("UserNotFoundException 이 터져야 한다.") {
+            Then("UserNotFoundException이 발생해야 한다.") {
                 shouldThrow<UserNotFoundException> {
                     authServiceImpl.reissueToken(request)
                 }
@@ -617,7 +616,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("유효하지 않는 리프레시 토큰으로 요청했을 때") {
             every { jwtTokenParser.parseRefreshToken(request) } returns null
 
-            Then("InvalidRefreshTokenException 이 터져야 한다.") {
+            Then("InvalidRefreshTokenException이 발생해야 한다.") {
                 shouldThrow<InvalidRefreshTokenException> {
                     authServiceImpl.logout(request)
                 }
@@ -627,7 +626,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("존재하지 않는 리프레시 토큰으로 요청했을 때") {
             every { refreshTokenRepository.findByIdOrNull(refreshToken) } returns null
 
-            Then("RefreshTokenNotFoundException 이 터져야 한다.") {
+            Then("RefreshTokenNotFoundException이 발생해야 한다.") {
                 shouldThrow<RefreshTokenNotFoundException> {
                     authServiceImpl.logout(request)
                 }
@@ -637,7 +636,7 @@ class AuthServiceImplTest : BehaviorSpec({
         When("토큰의 유저가 존재하지 않을 때") {
             every { userUtil.queryCurrentUser() } returns invalidUser
 
-            Then("UserNotFoundException 이 터져야 한다.") {
+            Then("UserNotFoundException이 발생해야 한다.") {
                 shouldThrow<UserNotFoundException> {
                     authServiceImpl.logout(request)
                 }

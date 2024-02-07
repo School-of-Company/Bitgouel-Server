@@ -66,7 +66,7 @@ class CertificationImplTest : BehaviorSpec ({
         When("현재 유저가 학생이 아니라면") {
             every { studentRepository.findByUser(user) } returns null
 
-            Then("StudentNotFoundException 가 터져야 한다.") {
+            Then("StudentNotFoundException이 발생해야 한다.") {
                 shouldThrow<StudentNotFoundException> {
                     certificationServiceImpl.createCertification(request)
                 }
@@ -111,7 +111,7 @@ class CertificationImplTest : BehaviorSpec ({
         When("현재 유저가 학생이 아니라면") {
             every { studentRepository.findByUser(user) } returns null
 
-            Then("StudentNotFoundException 가 터져야 한다.") {
+            Then("StudentNotFoundException이 발생해야 한다.") {
                 shouldThrow<StudentNotFoundException> {
                     certificationServiceImpl.queryCertifications()
                 }
@@ -165,7 +165,7 @@ class CertificationImplTest : BehaviorSpec ({
         When("현재 유저가 선생님이 아니라면") {
             every { teacherRepository.findByUser(user) } returns null
 
-            Then("TeacherNotFoundException 가 터져야 한다.") {
+            Then("TeacherNotFoundException이 발생해야 한다.") {
                 shouldThrow<TeacherNotFoundException> {
                     certificationServiceImpl.queryCertifications(request)
                 }
@@ -175,7 +175,7 @@ class CertificationImplTest : BehaviorSpec ({
         When("request 에 맞는 학생이 없다면") {
             every { studentRepository.findStudentById(request) } returns null
 
-            Then("StudentNotFoundException 가 터져야 한다.") {
+            Then("StudentNotFoundException이 발생해야 한다.") {
                 shouldThrow<StudentNotFoundException> {
                     certificationServiceImpl.queryCertifications(request)
                 }
@@ -185,7 +185,7 @@ class CertificationImplTest : BehaviorSpec ({
         When("선생님 소속 동아리가 아닌 학생의 자격증을 조회한다면") {
             every { teacherRepository.findByUser(user) } returns invalidTeacher
 
-            Then("ForbiddenCertificationException 가 터져야 한다.") {
+            Then("ForbiddenCertificationException이 발생해야 한다.") {
                 shouldThrow<ForbiddenCertificationException> {
                     certificationServiceImpl.queryCertifications(request)
                 }
