@@ -29,7 +29,7 @@ class AdminController(
         return ResponseEntity.ok(response)
     }
 
-    @PatchMapping("/{user_id}")
+    @PatchMapping
     fun approveUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
         adminService.approveUsers(userIds)
         return ResponseEntity.noContent().build()
