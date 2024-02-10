@@ -35,7 +35,7 @@ class AdminServiceImpl(
 
     /**
      * 회원가입 대기 중인 유저를 승인하는 비즈니스 로직입니다
-     * @param 승인할 유저를 검색하기 위한 userId
+     * @param 승인할 유저들을 검색하기 위한 userIds
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun approveUsers(userIds: List<UUID>) {
