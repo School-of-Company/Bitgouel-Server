@@ -35,28 +35,30 @@ class AdminServiceImpl(
 
     /**
      * 회원가입 대기 중인 유저를 승인하는 비즈니스 로직입니다
-     * @param 승인할 유저를 검색하기 위한 userId
+     * @param 승인할 유저들을 검색하기 위한 userIds
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun approveUser(userId: UUID) {
-        val user = userRepository findById userId
+    override fun approveUsers(userIds: List<UUID>) {
+        val users = userRepository.findByIdIn(userIds)
 
-        if(user.approveStatus == ApproveStatus.APPROVED)
-            throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${user.id} ]")
+        users.forEach {
+            if (it.approveStatus == ApproveStatus.APPROVED)
+                throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${it.id} ]")
+        }
 
-        val approvedUser = user.run {
+        val approvedUsers = users.map {
             User(
-                id = id,
-                email = email,
-                name = name,
-                phoneNumber = phoneNumber,
-                password = password,
-                authority = authority,
+                id = it.id,
+                email = it.email,
+                name = it.name,
+                phoneNumber = it.phoneNumber,
+                password = it.password,
+                authority = it.authority,
                 approveStatus = ApproveStatus.APPROVED
             )
         }
 
-        userRepository.save(approvedUser)
+        userRepository.saveAll(approvedUsers)
     }
 
     /**
