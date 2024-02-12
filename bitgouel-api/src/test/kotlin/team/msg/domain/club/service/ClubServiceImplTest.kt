@@ -7,33 +7,21 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.repository.BbozzakRepository
-import team.msg.domain.certifiacation.model.Certification
-import team.msg.domain.certifiacation.repository.CertificationRepository
-import team.msg.domain.certification.exception.ForbiddenCertificationException
-import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
-import team.msg.domain.certification.presentation.data.request.UpdateCertificationRequest
-import team.msg.domain.certification.presentation.data.response.CertificationResponse
-import team.msg.domain.certification.presentation.data.response.CertificationsResponse
-import team.msg.domain.certification.service.CertificationServiceImpl
 import team.msg.domain.club.model.Club
+import team.msg.domain.club.presentation.data.response.ClubResponse
+import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.school.exception.SchoolNotFoundException
+import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
-import team.msg.domain.student.exception.StudentNotFoundException
-import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
-import team.msg.domain.teacher.exception.TeacherNotFoundException
-import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.model.User
-import java.time.LocalDate
-import java.util.*
 
 class ClubServiceImplTest : BehaviorSpec({
 
@@ -59,5 +47,51 @@ class ClubServiceImplTest : BehaviorSpec({
         companyInstructorRepository,
         governmentRepository
     )
+
+    // queryAllClubsService 테스트 코드
+    Given("Club 이 주어질 때") {
+        val clubId = 0L
+        val clubName = "dev GSM"
+        val schoolName = "광주소프트웨어마이스터고등학교"
+
+        val school = fixture<School> {
+            property(School::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
+        }
+        val highSchool = fixture<HighSchool>()
+        val club = fixture<Club> {
+            property(Club::id) { clubId }
+            property(Club::name) { clubName }
+            property(Club::school) { school }
+        }
+        val clubResponse = fixture<ClubResponse> {
+            property(ClubResponse::id) { clubId }
+            property(ClubResponse::name) { clubName }
+            property(ClubResponse::schoolName) { schoolName }
+        }
+        val response = fixture<ClubsResponse> {
+            property(ClubsResponse::clubs) { listOf(clubResponse) }
+        }
+
+        every { schoolRepository.findByHighSchool(highSchool) } returns school
+        every { clubRepository.findAllBySchool(school) } returns listOf(club)
+
+        When("동아리 전체 조회 요청을 하면") {
+            val result = clubServiceImpl.queryAllClubsService(highSchool)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("존재하지 않는 학교로 요청하면") {
+            every { schoolRepository.findByHighSchool(highSchool) } returns null
+
+            Then("SchoolNotFoundException 발생해야 한다.") {
+                shouldThrow<SchoolNotFoundException> {
+                    clubServiceImpl.queryAllClubsService(highSchool)
+                }
+            }
+        }
+    }
 
 })
