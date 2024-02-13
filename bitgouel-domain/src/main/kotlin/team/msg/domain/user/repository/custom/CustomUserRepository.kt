@@ -8,6 +8,6 @@ import team.msg.domain.user.repository.custom.projection.UserNameProjectionData
 import java.util.*
 
 interface CustomUserRepository {
-    fun query(keyword: String, authority: Authority, pageable: Pageable): Page<User>
+    fun query(keyword: String, authority: Authority): Page<User>
     fun queryNameById(id: UUID): UserNameProjectionData?
 }

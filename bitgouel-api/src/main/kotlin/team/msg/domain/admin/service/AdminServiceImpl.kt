@@ -1,7 +1,6 @@
 package team.msg.domain.admin.service
 
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -27,8 +26,8 @@ class AdminServiceImpl(
      * @param 유저를 검색하기 위한 keyword 및 페이징을 처리하기 위한 pageable
      * @return 페이징된 학생 정보를 담은 Dto
      */
-    override fun queryUsers(request: QueryUsersRequest, pageable: Pageable): UsersResponse {
-        val users = userRepository.query(request.keyword, request.authority, pageable)
+    override fun queryUsers(request: QueryUsersRequest): UsersResponse {
+        val users = userRepository.query(request.keyword, request.authority)
 
         return UserResponse.pageOf(users)
     }
