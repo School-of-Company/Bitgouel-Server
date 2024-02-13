@@ -1,6 +1,7 @@
 package team.msg.domain.admin.presentation.data.web
 
 import org.springframework.web.bind.annotation.RequestParam
+import team.msg.common.enums.ApproveStatus
 import team.msg.domain.user.enums.Authority
 
 data class QueryUsersWebRequest(
@@ -8,5 +9,8 @@ data class QueryUsersWebRequest(
     val keyword: String = "",
 
     @RequestParam(required = false)
-    val authority: Authority = Authority.ROLE_USER
+    val authority: Authority = Authority.ROLE_USER,
+
+    @RequestParam
+    val approveStatus: ApproveStatus
 )
