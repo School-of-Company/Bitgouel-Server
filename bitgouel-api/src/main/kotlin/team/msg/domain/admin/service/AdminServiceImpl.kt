@@ -27,7 +27,7 @@ class AdminServiceImpl(
      * @return 페이징된 학생 정보를 담은 Dto
      */
     override fun queryUsers(request: QueryUsersRequest): UsersResponse {
-        val users = userRepository.query(request.keyword, request.authority)
+        val users = userRepository.query(request.keyword, request.authority, request.approveStatus)
 
         return UserResponse.pageOf(users)
     }
