@@ -29,7 +29,7 @@ class AdminServiceImpl(
     override fun queryUsers(request: QueryUsersRequest): UsersResponse {
         val users = userRepository.query(request.keyword, request.authority, request.approveStatus)
 
-        return UserResponse.pageOf(users)
+        return UserResponse.listOf(users)
     }
 
     /**

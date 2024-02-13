@@ -26,7 +26,7 @@ class UserServiceImpl(
         val user = userUtil.queryCurrentUser()
         val organization = userUtil.getAuthorityEntityAndOrganization(user).second
 
-        return UserResponse.pageOf(user, organization)
+        return UserResponse.listOf(user, organization)
     }
 
     /**

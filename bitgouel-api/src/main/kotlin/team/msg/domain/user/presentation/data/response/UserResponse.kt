@@ -12,7 +12,7 @@ data class UserResponse (
     val authority: Authority
 ) {
     companion object {
-        fun pageOf(user: User, organization: String) = UserPageResponse(
+        fun listOf(user: User,organization: String) = UserPageResponse(
             name = user.name,
             email = user.email,
             phoneNumber = user.phoneNumber,
@@ -27,7 +27,7 @@ data class UserResponse (
             approveStatus = user.approveStatus
         )
 
-        fun pageOf(users: Page<User>) = UsersResponse(
+        fun listOf(users: List<User>) = UsersResponse(
             users.map {
                 of(it)
             }
@@ -58,7 +58,7 @@ data class AdminUserResponse(
 )
 
 data class UsersResponse(
-    val users: Page<AdminUserResponse>
+    val users: List<AdminUserResponse>
 )
 
 data class UserDetailsResponse(
