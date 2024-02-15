@@ -79,7 +79,7 @@ class LectureServiceImpl(
     override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse {
         val lectureType = queryAllLectureRequest.lectureType
 
-        val lectures = lectureRepository.findAllByApproveStatusAndLectureType(pageable, lectureType)
+        val lectures = lectureRepository.findAllByLectureType(pageable, lectureType)
 
         val response = LecturesResponse(
             lectures.map {

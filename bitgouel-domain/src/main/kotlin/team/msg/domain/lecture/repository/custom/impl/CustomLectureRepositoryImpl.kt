@@ -16,7 +16,7 @@ import java.util.Objects.isNull
 class CustomLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomLectureRepository {
-    override fun findAllByApproveStatusAndLectureType(pageable: Pageable, lectureType: LectureType?) = PageImpl(
+    override fun findAllByLectureType(pageable: Pageable,lectureType: LectureType?) = PageImpl(
         queryFactory
             .selectFrom(lecture)
             .leftJoin(lecture.user, user)

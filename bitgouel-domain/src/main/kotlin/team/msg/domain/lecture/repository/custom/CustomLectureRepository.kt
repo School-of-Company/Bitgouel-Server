@@ -7,6 +7,6 @@ import team.msg.domain.lecture.model.Lecture
 import java.util.UUID
 
 interface CustomLectureRepository {
-    fun findAllByApproveStatusAndLectureType(pageable: Pageable, lectureType: LectureType?): Page<Lecture>
+    fun findAllByLectureType(pageable: Pageable,lectureType: LectureType?): Page<Lecture>
     fun deleteAllByUserId(userId: UUID)
 }
