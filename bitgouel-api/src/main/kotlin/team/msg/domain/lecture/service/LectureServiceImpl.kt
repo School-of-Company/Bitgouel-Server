@@ -80,15 +80,9 @@ class LectureServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse {
-        val user = userUtil.queryCurrentUser()
-
-        val approveStatus = queryAllLectureRequest.approveStatus
         val lectureType = queryAllLectureRequest.lectureType
 
-        val lectures = when(user.authority) {
-            Authority.ROLE_ADMIN -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, approveStatus, lectureType)
-            else -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, ApproveStatus.APPROVED, lectureType)
-        }
+        val lectures = lectureRepository.findAllByApproveStatusAndLectureType(pageable, lectureType)
 
         val response = LecturesResponse(
             lectures.map {

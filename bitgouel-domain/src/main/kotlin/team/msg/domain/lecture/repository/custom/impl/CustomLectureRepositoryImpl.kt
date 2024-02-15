@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
-import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.repository.custom.CustomLectureRepository
@@ -17,14 +16,13 @@ import java.util.Objects.isNull
 class CustomLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomLectureRepository {
-    override fun findAllByApproveStatusAndLectureType(pageable: Pageable, approveStatus: ApproveStatus?, lectureType: LectureType?) = PageImpl(
+    override fun findAllByApproveStatusAndLectureType(pageable: Pageable, lectureType: LectureType?) = PageImpl(
         queryFactory
             .selectFrom(lecture)
             .leftJoin(lecture.user, user)
             .fetchJoin()
             .where(
-                eqLectureType(lectureType),
-                eqApproveStatus(approveStatus)
+                eqLectureType(lectureType)
             )
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
@@ -38,7 +36,4 @@ class CustomLectureRepositoryImpl(
 
     private fun eqLectureType(lectureType: LectureType?): BooleanExpression? =
         if(isNull(lectureType)) null else lecture.lectureType.eq(lectureType)
-
-    private fun eqApproveStatus(approveStatus: ApproveStatus?): BooleanExpression? =
-        if(isNull(approveStatus)) null else lecture.approveStatus.eq(approveStatus)
 }
