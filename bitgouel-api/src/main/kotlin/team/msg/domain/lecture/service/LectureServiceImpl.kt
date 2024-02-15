@@ -10,7 +10,6 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
@@ -29,7 +28,9 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
+import team.msg.domain.user.repository.UserRepository
 import java.time.LocalDateTime
 import java.util.*
 
@@ -38,6 +39,7 @@ class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
+    private val userRepository: UserRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
@@ -47,12 +49,11 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createLecture(request: CreateLectureRequest) {
-        val user = userUtil.queryCurrentUser()
+        val user = userRepository findById request.userId
 
         val credit = when(request.lectureType){
             LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM   -> request.credit
             LectureType.UNIVERSITY_EXPLORATION_PROGRAM      -> 0
-            else -> throw InvalidLectureTypeException("유효하지 않은 강의 구분입니다. info : [ type = ${request.lectureType} ]")
         }
 
         val lecture = Lecture(
@@ -257,4 +258,7 @@ class LectureServiceImpl(
 
     private infix fun StudentRepository.findByUser(user: User): Student = this.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
+        ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 }
