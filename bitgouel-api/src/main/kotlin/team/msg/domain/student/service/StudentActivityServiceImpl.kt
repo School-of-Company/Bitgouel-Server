@@ -136,36 +136,6 @@ class StudentActivityServiceImpl(
     }
 
     /**
-     * 학생활동을 승인하는 비즈니스 로직
-     * @param 학생활동을 승인하기 위한 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun approveStudentActivity(id: UUID) {
-        val user = userUtil.queryCurrentUser()
-
-        val teacher = teacherRepository findByUser user
-
-        val studentActivity = studentActivityRepository findById id
-
-        if(teacher != studentActivity.teacher)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
-
-        val updatedStudentActivity = StudentActivity(
-            id = studentActivity.id,
-            title = studentActivity.title,
-            content = studentActivity.content,
-            credit = studentActivity.credit,
-            activityDate = studentActivity.activityDate,
-            approveStatus = ApproveStatus.APPROVED,
-            student = studentActivity.student,
-            teacher = studentActivity.teacher
-        )
-
-        applicationEventPublisher.publishEvent(ApproveStudentActivityEvent(id))
-        studentActivityRepository.save(updatedStudentActivity)
-    }
-
-    /**
      * 학생활동을 전체 조회하는 비즈니스 로직
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */

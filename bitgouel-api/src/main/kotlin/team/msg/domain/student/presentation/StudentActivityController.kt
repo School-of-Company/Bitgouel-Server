@@ -40,13 +40,6 @@ class StudentActivityController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @Deprecated("Approve Student Activity API is deprecated. In Requirements, this API doesn't need it anymore.")
-    @PatchMapping("/{id}/approve")
-    fun approveStudentActivity(@PathVariable id:UUID): ResponseEntity<Void> {
-        studentActivityService.approveStudentActivity(id)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-    }
-
     @DeleteMapping("/{id}")
     fun deleteStudentActivity(@PathVariable id: UUID): ResponseEntity<Void> {
         studentActivityService.deleteStudentActivity(id)

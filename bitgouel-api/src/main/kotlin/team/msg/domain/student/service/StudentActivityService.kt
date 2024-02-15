@@ -12,7 +12,6 @@ interface StudentActivityService {
     fun updateStudentActivity(id: UUID, request: UpdateStudentActivityRequest)
     fun deleteStudentActivity(id: UUID)
     fun rejectStudentActivity(id: UUID)
-    fun approveStudentActivity(id: UUID)
     fun queryAllStudentActivities(pageable: Pageable): StudentActivitiesResponse
     fun queryStudentActivitiesByStudent(studentId: UUID, pageable: Pageable): StudentActivitiesResponse
     fun queryMyStudentActivities(pageable: Pageable): StudentActivitiesResponse
