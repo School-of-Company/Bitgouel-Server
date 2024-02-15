@@ -8,7 +8,6 @@ import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
-import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
@@ -202,49 +201,6 @@ class LectureServiceImpl(
         )
 
         studentRepository.save(updateCreditStudent)
-    }
-
-    /**
-     * 강의 개설 신청을 수락하는 비지니스 로직입니다.
-     * @param 개설을 수락할 대기 상태의 강의 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun approveLecture(id: UUID) {
-        val lecture = lectureRepository findById id
-
-        if(lecture.approveStatus == ApproveStatus.APPROVED)
-            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
-
-        val approveLecture = Lecture(
-            id = lecture.id,
-            user = lecture.user,
-            name = lecture.name,
-            startDate = lecture.startDate,
-            endDate = lecture.endDate,
-            completeDate = lecture.completeDate,
-            content = lecture.content,
-            lectureType = lecture.lectureType,
-            credit = lecture.credit,
-            instructor = lecture.instructor,
-            maxRegisteredUser = lecture.maxRegisteredUser,
-            approveStatus = ApproveStatus.APPROVED
-        )
-
-        lectureRepository.save(approveLecture)
-    }
-
-    /**
-     * 강의 개설 신청을 거절하는 비지니스 로직입니다.
-     * @param 개설을 거절할 대기 상태의 강의 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun rejectLecture(id: UUID) {
-        val lecture = lectureRepository findById id
-
-        if(lecture.approveStatus == ApproveStatus.APPROVED)
-            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
-
-        lectureRepository.delete(lecture)
     }
 
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
