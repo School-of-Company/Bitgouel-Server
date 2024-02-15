@@ -1,6 +1,5 @@
 package team.msg.domain.student.service
 
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -9,12 +8,9 @@ import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
-import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.professor.model.Professor
-import team.msg.domain.student.event.ApproveStudentActivityEvent
-import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -60,8 +56,7 @@ class StudentActivityServiceImpl(
             credit = request.credit,
             activityDate = request.activityDate,
             student = student,
-            teacher = teacher,
-            approveStatus = ApproveStatus.PENDING
+            teacher = teacher
         )
 
         studentActivityRepository.save(studentActivity)
@@ -89,7 +84,6 @@ class StudentActivityServiceImpl(
             content = request.content,
             credit = request.credit,
             activityDate = request.activityDate,
-            approveStatus = ApproveStatus.PENDING,
             student = studentActivity.student,
             teacher = studentActivity.teacher
         )
