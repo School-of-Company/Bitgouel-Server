@@ -25,7 +25,6 @@ import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
-import team.msg.domain.student.repository.StudentActivityHistoryRepository
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
@@ -39,7 +38,6 @@ import team.msg.domain.user.model.User
 class UserEventHandler(
     private val studentRepository: StudentRepository,
     private val studentActivityRepository: StudentActivityRepository,
-    private val studentActivityHistoryRepository: StudentActivityHistoryRepository,
     private val bbozzakRepository: BbozzakRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
@@ -65,7 +63,6 @@ class UserEventHandler(
                 val student = studentRepository findByUser user
 
                 studentActivityRepository.deleteAllByStudentId(student.id)
-                studentActivityHistoryRepository.deleteAllByStudentId(student.id)
                 registeredLectureRepository.deleteAllByStudentId(student.id)
                 certificationRepository.deleteAllByStudentId(student.id)
                 studentRepository.delete(student)
