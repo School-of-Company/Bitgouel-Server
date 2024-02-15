@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import team.msg.domain.lecture.enums.LectureType
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class CreateLectureWebRequest(
     @field:NotBlank
@@ -18,6 +19,9 @@ data class CreateLectureWebRequest(
 
     @field:NotBlank
     val content: String,
+
+    @field:NotBlank
+    val userId: UUID,
 
     @field:NotNull
     @FutureOrPresent
