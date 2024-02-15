@@ -46,13 +46,6 @@ class StudentActivityController(
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    @Deprecated("Reject Student Activity API is deprecated. In Requirements, this API doesn't need it anymore.")
-    @DeleteMapping("/{id}/reject")
-    fun rejectStudentActivity(@PathVariable id: UUID): ResponseEntity<Void> {
-        studentActivityService.rejectStudentActivity(id)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-    }
-
     @GetMapping
     fun queryAllStudentActivities(pageable: Pageable): ResponseEntity<StudentActivitiesResponse> {
         val response = studentActivityService.queryAllStudentActivities(pageable)

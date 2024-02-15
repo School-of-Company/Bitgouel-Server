@@ -118,24 +118,6 @@ class StudentActivityServiceImpl(
     }
 
     /**
-     * 학생활동을 거절 및 삭제하는 비지니스 로직입니다.
-     * @param 학생활동을 삭제하기 위한 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun rejectStudentActivity(id: UUID) {
-        val user = userUtil.queryCurrentUser()
-
-        val teacher = teacherRepository findByUser user
-
-        val studentActivity = studentActivityRepository findById id
-
-        if(teacher != studentActivity.teacher)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
-
-        studentActivityRepository.delete(studentActivity)
-    }
-
-    /**
      * 학생활동을 전체 조회하는 비즈니스 로직
      * @param 학생활동을 페이징 처리하기 위한 pageable
      */

@@ -72,7 +72,6 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/activity").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
-            .mvcMatchers(HttpMethod.DELETE, "/activity/{id}/reject").hasAnyRole(TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.GET, "/activity").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/activity/my").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasAnyRole(TEACHER, BBOZZAK)
