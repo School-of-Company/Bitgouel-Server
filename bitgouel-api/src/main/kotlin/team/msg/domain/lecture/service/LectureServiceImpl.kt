@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
@@ -12,7 +11,6 @@ import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
-import team.msg.domain.lecture.exception.UnApprovedLectureException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
@@ -128,9 +126,6 @@ class LectureServiceImpl(
 
         val lecture = lectureRepository findById id
 
-        if(lecture.approveStatus == ApproveStatus.PENDING)
-            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
-
         if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
@@ -176,9 +171,6 @@ class LectureServiceImpl(
         val student = studentRepository findByUser user
 
         val lecture = lectureRepository findById id
-
-        if(lecture.approveStatus == ApproveStatus.PENDING)
-            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
         if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청 취소가 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
