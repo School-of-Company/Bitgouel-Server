@@ -5,11 +5,13 @@ import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.validation.constraints.Future
 import javax.validation.constraints.FutureOrPresent
+import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import team.msg.domain.lecture.enums.LectureType
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class CreateLectureWebRequest(
     @field:NotBlank
@@ -17,6 +19,9 @@ data class CreateLectureWebRequest(
 
     @field:NotBlank
     val content: String,
+
+    @field:NotBlank
+    val userId: UUID,
 
     @field:NotNull
     @FutureOrPresent
@@ -42,6 +47,7 @@ data class CreateLectureWebRequest(
     val credit: Int,
 
     @field:NotNull
-    @field:Min(1)
+    @field:Min(5)
+    @field:Max(10)
     val maxRegisteredUser: Int
 )

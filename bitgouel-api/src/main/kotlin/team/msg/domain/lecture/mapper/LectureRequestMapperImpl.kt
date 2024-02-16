@@ -19,14 +19,14 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         completeDate = webRequest.completeDate,
         lectureType = webRequest.lectureType,
         credit = webRequest.credit,
-        maxRegisteredUser = webRequest.maxRegisteredUser
+        maxRegisteredUser = webRequest.maxRegisteredUser,
+        userId = webRequest.userId
     )
 
     /**
      * Lecture list 검색 web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
      */
     override fun queryLectureWebRequestToDto(webRequest: QueryAllLecturesWebRequest) = QueryAllLectureRequest(
-        lectureType = webRequest.type,
-        approveStatus = webRequest.status
+        lectureType = webRequest.type
     )
 }
