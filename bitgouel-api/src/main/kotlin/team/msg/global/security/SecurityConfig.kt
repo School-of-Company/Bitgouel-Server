@@ -101,7 +101,7 @@ class SecurityConfig(
             // certification
             .mvcMatchers(HttpMethod.POST, "/certification").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/certification").hasRole(STUDENT)
-            .mvcMatchers(HttpMethod.GET, "/certification/{student_id}").hasRole(TEACHER)
+            .mvcMatchers(HttpMethod.GET, "/certification/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.PATCH, "/certification/{id}").hasRole(STUDENT)
 
             // user
