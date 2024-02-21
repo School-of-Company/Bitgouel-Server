@@ -277,4 +277,48 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
     }
+
+    // queryMyStudentActivities 테스트 코드
+    Given("Pageable이 주어졌을 때") {
+        val studentActivityId = UUID.randomUUID()
+        val title = "title"
+        val activityDate = LocalDate.MAX
+        val userId = UUID.randomUUID()
+        val username = "박주홍"
+
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::name) { username }
+        }
+        val student = fixture<Student> {
+            property(Student::user) { user }
+        }
+        val studentActivity = fixture<StudentActivity> {
+            property(StudentActivity::id) { studentActivityId }
+            property(StudentActivity::title) { title }
+            property(StudentActivity::activityDate) { activityDate }
+        }
+        val studentActivityResponse = fixture<StudentActivityResponse> {
+            property(StudentActivityResponse::activityId) { studentActivityId }
+            property(StudentActivityResponse::title) { title }
+            property(StudentActivityResponse::activityDate) { activityDate }
+            property(StudentActivityResponse::userId) { userId }
+            property(StudentActivityResponse::username) { username }
+        }
+        val response = fixture<StudentActivitiesResponse> {
+            property(StudentActivitiesResponse::activities) { PageImpl(listOf(studentActivityResponse)) }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { studentRepository.findByUser(user) } returns student
+        every { studentActivityRepository.findAllByStudent(student, pageable) } returns PageImpl(listOf(studentActivity))
+
+        When("학생 자신의 활동 리스트 요청 시") {
+            val result = studentActivityServiceImpl.queryMyStudentActivities(pageable)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+    }
 })
