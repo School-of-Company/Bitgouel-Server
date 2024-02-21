@@ -26,6 +26,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.model.User
+import java.time.LocalDate
 import java.util.*
 
 class StudentActivityServiceImplTest : BehaviorSpec({
@@ -36,6 +37,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
     val studentRepository = mockk<StudentRepository>()
     val teacherRepository = mockk<TeacherRepository>()
     val studentActivityRepository = mockk<StudentActivityRepository>()
+    val pageable = mockk<Pageable>()
     val studentActivityServiceImpl = StudentActivityServiceImpl(
         userUtil,
         studentRepository,
@@ -199,6 +201,79 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
             Then("result와 response가 같아야 한다") {
                 result shouldBe response
+            }
+        }
+    }
+
+    // queryStudentActivitiesByStudent 테스트 코드
+    Given("StudentId와 Pageable 이 주어질 때") {
+        val studentActivityId = UUID.randomUUID()
+        val title = "title"
+        val activityDate = LocalDate.MAX
+        val studentId = UUID.randomUUID()
+        val userId = UUID.randomUUID()
+        val username = "박주홍"
+
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::name) { username }
+        }
+        val club = fixture<Club>()
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::club) { club }
+            property(Student::user) { user }
+        }
+        val teacher = fixture<Teacher> {
+            property(Teacher::club) { club }
+        }
+        val invalidTeacher = fixture<Teacher>()
+        val studentActivity = fixture<StudentActivity> {
+            property(StudentActivity::id) { studentActivityId }
+            property(StudentActivity::title) { title }
+            property(StudentActivity::activityDate) { activityDate }
+        }
+        val studentActivityResponse = fixture<StudentActivityResponse> {
+            property(StudentActivityResponse::activityId) { studentActivityId }
+            property(StudentActivityResponse::title) { title }
+            property(StudentActivityResponse::activityDate) { activityDate }
+            property(StudentActivityResponse::userId) { userId }
+            property(StudentActivityResponse::username) { username }
+        }
+        val response = fixture<StudentActivitiesResponse> {
+            property(StudentActivitiesResponse::activities) { PageImpl(listOf(studentActivityResponse))}
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { studentRepository.findByIdOrNull(studentId) } returns student
+        every { teacherRepository.findByUser(user) } returns teacher
+        every { studentActivityRepository.findAllByStudent(student, pageable) } returns PageImpl(listOf(studentActivity))
+
+        When("학생별 학생 활동 요청 시") {
+            val result = studentActivityServiceImpl.queryStudentActivitiesByStudent(studentId, pageable)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("유효하지 않은 StudentId 라면") {
+            every { studentRepository.findByIdOrNull(studentId) } returns null
+
+            Then("StudentNotFoundException 가 발생해야 한다") {
+                shouldThrow<StudentNotFoundException> {
+                    studentActivityServiceImpl.queryStudentActivitiesByStudent(studentId, pageable)
+                }
+            }
+        }
+
+        When("조회 하려는 학생과 조회 하려는 선생님의 동아리가 다르다면") {
+            every { teacherRepository.findByUser(user) } returns invalidTeacher
+
+            Then("ForbiddenStudentActivity 가 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivitiesByStudent(studentId, pageable)
+                }
             }
         }
     }
