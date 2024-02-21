@@ -81,7 +81,9 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         val user = fixture<User>()
         val student = fixture<Student>()
         val invalidStudent = fixture<Student>()
-        val studentActivity = fixture<StudentActivity>()
+        val studentActivity = fixture<StudentActivity> {
+            property(StudentActivity::student) { student }
+        }
 
         every { userUtil.queryCurrentUser() } returns user
         every { studentRepository.findByUser(user) } returns student
