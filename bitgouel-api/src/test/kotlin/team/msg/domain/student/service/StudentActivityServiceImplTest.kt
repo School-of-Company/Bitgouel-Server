@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.club.model.Club
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
@@ -109,7 +110,51 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
                 shouldThrow<ForbiddenStudentActivityException> {
-                    studentActivityServiceImpl.updateStudentActivity(studentActivityId,request)
+                    studentActivityServiceImpl.updateStudentActivity(studentActivityId, request)
+                }
+            }
+        }
+    }
+
+    // deleteStudentActivity 테스트 코드
+    Given("StudentActivityId 가 주어질 때") {
+        val studentActivityId = UUID.randomUUID()
+
+        val user = fixture<User>()
+        val student = fixture<Student>()
+        val invalidStudent = fixture<Student>()
+        val studentActivity = fixture<StudentActivity> {
+            property(StudentActivity::student) { student }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { studentRepository.findByUser(user) } returns student
+        every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
+
+        When("학생 활동 삭제 요청 시") {
+            studentActivityServiceImpl.deleteStudentActivity(studentActivityId)
+
+            Then("Student Activity 가 삭제가 되어야 한다") {
+                verify(exactly = 1) { studentActivityRepository.delete(any()) }
+            }
+        }
+
+        When("User 가 Student 가 아니라면") {
+            every { studentRepository.findByUser(user) } returns null
+
+            Then("StudentNotFoundException 이 발생해야 한다") {
+                shouldThrow<StudentNotFoundException> {
+                    studentActivityServiceImpl.deleteStudentActivity(studentActivityId)
+                }
+            }
+        }
+
+        When("User 자신이 작성한 StudentActivity 가 아니라면") {
+            every { studentRepository.findByUser(user) } returns invalidStudent
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.deleteStudentActivity(studentActivityId)
                 }
             }
         }
