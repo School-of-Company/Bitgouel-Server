@@ -13,6 +13,4 @@ interface LectureService {
     fun queryLectureDetails(id: UUID): LectureDetailsResponse
     fun signUpLecture(id: UUID)
     fun cancelSignUpLecture(id: UUID)
-    fun approveLecture(id: UUID)
-    fun rejectLecture(id: UUID)
 }

@@ -13,8 +13,7 @@ data class StudentActivityResponse(
     val title: String,
     val activityDate: LocalDate,
     val userId: UUID,
-    val username: String,
-    val approveStatus: ApproveStatus
+    val username: String
 ) {
     companion object {
         fun pageOf(studentActivities: Page<StudentActivity>, user: User): Page<StudentActivityResponse> =
@@ -24,8 +23,7 @@ data class StudentActivityResponse(
                     title = it.title,
                     activityDate = it.activityDate,
                     userId = user.id,
-                    username = user.name,
-                    approveStatus = it.approveStatus
+                    username = user.name
                 )
             }
 
@@ -37,8 +35,7 @@ data class StudentActivityResponse(
                     content = content,
                     credit = credit,
                     activityDate = activityDate,
-                    modifiedAt = modifiedAt,
-                    approveStatus = approveStatus
+                    modifiedAt = modifiedAt
                 )
             }
     }
@@ -54,6 +51,5 @@ data class StudentActivityDetailsResponse(
     val content: String,
     val credit: Int,
     val activityDate: LocalDate,
-    val modifiedAt: LocalDateTime,
-    val approveStatus: ApproveStatus
+    val modifiedAt: LocalDateTime
 )

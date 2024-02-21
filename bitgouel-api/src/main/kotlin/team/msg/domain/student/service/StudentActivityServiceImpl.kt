@@ -1,20 +1,15 @@
 package team.msg.domain.student.service
 
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
-import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.professor.model.Professor
-import team.msg.domain.student.event.ApproveStudentActivityEvent
-import team.msg.domain.student.event.UpdateStudentActivityEvent
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -38,8 +33,7 @@ class StudentActivityServiceImpl(
     private val userUtil: UserUtil,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
-    private val studentActivityRepository: StudentActivityRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher,private val clubRepository: ClubRepository
+    private val studentActivityRepository: StudentActivityRepository
 ) : StudentActivityService {
 
     /**
@@ -61,8 +55,7 @@ class StudentActivityServiceImpl(
             credit = request.credit,
             activityDate = request.activityDate,
             student = student,
-            teacher = teacher,
-            approveStatus = ApproveStatus.PENDING
+            teacher = teacher
         )
 
         studentActivityRepository.save(studentActivity)
@@ -71,7 +64,6 @@ class StudentActivityServiceImpl(
 
     /**
      * 학생 활동을 업데이트하는 비지니스 로직입니다.
-     * applicationEventPublisher로부터 학생 활동 업데이트 이벤트를 발행합니다.
      * @param 학생 활동 id, 학생 활동을 수정하기 위한 데이터들을 담은 request Dto
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -91,11 +83,10 @@ class StudentActivityServiceImpl(
             content = request.content,
             credit = request.credit,
             activityDate = request.activityDate,
-            approveStatus = ApproveStatus.PENDING,
             student = studentActivity.student,
             teacher = studentActivity.teacher
         )
-        applicationEventPublisher.publishEvent(UpdateStudentActivityEvent(studentActivity))
+
         studentActivityRepository.save(updatedStudentActivity)
     }
 
@@ -115,54 +106,6 @@ class StudentActivityServiceImpl(
             throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ studentId = ${student.id} ]")
 
         studentActivityRepository.delete(studentActivity)
-    }
-
-    /**
-     * 학생활동을 거절 및 삭제하는 비지니스 로직입니다.
-     * @param 학생활동을 삭제하기 위한 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun rejectStudentActivity(id: UUID) {
-        val user = userUtil.queryCurrentUser()
-
-        val teacher = teacherRepository findByUser user
-
-        val studentActivity = studentActivityRepository findById id
-
-        if(teacher != studentActivity.teacher)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
-
-        studentActivityRepository.delete(studentActivity)
-    }
-
-    /**
-     * 학생활동을 승인하는 비즈니스 로직
-     * @param 학생활동을 승인하기 위한 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun approveStudentActivity(id: UUID) {
-        val user = userUtil.queryCurrentUser()
-
-        val teacher = teacherRepository findByUser user
-
-        val studentActivity = studentActivityRepository findById id
-
-        if(teacher != studentActivity.teacher)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
-
-        val updatedStudentActivity = StudentActivity(
-            id = studentActivity.id,
-            title = studentActivity.title,
-            content = studentActivity.content,
-            credit = studentActivity.credit,
-            activityDate = studentActivity.activityDate,
-            approveStatus = ApproveStatus.APPROVED,
-            student = studentActivity.student,
-            teacher = studentActivity.teacher
-        )
-
-        applicationEventPublisher.publishEvent(ApproveStudentActivityEvent(id))
-        studentActivityRepository.save(updatedStudentActivity)
     }
 
     /**
