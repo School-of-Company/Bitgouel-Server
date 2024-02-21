@@ -4,9 +4,12 @@ import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.club.model.Club
@@ -16,6 +19,8 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
+import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
@@ -158,6 +163,34 @@ class StudentActivityServiceImplTest : BehaviorSpec({
                 shouldThrow<ForbiddenStudentActivityException> {
                     studentActivityServiceImpl.deleteStudentActivity(studentActivityId)
                 }
+            }
+        }
+    }
+
+    // queryAllStudentActivity 테스트 코드
+    Given("Pageable 이 주어질 때") {
+        val studentActivityId = UUID.randomUUID()
+        val pageable = fixture<Pageable>()
+
+        val user = fixture<User>()
+        val studentActivity = fixture<StudentActivity> {
+            property(StudentActivity::id) { studentActivityId }
+        }
+        val studentActivityResponse = fixture<StudentActivityResponse> {
+            property(StudentActivityResponse::activityId) { studentActivityId }
+        }
+        val response = fixture<StudentActivitiesResponse> {
+            property(StudentActivitiesResponse::activities) { PageImpl(listOf(studentActivityResponse)) }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { studentActivityRepository.findAll(any<Pageable>()) } returns PageImpl(listOf(studentActivity))
+
+        When("학생 활동 전체 요청 시") {
+            val result = studentActivityServiceImpl.queryAllStudentActivities(pageable)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
             }
         }
     }
