@@ -67,6 +67,14 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
+        When("Club에 속한 Teacher가 없다면") {
+            every { teacherRepository.findByClub(club) } returns null
+
+            Then("TeacherNotFoundException 이 발생해야 한다") {
+                studentActivityServiceImpl.createStudentActivity(request)
+            }
+        }
+
         When("User 가 Student 가 아니라면") {
             every { studentRepository.findByUser(user) } returns null
 
