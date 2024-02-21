@@ -3,6 +3,7 @@ package team.msg.domain.lecture.service
 import org.springframework.data.domain.Pageable
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import java.util.UUID
@@ -13,4 +14,5 @@ interface LectureService {
     fun queryLectureDetails(id: UUID): LectureDetailsResponse
     fun signUpLecture(id: UUID)
     fun cancelSignUpLecture(id: UUID)
+    fun queryInstructors(keyword: String): InstructorsResponse
 }
