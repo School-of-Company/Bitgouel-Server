@@ -3,6 +3,8 @@ import org.springframework.data.domain.Page
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.model.User
 import java.time.LocalDateTime
 import java.util.*
 
@@ -49,6 +51,13 @@ data class LectureResponse(
             lecturer = lecture.instructor,
             credit = lecture.credit
         )
+
+        fun instructorOf(user: User, organization: String): InstructorResponse = InstructorResponse(
+            id = user.id,
+            name = user.name,
+            organization = organization,
+            authority = user.authority
+        )
     }
 }
 
@@ -70,4 +79,15 @@ data class LectureDetailsResponse(
     val isRegistered: Boolean,
     val lecturer: String,
     val credit: Int
+)
+
+data class InstructorsResponse(
+    val instructors: List<InstructorResponse>
+)
+
+data class InstructorResponse(
+    val id: UUID,
+    val name: String,
+    val organization: String,
+    val authority: Authority
 )
