@@ -29,6 +29,7 @@ import team.msg.domain.student.presentation.data.response.StudentActivityDetails
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
@@ -81,7 +82,9 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             every { teacherRepository.findByClub(club) } returns null
 
             Then("TeacherNotFoundException 이 발생해야 한다") {
-                studentActivityServiceImpl.createStudentActivity(request)
+                shouldThrow<TeacherNotFoundException> {
+                    studentActivityServiceImpl.createStudentActivity(request)
+                }
             }
         }
 
