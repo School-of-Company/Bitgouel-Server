@@ -193,14 +193,26 @@ class StudentActivityServiceImplTest : BehaviorSpec({
     // queryAllStudentActivity 테스트 코드
     Given("Pageable 이 주어질 때") {
         val studentActivityId = UUID.randomUUID()
-        val pageable = fixture<Pageable>()
+        val title = "title"
+        val activityDate = LocalDate.MAX
+        val userId = UUID.randomUUID()
+        val username = "박주홍"
 
-        val user = fixture<User>()
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::name) { username }
+        }
         val studentActivity = fixture<StudentActivity> {
             property(StudentActivity::id) { studentActivityId }
+            property(StudentActivity::title) { title }
+            property(StudentActivity::activityDate) { activityDate }
         }
         val studentActivityResponse = fixture<StudentActivityResponse> {
             property(StudentActivityResponse::activityId) { studentActivityId }
+            property(StudentActivityResponse::title) { title }
+            property(StudentActivityResponse::activityDate) { activityDate }
+            property(StudentActivityResponse::userId) { userId }
+            property(StudentActivityResponse::username) { username }
         }
         val response = fixture<StudentActivitiesResponse> {
             property(StudentActivitiesResponse::activities) { PageImpl(listOf(studentActivityResponse)) }
