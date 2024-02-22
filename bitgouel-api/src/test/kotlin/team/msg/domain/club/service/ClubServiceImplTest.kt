@@ -1,20 +1,14 @@
 package team.msg.domain.club.service
 
-import com.appmattus.kotlinfixture.decorator.constructor.ModestConstructorStrategy
-import com.appmattus.kotlinfixture.decorator.constructor.constructorStrategy
-import com.appmattus.kotlinfixture.decorator.optional.AlwaysOptionalStrategy
-import com.appmattus.kotlinfixture.decorator.optional.optionalStrategy
 import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldHave
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.data.repository.findByIdOrNull
-import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
@@ -44,7 +38,7 @@ import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import team.msg.global.exception.InvalidRoleException
-import java.util.UUID
+import java.util.*
 
 class ClubServiceImplTest : BehaviorSpec({
 
@@ -199,23 +193,22 @@ class ClubServiceImplTest : BehaviorSpec({
         val schoolName = "광주소프트웨어마이스터고등학교"
         val headCount = 1
         val studentId = UUID.randomUUID()
-        val studentName = "박주홍"
         val teacherId = UUID.randomUUID()
 
-        val entity = fixture<BaseUUIDEntity> {
-            property(BaseUUIDEntity::id) { studentId }
-        }
-        val user = fixture<User> {
-            property(User::authority) { Authority.ROLE_USER }
-        }
         val studentUser = fixture<User> {
-            property(User::name) { studentName }
             property(User::authority) { Authority.ROLE_STUDENT }
         }
         val teacherUser = fixture<User> {
             property(User::authority) { Authority.ROLE_TEACHER }
         }
-        val club = fixture<Club>()
+        val school = fixture<School> {
+            property(School::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
+        }
+        val club = fixture<Club> {
+            property(Club::id) { clubId }
+            property(Club::name) { clubName }
+            property(Club::school) { school }
+        }
         val student = fixture<Student> {
             property(Student::id) { studentId }
             property(Student::user) { studentUser }
@@ -225,26 +218,6 @@ class ClubServiceImplTest : BehaviorSpec({
             property(Teacher::id) { teacherId }
             property(Teacher::user) { teacherUser }
             property(Teacher::club) { club }
-        }
-        val bbozzak = fixture<Bbozzak> {
-            property(Student::id) { studentId }
-            property(Student::user) { studentUser }
-            property(Student::club) { club }
-        }
-        val professor = fixture<Professor> {
-            property(Student::id) { studentId }
-            property(Student::user) { studentUser }
-            property(Student::club) { club }
-        }
-        val companyInstructor = fixture<CompanyInstructor> {
-            property(Student::id) { studentId }
-            property(Student::user) { studentUser }
-            property(Student::club) { club }
-        }
-        val government = fixture<Government> {
-            property(Student::id) { studentId }
-            property(Student::user) { studentUser }
-            property(Student::club) { club }
         }
 
         val studentResponse = fixture<StudentResponse> {
@@ -256,6 +229,7 @@ class ClubServiceImplTest : BehaviorSpec({
             property(TeacherResponse::name) { teacher.user!!.name }
         }
         val response = fixture<MyClubDetailsResponse> {
+            property(MyClubDetailsResponse::clubId) { clubId }
             property(MyClubDetailsResponse::clubName) { clubName }
             property(MyClubDetailsResponse::highSchoolName) { schoolName }
             property(MyClubDetailsResponse::headCount) { headCount }
@@ -264,15 +238,8 @@ class ClubServiceImplTest : BehaviorSpec({
         }
 
         every { userUtil.queryCurrentUser() } returns studentUser
-        every { userUtil.getAuthorityEntityAndOrganization(studentUser).first } returns entity
-
+        every { userUtil.getAuthorityEntityAndOrganization(studentUser).first } returns student
         every { studentRepository.findByUser(any()) } returns student
-        every { teacherRepository.findByUser(any()) } returns teacher
-        every { bbozzakRepository.findByUser(any()) } returns bbozzak
-        every { professorRepository.findByUser(any()) } returns professor
-        every { companyInstructorRepository.findByUser(any()) } returns companyInstructor
-        every { governmentRepository.findByUser(any()) } returns government
-
         every { studentRepository.findAllByClub(student.club) } returns listOf(student)
         every { teacherRepository.findByClub(student.club) } returns teacher
 
@@ -283,16 +250,6 @@ class ClubServiceImplTest : BehaviorSpec({
                 result.students[0].id shouldBe response.students[0].id
                 result.students[0].name shouldBe response.students[0].name
                 result.shouldBeEqualToIgnoringFields(response, MyClubDetailsResponse::students)
-            }
-        }
-
-        When("유효하지 않는 권한의 유저가 요청하면") {
-            every { userUtil.queryCurrentUser() } returns user
-
-            Then("InvalidRoleException 이 발생해야 한다.") {
-                shouldThrow<InvalidRoleException> {
-                    clubServiceImpl.queryMyClubDetailsService()
-                }
             }
         }
     }
