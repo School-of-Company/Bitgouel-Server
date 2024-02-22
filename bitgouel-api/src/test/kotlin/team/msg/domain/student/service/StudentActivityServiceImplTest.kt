@@ -192,10 +192,10 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
     // queryAllStudentActivity 테스트 코드
     Given("Pageable 이 주어질 때") {
+        val userId = UUID.randomUUID()
         val studentActivityId = UUID.randomUUID()
         val title = "title"
         val activityDate = LocalDate.MAX
-        val userId = UUID.randomUUID()
         val username = "박주홍"
 
         val user = fixture<User> {
@@ -207,6 +207,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             property(StudentActivity::title) { title }
             property(StudentActivity::activityDate) { activityDate }
         }
+
         val studentActivityResponse = fixture<StudentActivityResponse> {
             property(StudentActivityResponse::activityId) { studentActivityId }
             property(StudentActivityResponse::title) { title }
@@ -232,18 +233,18 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
     // queryStudentActivitiesByStudent 테스트 코드
     Given("StudentId와 Pageable 이 주어질 때") {
+        val userId = UUID.randomUUID()
+        val studentId = UUID.randomUUID()
         val studentActivityId = UUID.randomUUID()
         val title = "title"
         val activityDate = LocalDate.MAX
-        val studentId = UUID.randomUUID()
-        val userId = UUID.randomUUID()
         val username = "박주홍"
 
+        val club = fixture<Club>()
         val user = fixture<User> {
             property(User::id) { userId }
             property(User::name) { username }
         }
-        val club = fixture<Club>()
         val student = fixture<Student> {
             property(Student::id) { studentId }
             property(Student::club) { club }
@@ -258,6 +259,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             property(StudentActivity::title) { title }
             property(StudentActivity::activityDate) { activityDate }
         }
+
         val studentActivityResponse = fixture<StudentActivityResponse> {
             property(StudentActivityResponse::activityId) { studentActivityId }
             property(StudentActivityResponse::title) { title }
@@ -305,10 +307,10 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
     // queryMyStudentActivities 테스트 코드
     Given("Pageable이 주어졌을 때") {
+        val userId = UUID.randomUUID()
         val studentActivityId = UUID.randomUUID()
         val title = "title"
         val activityDate = LocalDate.MAX
-        val userId = UUID.randomUUID()
         val username = "박주홍"
 
         val user = fixture<User> {
@@ -323,6 +325,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             property(StudentActivity::title) { title }
             property(StudentActivity::activityDate) { activityDate }
         }
+
         val studentActivityResponse = fixture<StudentActivityResponse> {
             property(StudentActivityResponse::activityId) { studentActivityId }
             property(StudentActivityResponse::title) { title }
@@ -377,7 +380,6 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         val professor = fixture<Professor>()
         val companyInstructor = fixture<CompanyInstructor>()
         val government = fixture<Government>()
-
         val studentActivity = fixture<StudentActivity> {
             property(StudentActivity::id) { studentActivityId }
             property(StudentActivity::title) { title }
@@ -386,6 +388,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             property(StudentActivity::activityDate) { activityDate }
             property(StudentActivity::student) { student }
         }
+
         val response = fixture<StudentActivityDetailsResponse> {
             property(StudentActivityDetailsResponse::id) { studentActivityId }
             property(StudentActivityDetailsResponse::title) { title }
