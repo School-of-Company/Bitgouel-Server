@@ -159,6 +159,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { userUtil.queryCurrentUser() } returns user
         every { studentRepository.findByUser(user) } returns student
         every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
+        every { studentActivityRepository.delete(any()) } returns Unit
 
         When("학생 활동 삭제 요청 시") {
             studentActivityServiceImpl.deleteStudentActivity(studentActivityId)
