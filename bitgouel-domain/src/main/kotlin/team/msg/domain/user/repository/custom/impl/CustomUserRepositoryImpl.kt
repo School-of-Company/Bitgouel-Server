@@ -55,7 +55,7 @@ class CustomUserRepositoryImpl(
      * 유저의 이름과 소속 기관을 조회합니다.
      *
      * @param 검색할 유저의 이름과 기관에 포함되는 keyword
-     * @return 검색 조건에 부합하는 user 리스트
+     * @return 검색 조건에 부합하는 user와 소속 기관 리스트
      */
     override fun queryInstructorsAndOrganization(keyword: String): List<Pair<User, String>> =
         queryFactory.selectFrom(user)
