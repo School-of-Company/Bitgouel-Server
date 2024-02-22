@@ -29,7 +29,9 @@ import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
+import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
+import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentResponse
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
@@ -250,6 +252,62 @@ class ClubServiceImplTest : BehaviorSpec({
                 result.students[0].id shouldBe response.students[0].id
                 result.students[0].name shouldBe response.students[0].name
                 result.shouldBeEqualToIgnoringFields(response, MyClubDetailsResponse::students)
+            }
+        }
+    }
+
+    // queryStudentDetails 테스트 코드
+    Given("clubId와 studentId 가 주어질 때") {
+        val clubId = 0L
+        val studentId = UUID.randomUUID()
+
+        val studentUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
+        val club = fixture<Club> {
+            property(Club::id) { clubId }
+        }
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { studentUser }
+            property(Student::club) { club }
+        }
+
+        val response = fixture<StudentDetailsResponse> {
+            property(StudentDetailsResponse::name) { studentUser.name }
+            property(StudentDetailsResponse::phoneNumber) { studentUser.phoneNumber }
+            property(StudentDetailsResponse::email) { studentUser.email }
+            property(StudentDetailsResponse::credit) { student.credit }
+        }
+
+        every { clubRepository.findByIdOrNull(clubId) } returns club
+        every { studentRepository.findByIdAndClub(studentId, club) } returns student
+
+        When("동아리 소속 학생 상세정보 조회 요청을 하면") {
+            val result = clubServiceImpl.queryStudentDetails(clubId, studentId)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("존재하지 않는 동아리 id로 조회 요청을 하면") {
+            every { clubRepository.findByIdOrNull(clubId) } returns null
+
+            Then("ClubNotFoundException 가 발생해야 한다.") {
+                shouldThrow<ClubNotFoundException> {
+                    clubServiceImpl.queryStudentDetails(clubId, studentId)
+                }
+            }
+        }
+
+        When("존재하지 않는 학생 id로 조회 요청을 하면") {
+            every { studentRepository.findByIdAndClub(studentId, club) } returns null
+
+            Then("StudentNotFoundException 가 발생해야 한다.") {
+                shouldThrow<StudentNotFoundException> {
+                    clubServiceImpl.queryStudentDetails(clubId, studentId)
+                }
             }
         }
     }
