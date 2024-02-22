@@ -11,8 +11,13 @@ import io.mockk.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
+import team.msg.domain.company.model.CompanyInstructor
+import team.msg.domain.government.model.Government
+import team.msg.domain.professor.model.Professor
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
@@ -20,13 +25,16 @@ import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.student.presentation.data.request.CreateStudentActivityRequest
 import team.msg.domain.student.presentation.data.request.UpdateStudentActivityRequest
 import team.msg.domain.student.presentation.data.response.StudentActivitiesResponse
+import team.msg.domain.student.presentation.data.response.StudentActivityDetailsResponse
 import team.msg.domain.student.presentation.data.response.StudentActivityResponse
 import team.msg.domain.student.repository.StudentActivityRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 class StudentActivityServiceImplTest : BehaviorSpec({
@@ -318,6 +326,128 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
             Then("result와 response가 같아야 한다") {
                 result shouldBe response
+            }
+        }
+    }
+
+    // queryStudentActivityDetail 테스트 코드
+    Given("StudentActivityId가 주어졌을 때") {
+        val studentId = UUID.randomUUID()
+        val teacherId = UUID.randomUUID()
+        val bbozakId = UUID.randomUUID()
+        val studentActivityId = UUID.randomUUID()
+        val title = "title"
+        val content = "content"
+        val credit = 5
+        val activityDate = LocalDate.MAX
+
+        val user = fixture<User> {}
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { user }
+        }
+        val invalidStudent = fixture<Student>()
+        val teacher = fixture<Teacher> {
+            property(Teacher::id) { teacherId }
+            property(Teacher::user) { user }
+        }
+        val invalidTeacher = fixture<Teacher>()
+        val bbozzak = fixture<Bbozzak> {
+            property(Bbozzak::id) { bbozakId }
+            property(Bbozzak::user) { user }
+        }
+        val invalidBbozzak = fixture<Bbozzak>()
+        val professor = fixture<Professor>()
+        val companyInstructor = fixture<CompanyInstructor>()
+        val government = fixture<Government>()
+
+        val studentActivity = fixture<StudentActivity> {
+            property(StudentActivity::id) { studentActivityId }
+            property(StudentActivity::title) { title }
+            property(StudentActivity::content) { content }
+            property(StudentActivity::credit) { credit }
+            property(StudentActivity::activityDate) { activityDate }
+            property(StudentActivity::student) { student }
+        }
+        val response = fixture<StudentActivityDetailsResponse> {
+            property(StudentActivityDetailsResponse::id) { studentActivityId }
+            property(StudentActivityDetailsResponse::title) { title }
+            property(StudentActivityDetailsResponse::content) { content }
+            property(StudentActivityDetailsResponse::credit) { credit }
+            property(StudentActivityDetailsResponse::activityDate) { activityDate }
+            property(StudentActivityDetailsResponse::modifiedAt) { studentActivity.modifiedAt }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { userUtil.getAuthorityEntityAndOrganization(user).first } returns user
+        every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
+
+
+        When("학생 활동 상세 정보 요청 시") {
+            val result = studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+
+            Then("result가 response와 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("학생 활동에 저장된 학생과 요청을 보낸 학생이 다르다면") {
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns invalidStudent
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+                }
+            }
+        }
+
+        When("학생 활동에 저장된 취동쌤과 요청을 보낸 취동쌤이 다르다면") {
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns invalidTeacher
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+                }
+            }
+        }
+
+        When("학생 활동에 저장된 학생의 동아리와 요청을 보낸 뽀짝쌤의 동아리가 다르다면") {
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns invalidBbozzak
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+                }
+            }
+        }
+
+        When("대학 교수 역할이 요청을 보낸다면") {
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns professor
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+                }
+            }
+        }
+
+        When("기업 현장 강사 역할이 요청을 보낸다면") {
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns companyInstructor
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+                }
+            }
+        }
+
+        When("유관기관 강사 역할이 요청을 보낸다면") {
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns government
+
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
+                shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
+                }
             }
         }
     }
