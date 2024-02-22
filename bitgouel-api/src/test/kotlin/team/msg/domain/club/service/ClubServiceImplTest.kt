@@ -1,10 +1,16 @@
 package team.msg.domain.club.service
 
+import com.appmattus.kotlinfixture.decorator.constructor.ModestConstructorStrategy
+import com.appmattus.kotlinfixture.decorator.constructor.constructorStrategy
+import com.appmattus.kotlinfixture.decorator.optional.AlwaysOptionalStrategy
+import com.appmattus.kotlinfixture.decorator.optional.optionalStrategy
 import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.data.repository.findByIdOrNull
@@ -145,38 +151,32 @@ class ClubServiceImplTest : BehaviorSpec({
             property(TeacherResponse::id) { teacher.id }
             property(TeacherResponse::name) { teacher.user!!.name }
         }
-//        val response = fixture<ClubDetailsResponse> {
-//            property(ClubDetailsResponse::clubName) { clubName }
-//            property(ClubDetailsResponse::highSchoolName) { schoolName }
-//            property(ClubDetailsResponse::headCount) { headCount }
-//            property(ClubDetailsResponse::students) { listOf(studentResponse) }
-//            property(ClubDetailsResponse::teacher) { teacherResponse }
-//        }
+        val response = fixture<ClubDetailsResponse> {
+            property(ClubDetailsResponse::clubName) { clubName }
+            property(ClubDetailsResponse::highSchoolName) { schoolName }
+            property(ClubDetailsResponse::headCount) { headCount }
+            property(ClubDetailsResponse::students) { listOf(studentResponse) }
+            property(ClubDetailsResponse::teacher) { teacherResponse }
+        }
 
         every { clubRepository.findByIdOrNull(request) } returns club
         every { studentRepository.findAllByClub(club) } returns listOf(student)
         every { teacherRepository.findByClub(club) } returns teacher
 
-        When("동아리 전체 조회 요청을 하면") {
+        When("동아리 상세 조회 요청을 하면") {
             val result = clubServiceImpl.queryClubDetailsByIdService(request)
 
-            val response = fixture<ClubDetailsResponse> {
-                property(ClubDetailsResponse::clubName) { clubName }
-                property(ClubDetailsResponse::highSchoolName) { schoolName }
-                property(ClubDetailsResponse::headCount) { headCount }
-                property(ClubDetailsResponse::students) { result.students }
-                property(ClubDetailsResponse::teacher) { teacherResponse }
-            }
-
             Then("result와 response가 같아야 한다.") {
-                result shouldBe response
+                result.students[0].id shouldBe response.students[0].id
+                result.students[0].name shouldBe response.students[0].name
+                result.shouldBeEqualToIgnoringFields(response, ClubDetailsResponse::students)
             }
         }
 
         When("존재하지 않는 동아리 id로 요청하면") {
             every { clubRepository.findByIdOrNull(request) } returns null
 
-            Then("ClubNotFoundException 발생해야 한다.") {
+            Then("ClubNotFoundException 이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
                     clubServiceImpl.queryClubDetailsByIdService(request)
                 }
