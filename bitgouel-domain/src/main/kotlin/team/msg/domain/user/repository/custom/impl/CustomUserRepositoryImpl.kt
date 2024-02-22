@@ -58,37 +58,34 @@ class CustomUserRepositoryImpl(
      * @return 검색 조건에 부합하는 user와 소속 기관 리스트
      */
     override fun queryInstructorsAndOrganization(keyword: String): List<Pair<User, String>> =
-        queryFactory.selectFrom(user)
-            .leftJoin(professor.user,user)
-            .leftJoin(companyInstructor.user,user)
-            .leftJoin(government.user,user)
+        queryFactory.select(user, professor.university, companyInstructor.company, government.governmentName)
+            .from(user)
+            .leftJoin(professor).on(user.eq(professor.user))
+            .leftJoin(companyInstructor).on(user.eq(companyInstructor.user))
+            .leftJoin(government).on(user.eq(government.user))
             .where(
-                instructorNameLike(keyword),
-                organizationNameLike(keyword)
+                user.authority.`in`(Authority.ROLE_PROFESSOR, Authority.ROLE_COMPANY_INSTRUCTOR, Authority.ROLE_GOVERNMENT),
+                nameLike(keyword)
+                    ?.or(organizationNameLike(keyword))
             )
             .fetch()
-            .map { user ->
-                val organization = when {
-                    professor.user.equals(user) -> professor.university.toString()
-                    companyInstructor.user.equals(user) -> companyInstructor.company.toString()
-                    government.user.equals(user) -> government.governmentName.toString()
-                    else -> "소속 없음"
-                }
-
-                Pair(user, organization)
+            .map { tuple ->
+                val user = tuple[user]!!
+                val organization = when(user.authority) {
+                    Authority.ROLE_PROFESSOR -> tuple[professor.university]
+                    Authority.ROLE_COMPANY_INSTRUCTOR -> tuple[companyInstructor.company]
+                    Authority.ROLE_GOVERNMENT -> tuple[government.governmentName]
+                    else -> null
+                } ?: "소속 없음"
+                Pair(user,organization)
             }
 
-    private fun instructorNameLike(keyword: String): BooleanExpression? =
-        if(keyword == "") null
-        else professor.user.name.like("%$keyword%")
-            .or(companyInstructor.user.name.like("%$keyword%"))
-            .or(government.user.name.like("%$keyword%"))
-
     private fun organizationNameLike(keyword: String): BooleanExpression? =
-        if(keyword == "") null
-        else professor.university.like("%$keyword")
-            .or(companyInstructor.company.like("%$keyword"))
-            .or(government.governmentName.like("%$keyword"))
+        if (keyword.isBlank()) null
+        else professor.university.like("%$keyword%")
+            .or(companyInstructor.company.like("%$keyword%"))
+            .or(government.governmentName.like("%$keyword%"))
+
 
     private fun nameLike(keyword: String): BooleanExpression? =
         if(keyword == "") null else user.name.like("%$keyword%")
