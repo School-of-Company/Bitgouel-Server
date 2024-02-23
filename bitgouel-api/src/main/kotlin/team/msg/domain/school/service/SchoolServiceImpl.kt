@@ -19,7 +19,7 @@ class SchoolServiceImpl(
      * @return 학교의 정보를 담은 dto
      */
     @Transactional(readOnly = true)
-    override fun querySchoolsService(): SchoolsResponse {
+    override fun querySchools(): SchoolsResponse {
         val schools = schoolRepository.findAll()
 
         val response = SchoolsResponse(

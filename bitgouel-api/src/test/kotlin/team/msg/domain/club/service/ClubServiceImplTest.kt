@@ -10,7 +10,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
-import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
@@ -19,11 +18,8 @@ import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.presentation.data.response.MyClubDetailsResponse
 import team.msg.domain.club.repository.ClubRepository
-import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
@@ -39,7 +35,6 @@ import team.msg.domain.teacher.presentation.data.response.TeacherResponse
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
-import team.msg.global.exception.InvalidRoleException
 import java.util.*
 
 class ClubServiceImplTest : BehaviorSpec({
@@ -95,7 +90,7 @@ class ClubServiceImplTest : BehaviorSpec({
         every { clubRepository.findAllBySchool(school) } returns listOf(club)
 
         When("동아리 전체 조회 요청을 하면") {
-            val result = clubServiceImpl.queryAllClubsService(highSchool)
+            val result = clubServiceImpl.queryAllClubs(highSchool)
 
             Then("result와 response가 같아야 한다.") {
                 result shouldBe response
@@ -107,7 +102,7 @@ class ClubServiceImplTest : BehaviorSpec({
 
             Then("SchoolNotFoundException 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
-                    clubServiceImpl.queryAllClubsService(highSchool)
+                    clubServiceImpl.queryAllClubs(highSchool)
                 }
             }
         }
@@ -168,7 +163,7 @@ class ClubServiceImplTest : BehaviorSpec({
         every { teacherRepository.findByClub(club) } returns teacher
 
         When("동아리 상세 조회 요청을 하면") {
-            val result = clubServiceImpl.queryClubDetailsByIdService(request)
+            val result = clubServiceImpl.queryClubDetailsById(request)
 
             Then("result와 response가 같아야 한다.") {
                 result.students[0].id shouldBe response.students[0].id
@@ -182,7 +177,7 @@ class ClubServiceImplTest : BehaviorSpec({
 
             Then("ClubNotFoundException 이 발생해야 한다.") {
                 shouldThrow<ClubNotFoundException> {
-                    clubServiceImpl.queryClubDetailsByIdService(request)
+                    clubServiceImpl.queryClubDetailsById(request)
                 }
             }
         }
@@ -246,7 +241,7 @@ class ClubServiceImplTest : BehaviorSpec({
         every { teacherRepository.findByClub(student.club) } returns teacher
 
         When("동아리 상세 조회 요청을 하면") {
-            val result = clubServiceImpl.queryMyClubDetailsService()
+            val result = clubServiceImpl.queryMyClubDetails()
 
             Then("result와 response가 같아야 한다.") {
                 result.students[0].id shouldBe response.students[0].id
