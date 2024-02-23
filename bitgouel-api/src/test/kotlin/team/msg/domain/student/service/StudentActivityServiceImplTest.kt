@@ -190,7 +190,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         }
     }
 
-    // queryAllStudentActivity 테스트 코드
+    // queryAllStudentActivities 테스트 코드
     Given("Pageable 이 주어질 때") {
         val userId = UUID.randomUUID()
         val studentActivityId = UUID.randomUUID()
