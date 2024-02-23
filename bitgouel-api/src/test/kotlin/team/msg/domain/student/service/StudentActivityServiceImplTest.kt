@@ -113,7 +113,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
         every { userUtil.queryCurrentUser() } returns user
         every { studentRepository.findByUser(user) } returns student
-        every { studentActivityRepository.findById(studentActivityId) } returns Optional.of(studentActivity)
+        every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
         every { studentActivityRepository.save(any()) } returns studentActivity
 
         When("학생 활동 수정 요청 시") {
