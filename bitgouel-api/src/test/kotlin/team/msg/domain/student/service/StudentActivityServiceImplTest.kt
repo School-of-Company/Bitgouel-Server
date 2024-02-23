@@ -11,7 +11,6 @@ import io.mockk.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
@@ -32,10 +31,8 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
-import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 class StudentActivityServiceImplTest : BehaviorSpec({
@@ -354,7 +351,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
     Given("StudentActivityId가 주어졌을 때") {
         val studentId = UUID.randomUUID()
         val teacherId = UUID.randomUUID()
-        val bbozakId = UUID.randomUUID()
+        val bbozzakId = UUID.randomUUID()
         val studentActivityId = UUID.randomUUID()
         val title = "title"
         val content = "content"
@@ -373,7 +370,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         }
         val invalidTeacher = fixture<Teacher>()
         val bbozzak = fixture<Bbozzak> {
-            property(Bbozzak::id) { bbozakId }
+            property(Bbozzak::id) { bbozzakId }
             property(Bbozzak::user) { user }
         }
         val invalidBbozzak = fixture<Bbozzak>()
