@@ -67,7 +67,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { teacherRepository.findByClub(student.club) } returns teacher
         every { studentActivityRepository.save(any()) } returns studentActivity
 
-        When("학생 활동 추가 요청 시") {
+        When("학생 활동 추가 시") {
             studentActivityServiceImpl.createStudentActivity(request)
 
             Then("StudentActivity 가 저장이 되어야 한다") {
@@ -113,7 +113,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { studentActivityRepository.findById(studentActivityId) } returns Optional.of(studentActivity)
         every { studentActivityRepository.save(any()) } returns studentActivity
 
-        When("학생 활동 수정 요청 시") {
+        When("학생 활동 수정 시") {
             studentActivityServiceImpl.updateStudentActivity(studentActivityId,request)
 
             Then("수정된 StudentActivity 가 저장이 되어야 한다") {
@@ -158,7 +158,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
         every { studentActivityRepository.delete(any()) } returns Unit
 
-        When("학생 활동 삭제 요청 시") {
+        When("학생 활동 삭제 시") {
             studentActivityServiceImpl.deleteStudentActivity(studentActivityId)
 
             Then("Student Activity 가 삭제가 되어야 한다") {
@@ -219,7 +219,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { userUtil.queryCurrentUser() } returns user
         every { studentActivityRepository.findAll(any<Pageable>()) } returns PageImpl(listOf(studentActivity))
 
-        When("학생 활동 전체 요청 시") {
+        When("학생 활동 전체 리스트 조회 시") {
             val result = studentActivityServiceImpl.queryAllStudentActivities(pageable)
 
             Then("result와 response가 같아야 한다") {
@@ -273,7 +273,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { teacherRepository.findByUser(user) } returns teacher
         every { studentActivityRepository.findAllByStudent(student, pageable) } returns PageImpl(listOf(studentActivity))
 
-        When("학생별 학생 활동 요청 시") {
+        When("학생별 학생 활동 리스트 조회 시") {
             val result = studentActivityServiceImpl.queryStudentActivitiesByStudent(studentId, pageable)
 
             Then("result와 response가 같아야 한다") {
@@ -338,7 +338,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { studentRepository.findByUser(user) } returns student
         every { studentActivityRepository.findAllByStudent(student, pageable) } returns PageImpl(listOf(studentActivity))
 
-        When("학생 자신의 활동 리스트 요청 시") {
+        When("학생 자신의 활동 리스트 조회 시") {
             val result = studentActivityServiceImpl.queryMyStudentActivities(pageable)
 
             Then("result와 response가 같아야 한다") {
