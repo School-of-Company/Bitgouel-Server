@@ -198,6 +198,13 @@ class LectureServiceImpl(
         studentRepository.save(updateCreditStudent)
     }
 
+    /**
+     * 강사를 키워드로 조회하는 비지니스 로직입니다.
+     *
+     * @param 조회할 강사 이름과 소속 keyword
+     * @return 조회한 강사 유저와 소속 정보를 담은 list dto
+     */
+    @Transactional(readOnly = true)
     override fun queryInstructors(keyword: String): InstructorsResponse {
         val instructors = userRepository.queryInstructorsAndOrganization(keyword)
 
