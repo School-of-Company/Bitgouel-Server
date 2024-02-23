@@ -20,14 +20,14 @@ class UserController (
 ) {
     @GetMapping
     fun queryUserPage(): ResponseEntity<UserPageResponse> {
-        val response = userService.queryUserPageService()
+        val response = userService.queryUserPage()
         return ResponseEntity.ok(response)
     }
 
     @PatchMapping
     fun modifyPassword(@RequestBody @Valid webRequest: ModifyPasswordWebRequest): ResponseEntity<Void> {
         val request = userRequestMapper.modifyPasswordWebRequestToDto(webRequest)
-        userService.modifyPasswordService(request)
+        userService.modifyPassword(request)
         return ResponseEntity.noContent().build()
     }
 }

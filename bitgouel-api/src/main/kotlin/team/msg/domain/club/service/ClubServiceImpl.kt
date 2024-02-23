@@ -53,7 +53,7 @@ class ClubServiceImpl(
      * @return 학교에 있는 취업동아리 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryAllClubsService(highSchool: HighSchool): ClubsResponse {
+    override fun queryAllClubs(highSchool: HighSchool): ClubsResponse {
         val school = schoolRepository.findByHighSchool(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool ]")
 
@@ -72,7 +72,7 @@ class ClubServiceImpl(
      * @return 동아리 상세 정보를 담은 dto
      */
     @Transactional(readOnly = true)
-    override fun queryClubDetailsByIdService(id: Long): ClubDetailsResponse {
+    override fun queryClubDetailsById(id: Long): ClubDetailsResponse {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리 입니다. info : [ clubId = $id ]")
 
@@ -91,7 +91,7 @@ class ClubServiceImpl(
      * @return 동아리 상세 정보를 담은 dto
      */
     @Transactional(readOnly = true)
-    override fun queryMyClubDetailsService(): MyClubDetailsResponse {
+    override fun queryMyClubDetails(): MyClubDetailsResponse {
         val user = userUtil.queryCurrentUser()
 
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
