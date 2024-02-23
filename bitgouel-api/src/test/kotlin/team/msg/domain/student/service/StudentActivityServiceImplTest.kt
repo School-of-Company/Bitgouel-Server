@@ -73,7 +73,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         When("학생 활동 추가 요청 시") {
             studentActivityServiceImpl.createStudentActivity(request)
 
-            Then("Student Activity 가 저장이 되어야 한다") {
+            Then("StudentActivity 가 저장이 되어야 한다") {
                 verify(exactly = 1) { studentActivityRepository.save(any()) }
             }
         }
@@ -113,7 +113,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
 
         every { userUtil.queryCurrentUser() } returns user
         every { studentRepository.findByUser(user) } returns student
-        every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
+        every { studentActivityRepository.findById(studentActivityId) } returns Optional.of(studentActivity)
         every { studentActivityRepository.save(any()) } returns studentActivity
 
         When("학생 활동 수정 요청 시") {
@@ -403,7 +403,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         every { studentActivityRepository.findByIdOrNull(studentActivityId) } returns studentActivity
 
 
-        When("학생 활동 상세 정보 요청 시") {
+        When("StudentActivity 상세 정보 요청 시") {
             val result = studentActivityServiceImpl.queryStudentActivityDetail(studentActivityId)
 
             Then("result가 response와 같아야 한다") {
@@ -411,7 +411,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("학생 활동에 저장된 학생과 요청을 보낸 학생이 다르다면") {
+        When("StudentActivity 에 저장된 Student 와 요청을 보낸 Student 가 다르다면") {
             every { userUtil.getAuthorityEntityAndOrganization(user).first } returns invalidStudent
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
@@ -421,7 +421,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("학생 활동에 저장된 취동쌤과 요청을 보낸 취동쌤이 다르다면") {
+        When("StudentActivity 에 저장된 Teacher 와 요청을 보낸 Teacher 가 다르다면") {
             every { userUtil.getAuthorityEntityAndOrganization(user).first } returns invalidTeacher
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
@@ -431,7 +431,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("학생 활동에 저장된 학생의 동아리와 요청을 보낸 뽀짝쌤의 동아리가 다르다면") {
+        When("StudentActivity 에 저장된 Student 의 Club 과 요청을 보낸 Bbozzak 의 Club 이 다르다면") {
             every { userUtil.getAuthorityEntityAndOrganization(user).first } returns invalidBbozzak
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
@@ -441,7 +441,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("대학 교수 역할이 요청을 보낸다면") {
+        When("Professor 역할이 요청을 보낸다면") {
             every { userUtil.getAuthorityEntityAndOrganization(user).first } returns professor
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
@@ -451,7 +451,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("기업 현장 강사 역할이 요청을 보낸다면") {
+        When("CompanyInstructor 역할이 요청을 보낸다면") {
             every { userUtil.getAuthorityEntityAndOrganization(user).first } returns companyInstructor
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
@@ -461,7 +461,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("유관기관 강사 역할이 요청을 보낸다면") {
+        When("Government 역할이 요청을 보낸다면") {
             every { userUtil.getAuthorityEntityAndOrganization(user).first } returns government
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
