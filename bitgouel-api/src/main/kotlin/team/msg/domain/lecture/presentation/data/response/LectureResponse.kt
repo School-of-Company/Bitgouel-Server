@@ -1,6 +1,5 @@
 package team.msg.domain.lecture.presentation.data.response
 import org.springframework.data.domain.Page
-import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
@@ -16,7 +15,6 @@ data class LectureResponse(
     val completeDate: LocalDateTime,
     val lectureType: LectureType,
     val lectureStatus: LectureStatus,
-    val approveStatus: ApproveStatus,
     val headCount: Int,
     val maxRegisteredUser: Int,
     val lecturer: String
@@ -31,7 +29,6 @@ data class LectureResponse(
             completeDate = lecture.completeDate,
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
-            approveStatus = lecture.approveStatus,
             headCount = headCount,
             maxRegisteredUser = lecture.maxRegisteredUser,
             lecturer = lecture.instructor
@@ -46,7 +43,6 @@ data class LectureResponse(
             completeDate = lecture.completeDate,
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
-            approveStatus = lecture.approveStatus,
             headCount = headCount,
             maxRegisteredUser = lecture.maxRegisteredUser,
             isRegistered = isRegistered,
@@ -69,7 +65,6 @@ data class LectureDetailsResponse(
     val completeDate: LocalDateTime,
     val lectureType: LectureType,
     val lectureStatus: LectureStatus,
-    val approveStatus: ApproveStatus,
     val headCount: Int,
     val maxRegisteredUser: Int,
     val isRegistered: Boolean,

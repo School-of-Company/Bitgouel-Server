@@ -15,7 +15,7 @@ class SchoolController(
 ) {
     @GetMapping
     fun querySchools(): ResponseEntity<SchoolsResponse> {
-        val response = schoolService.querySchoolsService()
+        val response = schoolService.querySchools()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }

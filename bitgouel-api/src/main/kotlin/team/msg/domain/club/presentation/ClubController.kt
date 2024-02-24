@@ -18,19 +18,19 @@ class ClubController(
 ) {
     @GetMapping
     fun queryAllClubs(@RequestParam("highSchool") highSchool: HighSchool): ResponseEntity<ClubsResponse> {
-        val response = clubService.queryAllClubsService(highSchool)
+        val response = clubService.queryAllClubs(highSchool)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     @GetMapping("/{id}")
     fun queryClubDetails(@PathVariable id: Long): ResponseEntity<ClubDetailsResponse> {
-        val response = clubService.queryClubDetailsByIdService(id)
+        val response = clubService.queryClubDetailsById(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
     @GetMapping("/my")
     fun queryMyClubDetails(): ResponseEntity<MyClubDetailsResponse> {
-        val response = clubService.queryMyClubDetailsService()
+        val response = clubService.queryMyClubDetails()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 

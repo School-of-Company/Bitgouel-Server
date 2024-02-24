@@ -28,7 +28,7 @@ import team.msg.domain.user.model.User
 import java.time.LocalDate
 import java.util.*
 
-class CertificationImplTest : BehaviorSpec ({
+class CertificationServiceImplTest : BehaviorSpec ({
 
     isolationMode = IsolationMode.InstancePerLeaf
     val fixture = kotlinFixture()

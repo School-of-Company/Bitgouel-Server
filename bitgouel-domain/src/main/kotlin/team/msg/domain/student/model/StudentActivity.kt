@@ -23,10 +23,6 @@ class StudentActivity(
     @Column(columnDefinition = "INT", nullable = false)
     var credit: Int,
 
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
-    var approveStatus: ApproveStatus,
-
     @Column(columnDefinition = "DATE", nullable = false)
     var activityDate: LocalDate,
 

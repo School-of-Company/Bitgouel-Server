@@ -8,7 +8,6 @@ import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.common.enums.ApproveStatus
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.user.model.User
@@ -52,10 +51,6 @@ class Lecture(
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val maxRegisteredUser: Int,
-
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
-    var approveStatus: ApproveStatus = ApproveStatus.PENDING
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()

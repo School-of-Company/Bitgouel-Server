@@ -4,17 +4,13 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
-import team.msg.domain.lecture.exception.AlreadyApprovedLectureException
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.InvalidLectureTypeException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
-import team.msg.domain.lecture.exception.UnApprovedLectureException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
@@ -29,7 +25,9 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
+import team.msg.domain.user.repository.UserRepository
 import java.time.LocalDateTime
 import java.util.*
 
@@ -38,6 +36,7 @@ class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
+    private val userRepository: UserRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
@@ -47,12 +46,11 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createLecture(request: CreateLectureRequest) {
-        val user = userUtil.queryCurrentUser()
+        val user = userRepository findById request.userId
 
         val credit = when(request.lectureType){
             LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM   -> request.credit
             LectureType.UNIVERSITY_EXPLORATION_PROGRAM      -> 0
-            else -> throw InvalidLectureTypeException("유효하지 않은 강의 구분입니다. info : [ type = ${request.lectureType} ]")
         }
 
         val lecture = Lecture(
@@ -79,15 +77,9 @@ class LectureServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse {
-        val user = userUtil.queryCurrentUser()
-
-        val approveStatus = queryAllLectureRequest.approveStatus
         val lectureType = queryAllLectureRequest.lectureType
 
-        val lectures = when(user.authority) {
-            Authority.ROLE_ADMIN -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, approveStatus, lectureType)
-            else -> lectureRepository.findAllByApproveStatusAndLectureType(pageable, ApproveStatus.APPROVED, lectureType)
-        }
+        val lectures = lectureRepository.findAllByLectureType(pageable, lectureType)
 
         val response = LecturesResponse(
             lectures.map {
@@ -133,9 +125,6 @@ class LectureServiceImpl(
         val student = studentRepository findByUser user
 
         val lecture = lectureRepository findById id
-
-        if(lecture.approveStatus == ApproveStatus.PENDING)
-            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
 
         if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
@@ -183,9 +172,6 @@ class LectureServiceImpl(
 
         val lecture = lectureRepository findById id
 
-        if(lecture.approveStatus == ApproveStatus.PENDING)
-            throw UnApprovedLectureException("아직 승인되지 않은 강의입니다. info : [ lectureId = ${lecture.id} ]")
-
         if(lecture.getLectureStatus() == LectureStatus.CLOSED)
             throw NotAvailableSignUpDateException("수강신청 취소가 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
 
@@ -209,52 +195,12 @@ class LectureServiceImpl(
         studentRepository.save(updateCreditStudent)
     }
 
-    /**
-     * 강의 개설 신청을 수락하는 비지니스 로직입니다.
-     * @param 개설을 수락할 대기 상태의 강의 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun approveLecture(id: UUID) {
-        val lecture = lectureRepository findById id
-
-        if(lecture.approveStatus == ApproveStatus.APPROVED)
-            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
-
-        val approveLecture = Lecture(
-            id = lecture.id,
-            user = lecture.user,
-            name = lecture.name,
-            startDate = lecture.startDate,
-            endDate = lecture.endDate,
-            completeDate = lecture.completeDate,
-            content = lecture.content,
-            lectureType = lecture.lectureType,
-            credit = lecture.credit,
-            instructor = lecture.instructor,
-            maxRegisteredUser = lecture.maxRegisteredUser,
-            approveStatus = ApproveStatus.APPROVED
-        )
-
-        lectureRepository.save(approveLecture)
-    }
-
-    /**
-     * 강의 개설 신청을 거절하는 비지니스 로직입니다.
-     * @param 개설을 거절할 대기 상태의 강의 id
-     */
-    @Transactional(rollbackFor = [Exception::class])
-    override fun rejectLecture(id: UUID) {
-        val lecture = lectureRepository findById id
-
-        if(lecture.approveStatus == ApproveStatus.APPROVED)
-            throw AlreadyApprovedLectureException("이미 개설 신청이 승인된 강의입니다. info : [ lectureId = $id ]")
-
-        lectureRepository.delete(lecture)
-    }
-
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
     private infix fun StudentRepository.findByUser(user: User): Student = this.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
+        ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 }

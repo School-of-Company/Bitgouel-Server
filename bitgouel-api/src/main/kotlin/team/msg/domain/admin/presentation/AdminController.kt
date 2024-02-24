@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.admin.mapper.AdminMapper
 import team.msg.domain.admin.presentation.data.web.QueryUsersWebRequest
@@ -22,15 +23,15 @@ class AdminController(
     private val adminMapper: AdminMapper
 ) {
     @GetMapping
-    fun queryUser(webRequest: QueryUsersWebRequest, pageable: Pageable): ResponseEntity<UsersResponse> {
+    fun queryUser(webRequest: QueryUsersWebRequest): ResponseEntity<UsersResponse> {
         val request = adminMapper.queryUsersWebRequestToDto(webRequest)
-        val response = adminService.queryUsers(request, pageable)
+        val response = adminService.queryUsers(request)
         return ResponseEntity.ok(response)
     }
 
-    @PatchMapping("/{user_id}")
-    fun approveUser(@PathVariable("user_id") userId: UUID): ResponseEntity<Void> {
-        adminService.approveUser(userId)
+    @PatchMapping
+    fun approveUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
+        adminService.approveUsers(userIds)
         return ResponseEntity.noContent().build()
     }
 

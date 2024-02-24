@@ -71,9 +71,7 @@ class SecurityConfig(
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
-            .mvcMatchers(HttpMethod.PATCH, "/activity/{id}/approve").hasAnyRole(TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
-            .mvcMatchers(HttpMethod.DELETE, "/activity/{id}/reject").hasAnyRole(TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.GET, "/activity").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/activity/my").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasAnyRole(TEACHER, BBOZZAK)
@@ -87,7 +85,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
 
             // lecture
-            .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT)
+            .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture").authenticated()
             .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}").hasRole(STUDENT)
@@ -103,7 +101,7 @@ class SecurityConfig(
             // certification
             .mvcMatchers(HttpMethod.POST, "/certification").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/certification").hasRole(STUDENT)
-            .mvcMatchers(HttpMethod.GET, "/certification/{student_id}").hasRole(TEACHER)
+            .mvcMatchers(HttpMethod.GET, "/certification/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.PATCH, "/certification/{id}").hasRole(STUDENT)
 
             // user
@@ -112,7 +110,7 @@ class SecurityConfig(
 
             // admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.PATCH, "/admin/{user_id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}/reject").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/admin/{user_id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
