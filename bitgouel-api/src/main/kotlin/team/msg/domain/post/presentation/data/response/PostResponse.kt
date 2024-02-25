@@ -1,5 +1,6 @@
 package team.msg.domain.post.presentation.data.response
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.data.domain.Page
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.model.Post
@@ -26,10 +27,11 @@ data class PostResponse (
                 }
             )
 
-        fun detailOf(post: Post, writer: String) =
+        fun detailOf(post: Post, writer: String, isWriter: Boolean) =
             PostDetailsResponse(
                 title = post.title,
                 writer = writer,
+                writtenBy = isWriter,
                 content = post.content,
                 feedType = post.feedType,
                 modifiedAt = post.modifiedAt,
@@ -45,6 +47,7 @@ data class PostsResponse(
 data class PostDetailsResponse(
     val title: String,
     val writer: String,
+    val writtenBy: Boolean,
     val content: String,
     val feedType: FeedType,
     val modifiedAt: LocalDateTime,
