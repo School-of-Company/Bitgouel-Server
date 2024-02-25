@@ -62,7 +62,6 @@ class UserEventHandler(
             ROLE_STUDENT -> {
                 val student = studentRepository findByUser user
 
-                studentActivityRepository.deleteAll()
                 studentActivityRepository.deleteAllByStudentId(student.id)
                 registeredLectureRepository.deleteAllByStudentId(student.id)
                 certificationRepository.deleteAllByStudentId(student.id)
