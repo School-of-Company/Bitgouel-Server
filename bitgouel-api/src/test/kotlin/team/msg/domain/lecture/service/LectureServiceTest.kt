@@ -17,11 +17,14 @@ import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -128,6 +131,80 @@ class LectureServiceTest : BehaviorSpec({
 
         When("강의 전체 리스트 조회 시") {
             val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+    }
+
+    // queryLectureDetails 테스트 코드
+    Given("Lecture id가 주어질 때") {
+
+        val userId = UUID.randomUUID()
+        val studentAuthority = Authority.ROLE_STUDENT
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::authority) { studentAuthority }
+        }
+
+        val studentId = UUID.randomUUID()
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { user }
+        }
+
+        val lectureId = UUID.randomUUID()
+        val name = "name"
+        val content = "content"
+        val instructor = "instructor"
+        val headCount = 0
+        val maxRegisteredUser = 5
+        val credit = 2
+        val startDate = LocalDateTime.MIN
+        val endDate = LocalDateTime.MAX
+        val completeDate = LocalDateTime.MAX
+        val lectureStatus = LectureStatus.OPENED
+        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+        val isRegistered = false
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { endDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+            property(Lecture::credit) { credit }
+        }
+
+        val response = fixture<LectureDetailsResponse> {
+            property(LectureDetailsResponse::name) { name }
+            property(LectureDetailsResponse::content) { content }
+            property(LectureDetailsResponse::lectureType) { lectureType }
+            property(LectureDetailsResponse::headCount) { headCount }
+            property(LectureDetailsResponse::maxRegisteredUser) { maxRegisteredUser }
+            property(LectureDetailsResponse::startDate) { startDate }
+            property(LectureDetailsResponse::endDate) { endDate }
+            property(LectureDetailsResponse::completeDate) { completeDate }
+            property(LectureDetailsResponse::lecturer) { instructor }
+            property(LectureDetailsResponse::lectureStatus) { lectureStatus }
+            property(LectureDetailsResponse::isRegistered) { isRegistered }
+            property(LectureDetailsResponse::createAt) { lecture.createdAt }
+            property(LectureDetailsResponse::credit) { credit }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { studentRepository.findByUser(any()) } returns student
+        every { registeredLectureRepository.existsOne(any(), any()) } returns isRegistered
+
+        When("강의 상세 정보를 조회하면") {
+            val result = lectureServiceImpl.queryLectureDetails(lectureId)
 
             Then("result와 response가 같아야 한다") {
                 result shouldBe response
