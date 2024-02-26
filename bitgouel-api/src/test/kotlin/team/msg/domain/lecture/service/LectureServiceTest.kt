@@ -14,7 +14,11 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
+import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
@@ -22,6 +26,7 @@ import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
@@ -211,4 +216,178 @@ class LectureServiceTest : BehaviorSpec({
             }
         }
     }
+
+    //signUpLecture 테스트 코드
+    Given("Lecture id가 주어질 때") {
+
+        val userId = UUID.randomUUID()
+        val studentAuthority = Authority.ROLE_STUDENT
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::authority) { studentAuthority }
+        }
+
+        val studentId = UUID.randomUUID()
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { user }
+        }
+
+        val lectureId = UUID.randomUUID()
+        val name = "name"
+        val content = "content"
+        val instructor = "instructor"
+        val maxRegisteredUser = 5
+        val credit = 2
+        val headCount = 0
+        val startDate = LocalDateTime.MIN
+        val endDate = LocalDateTime.MAX
+        val completeDate = LocalDateTime.MAX
+        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { endDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+            property(Lecture::credit) { credit }
+        }
+
+        val registeredLecture = fixture<RegisteredLecture>()
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { studentRepository.findByUser(any()) } returns student
+        every { studentRepository.save(any()) } returns student
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { registeredLectureRepository.existsOne(any(), any()) } returns false
+        every { registeredLectureRepository.save(any()) } returns registeredLecture
+
+
+        When("학생이 강의 수강 신청을 하면") {
+            lectureServiceImpl.signUpLecture(lectureId)
+
+            Then("RegisteredLecture 가 저장되어야 한다.") {
+                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+            }
+        }
+
+        When("이미 수강 신청한 강의에 수강 신청을 하면") {
+            every { registeredLectureRepository.existsOne(any(), any()) } returns true
+
+            Then("AlreadySignedUpLectureException이 발생해야 한다.") {
+                shouldThrow<AlreadySignedUpLectureException> {
+                    lectureServiceImpl.signUpLecture(lectureId)
+                }
+            }
+        }
+
+        When("수강 인원이 가득 찬 강의에 수강 신청을 하면") {
+            every { registeredLectureRepository.countByLecture(any()) } returns maxRegisteredUser
+
+            Then("OverMaxRegisteredUserException이 발생해야 한다.") {
+                shouldThrow<OverMaxRegisteredUserException> {
+                    lectureServiceImpl.signUpLecture(lectureId)
+                }
+            }
+        }
+
+        When("현재 유저가 학생이 아니라면") {
+            every { studentRepository.findByUser(user) } returns null
+
+            Then("StudentNotFoundException이 발생해야 한다.") {
+                shouldThrow<StudentNotFoundException> {
+                    lectureServiceImpl.signUpLecture(lectureId)
+                }
+            }
+        }
+    }
+
+    //cancelSignUpLecture 테스트 코드
+    Given("Lecture id가 주어질 때") {
+
+        val userId = UUID.randomUUID()
+        val studentAuthority = Authority.ROLE_STUDENT
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::authority) { studentAuthority }
+        }
+
+        val studentId = UUID.randomUUID()
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { user }
+        }
+
+        val lectureId = UUID.randomUUID()
+        val name = "name"
+        val content = "content"
+        val instructor = "instructor"
+        val maxRegisteredUser = 5
+        val credit = 2
+        val headCount = 1
+        val startDate = LocalDateTime.MIN
+        val endDate = LocalDateTime.MAX
+        val completeDate = LocalDateTime.MAX
+        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { endDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+            property(Lecture::credit) { credit }
+        }
+
+        val registeredLecture = fixture<RegisteredLecture>()
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { studentRepository.findByUser(any()) } returns student
+        every { studentRepository.save(any()) } returns student
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { registeredLectureRepository.findByStudentAndLecture(any(), any()) } returns registeredLecture
+        every { registeredLectureRepository.existsOne(any(), any()) } returns true
+        every { registeredLectureRepository.delete(any()) } returns Unit
+
+
+        When("학생이 강의 수강 신청을 취소하면") {
+            lectureServiceImpl.cancelSignUpLecture(lectureId)
+
+            Then("RegisteredLecture 가 삭제되어야 한다.") {
+                verify(exactly = 1) { registeredLectureRepository.delete(any()) }
+            }
+        }
+
+        When("수강 신청을 하지 않았는데 수강 신청을 취소하면") {
+            every { registeredLectureRepository.findByStudentAndLecture(any(), any()) } returns null
+
+            Then("UnSignedUpLectureException이 발생해야 한다.") {
+                shouldThrow<UnSignedUpLectureException> {
+                    lectureServiceImpl.cancelSignUpLecture(lectureId)
+                }
+            }
+        }
+
+        When("현재 유저가 학생이 아니라면") {
+            every { studentRepository.findByUser(user) } returns null
+
+            Then("StudentNotFoundException이 발생해야 한다.") {
+                shouldThrow<StudentNotFoundException> {
+                    lectureServiceImpl.cancelSignUpLecture(lectureId)
+                }
+            }
+        }
+    }
 })
+
