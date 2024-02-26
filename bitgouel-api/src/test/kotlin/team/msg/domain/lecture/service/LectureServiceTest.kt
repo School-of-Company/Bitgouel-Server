@@ -4,19 +4,29 @@ import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
+import team.msg.domain.lecture.enums.LectureStatus
+import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.response.LectureResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
+import java.time.LocalDateTime
+import java.util.*
 
 class LectureServiceTest : BehaviorSpec({
 
@@ -28,6 +38,7 @@ class LectureServiceTest : BehaviorSpec({
     val studentRepository = mockk<StudentRepository>()
     val userRepository = mockk<UserRepository>()
     val userUtil = mockk<UserUtil>()
+    val pageable = mockk<Pageable>()
     val lectureServiceImpl = LectureServiceImpl(
         lectureRepository,
         registeredLectureRepository,
@@ -63,6 +74,64 @@ class LectureServiceTest : BehaviorSpec({
                 }
             }
 
+        }
+    }
+
+    //queryAllLectures 테스트 코드
+    Given("queryAllLectureRequest와 Pageable가 주어질 때") {
+
+        val queryAllLectureRequest = fixture<QueryAllLectureRequest>()
+
+        val lectureId = UUID.randomUUID()
+        val name = "name"
+        val content = "content"
+        val instructor = "instructor"
+        val headCount = 0
+        val maxRegisteredUser = 5
+        val startDate = LocalDateTime.MIN
+        val endDate = LocalDateTime.MAX
+        val completeDate = LocalDateTime.MAX
+        val lectureStatus = LectureStatus.OPENED
+        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { endDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+        }
+
+        val lectureResponse = fixture<LectureResponse> {
+            property(LectureResponse::id) { lectureId }
+            property(LectureResponse::name) { name }
+            property(LectureResponse::content) { content }
+            property(LectureResponse::lectureType) { lectureType }
+            property(LectureResponse::headCount) { headCount }
+            property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
+            property(LectureResponse::startDate) { startDate }
+            property(LectureResponse::endDate) { endDate }
+            property(LectureResponse::completeDate) { completeDate }
+            property(LectureResponse::lecturer) { instructor }
+            property(LectureResponse::lectureStatus) { lectureStatus }
+        }
+        val response = fixture<LecturesResponse> {
+            property(LecturesResponse::lectures) { PageImpl(listOf(lectureResponse)) }
+        }
+
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(lecture))
+
+        When("강의 전체 리스트 조회 시") {
+            val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
         }
     }
 })
