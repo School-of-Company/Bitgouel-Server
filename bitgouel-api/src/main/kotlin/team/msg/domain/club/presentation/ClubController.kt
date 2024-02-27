@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
 import team.msg.domain.club.presentation.data.response.ClubsResponse
-import team.msg.domain.club.presentation.data.response.MyClubDetailsResponse
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
@@ -29,7 +28,7 @@ class ClubController(
     }
 
     @GetMapping("/my")
-    fun queryMyClubDetails(): ResponseEntity<MyClubDetailsResponse> {
+    fun queryMyClubDetails(): ResponseEntity<ClubDetailsResponse> {
         val response = clubService.queryMyClubDetails()
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }

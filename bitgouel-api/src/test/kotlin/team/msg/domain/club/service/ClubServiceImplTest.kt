@@ -16,7 +16,6 @@ import team.msg.domain.club.model.Club
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.presentation.data.response.ClubsResponse
-import team.msg.domain.club.presentation.data.response.MyClubDetailsResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
@@ -151,6 +150,7 @@ class ClubServiceImplTest : BehaviorSpec({
             property(TeacherResponse::name) { teacher.user!!.name }
         }
         val response = fixture<ClubDetailsResponse> {
+            property(ClubDetailsResponse::clubId) { clubId }
             property(ClubDetailsResponse::clubName) { clubName }
             property(ClubDetailsResponse::highSchoolName) { schoolName }
             property(ClubDetailsResponse::headCount) { headCount }
@@ -225,13 +225,13 @@ class ClubServiceImplTest : BehaviorSpec({
             property(TeacherResponse::id) { teacher.id }
             property(TeacherResponse::name) { teacher.user!!.name }
         }
-        val response = fixture<MyClubDetailsResponse> {
-            property(MyClubDetailsResponse::clubId) { clubId }
-            property(MyClubDetailsResponse::clubName) { clubName }
-            property(MyClubDetailsResponse::highSchoolName) { schoolName }
-            property(MyClubDetailsResponse::headCount) { headCount }
-            property(MyClubDetailsResponse::students) { listOf(studentResponse) }
-            property(MyClubDetailsResponse::teacher) { teacherResponse }
+        val response = fixture<ClubDetailsResponse> {
+            property(ClubDetailsResponse::clubId) { clubId }
+            property(ClubDetailsResponse::clubName) { clubName }
+            property(ClubDetailsResponse::highSchoolName) { schoolName }
+            property(ClubDetailsResponse::headCount) { headCount }
+            property(ClubDetailsResponse::students) { listOf(studentResponse) }
+            property(ClubDetailsResponse::teacher) { teacherResponse }
         }
 
         every { userUtil.queryCurrentUser() } returns studentUser
@@ -246,7 +246,7 @@ class ClubServiceImplTest : BehaviorSpec({
             Then("result와 response가 같아야 한다.") {
                 result.students[0].id shouldBe response.students[0].id
                 result.students[0].name shouldBe response.students[0].name
-                result.shouldBeEqualToIgnoringFields(response, MyClubDetailsResponse::students)
+                result.shouldBeEqualToIgnoringFields(response, ClubDetailsResponse::students)
             }
         }
     }
