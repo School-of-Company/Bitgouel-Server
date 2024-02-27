@@ -333,6 +333,10 @@ class LectureServiceImplTest : BehaviorSpec({
             Then("RegisteredLecture 가 저장되어야 한다.") {
                 verify(exactly = 1) { registeredLectureRepository.save(any()) }
             }
+
+            Then("Student가 저장되어야 한다.") {
+                verify(exactly = 1) { studentRepository.save(any()) }
+            }
         }
 
         When("현재 유저가 학생이 아니라면") {
@@ -421,6 +425,10 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("RegisteredLecture 가 삭제되어야 한다.") {
                 verify(exactly = 1) { registeredLectureRepository.delete(any()) }
+            }
+
+            Then("Student가 저장되어야 한다.") {
+                verify(exactly = 1) { studentRepository.save(any()) }
             }
         }
 
