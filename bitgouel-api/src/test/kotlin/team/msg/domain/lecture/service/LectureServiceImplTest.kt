@@ -62,8 +62,8 @@ class LectureServiceImplTest : BehaviorSpec({
         val request = fixture<CreateLectureRequest>()
         val lecture = fixture<Lecture>()
 
-        every { lectureRepository.save(any()) } returns lecture
         every { userRepository.findByIdOrNull(any()) } returns user
+        every { lectureRepository.save(any()) } returns lecture
 
         When("Lecture 등록 요청을 하면") {
             lectureServiceImpl.createLecture(request)
@@ -131,8 +131,8 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LecturesResponse::lectures) { PageImpl(listOf(lectureResponse)) }
         }
 
-        every { registeredLectureRepository.countByLecture(any()) } returns headCount
         every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(lecture))
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
 
         When("강의 전체 리스트 조회 시") {
             val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
@@ -261,12 +261,12 @@ class LectureServiceImplTest : BehaviorSpec({
         val registeredLecture = fixture<RegisteredLecture>()
 
         every { userUtil.queryCurrentUser() } returns user
-        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { studentRepository.findByUser(any()) } returns student
-        every { studentRepository.save(any()) } returns student
-        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { registeredLectureRepository.existsOne(any(), any()) } returns false
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
         every { registeredLectureRepository.save(any()) } returns registeredLecture
+        every { studentRepository.save(any()) } returns student
 
 
         When("학생이 강의 수강 신청을 하면") {
@@ -352,13 +352,11 @@ class LectureServiceImplTest : BehaviorSpec({
         val registeredLecture = fixture<RegisteredLecture>()
 
         every { userUtil.queryCurrentUser() } returns user
-        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { studentRepository.findByUser(any()) } returns student
-        every { studentRepository.save(any()) } returns student
-        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { registeredLectureRepository.findByStudentAndLecture(any(), any()) } returns registeredLecture
-        every { registeredLectureRepository.existsOne(any(), any()) } returns true
         every { registeredLectureRepository.delete(any()) } returns Unit
+        every { studentRepository.save(any()) } returns student
 
 
         When("학생이 강의 수강 신청을 취소하면") {
