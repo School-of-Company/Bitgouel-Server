@@ -273,6 +273,16 @@ class LectureServiceImplTest : BehaviorSpec({
                 result shouldBe response
             }
         }
+
+        When("조회한 학생이 신청한 강의라면") {
+            every { registeredLectureRepository.existsOne(any(), any()) } returns true
+
+            val result = lectureServiceImpl.queryLectureDetails(lectureId)
+
+            Then("isResistered가 true여야 한다."){
+                result.isRegistered shouldBe true
+            }
+        }
     }
 
     //signUpLecture 테스트 코드
