@@ -21,17 +21,6 @@ data class ClubResponse(
         }
 
         fun detailOf(club: Club, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
-            clubName = club.name,
-            highSchoolName = club.school.highSchool.schoolName,
-            headCount = students.size,
-            students = StudentResponse.listOf(students),
-            teacher = TeacherResponse(
-                id = teacher?.id,
-                name = teacher?.user?.name
-            )
-        )
-
-        fun myDetailOf(club: Club, students: List<Student>, teacher: Teacher?) = MyClubDetailsResponse(
             clubId = club.id,
             clubName = club.name,
             highSchoolName = club.school.highSchool.schoolName,
@@ -57,14 +46,6 @@ data class ClubsResponse(
 )
 
 data class ClubDetailsResponse(
-    val clubName: String,
-    val highSchoolName: String,
-    val headCount: Int,
-    val students: List<StudentResponse>,
-    val teacher: TeacherResponse
-)
-
-data class MyClubDetailsResponse(
     val clubId: Long,
     val clubName: String,
     val highSchoolName: String,
