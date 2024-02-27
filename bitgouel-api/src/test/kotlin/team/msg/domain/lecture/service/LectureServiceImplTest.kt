@@ -90,7 +90,6 @@ class LectureServiceImplTest : BehaviorSpec({
 
         val queryAllLectureRequest = fixture<QueryAllLectureRequest>()
 
-        val lectureId = UUID.randomUUID()
         val name = "name"
         val content = "content"
         val instructor = "instructor"
@@ -100,13 +99,29 @@ class LectureServiceImplTest : BehaviorSpec({
         val endDate = LocalDateTime.MAX
         val completeDate = LocalDateTime.MAX
         val lectureStatus = LectureStatus.OPENED
-        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
 
-        val lecture = fixture<Lecture> {
-            property(Lecture::id) { lectureId }
+        val creditLectureId = UUID.randomUUID()
+        val creditLectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+
+        val universityLectureId = UUID.randomUUID()
+        val universityLectureType = LectureType.UNIVERSITY_EXPLORATION_PROGRAM
+
+        val creditLecture = fixture<Lecture> {
+            property(Lecture::id) { creditLectureId }
             property(Lecture::name) { name }
             property(Lecture::content) { content }
-            property(Lecture::lectureType) { lectureType }
+            property(Lecture::lectureType) { creditLectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { endDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+        }
+        val universityLecture = fixture<Lecture> {
+            property(Lecture::id) { universityLectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { universityLectureType }
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
@@ -114,11 +129,11 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::instructor) { instructor }
         }
 
-        val lectureResponse = fixture<LectureResponse> {
-            property(LectureResponse::id) { lectureId }
+        val creditLectureResponse = fixture<LectureResponse> {
+            property(LectureResponse::id) { creditLectureId }
             property(LectureResponse::name) { name }
             property(LectureResponse::content) { content }
-            property(LectureResponse::lectureType) { lectureType }
+            property(LectureResponse::lectureType) { creditLectureType }
             property(LectureResponse::headCount) { headCount }
             property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
             property(LectureResponse::startDate) { startDate }
@@ -127,14 +142,57 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::lecturer) { instructor }
             property(LectureResponse::lectureStatus) { lectureStatus }
         }
-        val response = fixture<LecturesResponse> {
-            property(LecturesResponse::lectures) { PageImpl(listOf(lectureResponse)) }
+        val universityLectureResponse = fixture<LectureResponse> {
+            property(LectureResponse::id) { universityLectureId }
+            property(LectureResponse::name) { name }
+            property(LectureResponse::content) { content }
+            property(LectureResponse::lectureType) { universityLectureType }
+            property(LectureResponse::headCount) { headCount }
+            property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
+            property(LectureResponse::startDate) { startDate }
+            property(LectureResponse::endDate) { endDate }
+            property(LectureResponse::completeDate) { completeDate }
+            property(LectureResponse::lecturer) { instructor }
+            property(LectureResponse::lectureStatus) { lectureStatus }
         }
 
-        every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(lecture))
         every { registeredLectureRepository.countByLecture(any()) } returns headCount
 
-        When("강의 전체 리스트 조회 시") {
+        When("주어진 LectureType이 null이라면") {
+            every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(creditLecture, universityLecture))
+
+            val response = fixture<LecturesResponse> {
+                property(LecturesResponse::lectures) { PageImpl(listOf(creditLectureResponse, universityLectureResponse)) }
+            }
+
+            val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("주어진 LectureType이 상호학점인정과정이라면") {
+            every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(creditLecture))
+
+            val response = fixture<LecturesResponse> {
+                property(LecturesResponse::lectures) { PageImpl(listOf(creditLectureResponse)) }
+            }
+
+            val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
+
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("주어진 LectureType이 대학탐방프로그램이라면") {
+            every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(universityLecture))
+
+            val response = fixture<LecturesResponse> {
+                property(LecturesResponse::lectures) { PageImpl(listOf(universityLectureResponse)) }
+            }
+
             val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
 
             Then("result와 response가 같아야 한다") {
@@ -330,7 +388,6 @@ class LectureServiceImplTest : BehaviorSpec({
         val instructor = "instructor"
         val maxRegisteredUser = 5
         val credit = 2
-        val headCount = 1
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
         val completeDate = LocalDateTime.MAX
