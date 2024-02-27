@@ -277,6 +277,16 @@ class LectureServiceTest : BehaviorSpec({
             }
         }
 
+        When("현재 유저가 학생이 아니라면") {
+            every { studentRepository.findByUser(user) } returns null
+
+            Then("StudentNotFoundException이 발생해야 한다.") {
+                shouldThrow<StudentNotFoundException> {
+                    lectureServiceImpl.signUpLecture(lectureId)
+                }
+            }
+        }
+
         When("이미 수강 신청한 강의에 수강 신청을 하면") {
             every { registeredLectureRepository.existsOne(any(), any()) } returns true
 
@@ -292,16 +302,6 @@ class LectureServiceTest : BehaviorSpec({
 
             Then("OverMaxRegisteredUserException이 발생해야 한다.") {
                 shouldThrow<OverMaxRegisteredUserException> {
-                    lectureServiceImpl.signUpLecture(lectureId)
-                }
-            }
-        }
-
-        When("현재 유저가 학생이 아니라면") {
-            every { studentRepository.findByUser(user) } returns null
-
-            Then("StudentNotFoundException이 발생해야 한다.") {
-                shouldThrow<StudentNotFoundException> {
                     lectureServiceImpl.signUpLecture(lectureId)
                 }
             }
@@ -369,21 +369,21 @@ class LectureServiceTest : BehaviorSpec({
             }
         }
 
-        When("수강 신청을 하지 않았는데 수강 신청을 취소하면") {
-            every { registeredLectureRepository.findByStudentAndLecture(any(), any()) } returns null
-
-            Then("UnSignedUpLectureException이 발생해야 한다.") {
-                shouldThrow<UnSignedUpLectureException> {
-                    lectureServiceImpl.cancelSignUpLecture(lectureId)
-                }
-            }
-        }
-
         When("현재 유저가 학생이 아니라면") {
             every { studentRepository.findByUser(user) } returns null
 
             Then("StudentNotFoundException이 발생해야 한다.") {
                 shouldThrow<StudentNotFoundException> {
+                    lectureServiceImpl.cancelSignUpLecture(lectureId)
+                }
+            }
+        }
+
+        When("수강 신청을 하지 않았는데 수강 신청을 취소하면") {
+            every { registeredLectureRepository.findByStudentAndLecture(any(), any()) } returns null
+
+            Then("UnSignedUpLectureException이 발생해야 한다.") {
+                shouldThrow<UnSignedUpLectureException> {
                     lectureServiceImpl.cancelSignUpLecture(lectureId)
                 }
             }
