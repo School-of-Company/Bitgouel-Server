@@ -36,7 +36,7 @@ import team.msg.domain.user.repository.UserRepository
 import java.time.LocalDateTime
 import java.util.*
 
-class LectureServiceTest : BehaviorSpec({
+class LectureServiceImplTest : BehaviorSpec({
 
     isolationMode = IsolationMode.InstancePerLeaf
     val fixture = kotlinFixture()
