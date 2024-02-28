@@ -1,6 +1,7 @@
 package team.msg.domain.admin.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
+import io.kotest.assertions.any
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -82,5 +83,8 @@ class AdminServiceImplTest : BehaviorSpec({
         val approvedUser = fixture<User> {
             property(User::approveStatus) { ApproveStatus.APPROVED }
         }
+
+        every { userRepository.findByIdIn(listOf(userIds)) } returns listOf(user)
+        every { userRepository.saveAll(listOf(user)) } returns listOf(user)
     }
 })
