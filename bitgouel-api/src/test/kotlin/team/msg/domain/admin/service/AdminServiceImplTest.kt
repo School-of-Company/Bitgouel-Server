@@ -1,16 +1,18 @@
 package team.msg.domain.admin.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
-import io.kotest.assertions.any
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.AdminUserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
@@ -73,10 +75,10 @@ class AdminServiceImplTest : BehaviorSpec({
 
     // approveUsers 테스트 코드
     Given("userIds가 주어졌을때") {
-        val userIds = UUID.randomUUID()
+        val userId = UUID.randomUUID()
 
         val user = fixture<User> {
-            property(User::id) { userIds }
+            property(User::id) { userId }
             property(User::approveStatus) { ApproveStatus.PENDING }
         }
 
@@ -84,7 +86,25 @@ class AdminServiceImplTest : BehaviorSpec({
             property(User::approveStatus) { ApproveStatus.APPROVED }
         }
 
-        every { userRepository.findByIdIn(listOf(userIds)) } returns listOf(user)
+        every { userRepository.findByIdIn(listOf(userId)) } returns listOf(user)
         every { userRepository.saveAll(listOf(user)) } returns listOf(user)
+
+        When("User 승인 시") {
+            adminServiceImpl.approveUsers(listOf(userId))
+
+            Then("승인된 User 가 저장이 되어야 한다") {
+                verify(exactly = 1) { userRepository.saveAll(listOf(user)) }
+            }
+        }
+
+        When("이미 승인된 User 라면") {
+            every { userRepository.findByIdIn(listOf(userId)) } returns listOf(approvedUser)
+
+            Then("UserAlreadyApprovedException 이 발생해야 한다") {
+                shouldThrow<UserAlreadyApprovedException> {
+                    adminServiceImpl.approveUsers(listOf(userId))
+                }
+            }
+        }
     }
 })
