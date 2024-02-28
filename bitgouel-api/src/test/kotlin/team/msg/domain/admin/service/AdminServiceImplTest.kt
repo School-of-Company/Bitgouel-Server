@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.user.enums.Authority
@@ -105,6 +106,20 @@ class AdminServiceImplTest : BehaviorSpec({
                     adminServiceImpl.approveUsers(listOf(userId))
                 }
             }
+        }
+    }
+
+    // rejectUser 테스트 코드
+    Given("userId 가 주어졌을 때") {
+        val userId = UUID.randomUUID()
+
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::approveStatus) { ApproveStatus.PENDING }
+        }
+
+        val approvedUser = fixture<User> {
+            property(User::approveStatus) { ApproveStatus.APPROVED }
         }
     }
 })
