@@ -69,4 +69,18 @@ class AdminServiceImplTest : BehaviorSpec({
             }
         }
     }
+
+    // approveUsers 테스트 코드
+    Given("userIds가 주어졌을때") {
+        val userIds = UUID.randomUUID()
+
+        val user = fixture<User> {
+            property(User::id) { userIds }
+            property(User::approveStatus) { ApproveStatus.PENDING }
+        }
+
+        val approvedUser = fixture<User> {
+            property(User::approveStatus) { ApproveStatus.APPROVED }
+        }
+    }
 })
