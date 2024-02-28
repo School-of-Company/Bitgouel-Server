@@ -5,13 +5,13 @@ import java.util.UUID
 
 data class WithdrawStudentResponse(
     val withdrawId: Long,
-    val studentId: UUID,
+    val userId: UUID,
     val studentName: String
 ) {
     companion object {
         fun of(withdraw: WithdrawStudent) = WithdrawStudentResponse(
             withdrawId = withdraw.id,
-            studentId = withdraw.student.id,
+            userId = withdraw.student.user!!.id,
             studentName = withdraw.student.user!!.name
         )
 
