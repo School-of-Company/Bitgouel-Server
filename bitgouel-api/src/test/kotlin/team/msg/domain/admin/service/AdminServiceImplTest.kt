@@ -60,5 +60,13 @@ class AdminServiceImplTest : BehaviorSpec({
         }
 
         every { userRepository.query(keyword, authority, approveStatus) } returns listOf(user)
+
+        When("User 리스트 요청 시") {
+            val result = adminServiceImpl.queryUsers(request)
+
+            Then("result가 response와 같아야 한다") {
+                result shouldBe response
+            }
+        }
     }
 })
