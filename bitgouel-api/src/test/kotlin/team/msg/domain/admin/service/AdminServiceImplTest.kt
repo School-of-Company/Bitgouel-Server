@@ -54,5 +54,11 @@ class AdminServiceImplTest : BehaviorSpec({
             property(AdminUserResponse::authority) { authority }
             property(AdminUserResponse::approveStatus) { approveStatus }
         }
+
+        val response = fixture<UsersResponse> {
+            property(UsersResponse::users) { listOf(adminUserResponse) }
+        }
+
+        every { userRepository.query(keyword, authority, approveStatus) } returns listOf(user)
     }
 })
