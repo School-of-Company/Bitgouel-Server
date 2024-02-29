@@ -19,6 +19,7 @@ import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.AdminUserResponse
+import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
 import java.util.*
@@ -149,6 +150,28 @@ class AdminServiceImplTest : BehaviorSpec({
                     adminServiceImpl.rejectUser(userId)
                 }
             }
+        }
+    }
+
+    // queryUserDetails 테스트 코드
+    Given("userId가 주어졌을 때") {
+        val userId = UUID.randomUUID()
+        val name = "name"
+        val authority = Authority.ROLE_STUDENT
+        val approveStatus = ApproveStatus.APPROVED
+
+        val user = fixture<User> {
+            property(User::id) { userId }
+            property(User::name) { name }
+            property(User::authority) { authority }
+            property(User::approveStatus) { approveStatus }
+        }
+
+        val response = fixture<UserDetailsResponse> {
+            property(UserDetailsResponse::id) { userId }
+            property(UserDetailsResponse::name) { name }
+            property(UserDetailsResponse::authority) { authority }
+            property(UserDetailsResponse::approveStatus) { approveStatus }
         }
     }
 })
