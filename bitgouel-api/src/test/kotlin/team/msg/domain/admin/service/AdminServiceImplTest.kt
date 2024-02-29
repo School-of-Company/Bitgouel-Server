@@ -192,5 +192,9 @@ class AdminServiceImplTest : BehaviorSpec({
         val user = fixture<User> {
             property(User::id) { userId }
         }
+
+        every { userRepository.findByIdOrNull(userId) } returns user
+        every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
+        every { userRepository.delete(user) } returns Unit
     }
 })
