@@ -175,5 +175,13 @@ class AdminServiceImplTest : BehaviorSpec({
         }
 
         every { userRepository.findByIdOrNull(userId) } returns user
+
+        When("User 상세 정보 요청 시") {
+            val result = adminServiceImpl.queryUserDetails(userId)
+
+            Then("result가 response와 같아야 한다") {
+                result shouldBe response
+            }
+        }
     }
 })
