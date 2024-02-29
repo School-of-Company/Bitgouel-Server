@@ -184,4 +184,13 @@ class AdminServiceImplTest : BehaviorSpec({
             }
         }
     }
+
+    // forceWithdraw 테스트 코드
+    Given("userId가 주어지면") {
+        val userId = UUID.randomUUID()
+
+        val user = fixture<User> {
+            property(User::id) { userId }
+        }
+    }
 })
