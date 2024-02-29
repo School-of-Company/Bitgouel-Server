@@ -447,6 +447,22 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::credit) { credit }
         }
 
+        val missDateLectureId = UUID.randomUUID()
+        val missEndDate = LocalDateTime.MIN
+
+        val missDateLecture = fixture<Lecture> {
+            property(Lecture::id) { missDateLectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { missEndDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+            property(Lecture::credit) { credit }
+        }
+
         val registeredLecture = fixture<RegisteredLecture>()
 
         every { userUtil.queryCurrentUser() } returns user
@@ -475,6 +491,16 @@ class LectureServiceImplTest : BehaviorSpec({
             Then("StudentNotFoundException이 발생해야 한다.") {
                 shouldThrow<StudentNotFoundException> {
                     lectureServiceImpl.cancelSignUpLecture(lectureId)
+                }
+            }
+        }
+
+        When("수강 신청 시간이 아닌 강의에 수강 신청을 하면") {
+            every { lectureRepository.findByIdOrNull(missDateLectureId) } returns missDateLecture
+
+            Then("NotAvailableSignUpDateException이 발생해야 한다.") {
+                shouldThrow<NotAvailableSignUpDateException> {
+                    lectureServiceImpl.signUpLecture(missDateLectureId)
                 }
             }
         }
