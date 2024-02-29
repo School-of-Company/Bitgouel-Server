@@ -173,5 +173,7 @@ class AdminServiceImplTest : BehaviorSpec({
             property(UserDetailsResponse::authority) { authority }
             property(UserDetailsResponse::approveStatus) { approveStatus }
         }
+
+        every { userRepository.findByIdOrNull(userId) } returns user
     }
 })
