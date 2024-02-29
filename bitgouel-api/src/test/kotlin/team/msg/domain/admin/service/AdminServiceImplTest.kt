@@ -196,5 +196,17 @@ class AdminServiceImplTest : BehaviorSpec({
         every { userRepository.findByIdOrNull(userId) } returns user
         every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
         every { userRepository.delete(user) } returns Unit
+
+        When("User 강제 탈퇴 시") {
+            adminServiceImpl.forceWithdraw(userId)
+
+            Then("withdrawUserEvent 를 발행해야 한다") {
+                verify(exactly = 1) { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) }
+            }
+
+            Then("User가 삭제가 되어야 한다") {
+                verify(exactly = 1) { userRepository.delete(user) }
+            }
+        }
     }
 })
