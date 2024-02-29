@@ -5,7 +5,9 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
@@ -13,6 +15,7 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.AdminUserResponse
@@ -121,5 +124,9 @@ class AdminServiceImplTest : BehaviorSpec({
         val approvedUser = fixture<User> {
             property(User::approveStatus) { ApproveStatus.APPROVED }
         }
+
+        every { userRepository.findByIdOrNull(userId) } returns user
+        every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
+        every { userRepository.delete(any()) } returns Unit
     }
 })
