@@ -15,6 +15,7 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
@@ -286,7 +287,7 @@ class LectureServiceImplTest : BehaviorSpec({
     }
 
     //signUpLecture 테스트 코드
-    Given("Lecture id가 주어질 때") {
+    Given("Lecture id가 주어질 때ㅇ") {
 
         val userId = UUID.randomUUID()
         val studentAuthority = Authority.ROLE_STUDENT
@@ -326,6 +327,22 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::credit) { credit }
         }
 
+        val missDateLectureId = UUID.randomUUID()
+        val missEndDate = LocalDateTime.MIN
+
+        val missDateLecture = fixture<Lecture> {
+            property(Lecture::id) { missDateLectureId }
+            property(Lecture::name) { name }
+            property(Lecture::content) { content }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
+            property(Lecture::startDate) { startDate }
+            property(Lecture::endDate) { missEndDate }
+            property(Lecture::completeDate) { completeDate }
+            property(Lecture::instructor) { instructor }
+            property(Lecture::credit) { credit }
+        }
+
         val registeredLecture = fixture<RegisteredLecture>()
 
         every { userUtil.queryCurrentUser() } returns user
@@ -355,6 +372,16 @@ class LectureServiceImplTest : BehaviorSpec({
             Then("StudentNotFoundException이 발생해야 한다.") {
                 shouldThrow<StudentNotFoundException> {
                     lectureServiceImpl.signUpLecture(lectureId)
+                }
+            }
+        }
+
+        When("수강 신청 시간이 아닌 강의에 수강 신청을 하면") {
+            every { lectureRepository.findByIdOrNull(missDateLectureId) } returns missDateLecture
+
+            Then("NotAvailableSignUpDateException이 발생해야 한다.") {
+                shouldThrow<NotAvailableSignUpDateException> {
+                    lectureServiceImpl.signUpLecture(missDateLectureId)
                 }
             }
         }
