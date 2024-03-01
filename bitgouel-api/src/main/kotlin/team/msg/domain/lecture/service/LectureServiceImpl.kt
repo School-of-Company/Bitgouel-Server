@@ -5,6 +5,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
+import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
@@ -16,6 +17,7 @@ import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
@@ -37,6 +39,7 @@ class LectureServiceImpl(
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
     private val userRepository: UserRepository,
+    private val companyInstructorRepository: CompanyInstructorRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
@@ -193,6 +196,25 @@ class LectureServiceImpl(
         )
 
         studentRepository.save(updateCreditStudent)
+    }
+
+    /**
+     * 강사를 키워드로 조회하는 비지니스 로직입니다.
+     *
+     * @param 조회할 강사 이름과 소속 keyword
+     * @return 조회한 강사 유저와 소속 정보를 담은 list dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryInstructors(keyword: String): InstructorsResponse {
+        val instructors = userRepository.queryInstructorsAndOrganization(keyword)
+
+        val response = InstructorsResponse(
+            instructors.map {
+                LectureResponse.instructorOf(it.first, it.second)
+            }
+        )
+
+        return response
     }
 
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)

@@ -85,13 +85,12 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
 
             // lecture
-            .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/lecture").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture").authenticated()
             .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/{id}").authenticated()
-            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/approve").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}/reject").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/lecture/instructor").hasRole(ADMIN)
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)

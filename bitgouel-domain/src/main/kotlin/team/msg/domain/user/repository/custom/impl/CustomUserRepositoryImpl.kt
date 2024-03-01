@@ -2,8 +2,10 @@ package team.msg.domain.user.repository.custom.impl
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
-import org.springframework.data.domain.Page
 import team.msg.common.enums.ApproveStatus
+import team.msg.domain.company.model.QCompanyInstructor.companyInstructor
+import team.msg.domain.government.model.QGovernment.government
+import team.msg.domain.professor.model.QProfessor.professor
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.QUser.user
 import team.msg.domain.user.model.User
@@ -46,6 +48,44 @@ class CustomUserRepositoryImpl(
             .where(user.id.eq(id))
             .from(user)
             .fetchOne()
+
+    /**
+     * 강사를 조회하는 쿼리입니다.
+     * keyword를 파라미터로 받아 조건을 지정합니다.
+     * 유저의 이름과 소속 기관을 조회합니다.
+     *
+     * @param 검색할 유저의 이름과 기관에 포함되는 keyword
+     * @return 검색 조건에 부합하는 user와 소속 기관 리스트
+     */
+    override fun queryInstructorsAndOrganization(keyword: String): List<Pair<User, String>> =
+        queryFactory.select(user, professor.university, companyInstructor.company, government.governmentName)
+            .from(user)
+            .leftJoin(professor).on(user.eq(professor.user))
+            .leftJoin(companyInstructor).on(user.eq(companyInstructor.user))
+            .leftJoin(government).on(user.eq(government.user))
+            .where(
+                user.authority.`in`(Authority.ROLE_PROFESSOR, Authority.ROLE_COMPANY_INSTRUCTOR, Authority.ROLE_GOVERNMENT),
+                nameLike(keyword)
+                    ?.or(organizationNameLike(keyword))
+            )
+            .fetch()
+            .map { tuple ->
+                val user = tuple[user]!!
+                val organization = when(user.authority) {
+                    Authority.ROLE_PROFESSOR -> tuple[professor.university]
+                    Authority.ROLE_COMPANY_INSTRUCTOR -> tuple[companyInstructor.company]
+                    Authority.ROLE_GOVERNMENT -> tuple[government.governmentName]
+                    else -> null
+                } ?: "소속 없음"
+                Pair(user,organization)
+            }
+
+    private fun organizationNameLike(keyword: String): BooleanExpression? =
+        if (keyword.isBlank()) null
+        else professor.university.like("%$keyword%")
+            .or(companyInstructor.company.like("%$keyword%"))
+            .or(government.governmentName.like("%$keyword%"))
+
 
     private fun nameLike(keyword: String): BooleanExpression? =
         if(keyword == "") null else user.name.like("%$keyword%")
