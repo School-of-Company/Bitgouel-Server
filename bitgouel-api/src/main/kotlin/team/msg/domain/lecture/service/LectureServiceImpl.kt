@@ -5,7 +5,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
-import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
@@ -39,7 +38,6 @@ class LectureServiceImpl(
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
     private val userRepository: UserRepository,
-    private val companyInstructorRepository: CompanyInstructorRepository,
     private val userUtil: UserUtil
 ) : LectureService{
 
