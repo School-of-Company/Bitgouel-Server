@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
+import team.msg.domain.company.model.CompanyInstructor
+import team.msg.domain.government.model.Government
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
@@ -22,11 +24,13 @@ import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.professor.model.Professor
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -287,7 +291,7 @@ class LectureServiceImplTest : BehaviorSpec({
     }
 
     //signUpLecture 테스트 코드
-    Given("Lecture id가 주어질 때ㅇ") {
+    Given("Lecture id가 주어질 때") {
 
         val userId = UUID.randomUUID()
         val studentAuthority = Authority.ROLE_STUDENT
@@ -514,6 +518,84 @@ class LectureServiceImplTest : BehaviorSpec({
                 }
             }
         }
+    }
+
+    // queryInstructors 테스트 코드
+    Given("강사와 keyword가 주어질 때"){
+        val professorUserId = UUID.randomUUID()
+        val professorUserName = "professor"
+        val professorAuthority = Authority.ROLE_PROFESSOR
+        val professorUser = fixture<User> {
+            property(User::id) { professorUserId }
+            property(User::name) { professorUserName }
+            property(User::authority) { professorAuthority }
+        }
+        val university = "university"
+        val professor = fixture<Professor> {
+            property(Professor::user) { professorUser }
+            property(Professor::university) { university }
+        }
+        val professorPair = Pair(professorUser, university)
+        val professorResponse = LectureResponse.instructorOf(professorUser, university)
+
+        val companyInstructorUserId = UUID.randomUUID()
+        val companyInstructorUserName = "companyInstructor"
+        val companyInstructorAuthority = Authority.ROLE_COMPANY_INSTRUCTOR
+        val companyInstructorUser = fixture<User> {
+            property(User::id) { companyInstructorUserId }
+            property(User::name) { companyInstructorUserName }
+            property(User::authority) { companyInstructorAuthority }
+        }
+        val company = "company"
+        val companyInstructor = fixture<CompanyInstructor> {
+            property(CompanyInstructor::user) { companyInstructorUser }
+            property(CompanyInstructor::company) { company }
+        }
+        val companyInstructorPair = Pair(companyInstructorUser, company)
+        val companyInstructorResponse = LectureResponse.instructorOf(companyInstructorUser, company)
+
+        val governmentUserName = "government"
+        val governmentAuthority = Authority.ROLE_GOVERNMENT
+        val governmentUser = fixture<User> {
+            property(User::name) { governmentUserName }
+            property(User::authority) { governmentAuthority }
+        }
+        val governmentId = UUID.randomUUID()
+        val governmentName = "governmentName"
+        val government = fixture<Government> {
+            property(Government::id) { governmentId }
+            property(Government::user) { governmentUser }
+            property(Government::governmentName) { governmentName }
+        }
+        val governmentPair = Pair(governmentUser, governmentName)
+        val governmentResponse = LectureResponse.instructorOf(governmentUser, governmentName)
+
+        When("keyword가 빈 문자열일 때") {
+            every { userRepository.queryInstructorsAndOrganization(any()) } returns listOf(professorPair, companyInstructorPair, governmentPair)
+
+            val response = InstructorsResponse(listOf(professorResponse, companyInstructorResponse, governmentResponse))
+
+            val keyword = ""
+
+            val result = lectureServiceImpl.queryInstructors(keyword)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("keyword가 특정 강사의 이름이나 기관에 포함되는 문자열일 때") {
+            every { userRepository.queryInstructorsAndOrganization(any()) } returns listOf(professorPair, companyInstructorPair)
+
+            val response = InstructorsResponse(listOf(professorResponse, companyInstructorResponse))
+
+            val keyword = "y"
+
+            val result = lectureServiceImpl.queryInstructors(keyword)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
     }
 })
 
