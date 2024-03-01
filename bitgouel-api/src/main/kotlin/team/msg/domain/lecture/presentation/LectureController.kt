@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
+import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
@@ -54,6 +56,12 @@ class LectureController(
     @GetMapping("/{id}")
     fun queryLectureDetails(@PathVariable id: UUID): ResponseEntity<LectureDetailsResponse> {
         val response = lectureService.queryLectureDetails(id)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/instructor")
+    fun queryInstructors(@RequestParam keyword: String): ResponseEntity<InstructorsResponse> {
+        val response = lectureService.queryInstructors(keyword)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
