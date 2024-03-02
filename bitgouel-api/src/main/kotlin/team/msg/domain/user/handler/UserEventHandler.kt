@@ -33,6 +33,7 @@ import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority.*
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.model.User
+import team.msg.domain.withdraw.repository.WithdrawStudentRepository
 
 @Component
 class UserEventHandler(
@@ -47,7 +48,8 @@ class UserEventHandler(
     private val adminRepository: AdminRepository,
     private val lectureRepository: LectureRepository,
     private val certificationRepository: CertificationRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val withdrawStudentRepository: WithdrawStudentRepository
 ) {
 
     /**
@@ -65,6 +67,7 @@ class UserEventHandler(
                 studentActivityRepository.deleteAllByStudentId(student.id)
                 registeredLectureRepository.deleteAllByStudentId(student.id)
                 certificationRepository.deleteAllByStudentId(student.id)
+                withdrawStudentRepository.deleteByStudent(student)
                 studentRepository.delete(student)
             }
             ROLE_ADMIN -> {
