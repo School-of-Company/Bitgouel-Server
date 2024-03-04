@@ -4,8 +4,8 @@ import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
-import org.hibernate.validator.constraints.URL
 import team.msg.domain.post.enums.FeedType
+import team.msg.domain.post.presentation.web.validation.URLList
 
 data class CreatePostWebRequest(
     @field:NotBlank
@@ -17,15 +17,9 @@ data class CreatePostWebRequest(
     val content: String,
 
     @field:Valid
-    val links: List<LinkWebRequest>,
+    @field:URLList
+    val links: List<String>,
 
     @field:NotNull
     val feedType: FeedType
-){
-    data class LinkWebRequest(
-        @field:URL
-        @field:NotBlank
-        @field:Size(max=2083)
-        val url: String
-    )
-}
+)

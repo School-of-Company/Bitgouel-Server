@@ -3,7 +3,7 @@ package team.msg.domain.post.presentation.web
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
-import org.hibernate.validator.constraints.URL
+import team.msg.domain.post.presentation.web.validation.URLList
 
 data class UpdatePostWebRequest(
     @field:NotBlank
@@ -15,12 +15,6 @@ data class UpdatePostWebRequest(
     val content: String,
 
     @field:Valid
-    val links: List<LinkWebRequest>
-){
-    data class LinkWebRequest(
-        @field:URL
-        @field:NotBlank
-        @field:Size(max=2083)
-        val url: String
-    )
-}
+    @field:URLList
+    val links: List<String>
+)
