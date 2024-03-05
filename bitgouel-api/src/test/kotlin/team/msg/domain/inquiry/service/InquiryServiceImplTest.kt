@@ -8,10 +8,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import team.msg.common.util.UserUtil
+import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
+import team.msg.domain.inquiry.presentation.request.QueryAllInquiresWebRequest
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
+import team.msg.domain.inquiry.presentation.web.QueryAllInquiresRequest
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.user.model.User
@@ -69,6 +72,34 @@ class InquiryServiceImplTest : BehaviorSpec ({
 
         When("자격증 전체 조회 요청을 하면") {
             val result = inquiryServiceImpl.queryMyInquiries()
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+    }
+
+    // queryAllInquiries 테스트 코드
+    Given("QueryAllInquiresRequest 가 주어질 때") {
+        val request = fixture<QueryAllInquiresRequest>()
+
+        val inquiry = fixture<Inquiry>()
+        val inquiryResponse = fixture<InquiryResponse> {
+            property(InquiryResponse::id) { inquiry.id }
+            property(InquiryResponse::question) { inquiry.question }
+            property(InquiryResponse::userId) { inquiry.user.id }
+            property(InquiryResponse::username) { inquiry.user.name }
+            property(InquiryResponse::createdAt) { inquiry.createdAt.toLocalDate() }
+            property(InquiryResponse::answerStatus) { inquiry.answerStatus }
+        }
+        val response = fixture<InquiryResponses> {
+            property(InquiryResponses::inquiries) { listOf(inquiryResponse) }
+        }
+
+        every { inquiryRepository.search(any(), any()) } returns listOf(inquiry)
+
+        When("자격증 전체 조회 요청을 하면") {
+            val result = inquiryServiceImpl.queryAllInquiries(request)
 
             Then("result와 response가 같아야 한다.") {
                 result shouldBe response
