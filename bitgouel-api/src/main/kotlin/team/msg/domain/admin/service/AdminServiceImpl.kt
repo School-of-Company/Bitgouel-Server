@@ -65,17 +65,18 @@ class AdminServiceImpl(
      * @param 거절할 유저를 검색하기 위한 userId
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun rejectUser(userIds: List<UUID>) {
+    override fun rejectUsers(userIds: List<UUID>) {
         val users = userRepository.findByIdIn(userIds)
 
         users.forEach {
+
             if(it.approveStatus == ApproveStatus.APPROVED)
                 throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${it.id} ]")
 
-        applicationEventPublisher.publishEvent(WithdrawUserEvent(it))
-
-        userRepository.delete(it)
+            applicationEventPublisher.publishEvent(WithdrawUserEvent(it))
         }
+
+        userRepository.deleteByIdIn(userIds)
     }
 
     /**

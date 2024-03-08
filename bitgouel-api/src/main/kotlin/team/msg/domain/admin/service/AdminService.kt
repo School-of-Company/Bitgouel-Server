@@ -8,7 +8,7 @@ import java.util.*
 interface AdminService {
     fun queryUsers(request: QueryUsersRequest): UsersResponse
     fun approveUsers(userIds: List<UUID>)
-    fun rejectUser(userIds: List<UUID>)
+    fun rejectUsers(userIds: List<UUID>)
     fun queryUserDetails(userId: UUID): UserDetailsResponse
     fun forceWithdraw(userId: UUID)
 }

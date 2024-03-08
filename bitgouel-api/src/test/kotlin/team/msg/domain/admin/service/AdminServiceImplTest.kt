@@ -131,7 +131,7 @@ class AdminServiceImplTest : BehaviorSpec({
         every { userRepository.delete(any()) } returns Unit
 
         When("User 회원가입 거절 시") {
-            adminServiceImpl.rejectUser(userId)
+            adminServiceImpl.rejectUsers(userId)
 
             Then("withdrawUserEvent 를 발행해야 한다") {
                 verify(exactly = 1) { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) }
@@ -147,7 +147,7 @@ class AdminServiceImplTest : BehaviorSpec({
 
             Then("UserAlreadyApprovedException 이 발생해야 한다") {
                 shouldThrow<UserAlreadyApprovedException> {
-                    adminServiceImpl.rejectUser(userId)
+                    adminServiceImpl.rejectUsers(userId)
                 }
             }
         }
