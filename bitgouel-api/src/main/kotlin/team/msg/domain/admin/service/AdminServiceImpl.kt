@@ -62,7 +62,7 @@ class AdminServiceImpl(
 
     /**
      * 회원가입 대기 중인 유저를 거절하는 비즈니스 로직입니다
-     * @param 거절할 유저를 검색하기 위한 userId
+     * @param 거절할 유저들을 검색하기 위한 userIds
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun rejectUsers(userIds: List<UUID>) {
