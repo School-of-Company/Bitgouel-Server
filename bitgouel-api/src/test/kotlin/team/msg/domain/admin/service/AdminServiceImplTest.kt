@@ -113,8 +113,8 @@ class AdminServiceImplTest : BehaviorSpec({
         }
     }
 
-    // rejectUser 테스트 코드
-    Given("userId 가 주어졌을 때") {
+    // rejectUsers 테스트 코드
+    Given("userIds 가 주어졌을 때") {
         val userId = UUID.randomUUID()
         val userIds = listOf(userId)
 

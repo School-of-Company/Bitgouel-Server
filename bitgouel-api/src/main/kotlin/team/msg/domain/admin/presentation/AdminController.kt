@@ -35,7 +35,7 @@ class AdminController(
     }
 
     @DeleteMapping("/reject")
-    fun rejectUser(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
+    fun rejectUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
         adminService.rejectUsers(userIds)
         return ResponseEntity.noContent().build()
     }
