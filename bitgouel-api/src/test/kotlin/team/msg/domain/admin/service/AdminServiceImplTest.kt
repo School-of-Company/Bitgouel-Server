@@ -116,6 +116,7 @@ class AdminServiceImplTest : BehaviorSpec({
     // rejectUser 테스트 코드
     Given("userId 가 주어졌을 때") {
         val userId = UUID.randomUUID()
+        val userIds = listOf(userId)
 
         val user = fixture<User> {
             property(User::id) { userId }
@@ -126,28 +127,28 @@ class AdminServiceImplTest : BehaviorSpec({
             property(User::approveStatus) { ApproveStatus.APPROVED }
         }
 
-        every { userRepository.findByIdOrNull(userId) } returns user
+        every { userRepository.findByIdIn(userIds) } returns listOf(user)
         every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
-        every { userRepository.delete(any()) } returns Unit
+        every { userRepository.deleteByIdIn(any()) } returns Unit
 
         When("User 회원가입 거절 시") {
-            adminServiceImpl.rejectUsers(userId)
+            adminServiceImpl.rejectUsers(userIds)
 
             Then("withdrawUserEvent 를 발행해야 한다") {
                 verify(exactly = 1) { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) }
             }
 
             Then("User가 삭제가 되어야 한다") {
-                verify(exactly = 1) { userRepository.delete(user) }
+                verify(exactly = 1) { userRepository.deleteByIdIn(userIds) }
             }
         }
 
         When("이미 승인된 User 라면") {
-            every { userRepository.findByIdOrNull(userId) } returns approvedUser
+            every { userRepository.findByIdIn(userIds) } returns listOf(approvedUser)
 
             Then("UserAlreadyApprovedException 이 발생해야 한다") {
                 shouldThrow<UserAlreadyApprovedException> {
-                    adminServiceImpl.rejectUsers(userId)
+                    adminServiceImpl.rejectUsers(userIds)
                 }
             }
         }
