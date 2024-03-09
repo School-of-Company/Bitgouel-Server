@@ -1,13 +1,9 @@
 package team.msg.domain.inquiry.model
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.domain.user.model.User
+import team.msg.domain.admin.model.Admin
 import java.util.*
+import javax.persistence.*
 
 @Entity
 class InquiryAnswer(
@@ -19,7 +15,7 @@ class InquiryAnswer(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", columnDefinition = "BINARY(16)", nullable = false)
-    val admin: User,
+    val admin: Admin,
 
     @Column(name = "inquiry_id", columnDefinition = "BINARY(16)", nullable = false)
     val inquiryId: UUID

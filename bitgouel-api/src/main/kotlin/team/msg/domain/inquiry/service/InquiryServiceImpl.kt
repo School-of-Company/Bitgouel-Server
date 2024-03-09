@@ -4,6 +4,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
+import team.msg.domain.admin.exception.AdminNotFoundException
+import team.msg.domain.admin.model.Admin
+import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
 import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
@@ -20,13 +23,15 @@ import team.msg.domain.inquiry.presentation.web.QueryAllInquiresRequest
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.model.User
 import java.util.*
 
 @Service
 class InquiryServiceImpl(
     private val userUtil: UserUtil,
     private val inquiryRepository: InquiryRepository,
-    private val inquiryAnswerRepository: InquiryAnswerRepository
+    private val inquiryAnswerRepository: InquiryAnswerRepository,
+    private val adminRepository: AdminRepository
 ) : InquiryService {
 
     /**
@@ -163,12 +168,14 @@ class InquiryServiceImpl(
     override fun replyInquiry(id: UUID, request: CreateInquiryAnswerRequest) {
         val currentUser = userUtil.queryCurrentUser()
 
+        val admin = adminRepository findByUser currentUser
+
         val inquiry = inquiryRepository findById id
 
         val inquiryAnswer = InquiryAnswer(
             id = UUID.randomUUID(),
             answer = request.answer,
-            admin = currentUser,
+            admin = admin,
             inquiryId = inquiry.id
         )
 
@@ -183,5 +190,9 @@ class InquiryServiceImpl(
     private infix fun InquiryAnswerRepository.findByInquiryId(inquiryId: UUID): InquiryAnswer =
         this.findByInquiryId(inquiryId)
             ?: throw InquiryAnswerNotFoundException("존재하지 않는 문의사항의 답변입니다. info : [ inquiryId = $inquiryId ]")
+
+    private infix fun AdminRepository.findByUser(user: User): Admin =
+        this.findByUser(user)
+            ?: throw AdminNotFoundException("존재하지 않는 어드민 유저입니다. info : [ userId = ${user.id} ]")
 
 }
