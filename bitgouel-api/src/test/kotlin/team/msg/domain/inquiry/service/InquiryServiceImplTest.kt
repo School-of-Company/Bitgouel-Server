@@ -15,6 +15,7 @@ import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.model.InquiryAnswer
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
+import team.msg.domain.inquiry.presentation.request.UpdateInquiryRequest
 import team.msg.domain.inquiry.presentation.response.InquiryDetailResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
@@ -266,6 +267,60 @@ class InquiryServiceImplTest : BehaviorSpec ({
             Then("InquiryNotFoundException 이 발생해야 한다.") {
                 shouldThrow<InquiryNotFoundException> {
                     inquiryServiceImpl.rejectInquiry(inquiryId)
+                }
+            }
+        }
+    }
+
+    // updateInquiry 테스트 코드
+    Given("inquiry id 와 UpdateInquiryRequest 가 주어질 때") {
+        val inquiryId = UUID.randomUUID()
+        val request = fixture<UpdateInquiryRequest>()
+
+        val user = fixture<User> {
+            property(User::authority) { Authority.ROLE_ADMIN }
+        }
+        val invalidUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
+        val inquiry = fixture<Inquiry> {
+            property(Inquiry::id) { inquiryId }
+            property(Inquiry::user) { user }
+        }
+        val inquiryAnswer = fixture<InquiryAnswer> {
+            property(InquiryAnswer::admin) { user }
+            property(InquiryAnswer::answer) { "answer" }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { inquiryRepository.findByIdOrNull(any()) } returns inquiry
+        every { inquiryAnswerRepository.findByInquiryId(any()) } returns inquiryAnswer
+        every { inquiryRepository.save(any()) } returns inquiry
+
+        When("문의사항 삭제 요청을 하면") {
+            inquiryServiceImpl.updateInquiry(inquiryId, request)
+
+            Then("Inquiry 가 삭제되어야 한다.") {
+                verify(exactly = 1) { inquiryRepository.save(any()) }
+            }
+        }
+
+        When("inquiry id 에 맞는 Inquiry 가 없다면") {
+            every { inquiryRepository.findByIdOrNull(any()) } returns null
+
+            Then("InquiryNotFoundException 이 발생해야 한다.") {
+                shouldThrow<InquiryNotFoundException> {
+                    inquiryServiceImpl.updateInquiry(inquiryId, request)
+                }
+            }
+        }
+
+        When("유저가 작성자가 아니라면") {
+            every { userUtil.queryCurrentUser() } returns invalidUser
+
+            Then("ForbiddenCommandInquiryException 이 발생해야 한다.") {
+                shouldThrow<ForbiddenCommandInquiryException> {
+                    inquiryServiceImpl.updateInquiry(inquiryId, request)
                 }
             }
         }
