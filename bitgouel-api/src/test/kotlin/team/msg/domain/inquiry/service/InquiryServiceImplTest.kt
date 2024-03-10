@@ -1,23 +1,32 @@
 package team.msg.domain.inquiry.service
 
 import com.appmattus.kotlinfixture.kotlinFixture
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
-import team.msg.domain.inquiry.enums.AnswerStatus
+import team.msg.domain.admin.model.Admin
+import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
+import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
+import team.msg.domain.inquiry.model.InquiryAnswer
 import team.msg.domain.inquiry.presentation.request.CreateInquiryRequest
-import team.msg.domain.inquiry.presentation.request.QueryAllInquiresWebRequest
+import team.msg.domain.inquiry.presentation.response.InquiryDetailResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponse
 import team.msg.domain.inquiry.presentation.response.InquiryResponses
 import team.msg.domain.inquiry.presentation.web.QueryAllInquiresRequest
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
 class InquiryServiceImplTest : BehaviorSpec ({
 
@@ -103,6 +112,70 @@ class InquiryServiceImplTest : BehaviorSpec ({
 
             Then("result와 response가 같아야 한다.") {
                 result shouldBe response
+            }
+        }
+    }
+
+    // queryInquiryDetail 테스트 코드
+    Given("inquiry id 가 주어질 때") {
+        val inquiryId = UUID.randomUUID()
+
+        val user = fixture<User> {
+            property(User::authority) { Authority.ROLE_ADMIN }
+        }
+        val invalidUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
+        val inquiry = fixture<Inquiry> {
+            property(Inquiry::id) { inquiryId }
+            property(Inquiry::user) { user }
+        }
+        val inquiryAnswer = fixture<InquiryAnswer> {
+            property(InquiryAnswer::admin) { user }
+            property(InquiryAnswer::answer) { "answer" }
+        }
+        val response = fixture<InquiryDetailResponse> {
+            property(InquiryDetailResponse::id) { inquiry.id }
+            property(InquiryDetailResponse::question) { inquiry.question }
+            property(InquiryDetailResponse::questionDetail) { inquiry.questionDetail }
+            property(InquiryDetailResponse::questionerId) { inquiry.user.id }
+            property(InquiryDetailResponse::questioner) { inquiry.user.name }
+            property(InquiryDetailResponse::questionDate) { inquiry.createdAt }
+            property(InquiryDetailResponse::answerStatus) { inquiry.answerStatus }
+            property(InquiryDetailResponse::answer) { inquiryAnswer.answer }
+            property(InquiryDetailResponse::adminId) { inquiryAnswer.admin.id }
+            property(InquiryDetailResponse::answeredDate) { inquiryAnswer.createdAt }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { inquiryRepository.findByIdOrNull(inquiryId) } returns inquiry
+        every { inquiryAnswerRepository.findByInquiryId(any()) } returns inquiryAnswer
+
+        When("자격증 전체 조회 요청을 하면") {
+            val result = inquiryServiceImpl.queryInquiryDetail(inquiryId)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("inquiry id 에 맞는 Inquiry 가 없다면") {
+            every { inquiryRepository.findByIdOrNull(inquiryId) } returns null
+
+            Then("InquiryNotFoundException 이 발생해야 한다.") {
+                shouldThrow<InquiryNotFoundException> {
+                    inquiryServiceImpl.queryInquiryDetail(inquiryId)
+                }
+            }
+        }
+
+        When("어드민이 아니라면") {
+            every { userUtil.queryCurrentUser() } returns invalidUser
+
+            Then("ForbiddenCommandInquiryException 이 발생해야 한다.") {
+                shouldThrow<ForbiddenCommandInquiryException> {
+                    inquiryServiceImpl.queryInquiryDetail(inquiryId)
+                }
             }
         }
     }
