@@ -110,7 +110,7 @@ class SecurityConfig(
             // admin
             .mvcMatchers(HttpMethod.GET, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/admin").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}/reject").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/admin/reject").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/admin/{user_id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
 

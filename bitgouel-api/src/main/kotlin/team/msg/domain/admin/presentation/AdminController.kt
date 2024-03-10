@@ -1,6 +1,5 @@
 package team.msg.domain.admin.presentation
 
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -35,9 +34,9 @@ class AdminController(
         return ResponseEntity.noContent().build()
     }
 
-    @DeleteMapping("/{user_id}/reject")
-    fun rejectUser(@PathVariable("user_id") userId: UUID): ResponseEntity<Void> {
-        adminService.rejectUser(userId)
+    @DeleteMapping("/reject")
+    fun rejectUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
+        adminService.rejectUsers(userIds)
         return ResponseEntity.noContent().build()
     }
 
