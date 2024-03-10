@@ -10,7 +10,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
-import team.msg.domain.admin.model.Admin
 import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
@@ -24,8 +23,6 @@ import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 class InquiryServiceImplTest : BehaviorSpec ({
@@ -79,7 +76,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
         every { userUtil.queryCurrentUser() } returns user
         every { inquiryRepository.findAllByUser(user) } returns listOf(inquiry)
 
-        When("자격증 전체 조회 요청을 하면") {
+        When("문의사항 전체 조회 요청을 하면") {
             val result = inquiryServiceImpl.queryMyInquiries()
 
             Then("result와 response가 같아야 한다.") {
@@ -107,7 +104,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
 
         every { inquiryRepository.search(any(), any()) } returns listOf(inquiry)
 
-        When("자격증 전체 조회 요청을 하면") {
+        When("문의사항 전체 조회 요청을 하면") {
             val result = inquiryServiceImpl.queryAllInquiries(request)
 
             Then("result와 response가 같아야 한다.") {
@@ -151,7 +148,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
         every { inquiryRepository.findByIdOrNull(inquiryId) } returns inquiry
         every { inquiryAnswerRepository.findByInquiryId(any()) } returns inquiryAnswer
 
-        When("자격증 전체 조회 요청을 하면") {
+        When("문의사항 상세 조회 요청을 하면") {
             val result = inquiryServiceImpl.queryInquiryDetail(inquiryId)
 
             Then("result와 response가 같아야 한다.") {
@@ -175,6 +172,60 @@ class InquiryServiceImplTest : BehaviorSpec ({
             Then("ForbiddenCommandInquiryException 이 발생해야 한다.") {
                 shouldThrow<ForbiddenCommandInquiryException> {
                     inquiryServiceImpl.queryInquiryDetail(inquiryId)
+                }
+            }
+        }
+    }
+
+    // deleteInquiry 테스트 코드
+    Given("inquiry id 가 주어질 때") {
+        val inquiryId = UUID.randomUUID()
+
+        val user = fixture<User> {
+            property(User::authority) { Authority.ROLE_ADMIN }
+        }
+        val invalidUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
+        val inquiry = fixture<Inquiry> {
+            property(Inquiry::id) { inquiryId }
+            property(Inquiry::user) { user }
+        }
+        val inquiryAnswer = fixture<InquiryAnswer> {
+            property(InquiryAnswer::admin) { user }
+            property(InquiryAnswer::answer) { "answer" }
+        }
+
+        every { userUtil.queryCurrentUser() } returns user
+        every { inquiryRepository.findByIdOrNull(any()) } returns inquiry
+        every { inquiryAnswerRepository.findByInquiryId(any()) } returns inquiryAnswer
+        every { inquiryAnswerRepository.delete(inquiryAnswer) } returns Unit
+        every { inquiryRepository.deleteById(inquiryId) } returns Unit
+
+        When("문의사항 삭제 요청을 하면") {
+            inquiryServiceImpl.deleteInquiry(inquiryId)
+
+            Then("Inquiry 가 삭제되어야 한다.") {
+                verify(exactly = 1) { inquiryRepository.deleteById(inquiryId) }
+            }
+        }
+
+        When("inquiry id 에 맞는 Inquiry 가 없다면") {
+            every { inquiryRepository.findByIdOrNull(any()) } returns null
+
+            Then("InquiryNotFoundException 이 발생해야 한다.") {
+                shouldThrow<InquiryNotFoundException> {
+                    inquiryServiceImpl.deleteInquiry(inquiryId)
+                }
+            }
+        }
+
+        When("유저가 작성자가 아니라면") {
+            every { userUtil.queryCurrentUser() } returns invalidUser
+
+            Then("ForbiddenCommandInquiryException 이 발생해야 한다.") {
+                shouldThrow<ForbiddenCommandInquiryException> {
+                    inquiryServiceImpl.deleteInquiry(inquiryId)
                 }
             }
         }
