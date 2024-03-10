@@ -322,7 +322,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
         }
     }
 
-    // updateInquiry 테스트 코드
+    // replyInquiry 테스트 코드
     Given("inquiry id 와 CreateInquiryAnswerRequest 가 주어질 때") {
         val inquiryId = UUID.randomUUID()
         val request = fixture<CreateInquiryAnswerRequest>()
