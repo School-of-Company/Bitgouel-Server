@@ -25,7 +25,9 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
+import team.msg.global.exception.ForbiddenException
 import java.util.*
 
 @Service
@@ -135,10 +137,16 @@ class StudentActivityServiceImpl(
 
         val student = studentRepository findById studentId
 
-        val teacher = teacherRepository findByUser user
+        when(user.authority) {
+            Authority.ROLE_ADMIN -> {}
+            Authority.ROLE_TEACHER -> {
+                val teacher = teacherRepository findByUser user
 
-        if(student.club != teacher.club)
-            throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+                if(student.club != teacher.club)
+                    throw ForbiddenStudentActivityException("해당 학생 활동에 대한 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+            }
+            else -> throw ForbiddenException("Forbidden")
+        }
 
         val studentActivities = studentActivityRepository.findAllByStudent(student, pageable)
 
