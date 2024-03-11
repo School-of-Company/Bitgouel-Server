@@ -72,6 +72,14 @@ data class LectureResponse(
             organization = organization,
             authority = user.authority
         )
+
+        fun lineOf(lines: List<String>): LinesResponse = LinesResponse(
+            lines = lines
+        )
+
+        fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
+            departments = departments
+        )
     }
 }
 
@@ -108,4 +116,12 @@ data class InstructorResponse(
     val name: String,
     val organization: String,
     val authority: Authority
+)
+
+data class LinesResponse(
+    val lines: List<String>
+)
+
+data class DepartmentsResponse(
+    val departments: List<String>
 )
