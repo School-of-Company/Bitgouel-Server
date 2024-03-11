@@ -12,6 +12,7 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
+import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
 import team.msg.domain.inquiry.model.InquiryAnswer
@@ -215,6 +216,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
         val inquiry = fixture<Inquiry> {
             property(Inquiry::id) { inquiryId }
             property(Inquiry::user) { user }
+            property(Inquiry::answerStatus) { AnswerStatus.ANSWERED }
         }
         val inquiryAnswer = fixture<InquiryAnswer> {
             property(InquiryAnswer::admin) { user }
@@ -227,11 +229,25 @@ class InquiryServiceImplTest : BehaviorSpec ({
         every { inquiryAnswerRepository.delete(inquiryAnswer) } returns Unit
         every { inquiryRepository.deleteById(inquiryId) } returns Unit
 
-        When("문의사항 삭제 요청을 하면") {
+        When("답변된 문의사항 삭제 요청을 하면") {
             inquiryServiceImpl.deleteInquiry(inquiryId)
 
             Then("Inquiry 가 삭제되어야 한다.") {
                 verify(exactly = 1) { inquiryRepository.deleteById(inquiryId) }
+            }
+
+            Then("Inquiry Answer 가 삭제되어야 한다.") {
+                verify(exactly = 1) { inquiryAnswerRepository.delete(inquiryAnswer) }
+            }
+        }
+
+        When("답변이 안된 문의사항 삭제 요청을 하면") {
+            every { inquiryAnswerRepository.findByInquiryId(any()) } returns null
+
+            Then("InquiryAnswerNotFoundException 가 발생해야 한다.") {
+                shouldThrow<InquiryAnswerNotFoundException> {
+                    inquiryServiceImpl.deleteInquiry(inquiryId)
+                }
             }
         }
 
@@ -316,10 +332,10 @@ class InquiryServiceImplTest : BehaviorSpec ({
         every { inquiryRepository.findByIdOrNull(any()) } returns inquiry
         every { inquiryRepository.save(any()) } returns inquiry
 
-        When("문의사항 삭제 요청을 하면") {
+        When("문의사항 수정 요청을 하면") {
             inquiryServiceImpl.updateInquiry(inquiryId, request)
 
-            Then("Inquiry 가 삭제되어야 한다.") {
+            Then("Inquiry 가 수정되어야 한다.") {
                 verify(exactly = 1) { inquiryRepository.save(any()) }
             }
         }
