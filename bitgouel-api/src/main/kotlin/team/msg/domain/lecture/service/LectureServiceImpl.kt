@@ -15,11 +15,15 @@ import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
+import team.msg.domain.lecture.presentation.data.response.LinesResponse
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -115,6 +119,34 @@ class LectureServiceImpl(
         } else false
 
         val response = LectureResponse.detailOf(lecture, headCount, isRegistered)
+
+        return response
+    }
+
+    /**
+     * 서버에 저장된 구분에 따른 계열 리스트를 조회하는 비지니스 로직입니다.
+     * 지정된 구분, 키워드를 통해 필터링 합니다.
+     * @param 구분, 키워드
+     * @return 계열 리스트 response
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllLines(request: QueryAllLinesRequest): LinesResponse {
+        val lines = lectureRepository.findAllLineByDivision(request.division, request.keyword)
+        val response = LectureResponse.lineOf(lines)
+
+        return response
+    }
+
+    /**
+     * 서버에 저장된 학과 리스트를 조회하는 비지니스 로직입니다.
+     * 키워드를 통해 필터링 합니다.
+     * @param 키워드
+     * @return 학과 리스트 response
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllDepartments(request: QueryAllDepartmentsRequest): DepartmentsResponse {
+        val departments = lectureRepository.findAllDepartment(request.keyword)
+        val response = LectureResponse.departmentOf(departments)
 
         return response
     }
