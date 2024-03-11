@@ -350,8 +350,6 @@ class StudentActivityServiceImplTest : BehaviorSpec({
     // queryStudentActivityDetail 테스트 코드
     Given("StudentActivityId가 주어졌을 때") {
         val studentId = UUID.randomUUID()
-        val teacherId = UUID.randomUUID()
-        val bbozzakId = UUID.randomUUID()
         val studentActivityId = UUID.randomUUID()
         val title = "title"
         val content = "content"
@@ -364,15 +362,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
             property(Student::user) { user }
         }
         val invalidStudent = fixture<Student>()
-        val teacher = fixture<Teacher> {
-            property(Teacher::id) { teacherId }
-            property(Teacher::user) { user }
-        }
         val invalidTeacher = fixture<Teacher>()
-        val bbozzak = fixture<Bbozzak> {
-            property(Bbozzak::id) { bbozzakId }
-            property(Bbozzak::user) { user }
-        }
         val invalidBbozzak = fixture<Bbozzak>()
         val professor = fixture<Professor>()
         val companyInstructor = fixture<CompanyInstructor>()
