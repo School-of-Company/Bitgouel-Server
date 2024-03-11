@@ -10,6 +10,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
+import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
 import team.msg.domain.inquiry.model.Inquiry
@@ -90,6 +91,12 @@ class InquiryServiceImplTest : BehaviorSpec ({
     // queryAllInquiries 테스트 코드
     Given("QueryAllInquiresRequest 가 주어질 때") {
         val request = fixture<QueryAllInquiresRequest>()
+        val keywordRequest = fixture<QueryAllInquiresRequest> {
+            property(QueryAllInquiresRequest::keyword) { "keyword" }
+        }
+        val answerStatusRequest = fixture<QueryAllInquiresRequest> {
+            property(QueryAllInquiresRequest::answerStatus) { AnswerStatus.ANSWERED }
+        }
 
         val inquiry = fixture<Inquiry>()
         val inquiryResponse = fixture<InquiryResponse> {
@@ -108,6 +115,22 @@ class InquiryServiceImplTest : BehaviorSpec ({
 
         When("문의사항 전체 조회 요청을 하면") {
             val result = inquiryServiceImpl.queryAllInquiries(request)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("keyword 로 문의사항 전체 조회 요청을 하면") {
+            val result = inquiryServiceImpl.queryAllInquiries(keywordRequest)
+
+            Then("result와 response가 같아야 한다.") {
+                result shouldBe response
+            }
+        }
+
+        When("답변 여부로 문의사항 전체 조회 요청을 하면") {
+            val result = inquiryServiceImpl.queryAllInquiries(answerStatusRequest)
 
             Then("result와 response가 같아야 한다.") {
                 result shouldBe response
