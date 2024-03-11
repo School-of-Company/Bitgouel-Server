@@ -70,7 +70,7 @@ class LectureController(
     }
 
     @GetMapping("/line")
-    fun queryAllLines(@RequestBody @Valid webRequest: QueryAllLinesWebRequest): ResponseEntity<LinesResponse> {
+    fun queryAllLines(webRequest: QueryAllLinesWebRequest): ResponseEntity<LinesResponse> {
         val request = lectureRequestMapper.queryAllLinesWebRequestToDto(webRequest)
         val response = lectureService.queryAllLines(request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
