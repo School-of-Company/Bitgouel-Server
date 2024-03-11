@@ -14,6 +14,10 @@ class LectureRequestMapperImpl : LectureRequestMapper{
     override fun createLectureWebRequestToDto(webRequest: CreateLectureWebRequest) = CreateLectureRequest(
         name = webRequest.name,
         content = webRequest.content,
+        semester = webRequest.semester,
+        division = webRequest.division,
+        department = webRequest.department,
+        line = webRequest.line,
         startDate = webRequest.startDate,
         endDate = webRequest.endDate,
         completeDate = webRequest.completeDate,
