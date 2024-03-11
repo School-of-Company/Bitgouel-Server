@@ -36,7 +36,7 @@ data class CreateLectureWebRequest(
     @field:NotBlank
     val line: String,
 
-    @field:NotBlank
+    @field:NotNull
     val userId: UUID,
 
     @field:NotNull
