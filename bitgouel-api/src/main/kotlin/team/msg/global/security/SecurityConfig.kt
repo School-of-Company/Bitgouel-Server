@@ -91,6 +91,8 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/{id}").authenticated()
             .mvcMatchers(HttpMethod.GET, "/lecture/instructor").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/lecture/line").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/lecture/department").hasRole(ADMIN)
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)
