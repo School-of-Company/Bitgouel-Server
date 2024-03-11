@@ -9,7 +9,9 @@ import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.enums.Semester
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -19,6 +21,20 @@ data class CreateLectureWebRequest(
 
     @field:NotBlank
     val content: String,
+
+    @field:NotNull
+    @Enumerated(EnumType.STRING)
+    val semester: Semester,
+
+    @field:NotNull
+    @Enumerated(EnumType.STRING)
+    val division: Division,
+
+    @field:NotBlank
+    val department: String,
+
+    @field:NotBlank
+    val line: String,
 
     @field:NotBlank
     val userId: UUID,
