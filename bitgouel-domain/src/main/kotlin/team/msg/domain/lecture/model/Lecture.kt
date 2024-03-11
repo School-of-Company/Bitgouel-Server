@@ -8,8 +8,10 @@ import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
+import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
 import java.util.UUID
@@ -26,6 +28,20 @@ class Lecture(
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val name: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
+    val semester: Semester,
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
+    val division: Division,
+
+    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
+    val department: String,
+
+    @Column(columnDefinition = "VARCHAR(25)", nullable = false)
+    val line: String,
 
     @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
     val startDate: LocalDateTime,
