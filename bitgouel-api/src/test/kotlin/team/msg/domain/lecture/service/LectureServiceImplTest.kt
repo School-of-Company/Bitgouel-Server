@@ -14,8 +14,10 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
+import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
@@ -23,7 +25,9 @@ import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
@@ -104,6 +108,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val endDate = LocalDateTime.MAX
         val completeDate = LocalDateTime.MAX
         val lectureStatus = LectureStatus.OPENED
+        val semester = Semester.FIRST_YEAR_FALL_SEMESTER
+        val division = Division.AUTOMOBILE_INDUSTRY
+        val line = "line"
+        val department = "department"
 
         val creditLectureId = UUID.randomUUID()
         val creditLectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
@@ -121,6 +129,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::endDate) { endDate }
             property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
+            property(Lecture::semester) { semester }
+            property(Lecture::division) { division }
+            property(Lecture::line) { line }
+            property(Lecture::department) { department }
         }
         val universityLecture = fixture<Lecture> {
             property(Lecture::id) { universityLectureId }
@@ -132,6 +144,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::endDate) { endDate }
             property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
+            property(Lecture::semester) { semester }
+            property(Lecture::division) { division }
+            property(Lecture::line) { line }
+            property(Lecture::department) { department }
         }
 
         val creditLectureResponse = fixture<LectureResponse> {
@@ -146,6 +162,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::completeDate) { completeDate }
             property(LectureResponse::lecturer) { instructor }
             property(LectureResponse::lectureStatus) { lectureStatus }
+            property(LectureResponse::semester) { semester }
+            property(LectureResponse::division) { division }
+            property(LectureResponse::line) { line }
+            property(LectureResponse::department) { department }
         }
         val universityLectureResponse = fixture<LectureResponse> {
             property(LectureResponse::id) { universityLectureId }
@@ -159,6 +179,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::completeDate) { completeDate }
             property(LectureResponse::lecturer) { instructor }
             property(LectureResponse::lectureStatus) { lectureStatus }
+            property(LectureResponse::semester) { semester }
+            property(LectureResponse::division) { division }
+            property(LectureResponse::line) { line }
+            property(LectureResponse::department) { department }
         }
 
         every { registeredLectureRepository.countByLecture(any()) } returns headCount
@@ -235,6 +259,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureStatus = LectureStatus.OPENED
         val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
         val isRegistered = false
+        val semester = Semester.FIRST_YEAR_FALL_SEMESTER
+        val division = Division.AUTOMOBILE_INDUSTRY
+        val line = "line"
+        val department = "department"
 
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
@@ -247,6 +275,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
+            property(Lecture::semester) { semester }
+            property(Lecture::division) { division }
+            property(Lecture::line) { line }
+            property(Lecture::department) { department }
         }
 
         val response = fixture<LectureDetailsResponse> {
@@ -263,6 +295,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::isRegistered) { isRegistered }
             property(LectureDetailsResponse::createAt) { lecture.createdAt }
             property(LectureDetailsResponse::credit) { credit }
+            property(LectureDetailsResponse::semester) { semester }
+            property(LectureDetailsResponse::division) { division }
+            property(LectureDetailsResponse::line) { line }
+            property(LectureDetailsResponse::department) { department }
         }
 
         every { userUtil.queryCurrentUser() } returns user
@@ -596,6 +632,79 @@ class LectureServiceImplTest : BehaviorSpec({
             }
         }
 
+    }
+
+    // queryAllLines 테스트 코드
+    Given("강의와 Division, keyword가 주어질 때"){
+        val emptyKeyword = ""
+        val keyword = "기"
+        val division = Division.AUTOMOBILE_INDUSTRY
+
+        val request = fixture<QueryAllLinesRequest> {
+            property(QueryAllLinesRequest::keyword) { keyword }
+            property(QueryAllLinesRequest::division) { division }
+        }
+        val emptyKeywordRequest = fixture<QueryAllLinesRequest> {
+            property(QueryAllLinesRequest::keyword) { emptyKeyword }
+            property(QueryAllLinesRequest::division) { division }
+        }
+
+        val lines = mutableListOf("기계")
+        val emptyKeywordLines = mutableListOf("기계", "자동차")
+
+        val response = LectureResponse.lineOf(lines)
+        val emptyKeywordResponse = LectureResponse.lineOf(emptyKeywordLines)
+
+        every { lectureRepository.findAllLineByDivision(division, keyword) } returns lines
+        every { lectureRepository.findAllLineByDivision(division, emptyKeyword) } returns emptyKeywordLines
+        When("keyqord가 빈 문자열일 때") {
+            val result = lectureServiceImpl.queryAllLines(emptyKeywordRequest)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe emptyKeywordResponse
+            }
+        }
+
+        When("keyword가 특정 계열에 포함되는 문자열일 때"){
+            val result = lectureServiceImpl.queryAllLines(request)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+    }
+
+    // queryAllDepartments 테스트 코드
+    Given("강의와 keyword가 주어질 때"){
+        val emptyKeyword = ""
+        val keyword = "자"
+
+        val request = fixture<QueryAllDepartmentsRequest> {
+            property(QueryAllLinesRequest::keyword) { keyword }
+        }
+        val emptyKeywordRequest = fixture<QueryAllDepartmentsRequest> {
+            property(QueryAllLinesRequest::keyword) { emptyKeyword }
+        }
+
+        val departments = mutableListOf("자동차공학")
+        val emptyKeywordDepartments = mutableListOf("자동차공학", "기계공학")
+
+        val response = LectureResponse.departmentOf(departments)
+        val emptyKeywordResponse = LectureResponse.departmentOf(emptyKeywordDepartments)
+
+        When("keyqord가 빈 문자열일 때") {
+            every { lectureRepository.findAllDepartment(any()) } returns emptyKeywordDepartments
+            val result = lectureServiceImpl.queryAllDepartments(emptyKeywordRequest)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe emptyKeywordResponse
+            }
+        }
+
+        When("keyword가 특정 학과에 포함되는 문자열일 때"){
+            every { lectureRepository.findAllDepartment(any()) } returns departments
+            val result = lectureServiceImpl.queryAllDepartments(request)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
     }
 })
 

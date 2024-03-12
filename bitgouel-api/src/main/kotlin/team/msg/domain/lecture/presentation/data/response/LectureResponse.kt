@@ -1,7 +1,9 @@
 package team.msg.domain.lecture.presentation.data.response
 import org.springframework.data.domain.Page
+import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
@@ -12,6 +14,10 @@ data class LectureResponse(
     val id: UUID,
     val name: String,
     val content: String,
+    val semester: Semester,
+    val division: Division,
+    val department: String,
+    val line: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
     val completeDate: LocalDateTime,
@@ -26,6 +32,10 @@ data class LectureResponse(
             id = lecture.id,
             name = lecture.name,
             content = lecture.content,
+            semester = lecture.semester,
+            division = lecture.division,
+            department = lecture.department,
+            line = lecture.line,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
             completeDate = lecture.completeDate,
@@ -39,6 +49,10 @@ data class LectureResponse(
         fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
+            semester = lecture.semester,
+            division = lecture.division,
+            department = lecture.department,
+            line = lecture.line,
             createAt = lecture.createdAt,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
@@ -58,6 +72,14 @@ data class LectureResponse(
             organization = organization,
             authority = user.authority
         )
+
+        fun lineOf(lines: List<String>): LinesResponse = LinesResponse(
+            lines = lines
+        )
+
+        fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
+            departments = departments
+        )
     }
 }
 
@@ -68,6 +90,10 @@ data class LecturesResponse(
 data class LectureDetailsResponse(
     val name: String,
     val content: String,
+    val semester: Semester,
+    val division: Division,
+    val department: String,
+    val line: String,
     val createAt: LocalDateTime,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
@@ -90,4 +116,12 @@ data class InstructorResponse(
     val name: String,
     val organization: String,
     val authority: Authority
+)
+
+data class LinesResponse(
+    val lines: List<String>
+)
+
+data class DepartmentsResponse(
+    val departments: List<String>
 )

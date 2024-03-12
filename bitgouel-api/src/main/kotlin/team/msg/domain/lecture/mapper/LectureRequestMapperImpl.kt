@@ -2,9 +2,13 @@ package team.msg.domain.lecture.mapper
 
 import org.springframework.stereotype.Component
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
+import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLecturesWebRequest
+import team.msg.domain.lecture.presentation.data.web.QueryAllLinesWebRequest
 
 @Component
 class LectureRequestMapperImpl : LectureRequestMapper{
@@ -14,6 +18,10 @@ class LectureRequestMapperImpl : LectureRequestMapper{
     override fun createLectureWebRequestToDto(webRequest: CreateLectureWebRequest) = CreateLectureRequest(
         name = webRequest.name,
         content = webRequest.content,
+        semester = webRequest.semester,
+        division = webRequest.division,
+        department = webRequest.department,
+        line = webRequest.line,
         startDate = webRequest.startDate,
         endDate = webRequest.endDate,
         completeDate = webRequest.completeDate,
@@ -28,5 +36,20 @@ class LectureRequestMapperImpl : LectureRequestMapper{
      */
     override fun queryLectureWebRequestToDto(webRequest: QueryAllLecturesWebRequest) = QueryAllLectureRequest(
         lectureType = webRequest.type
+    )
+    
+    /**
+     * 계열 조회 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    override fun queryAllLinesWebRequestToDto(webRequest: QueryAllLinesWebRequest) = QueryAllLinesRequest(
+        division = webRequest.division,
+        keyword = webRequest.keyword
+    )
+
+    /**
+     * 학과 조회 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    override fun queryAllDepartmentsWebRequestToDto(webRequest: QueryAllDepartmentsWebRequest) = QueryAllDepartmentsRequest(
+        keyword = webRequest.keyword
     )
 }

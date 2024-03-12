@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
+import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
+import team.msg.domain.lecture.presentation.data.response.LinesResponse
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
+import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLecturesWebRequest
+import team.msg.domain.lecture.presentation.data.web.QueryAllLinesWebRequest
 import team.msg.domain.lecture.service.LectureService
 import java.util.*
 
@@ -62,6 +66,20 @@ class LectureController(
     @GetMapping("/instructor")
     fun queryInstructors(@RequestParam keyword: String): ResponseEntity<InstructorsResponse> {
         val response = lectureService.queryInstructors(keyword)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/line")
+    fun queryAllLines(webRequest: QueryAllLinesWebRequest): ResponseEntity<LinesResponse> {
+        val request = lectureRequestMapper.queryAllLinesWebRequestToDto(webRequest)
+        val response = lectureService.queryAllLines(request)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/department")
+    fun queryAllDepartments(webRequest: QueryAllDepartmentsWebRequest): ResponseEntity<DepartmentsResponse> {
+        val request = lectureRequestMapper.queryAllDepartmentsWebRequestToDto(webRequest)
+        val response = lectureService.queryAllDepartments(request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
