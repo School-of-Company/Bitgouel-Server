@@ -31,7 +31,9 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
+import team.msg.global.exception.ForbiddenException
 import java.time.LocalDate
 import java.util.*
 
@@ -241,6 +243,10 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         val user = fixture<User> {
             property(User::id) { userId }
             property(User::name) { username }
+            property(User::authority) { Authority.ROLE_TEACHER }
+        }
+        val invalidUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_USER }
         }
         val student = fixture<Student> {
             property(Student::id) { studentId }
@@ -294,8 +300,18 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         When("조회 하려는 학생과 조회 하려는 선생님의 동아리가 다르다면") {
             every { teacherRepository.findByUser(user) } returns invalidTeacher
 
-            Then("ForbiddenStudentActivity 가 발생해야 한다") {
+            Then("ForbiddenStudentActivityException 이 발생해야 한다") {
                 shouldThrow<ForbiddenStudentActivityException> {
+                    studentActivityServiceImpl.queryStudentActivitiesByStudent(studentId, pageable)
+                }
+            }
+        }
+
+        When("조회 하려는 유저의 authority가 TEACHER 또는 ROLE_ADMIN이 아니라면") {
+            every { userUtil.queryCurrentUser() } returns invalidUser
+
+            Then("ForbiddenException 이 발생해야 한다") {
+                shouldThrow<ForbiddenException> {
                     studentActivityServiceImpl.queryStudentActivitiesByStudent(studentId, pageable)
                 }
             }
