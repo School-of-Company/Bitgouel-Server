@@ -49,9 +49,6 @@ class Lecture(
     @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
     val endDate: LocalDateTime,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
-    val completeDate: LocalDateTime,
-
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
     val content: String,
 
