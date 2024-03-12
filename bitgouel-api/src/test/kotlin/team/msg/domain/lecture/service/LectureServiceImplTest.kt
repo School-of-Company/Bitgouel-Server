@@ -23,15 +23,18 @@ import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
+import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.model.Professor
@@ -42,7 +45,9 @@ import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 class LectureServiceImplTest : BehaviorSpec({
@@ -51,6 +56,7 @@ class LectureServiceImplTest : BehaviorSpec({
     val fixture = kotlinFixture()
 
     val lectureRepository = mockk<LectureRepository>()
+    val lectureDateRepository = mockk<LectureDateRepository>()
     val registeredLectureRepository = mockk<RegisteredLectureRepository>()
     val studentRepository = mockk<StudentRepository>()
     val userRepository = mockk<UserRepository>()
@@ -58,6 +64,7 @@ class LectureServiceImplTest : BehaviorSpec({
     val pageable = mockk<Pageable>()
     val lectureServiceImpl = LectureServiceImpl(
         lectureRepository,
+        lectureDateRepository,
         registeredLectureRepository,
         studentRepository,
         userRepository,
@@ -70,15 +77,22 @@ class LectureServiceImplTest : BehaviorSpec({
         val user = fixture<User>()
         val request = fixture<CreateLectureRequest>()
         val lecture = fixture<Lecture>()
+        val lectureDate = fixture<LectureDate>()
+        val lectureDates = mutableListOf(lectureDate)
 
         every { userRepository.findByIdOrNull(any()) } returns user
         every { lectureRepository.save(any()) } returns lecture
+        every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
 
         When("Lecture 등록 요청을 하면") {
             lectureServiceImpl.createLecture(request)
 
             Then("Lecture 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { lectureRepository.save(any()) }
+            }
+
+            Then("LectureDate 가 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureDateRepository.saveAll(any<List<LectureDate>>()) }
             }
         }
 
@@ -127,7 +141,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::semester) { semester }
             property(Lecture::division) { division }
@@ -142,7 +155,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::semester) { semester }
             property(Lecture::division) { division }
@@ -159,7 +171,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
             property(LectureResponse::startDate) { startDate }
             property(LectureResponse::endDate) { endDate }
-            property(LectureResponse::completeDate) { completeDate }
             property(LectureResponse::lecturer) { instructor }
             property(LectureResponse::lectureStatus) { lectureStatus }
             property(LectureResponse::semester) { semester }
@@ -176,7 +187,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
             property(LectureResponse::startDate) { startDate }
             property(LectureResponse::endDate) { endDate }
-            property(LectureResponse::completeDate) { completeDate }
             property(LectureResponse::lecturer) { instructor }
             property(LectureResponse::lectureStatus) { lectureStatus }
             property(LectureResponse::semester) { semester }
@@ -255,7 +265,6 @@ class LectureServiceImplTest : BehaviorSpec({
         val credit = 2
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val completeDate = LocalDateTime.MAX
         val lectureStatus = LectureStatus.OPENED
         val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
         val isRegistered = false
@@ -263,6 +272,15 @@ class LectureServiceImplTest : BehaviorSpec({
         val division = Division.AUTOMOBILE_INDUSTRY
         val line = "line"
         val department = "department"
+        val completeDate = LocalDate.MAX
+        val startTime = LocalTime.MIN
+        val endTime = LocalTime.MAX
+        val lectureDate = fixture<LectureDate> {
+            property(LectureDate::completeDate) { completeDate }
+            property(LectureDate::startTime) { startTime }
+            property(LectureDate::endTime) { endTime }
+        }
+        val lectureDates = mutableListOf(lectureDate)
 
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
@@ -272,7 +290,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
             property(Lecture::semester) { semester }
@@ -280,6 +297,14 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::line) { line }
             property(Lecture::department) { department }
         }
+
+        val lectureDateResponse = fixture<LectureDateResponse> {
+            property(LectureDate::completeDate) { completeDate }
+            property(LectureDate::startTime) { startTime }
+            property(LectureDate::endTime) { endTime }
+        }
+
+        val lectureDateResponses = mutableListOf(lectureDateResponse)
 
         val response = fixture<LectureDetailsResponse> {
             property(LectureDetailsResponse::name) { name }
@@ -289,7 +314,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::maxRegisteredUser) { maxRegisteredUser }
             property(LectureDetailsResponse::startDate) { startDate }
             property(LectureDetailsResponse::endDate) { endDate }
-            property(LectureDetailsResponse::completeDate) { completeDate }
+            property(LectureDetailsResponse::lectureDates) { lectureDateResponses }
             property(LectureDetailsResponse::lecturer) { instructor }
             property(LectureDetailsResponse::lectureStatus) { lectureStatus }
             property(LectureDetailsResponse::isRegistered) { isRegistered }
@@ -303,6 +328,7 @@ class LectureServiceImplTest : BehaviorSpec({
 
         every { userUtil.queryCurrentUser() } returns user
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { lectureDateRepository.findAllByLecture(lecture) } returns lectureDates
         every { registeredLectureRepository.countByLecture(any()) } returns headCount
         every { studentRepository.findByUser(any()) } returns student
         every { registeredLectureRepository.existsOne(any(), any()) } returns isRegistered
@@ -351,8 +377,8 @@ class LectureServiceImplTest : BehaviorSpec({
         val headCount = 0
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val completeDate = LocalDateTime.MAX
         val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+        val lectureDate = fixture<LectureDate>()
 
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
@@ -362,7 +388,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
         }
@@ -378,7 +403,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { missEndDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
         }
@@ -471,7 +495,6 @@ class LectureServiceImplTest : BehaviorSpec({
         val credit = 2
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val completeDate = LocalDateTime.MAX
         val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
 
         val lecture = fixture<Lecture> {
@@ -482,7 +505,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
         }
@@ -498,7 +520,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { missEndDate }
-            property(Lecture::completeDate) { completeDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
         }
