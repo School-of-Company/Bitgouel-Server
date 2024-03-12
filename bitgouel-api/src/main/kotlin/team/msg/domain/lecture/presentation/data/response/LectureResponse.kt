@@ -23,7 +23,6 @@ data class LectureResponse(
     val line: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    val lectureDates: List<LectureDateResponse>,
     val lectureType: LectureType,
     val lectureStatus: LectureStatus,
     val headCount: Int,
@@ -31,7 +30,7 @@ data class LectureResponse(
     val lecturer: String
 ) {
     companion object {
-        fun of(lecture: Lecture, headCount: Int, lectureDates: List<LectureDate>): LectureResponse = LectureResponse(
+        fun of(lecture: Lecture, headCount: Int): LectureResponse = LectureResponse(
             id = lecture.id,
             name = lecture.name,
             content = lecture.content,
@@ -41,7 +40,6 @@ data class LectureResponse(
             line = lecture.line,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
-            lectureDates = of(lectureDates),
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
