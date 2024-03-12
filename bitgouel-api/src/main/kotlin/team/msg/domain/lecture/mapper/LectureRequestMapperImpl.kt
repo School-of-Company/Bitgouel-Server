@@ -2,10 +2,12 @@ package team.msg.domain.lecture.mapper
 
 import org.springframework.stereotype.Component
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.LectureDateRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
+import team.msg.domain.lecture.presentation.data.web.LectureDateWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLecturesWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLinesWebRequest
@@ -24,11 +26,20 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         line = webRequest.line,
         startDate = webRequest.startDate,
         endDate = webRequest.endDate,
-        completeDate = webRequest.completeDate,
+        lectureDates = webRequest.lectureDates.map { lectureDateWebRequestToDto(it) },
         lectureType = webRequest.lectureType,
         credit = webRequest.credit,
         maxRegisteredUser = webRequest.maxRegisteredUser,
         userId = webRequest.userId
+    )
+
+    /**
+     * Lecture Date web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    private fun lectureDateWebRequestToDto(webRequest: LectureDateWebRequest) = LectureDateRequest(
+        completeDate = webRequest.completeDate,
+        startTime = webRequest.startTime,
+        endTime = webRequest.endTime
     )
 
     /**
