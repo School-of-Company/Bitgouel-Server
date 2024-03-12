@@ -13,6 +13,7 @@ import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
@@ -24,6 +25,7 @@ import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
+import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -39,6 +41,7 @@ import java.util.*
 @Service
 class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
+    private val lectureDateRepository: LectureDateRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
     private val userRepository: UserRepository,
@@ -68,7 +71,6 @@ class LectureServiceImpl(
             line = request.line,
             startDate = request.startDate,
             endDate = request.endDate,
-            completeDate = request.completeDate,
             content = request.content,
             lectureType = request.lectureType,
             credit = credit,
@@ -76,7 +78,19 @@ class LectureServiceImpl(
             maxRegisteredUser = request.maxRegisteredUser
         )
 
-        lectureRepository.save(lecture)
+        val savedLecture = lectureRepository.save(lecture)
+
+        val lectureDates = request.lectureDates.map {
+            LectureDate(
+                id = UUID.randomUUID(),
+                lecture = savedLecture,
+                completeDate = it.completeDate,
+                startTime = it.startTime,
+                endTime = it.endTime
+            )
+        }
+
+        lectureDateRepository.saveAll(lectureDates)
     }
 
     /**
@@ -110,6 +124,7 @@ class LectureServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         val lecture = lectureRepository findById id
+        val lectureDates = lectureDateRepository.findAllByLecture(lecture)
 
         val headCount = registeredLectureRepository.countByLecture(lecture)
 
@@ -118,7 +133,7 @@ class LectureServiceImpl(
             registeredLectureRepository.existsOne(student.id, lecture.id)
         } else false
 
-        val response = LectureResponse.detailOf(lecture, headCount, isRegistered)
+        val response = LectureResponse.detailOf(lecture, headCount, isRegistered, lectureDates)
 
         return response
     }
@@ -177,8 +192,7 @@ class LectureServiceImpl(
         val registeredLecture = RegisteredLecture(
             id = UUID.randomUUID(),
             student = student,
-            lecture = lecture,
-            completeDate = lecture.completeDate
+            lecture = lecture
         )
 
         registeredLectureRepository.save(registeredLecture)
