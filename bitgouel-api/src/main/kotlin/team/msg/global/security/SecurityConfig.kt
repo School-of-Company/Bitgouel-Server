@@ -74,7 +74,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.GET, "/activity").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/activity/my").hasRole(STUDENT)
-            .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasAnyRole(TEACHER, BBOZZAK)
+            .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasAnyRole(TEACHER, ADMIN)
             .mvcMatchers(HttpMethod.GET, "/activity/{id}/detail").hasAnyRole(STUDENT, TEACHER, ADMIN, BBOZZAK)
 
             // post
