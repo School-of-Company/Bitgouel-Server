@@ -74,7 +74,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.GET, "/activity").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/activity/my").hasRole(STUDENT)
-            .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasAnyRole(TEACHER, ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/activity/{student_id}").hasAnyRole(TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.GET, "/activity/{id}/detail").hasAnyRole(STUDENT, TEACHER, ADMIN, BBOZZAK)
 
             // post
@@ -102,7 +102,7 @@ class SecurityConfig(
             // certification
             .mvcMatchers(HttpMethod.POST, "/certification").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/certification").hasRole(STUDENT)
-            .mvcMatchers(HttpMethod.GET, "/certification/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/certification/{student_id}").hasAnyRole(ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.PATCH, "/certification/{id}").hasRole(STUDENT)
 
             // user
