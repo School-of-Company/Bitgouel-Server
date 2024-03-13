@@ -184,15 +184,17 @@ class ClubServiceImplTest : BehaviorSpec({
     }
 
     // queryMyClubDetailsService 테스트 코드
-    Given("Club 이 주어질 때") {
+    Given("Club 이 주어질 때 d") {
         val clubId = 0L
         val clubName = "dev GSM"
         val schoolName = "광주소프트웨어마이스터고등학교"
         val headCount = 1
         val studentId = UUID.randomUUID()
         val teacherId = UUID.randomUUID()
+        val studentUserId = UUID.randomUUID()
 
         val studentUser = fixture<User> {
+            property(User::id) { studentUserId }
             property(User::authority) { Authority.ROLE_STUDENT }
         }
         val teacherUser = fixture<User> {
@@ -218,6 +220,7 @@ class ClubServiceImplTest : BehaviorSpec({
         }
 
         val studentResponse = fixture<StudentResponse> {
+            property(StudentResponse::userId) { studentUserId }
             property(StudentResponse::id) { student.id }
             property(StudentResponse::name) { student.user!!.name }
         }
