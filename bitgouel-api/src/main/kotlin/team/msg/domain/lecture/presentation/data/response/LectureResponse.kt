@@ -57,7 +57,7 @@ data class LectureResponse(
             createAt = lecture.createdAt,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
-            lectureDates = of(lectureDates),
+            lectureDates = dateListOf(lectureDates),
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
@@ -67,10 +67,10 @@ data class LectureResponse(
             credit = lecture.credit
         )
 
-        fun of(lectureDates: List<LectureDate>): List<LectureDateResponse> =
-            lectureDates.map { of(it) }
+        fun dateListOf(lectureDates: List<LectureDate>): List<LectureDateResponse> =
+            lectureDates.map { dateOf(it) }
 
-        fun of(lectureDate: LectureDate): LectureDateResponse = LectureDateResponse(
+        fun dateOf(lectureDate: LectureDate): LectureDateResponse = LectureDateResponse(
             completeDate = lectureDate.completeDate,
             startTime = lectureDate.startTime,
             endTime = lectureDate.endTime
