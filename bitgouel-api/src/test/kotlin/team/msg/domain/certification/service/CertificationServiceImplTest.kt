@@ -10,6 +10,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
 import team.msg.domain.certification.exception.ForbiddenCertificationException
@@ -18,6 +19,9 @@ import team.msg.domain.certification.presentation.data.request.UpdateCertificati
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.club.model.Club
+import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -37,11 +41,19 @@ class CertificationServiceImplTest : BehaviorSpec ({
     val studentRepository = mockk<StudentRepository>()
     val userUtil = mockk<UserUtil>()
     val teacherRepository = mockk<TeacherRepository>()
+    val bbozzakRepository = mockk<BbozzakRepository>()
+    val professorRepository = mockk<ProfessorRepository>()
+    val companyInstructorRepository = mockk<CompanyInstructorRepository>()
+    val governmentRepository = mockk<GovernmentRepository>()
     val certificationServiceImpl = CertificationServiceImpl(
         certificationRepository,
         studentRepository,
         userUtil,
-        teacherRepository
+        teacherRepository,
+        bbozzakRepository,
+        professorRepository,
+        companyInstructorRepository,
+        governmentRepository
     )
 
     // createCertification 테스트 코드
