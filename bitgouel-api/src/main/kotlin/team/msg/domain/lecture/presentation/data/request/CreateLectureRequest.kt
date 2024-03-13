@@ -16,7 +16,7 @@ data class CreateLectureRequest (
     val userId: UUID,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    val completeDate: LocalDateTime,
+    val lectureDates: List<LectureDateRequest>,
     val lectureType: LectureType,
     val credit: Int,
     val maxRegisteredUser: Int

@@ -5,9 +5,12 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
+import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 data class LectureResponse(
@@ -20,7 +23,6 @@ data class LectureResponse(
     val line: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    val completeDate: LocalDateTime,
     val lectureType: LectureType,
     val lectureStatus: LectureStatus,
     val headCount: Int,
@@ -38,7 +40,6 @@ data class LectureResponse(
             line = lecture.line,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
-            completeDate = lecture.completeDate,
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
@@ -46,7 +47,7 @@ data class LectureResponse(
             lecturer = lecture.instructor
         )
 
-        fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean): LectureDetailsResponse = LectureDetailsResponse(
+        fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
             semester = lecture.semester,
@@ -56,7 +57,7 @@ data class LectureResponse(
             createAt = lecture.createdAt,
             startDate = lecture.startDate,
             endDate = lecture.endDate,
-            completeDate = lecture.completeDate,
+            lectureDates = dateListOf(lectureDates),
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
@@ -64,6 +65,15 @@ data class LectureResponse(
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
             credit = lecture.credit
+        )
+
+        fun dateListOf(lectureDates: List<LectureDate>): List<LectureDateResponse> =
+            lectureDates.map { dateOf(it) }
+
+        fun dateOf(lectureDate: LectureDate): LectureDateResponse = LectureDateResponse(
+            completeDate = lectureDate.completeDate,
+            startTime = lectureDate.startTime,
+            endTime = lectureDate.endTime
         )
 
         fun instructorOf(user: User, organization: String): InstructorResponse = InstructorResponse(
@@ -97,7 +107,7 @@ data class LectureDetailsResponse(
     val createAt: LocalDateTime,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    val completeDate: LocalDateTime,
+    val lectureDates: List<LectureDateResponse>,
     val lectureType: LectureType,
     val lectureStatus: LectureStatus,
     val headCount: Int,
@@ -105,6 +115,12 @@ data class LectureDetailsResponse(
     val isRegistered: Boolean,
     val lecturer: String,
     val credit: Int
+)
+
+data class LectureDateResponse(
+    val completeDate: LocalDate,
+    val startTime: LocalTime,
+    val endTime: LocalTime
 )
 
 data class InstructorsResponse(

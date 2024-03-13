@@ -3,6 +3,7 @@ package team.msg.domain.lecture.presentation.data.web
 import com.fasterxml.jackson.annotation.JsonFormat
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.validation.Valid
 import javax.validation.constraints.Future
 import javax.validation.constraints.FutureOrPresent
 import javax.validation.constraints.Max
@@ -49,10 +50,9 @@ data class CreateLectureWebRequest(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val endDate: LocalDateTime,
 
+    @Valid
     @field:NotNull
-    @Future
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    val completeDate: LocalDateTime,
+    val lectureDates: List<LectureDateWebRequest>,
 
     @field:NotNull
     @Enumerated(EnumType.STRING)
