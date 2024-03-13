@@ -5,12 +5,14 @@ import java.util.*
 
 class StudentResponse(
     val id: UUID,
+    val userId: UUID,
     val name: String
 ) {
     companion object {
         fun listOf(students: List<Student>) = students.map {
             StudentResponse(
                 id = it.id,
+                userId = it.user!!.id,
                 name = it.user!!.name
             )
         }

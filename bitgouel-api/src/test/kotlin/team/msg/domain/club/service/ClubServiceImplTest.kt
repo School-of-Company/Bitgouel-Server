@@ -191,8 +191,10 @@ class ClubServiceImplTest : BehaviorSpec({
         val headCount = 1
         val studentId = UUID.randomUUID()
         val teacherId = UUID.randomUUID()
+        val studentUserId = UUID.randomUUID()
 
         val studentUser = fixture<User> {
+            property(User::id) { studentUserId }
             property(User::authority) { Authority.ROLE_STUDENT }
         }
         val teacherUser = fixture<User> {
@@ -218,6 +220,7 @@ class ClubServiceImplTest : BehaviorSpec({
         }
 
         val studentResponse = fixture<StudentResponse> {
+            property(StudentResponse::userId) { studentUserId }
             property(StudentResponse::id) { student.id }
             property(StudentResponse::name) { student.user!!.name }
         }

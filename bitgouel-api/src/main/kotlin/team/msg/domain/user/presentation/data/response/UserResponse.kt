@@ -1,6 +1,5 @@
 package team.msg.domain.user.presentation.data.response
 
-import org.springframework.data.domain.Page
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
@@ -13,6 +12,7 @@ data class UserResponse (
 ) {
     companion object {
         fun listOf(user: User,organization: String) = UserPageResponse(
+            id = user.id,
             name = user.name,
             email = user.email,
             phoneNumber = user.phoneNumber,
@@ -43,6 +43,7 @@ data class UserResponse (
 }
 
 data class UserPageResponse (
+    val id: UUID,
     val name: String,
     val email: String,
     val phoneNumber: String,
