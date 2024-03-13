@@ -184,7 +184,7 @@ class ClubServiceImplTest : BehaviorSpec({
     }
 
     // queryMyClubDetailsService 테스트 코드
-    Given("Club 이 주어질 때 d") {
+    Given("Club 이 주어질 때") {
         val clubId = 0L
         val clubName = "dev GSM"
         val schoolName = "광주소프트웨어마이스터고등학교"
