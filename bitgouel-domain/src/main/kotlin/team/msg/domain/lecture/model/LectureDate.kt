@@ -19,12 +19,12 @@ class LectureDate (
     @JoinColumn(name = "lecture_id", columnDefinition = "BINARY(16)")
     val lecture: Lecture,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
+    @Column(nullable = false, updatable = false, columnDefinition = "DATE")
     val completeDate: LocalDate,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
+    @Column(nullable = false, updatable = false, columnDefinition = "TIME")
     val startTime: LocalTime,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
+    @Column(nullable = false, updatable = false, columnDefinition = "TIME")
     val endTime: LocalTime,
 ) : BaseUUIDEntity(id)

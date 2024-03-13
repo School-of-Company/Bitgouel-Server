@@ -13,12 +13,10 @@ data class LectureDateWebRequest(
     val completeDate: LocalDate,
 
     @field:NotNull
-    @Future
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     val startTime: LocalTime,
 
     @field:NotNull
-    @Future
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     val endTime: LocalTime
 )
