@@ -4,9 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
-import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.model.Admin
-import team.msg.domain.admin.repository.AdminRepository
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
@@ -46,8 +44,7 @@ class CertificationServiceImpl(
     private val bbozzakRepository: BbozzakRepository,
     private val professorRepository: ProfessorRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
-    private val governmentRepository: GovernmentRepository,
-    private val adminRepository: AdminRepository
+    private val governmentRepository: GovernmentRepository
 ) : CertificationService {
 
     /**
@@ -184,7 +181,4 @@ class CertificationServiceImpl(
 
     private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
         ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
-
-    private fun findAdminByUser(user: User) = adminRepository.findByUser(user)
-        ?: throw AdminNotFoundException("관리자를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 }
