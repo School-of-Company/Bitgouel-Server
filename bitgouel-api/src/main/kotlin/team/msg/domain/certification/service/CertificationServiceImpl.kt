@@ -103,13 +103,13 @@ class CertificationServiceImpl(
             is Professor -> findProfessorByUser(user).club
             is CompanyInstructor -> findCompanyInstructorByUser(user).club
             is Government -> findGovernmentByUser(user).club
-            is Admin -> {}
+            is Admin -> null
             else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
 
         val student = studentRepository findStudentById studentId
 
-        if (student.club != club && entity !is Admin)
+        if (student.club != club && club != null)
             throw ForbiddenCertificationException("자격증을 조회할 권한이 없습니다. info : [ club = $club ]")
 
         val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc studentId
