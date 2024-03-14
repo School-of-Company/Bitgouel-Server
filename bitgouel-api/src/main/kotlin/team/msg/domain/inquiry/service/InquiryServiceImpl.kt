@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
+import team.msg.domain.inquiry.exception.AlreadyAnsweredInquiryException
 import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
 import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
@@ -162,6 +163,9 @@ class InquiryServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun replyInquiry(id: UUID, request: CreateInquiryAnswerRequest) {
         val currentUser = userUtil.queryCurrentUser()
+
+        if(inquiryAnswerRepository.existsByInquiryId(id))
+            throw AlreadyAnsweredInquiryException("이미 답변이 등록된 문의사항입니다. info ; [ inquiryId = $id ]")
 
         val inquiry = inquiryRepository findById id
 
