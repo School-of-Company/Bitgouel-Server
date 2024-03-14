@@ -8,4 +8,5 @@ import java.util.UUID
 interface InquiryAnswerRepository : CrudRepository<InquiryAnswer, UUID> {
     @EntityGraph(attributePaths = ["admin"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByInquiryId(inquiryId: UUID): InquiryAnswer?
+    fun existsByInquiryId(inquiryId: UUID): Boolean
 }

@@ -11,6 +11,7 @@ import io.mockk.verify
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
+import team.msg.domain.inquiry.exception.AlreadyAnsweredInquiryException
 import team.msg.domain.inquiry.exception.ForbiddenCommandInquiryException
 import team.msg.domain.inquiry.exception.InquiryAnswerNotFoundException
 import team.msg.domain.inquiry.exception.InquiryNotFoundException
@@ -381,6 +382,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
         every { userUtil.queryCurrentUser() } returns user
         every { inquiryRepository.findByIdOrNull(any()) } returns inquiry
         every { inquiryAnswerRepository.save(any()) } returns inquiryAnswer
+        every { inquiryAnswerRepository.existsByInquiryId(inquiryId) } returns false
 
         When("문의사항 삭제 요청을 하면") {
             inquiryServiceImpl.replyInquiry(inquiryId, request)
@@ -395,6 +397,16 @@ class InquiryServiceImplTest : BehaviorSpec ({
 
             Then("InquiryNotFoundException 이 발생해야 한다.") {
                 shouldThrow<InquiryNotFoundException> {
+                    inquiryServiceImpl.replyInquiry(inquiryId, request)
+                }
+            }
+        }
+
+        When("inquiry에 이미 답변이 존재할 경우") {
+            every { inquiryAnswerRepository.existsByInquiryId(inquiryId) } returns true
+
+            Then("AlreadyAnsweredInquiryException 이 발생해야 한다.") {
+                shouldThrow<AlreadyAnsweredInquiryException> {
                     inquiryServiceImpl.replyInquiry(inquiryId, request)
                 }
             }
