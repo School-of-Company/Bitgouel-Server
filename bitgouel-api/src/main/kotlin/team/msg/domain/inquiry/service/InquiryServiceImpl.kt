@@ -165,7 +165,7 @@ class InquiryServiceImpl(
         val currentUser = userUtil.queryCurrentUser()
 
         if(inquiryAnswerRepository.existsByInquiryId(id))
-            throw AlreadyAnsweredInquiryException("이미 답변이 등록된 문의사항입니다. info ; [ inquiryId = $id ]")
+            throw AlreadyAnsweredInquiryException("이미 답변이 등록된 문의사항입니다. info : [ inquiryId = $id ]")
 
         val inquiry = inquiryRepository findById id
 
