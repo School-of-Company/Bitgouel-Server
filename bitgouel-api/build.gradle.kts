@@ -17,6 +17,8 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.appmattus.fixture:fixture:1.2.0")
+    implementation("org.apache.poi:poi:5.2.5")
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
 
     implementation(project(":bitgouel-domain"))
 }
