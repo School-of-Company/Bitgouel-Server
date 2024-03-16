@@ -1,6 +1,7 @@
 package team.msg.domain.lecture.service
 
 import org.apache.poi.ss.usermodel.HorizontalAlignment
+import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -309,6 +310,7 @@ class LectureServiceImpl(
 
         val style = workBook.createCellStyle()
         style.alignment = HorizontalAlignment.CENTER
+        style.verticalAlignment = VerticalAlignment.CENTER
         style.setFont(font)
 
         headers.forEachIndexed { idx, header ->
