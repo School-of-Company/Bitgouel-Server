@@ -38,9 +38,11 @@ import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.model.Professor
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
@@ -59,6 +61,8 @@ class LectureServiceImplTest : BehaviorSpec({
     val lectureDateRepository = mockk<LectureDateRepository>()
     val registeredLectureRepository = mockk<RegisteredLectureRepository>()
     val studentRepository = mockk<StudentRepository>()
+    val teacherRepository = mockk<TeacherRepository>()
+    val professorRepository = mockk<ProfessorRepository>()
     val userRepository = mockk<UserRepository>()
     val userUtil = mockk<UserUtil>()
     val pageable = mockk<Pageable>()
@@ -67,6 +71,8 @@ class LectureServiceImplTest : BehaviorSpec({
         lectureDateRepository,
         registeredLectureRepository,
         studentRepository,
+        teacherRepository,
+        professorRepository,
         userRepository,
         userUtil
     )
