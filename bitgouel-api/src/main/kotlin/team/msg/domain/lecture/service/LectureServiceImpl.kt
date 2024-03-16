@@ -284,7 +284,23 @@ class LectureServiceImpl(
     @Transactional(readOnly = true,rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(): ByteArray {
         val workBook = XSSFWorkbook()
-        val headers = listOf("연번" to 5, "구분" to 15, "계열" to 10, "학기" to 5, "대학" to 15, "학과" to 20 , "교과명" to 30, "교육일정" to 25, "담당교수" to 10, "학교명" to 25, "학과" to 10, "학년" to 5, "학생 성명" to 30, "담당 교사" to 10)
+        val headers = listOf(
+            "연번" to 5,
+            "구분" to 15,
+            "계열" to 10,
+            "학기" to 5,
+            "대학" to 15,
+            "학과" to 20 ,
+            "교과명" to 30,
+            "교육일정" to 25,
+            "담당교수" to 10,
+            "학교명" to 25,
+            "학과" to 10,
+            "학년" to 5,
+            "학생 성명" to 30,
+            "담당 교사" to 10
+        )
+        
         val sheet = workBook.createSheet()
 
         val headerRow = sheet.createRow(0)
