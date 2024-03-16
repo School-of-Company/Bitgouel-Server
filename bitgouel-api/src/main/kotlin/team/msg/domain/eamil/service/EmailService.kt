@@ -1,7 +1,7 @@
 package team.msg.domain.eamil.service
 
-import team.msg.domain.eamil.presentation.data.request.SendEmailRequestData
+import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRequestData
 
 interface EmailService {
-    fun sendEmail(request: SendEmailRequestData)
+    fun sendAuthenticationEmail(request: SendAuthenticationEmailRequestData)
 }
