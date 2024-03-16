@@ -2,7 +2,9 @@ package team.msg.domain.lecture.presentation
 
 import javax.validation.Valid
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -81,5 +83,15 @@ class LectureController(
         val request = lectureRequestMapper.queryAllDepartmentsWebRequestToDto(webRequest)
         val response = lectureService.queryAllDepartments(request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/excel")
+    fun lectureReceiptStatusExcel(): ResponseEntity<ByteArray> {
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        headers.setContentDispositionFormData("attachment", "sample.xlsx")
+        val result = lectureService.lectureReceiptStatusExcel()
+
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(result)
     }
 }
