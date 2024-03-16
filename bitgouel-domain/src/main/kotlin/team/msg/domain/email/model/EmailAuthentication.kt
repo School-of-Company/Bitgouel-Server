@@ -8,6 +8,6 @@ data class EmailAuthentication(
     @Id
     val email: String,
     val code: String,
-    val authentication: Boolean,
+    val isAuthentication: Boolean,
     val attemptCount: Int = 1,
 )
