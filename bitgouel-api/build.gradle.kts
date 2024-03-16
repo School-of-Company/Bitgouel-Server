@@ -17,6 +17,9 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.appmattus.fixture:fixture:1.2.0")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+
 
     implementation(project(":bitgouel-domain"))
 }
