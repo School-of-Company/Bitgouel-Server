@@ -1,7 +1,10 @@
 package team.msg.domain.lecture.service
 
+import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.xssf.usermodel.XSSFCell
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
@@ -297,9 +300,7 @@ class LectureServiceImpl(
         style.setFont(font)
 
         headers.forEachIndexed { idx, header ->
-            val cell: XSSFCell = headerRow.createCell(idx)
-            cell.setCellValue(header.first)
-            cell.cellStyle = style
+            headerRow.createCellWithValueAndStyle(idx, header.first, style)
 
             sheet.autoSizeColumn(idx)
             sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
@@ -339,9 +340,7 @@ class LectureServiceImpl(
                     it.student.user!!.name,
                     teacher.user!!.name
                 ).forEachIndexed { idx, data ->
-                    val cell = row.createCell(idx)
-                    cell.setCellValue(data)
-                    cell.cellStyle = style
+                    row.createCellWithValueAndStyle(idx, data, style)
                 }
             }
         }
@@ -352,7 +351,11 @@ class LectureServiceImpl(
         }
     }
 
-
+    fun XSSFRow.createCellWithValueAndStyle(idx: Int, data: String, style: XSSFCellStyle) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+    }
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
