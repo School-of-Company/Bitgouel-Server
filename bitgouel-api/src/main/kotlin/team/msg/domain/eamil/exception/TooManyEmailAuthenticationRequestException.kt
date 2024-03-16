@@ -3,6 +3,6 @@ package team.msg.domain.eamil.exception
 import team.msg.domain.eamil.exception.constant.EmailErrorCode
 import team.msg.global.error.exception.BitgouelException
 
-class EmailSendFeilException(
+class TooManyEmailAuthenticationRequestException(
     message: String
-) : BitgouelException(message, EmailErrorCode.EMAIL_SEND_FAIL.status)
+) : BitgouelException(message, EmailErrorCode.TOO_MANY_EMAIL_AUTHENTICATION_REQUEST.status)
