@@ -19,6 +19,7 @@ dependencies {
     testImplementation("com.appmattus.fixture:fixture:1.2.0")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 
     implementation(project(":bitgouel-domain"))
