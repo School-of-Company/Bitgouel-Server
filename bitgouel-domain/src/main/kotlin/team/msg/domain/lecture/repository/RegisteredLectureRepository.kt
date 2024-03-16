@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.repository
 
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import team.msg.domain.lecture.model.Lecture
@@ -16,4 +17,6 @@ interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>,
     fun existsByStudentAndLecture(student: Student, lecture: Lecture): Boolean
     fun findByStudentAndLecture(student: Student, lecture: Lecture): RegisteredLecture?
     fun countByLecture(lecture: Lecture): Int
+    @EntityGraph(attributePaths = ["student"])
+    fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
 }
