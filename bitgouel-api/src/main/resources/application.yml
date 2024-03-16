@@ -32,6 +32,7 @@ spring:
     port: ${REDIS_PORT:6379}
 
   mail:
+    url: ${BASE_URL:http://localhost:8080}
     host: smtp.gmail.com
     port: 587
     username: ${GMAIL_ADDRESS}
@@ -42,7 +43,6 @@ spring:
           auth: true
           starttls:
           enable: true
-    url: ${BASE_URL:http://localhost:8080}
 
 jwt:
   accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}
