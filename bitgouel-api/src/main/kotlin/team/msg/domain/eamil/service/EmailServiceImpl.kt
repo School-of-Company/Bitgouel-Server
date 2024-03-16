@@ -1,31 +1,27 @@
 package team.msg.domain.eamil.service
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring5.SpringTemplateEngine
 import team.msg.domain.eamil.exception.AlreadyAuthenticatedEmailException
+import team.msg.domain.eamil.exception.EmailSendFailException
+import team.msg.domain.eamil.exception.TooManyEmailAuthenticationRequestException
 import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRequestData
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
-import org.thymeleaf.context.Context
-import org.thymeleaf.spring5.SpringTemplateEngine
-import team.msg.domain.eamil.exception.EmailSendFailException
-import team.msg.domain.eamil.exception.TooManyEmailAuthenticationRequestException
+import team.msg.global.config.properties.EmailProperties
 import java.util.*
 
 @Service
 class EmailServiceImpl(
     private val emailAuthenticationRepository: EmailAuthenticationRepository,
     private val templateEngine: SpringTemplateEngine,
-    private val mailSender: JavaMailSender
+    private val mailSender: JavaMailSender,
+    private val emailProperties: EmailProperties
 ) : EmailService {
-
-
-    @Value("\${spring.mail.url}")
-    private lateinit var baseUrl: String
-
     /**
      * 입력된 email로 인증 링크를 전송하는 비지니스 로직입니다.
      * @param 인증 링크가 전송될 email이 담긴 dto
@@ -84,7 +80,7 @@ class EmailServiceImpl(
      */
     private fun createAuthenticationEmailTemplate(email: String, code: String): String {
         val context = Context()
-        val url = "${baseUrl}/email/?email=${email}&code=${code}"
+        val url = "${emailProperties.url}/email/?email=${email}&code=${code}"
 
         context.setVariable("url", url)
 
