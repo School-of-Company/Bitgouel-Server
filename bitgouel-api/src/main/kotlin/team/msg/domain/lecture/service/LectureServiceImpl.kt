@@ -1,8 +1,6 @@
 package team.msg.domain.lecture.service
 
-import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.HorizontalAlignment
-import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -300,12 +298,10 @@ class LectureServiceImpl(
             "학생 성명" to 30,
             "담당 교사" to 10
         )
-        
+
         val sheet = workBook.createSheet()
 
         val headerRow = sheet.createRow(0)
-
-        headerRow.heightInPoints = 20F
 
         val font = workBook.createFont()
         font.fontName = "Arial"
@@ -316,7 +312,7 @@ class LectureServiceImpl(
         style.setFont(font)
 
         headers.forEachIndexed { idx, header ->
-            headerRow.createCellWithValueAndStyle(idx, header.first, style)
+            headerRow.createCellWithOptions(idx, header.first, style, 20F)
 
             sheet.autoSizeColumn(idx)
             sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
@@ -329,8 +325,6 @@ class LectureServiceImpl(
 
             registeredLecture.forEachIndexed { serialNumber, it ->
                 val row = sheet.createRow(serialNumber+1)
-
-                row.heightInPoints = 40F
 
                 val club = it.student.club
 
@@ -356,7 +350,7 @@ class LectureServiceImpl(
                     it.student.user!!.name,
                     teacher.user!!.name
                 ).forEachIndexed { idx, data ->
-                    row.createCellWithValueAndStyle(idx, data, style)
+                    row.createCellWithOptions(idx, data, style, 40F)
                 }
             }
         }
@@ -367,10 +361,11 @@ class LectureServiceImpl(
         }
     }
 
-    fun XSSFRow.createCellWithValueAndStyle(idx: Int, data: String, style: XSSFCellStyle) {
+    fun XSSFRow.createCellWithOptions(idx: Int, data: String,style: XSSFCellStyle, height: Float) {
         val cell = this.createCell(idx)
         cell.setCellValue(data)
         cell.cellStyle = style
+        this.heightInPoints = height
     }
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
