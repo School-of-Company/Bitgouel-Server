@@ -21,4 +21,5 @@ interface LectureService {
     fun signUpLecture(id: UUID)
     fun cancelSignUpLecture(id: UUID)
     fun queryInstructors(keyword: String): InstructorsResponse
+    fun lectureReceiptStatusExcel(): ByteArray
 }
