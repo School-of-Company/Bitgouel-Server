@@ -35,13 +35,17 @@ spring:
     url: ${BASE_URL:http://localhost:8080}
     host: smtp.gmail.com
     port: 587
-    username: ${GMAIL_ADDRESS}
+    username: ${GMAIL_USERNAME}
     password: ${GMAIL_PASSWORD}
     properties:
       mail:
         smtp:
-          auth: true
           starttls:
+            required: true
+          auth: true
+          connection-timeout: 5000
+          timeout: 5000
+          write-time-out: 5000
           enable: true
 
 jwt:
