@@ -353,6 +353,7 @@ class LectureServiceImpl(
                     teacher.user!!.name
                 ).forEachIndexed { idx, data ->
                     row.createCellWithOptions(idx, data, style, 40F)
+                    row.height = -1
                 }
             }
         }
