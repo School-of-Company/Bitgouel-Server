@@ -11,6 +11,4 @@ class EmailProperties (
     val username: String,
     val password: String,
     val url: String
-
-
 )
