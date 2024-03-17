@@ -5,12 +5,19 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
+import team.msg.domain.inquiry.model.QInquiry
 import team.msg.domain.inquiry.model.QInquiry.inquiry
+import java.util.*
 
 @Repository
 class InquiryRepositoryImpl(
     private val jpaQueryFactory: JPAQueryFactory
 ) : InquiryRepositoryCustom {
+    override fun deleteAllByUserId(userId: UUID) {
+        jpaQueryFactory.delete(QInquiry.inquiry)
+            .where(QInquiry.inquiry.user.id.eq(userId))
+            .execute()
+    }
 
     override fun search(answerStatus: AnswerStatus?, keyword: String): List<Inquiry> {
         return jpaQueryFactory.selectFrom(inquiry)
