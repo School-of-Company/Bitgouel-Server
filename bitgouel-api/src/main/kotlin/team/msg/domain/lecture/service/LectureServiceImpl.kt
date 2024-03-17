@@ -292,7 +292,7 @@ class LectureServiceImpl(
             "교육일정" to 25,
             "담당교수" to 10,
             "학교명" to 25,
-            "학과" to 10,
+            "동아리" to 10,
             "학년" to 5,
             "학생 성명" to 30,
             "담당 교사" to 10
