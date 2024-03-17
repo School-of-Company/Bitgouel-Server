@@ -61,8 +61,6 @@ class LectureServiceImpl(
     private val userUtil: UserUtil
 ) : LectureService{
 
-    private val log = LoggerFactory.getLogger(this.javaClass.name)
-
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
      * @param 생성할 강의의 데이터를 담은 request Dto
@@ -335,6 +333,8 @@ class LectureServiceImpl(
 
                 val professor = professorRepository.findByUser(lecture.user)
                     ?: throw ProfessorNotFoundException("해당 교수를 찾을 수 없습니다 : [ userId = ${lecture.user.id}]")
+
+                val lectureDate = lectureDateRepository.findAllByLecture(lecture)
 
                 listOf(
                     (serialNumber+1).toString(),
