@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional
 import org.thymeleaf.context.Context
 import org.thymeleaf.spring5.SpringTemplateEngine
 import team.msg.domain.eamil.exception.AlreadyAuthenticatedEmailException
+import team.msg.domain.eamil.exception.AuthCodeExpiredException
 import team.msg.domain.eamil.exception.EmailSendFailException
+import team.msg.domain.eamil.exception.MisMatchCodeException
 import team.msg.domain.eamil.exception.TooManyEmailAuthenticationRequestException
 import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRequestData
 import team.msg.domain.email.model.EmailAuthentication
@@ -67,6 +69,24 @@ class EmailServiceImpl(
             throw EmailSendFailException("이메일 전송에 실패했습니다. info : [ email = $email ]")
         }
 
+    }
+
+    /**
+     * 인증 링크의 email과 코드로 이메일을 인증하는 비지니스 로직입니다.
+     * @param 인증할 email과 code
+     */
+    override fun emailAuthentication(email: String, code: String) {
+        val emailAuthentication = emailAuthenticationRepository.findById(email)
+            .orElseThrow { throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]") }
+
+        if (emailAuthentication.code != code)
+            throw MisMatchCodeException("인증 코드가 일치하지않습니다. info : [ code = $code ]")
+
+        val updateEmailAuth = emailAuthentication.copy(
+            isAuthentication = true
+        )
+
+        emailAuthenticationRepository.save(updateEmailAuth)
     }
 
     /**
