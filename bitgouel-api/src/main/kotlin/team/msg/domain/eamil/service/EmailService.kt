@@ -4,4 +4,5 @@ import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRe
 
 interface EmailService {
     fun sendAuthenticationEmail(request: SendAuthenticationEmailRequestData)
+    fun emailAuthentication(email: String, code: String)
 }
