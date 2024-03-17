@@ -9,5 +9,5 @@ data class EmailAuthentication(
     val email: String,
     val code: String,
     val isAuthentication: Boolean,
-    val attemptCount: Int = 0
+    val attemptCount: Int
 )

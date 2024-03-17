@@ -36,7 +36,8 @@ class EmailServiceImpl(
                 EmailAuthentication(
                     email = email,
                     isAuthentication = false,
-                    code = code
+                    code = code,
+                    attemptCount = 0
                 )
             )
 
