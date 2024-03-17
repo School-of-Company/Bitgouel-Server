@@ -344,7 +344,7 @@ class LectureServiceImpl(
                     professor.university,
                     lecture.department,
                     lecture.name,
-                    "${lecture.startDate.toLocalDate()} ~ ${lecture.endDate.toLocalDate()}",
+                    lectureDate.map { "${it.completeDate}, ${it.startTime} ~ ${it.endTime}"}.joinToString("\n"),
                     lecture.instructor,
                     club.school.highSchool.schoolName,
                     club.name,
