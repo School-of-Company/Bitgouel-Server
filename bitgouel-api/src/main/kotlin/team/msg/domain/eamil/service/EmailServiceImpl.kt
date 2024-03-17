@@ -75,6 +75,7 @@ class EmailServiceImpl(
      * 인증 링크의 email과 코드로 이메일을 인증하는 비지니스 로직입니다.
      * @param 인증할 email과 code
      */
+    @Transactional(rollbackFor = [Exception::class])
     override fun emailAuthentication(email: String, code: String) {
         val emailAuthentication = emailAuthenticationRepository.findById(email)
             .orElseThrow { throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]") }
