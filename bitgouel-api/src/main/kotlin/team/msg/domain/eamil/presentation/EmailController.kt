@@ -25,7 +25,7 @@ class EmailController(
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping
+    @GetMapping("/authentication")
     fun emailAuthentication(@RequestParam email: String, @RequestParam code: String): ResponseEntity<Unit> {
         emailService.emailAuthentication(email, code)
         return ResponseEntity.noContent().build()
