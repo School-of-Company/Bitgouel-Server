@@ -47,14 +47,10 @@ class EmailServiceImpl(
         if(emailAuthentication.attemptCount >= 3)
             throw TooManyEmailAuthenticationRequestException("너무 많은 이메일 인증 요청을 보냈습니다. info : [ email = $email ]")
 
-        val updatedEmailAuthentication = emailAuthentication.run {
-            EmailAuthentication(
-                email = email,
-                isAuthentication = false,
-                code = code,
-                attemptCount = attemptCount + 1
-            )
-        }
+        val updatedEmailAuthentication = emailAuthentication.copy(
+            isAuthentication = false,
+            attemptCount = emailAuthentication.attemptCount + 1
+        )
 
         emailAuthenticationRepository.save(updatedEmailAuthentication)
 
