@@ -2,6 +2,6 @@ package team.msg.domain.inquiry.repository.custom
 
 import java.util.*
 
-interface InquiryAnswerRepositoryCustom {
+interface CustomInquiryAnswerRepository {
     fun deleteAllByAdminId(adminId: UUID)
 }
