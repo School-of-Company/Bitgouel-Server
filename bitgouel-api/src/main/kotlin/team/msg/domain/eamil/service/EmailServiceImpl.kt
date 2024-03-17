@@ -32,14 +32,14 @@ class EmailServiceImpl(
         val code = UUID.randomUUID().toString()
 
         val emailAuthentication = emailAuthenticationRepository.findById(email)
-            .orElse(
+            .orElseGet {
                 EmailAuthentication(
                     email = email,
                     isAuthentication = false,
                     code = code,
                     attemptCount = 0
                 )
-            )
+            }
 
         if(emailAuthentication.isAuthentication)
             throw AlreadyAuthenticatedEmailException("이미 인증된 이메일입니다. info : [ email = $email ]")
