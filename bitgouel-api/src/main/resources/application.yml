@@ -37,6 +37,18 @@ spring:
     username: ${GMAIL_USERNAME:bitgoeul06}
     password: ${GMAIL_PASSWORD:aaaabbbbccccdddd}
     url: ${BASE_URL:http://localhost:8080}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+
 
 jwt:
   accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}
