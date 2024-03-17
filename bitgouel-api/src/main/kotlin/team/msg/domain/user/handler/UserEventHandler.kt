@@ -52,7 +52,8 @@ class UserEventHandler(
     private val certificationRepository: CertificationRepository,
     private val postRepository: PostRepository,
     private val withdrawStudentRepository: WithdrawStudentRepository,
-    private val inquiryRepository: InquiryRepository
+    private val inquiryRepository: InquiryRepository,
+    private val inquiryAnswerRepository: InquiryAnswerRepository
 ) {
 
     /**
@@ -77,6 +78,7 @@ class UserEventHandler(
             ROLE_ADMIN -> {
                 val admin = adminRepository findByUser user
 
+                inquiryAnswerRepository.deleteAllByAdminId(admin.id)
                 postRepository.deleteAllByUserId(user.id)
                 adminRepository.delete(admin)
             }
