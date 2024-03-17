@@ -77,7 +77,7 @@ class EmailServiceImpl(
      */
     private fun createAuthenticationEmailTemplate(email: String, code: String): String {
         val context = Context()
-        val url = "${emailProperties.url}/email/?email=${email}&code=${code}"
+        val url = "${emailProperties.url}/email/authentication?email=${email}&code=${code}"
 
         context.setVariable("url", url)
 
