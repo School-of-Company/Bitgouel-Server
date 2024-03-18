@@ -272,6 +272,11 @@ class AuthServiceImpl(
         refreshTokenRepository.delete(token)
     }
 
+    /**
+     * 이메일이 인증된 사용자의 비밀번호를 변경하는 비지니스 로직입니다.
+     * @param 비밀번호를 변경할 계정의 이메일과 변경할 비밀번호
+     */
+    @Transactional(rollbackFor = [Exception::class])
     override fun changePassword(changePasswordRequest: ChangePasswordRequest) {
         val user = userRepository.findByEmail(changePasswordRequest.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email =  ${changePasswordRequest.email} ]")
