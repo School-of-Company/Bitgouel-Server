@@ -1,4 +1,4 @@
-package team.msg.domain.eamil.presentation.web
+package team.msg.domain.email.presentation.web
 
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotNull

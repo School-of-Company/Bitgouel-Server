@@ -1,4 +1,4 @@
-package team.msg.domain.eamil.exception.constant
+package team.msg.domain.email.exception.constant
 
 enum class EmailErrorCode(
     val status: Int

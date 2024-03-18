@@ -1,4 +1,4 @@
-package team.msg.domain.eamil.service
+package team.msg.domain.email.service
 
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.thymeleaf.context.Context
 import org.thymeleaf.spring5.SpringTemplateEngine
-import team.msg.domain.eamil.exception.AlreadyAuthenticatedEmailException
-import team.msg.domain.eamil.exception.AuthCodeExpiredException
-import team.msg.domain.eamil.exception.EmailSendFailException
-import team.msg.domain.eamil.exception.MisMatchCodeException
-import team.msg.domain.eamil.exception.TooManyEmailAuthenticationRequestException
-import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRequestData
+import team.msg.domain.email.exception.AlreadyAuthenticatedEmailException
+import team.msg.domain.email.exception.AuthCodeExpiredException
+import team.msg.domain.email.exception.EmailSendFailException
+import team.msg.domain.email.exception.MisMatchCodeException
+import team.msg.domain.email.exception.TooManyEmailAuthenticationRequestException
+import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequestData
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.global.config.properties.EmailProperties
