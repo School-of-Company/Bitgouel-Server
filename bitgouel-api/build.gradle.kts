@@ -19,7 +19,11 @@ dependencies {
     testImplementation("com.appmattus.fixture:fixture:1.2.0")
     implementation("org.apache.poi:poi:5.2.5")
     implementation("org.apache.poi:poi-ooxml:5.2.5")
-
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
+    
     implementation(project(":bitgouel-domain"))
 }
 
