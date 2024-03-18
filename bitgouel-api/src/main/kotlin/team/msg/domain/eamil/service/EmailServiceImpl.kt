@@ -81,7 +81,7 @@ class EmailServiceImpl(
             .orElseThrow { throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]") }
 
         if (emailAuthentication.code != code)
-            throw MisMatchCodeException("인증 코드가 일치하지않습니다. info : [ code = $code ]")
+            throw MisMatchCodeException("인증 코드가 일치하지 않습니다. info : [ code = $code ]")
 
         val updateEmailAuth = emailAuthentication.copy(
             isAuthentication = true
