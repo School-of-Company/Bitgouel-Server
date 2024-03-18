@@ -6,9 +6,11 @@ package team.msg.domain.lecture.enums
  * SECOND_YEAR_FALL_SEMESTER 2학년 2학기
  * THIRD_YEAR_SPRING_SEMESTER 3학년 1학기
  */
-enum class Semester {
-    FIRST_YEAR_FALL_SEMESTER,
-    SECOND_YEAR_SPRING_SEMESTER,
-    SECOND_YEAR_FALL_SEMESTER,
-    THIRD_YEAR_SPRING_SEMESTER
+enum class Semester(
+    val yearAndSemester: String
+) {
+    FIRST_YEAR_FALL_SEMESTER("1-2"),
+    SECOND_YEAR_SPRING_SEMESTER("2-1"),
+    SECOND_YEAR_FALL_SEMESTER("2-2"),
+    THIRD_YEAR_SPRING_SEMESTER("3-1")
 }

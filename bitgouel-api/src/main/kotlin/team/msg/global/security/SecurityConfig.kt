@@ -96,6 +96,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/lecture/instructor").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture/line").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture/department").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/lecture/excel").hasRole(ADMIN)
 
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)

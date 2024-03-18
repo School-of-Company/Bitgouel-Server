@@ -1,5 +1,11 @@
 package team.msg.domain.lecture.service
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment
+import org.apache.poi.ss.usermodel.VerticalAlignment
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -28,13 +34,18 @@ import team.msg.domain.lecture.presentation.data.response.LinesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.professor.exception.ProfessorNotFoundException
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
+import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.util.*
 
@@ -44,6 +55,8 @@ class LectureServiceImpl(
     private val lectureDateRepository: LectureDateRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
+    private val teacherRepository: TeacherRepository,
+    private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
     private val userUtil: UserUtil
 ) : LectureService{
@@ -265,6 +278,98 @@ class LectureServiceImpl(
         return response
     }
 
+    @Transactional(readOnly = true,rollbackFor = [Exception::class])
+    override fun lectureReceiptStatusExcel(): ByteArray {
+        val workBook = XSSFWorkbook()
+        val headers = listOf(
+            "연번" to 5,
+            "구분" to 15,
+            "계열" to 10,
+            "학기" to 5,
+            "대학" to 15,
+            "학과" to 20 ,
+            "교과명" to 30,
+            "교육일정" to 25,
+            "담당교수" to 10,
+            "학교명" to 25,
+            "동아리" to 10,
+            "학년" to 5,
+            "학생 성명" to 30,
+            "담당 교사" to 10
+        )
+
+        val sheet = workBook.createSheet()
+
+        val headerRow = sheet.createRow(0)
+
+        val font = workBook.createFont()
+        font.fontName = "Arial"
+        font.fontHeightInPoints = 11
+
+        val style = workBook.createCellStyle()
+        style.alignment = HorizontalAlignment.CENTER
+        style.verticalAlignment = VerticalAlignment.CENTER
+        style.setFont(font)
+
+        headers.forEachIndexed { idx, header ->
+            headerRow.createCellWithOptions(idx, header.first, style, 20F)
+
+            sheet.autoSizeColumn(idx)
+            sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
+        }
+
+        val lectures = lectureRepository.findAll()
+
+        lectures.forEach { lecture ->
+            val registeredLecture = registeredLectureRepository.findAllByLecture(lecture)
+
+            registeredLecture.forEachIndexed { serialNumber, it ->
+                val row = sheet.createRow(serialNumber+1)
+
+                val club = it.student.club
+
+                val teacher = teacherRepository.findByClub(club)
+                    ?: throw TeacherNotFoundException("해당 동아리의 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
+
+                val professor = professorRepository.findByUser(lecture.user)
+                    ?: throw ProfessorNotFoundException("해당 교수를 찾을 수 없습니다 : [ userId = ${lecture.user.id}]")
+
+                val lectureDate = lectureDateRepository.findAllByLecture(lecture)
+
+                listOf(
+                    (serialNumber+1).toString(),
+                    lecture.division.divisionName,
+                    lecture.line,
+                    lecture.semester.yearAndSemester,
+                    professor.university,
+                    lecture.department,
+                    lecture.name,
+                    lectureDate.map { "${it.completeDate}, ${it.startTime} ~ ${it.endTime}"}.joinToString("\n"),
+                    lecture.instructor,
+                    club.school.highSchool.schoolName,
+                    club.name,
+                    it.student.grade.toString(),
+                    it.student.user!!.name,
+                    teacher.user!!.name
+                ).forEachIndexed { idx, data ->
+                    row.createCellWithOptions(idx, data, style, 40F)
+                    row.height = -1
+                }
+            }
+        }
+
+        ByteArrayOutputStream().use { stream ->
+            workBook.write(stream)
+            return stream.toByteArray()
+        }
+    }
+
+    fun XSSFRow.createCellWithOptions(idx: Int, data: String,style: XSSFCellStyle, height: Float) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        this.heightInPoints = height
+    }
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
