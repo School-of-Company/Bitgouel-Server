@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.email.mapper.EmailRequestMapper
-import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponseData
+import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponse
 import team.msg.domain.email.presentation.web.CheckAuthenticationEmailWebRequest
 import team.msg.domain.email.presentation.web.SendAuthenticationEmailWebRequest
 import team.msg.domain.email.service.EmailService
@@ -28,7 +28,7 @@ class EmailController(
     }
 
     @GetMapping
-    fun checkEmailAuthentication(@RequestBody @Valid webRequest: CheckAuthenticationEmailWebRequest): ResponseEntity<CheckEmailAuthenticationResponseData> {
+    fun checkEmailAuthentication(@RequestBody @Valid webRequest: CheckAuthenticationEmailWebRequest): ResponseEntity<CheckEmailAuthenticationResponse> {
         val request = emailRequestMapper.checkEmailWebRequestToDto(webRequest)
         val response = emailService.checkEmailAuthentication(request)
         return ResponseEntity.ok(response)

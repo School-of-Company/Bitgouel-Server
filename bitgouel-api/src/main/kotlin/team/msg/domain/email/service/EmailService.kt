@@ -1,11 +1,11 @@
 package team.msg.domain.email.service
 
-import team.msg.domain.email.presentation.data.request.CheckEmailAuthenticationRequestData
-import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequestData
-import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponseData
+import team.msg.domain.email.presentation.data.request.CheckEmailAuthenticationRequest
+import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequest
+import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponse
 
 interface EmailService {
-    fun sendAuthenticationEmail(request: SendAuthenticationEmailRequestData)
+    fun sendAuthenticationEmail(request: SendAuthenticationEmailRequest)
     fun emailAuthentication(email: String, code: String)
-    fun checkEmailAuthentication(request: CheckEmailAuthenticationRequestData): CheckEmailAuthenticationResponseData
+    fun checkEmailAuthentication(request: CheckEmailAuthenticationRequest): CheckEmailAuthenticationResponse
 }
