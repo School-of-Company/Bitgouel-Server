@@ -1,5 +1,6 @@
 package team.msg.domain.email.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
@@ -33,15 +34,13 @@ class EmailServiceImpl(
         val email = request.email
         val code = UUID.randomUUID().toString()
 
-        val emailAuthentication = emailAuthenticationRepository.findById(email)
-            .orElseGet {
-                EmailAuthentication(
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(email)
+            ?: EmailAuthentication(
                     email = email,
                     isAuthentication = false,
                     code = code,
                     attemptCount = 0
-                )
-            }
+            )
 
         if(emailAuthentication.isAuthentication)
             throw AlreadyAuthenticatedEmailException("이미 인증된 이메일입니다. info : [ email = $email ]")
@@ -77,8 +76,8 @@ class EmailServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun emailAuthentication(email: String, code: String) {
-        val emailAuthentication = emailAuthenticationRepository.findById(email)
-            .orElseThrow { throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]") }
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]")
 
         if (emailAuthentication.code != code)
             throw MisMatchCodeException("인증 코드가 일치하지 않습니다. info : [ code = $code ]")
