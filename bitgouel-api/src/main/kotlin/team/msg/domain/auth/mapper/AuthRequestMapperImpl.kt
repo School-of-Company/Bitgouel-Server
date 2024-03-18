@@ -100,4 +100,10 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             email = webRequest.email,
             password = webRequest.password
         )
+
+    override fun changePasswordWebRequestToDto(webRequest: ChangePasswordWebRequest): ChangePasswordRequest =
+        ChangePasswordRequest(
+            email = webRequest.email,
+            newPassword = webRequest.newPassword
+        )
 }
