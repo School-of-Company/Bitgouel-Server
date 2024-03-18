@@ -26,8 +26,8 @@ class EmailController(
     }
 
     @GetMapping("/authentication")
-    fun emailAuthentication(@RequestParam email: String, @RequestParam code: String): ResponseEntity<Unit> {
+    fun emailAuthentication(@RequestParam email: String, @RequestParam code: String): ResponseEntity<String> {
         emailService.emailAuthentication(email, code)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.ok("인증이 완료되었습니다.")
     }
 }
