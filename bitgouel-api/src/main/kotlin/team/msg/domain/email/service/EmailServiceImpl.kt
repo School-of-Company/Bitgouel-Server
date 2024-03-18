@@ -12,8 +12,10 @@ import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.EmailSendFailException
 import team.msg.domain.email.exception.MisMatchCodeException
 import team.msg.domain.email.exception.TooManyEmailAuthenticationRequestException
-import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequestData
+import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequest
 import team.msg.domain.email.model.EmailAuthentication
+import team.msg.domain.email.presentation.data.request.CheckEmailAuthenticationRequest
+import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponse
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.global.config.properties.EmailProperties
 import java.util.*
@@ -30,7 +32,7 @@ class EmailServiceImpl(
      * @param 인증 링크가 전송될 email이 담긴 dto
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun sendAuthenticationEmail(request: SendAuthenticationEmailRequestData) {
+    override fun sendAuthenticationEmail(request: SendAuthenticationEmailRequest) {
         val email = request.email
         val code = UUID.randomUUID().toString()
 
@@ -87,6 +89,23 @@ class EmailServiceImpl(
         )
 
         emailAuthenticationRepository.save(updateEmailAuth)
+    }
+
+    /**
+     * 이메일이 인증된 이메일인지 조회하는 api입니다.
+     * @param 인증할 email
+     * @return email의 인증 여부
+     */
+    @Transactional(readOnly = true)
+    override fun checkEmailAuthentication(request: CheckEmailAuthenticationRequest): CheckEmailAuthenticationResponse {
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(request.email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${request.email} ]")
+
+        val response = CheckEmailAuthenticationResponse(
+            isAuthentication = emailAuthentication.isAuthentication
+        )
+
+        return response
     }
 
     /**

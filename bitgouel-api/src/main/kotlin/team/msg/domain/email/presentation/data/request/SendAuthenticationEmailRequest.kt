@@ -1,5 +1,5 @@
 package team.msg.domain.email.presentation.data.request
 
-data class SendAuthenticationEmailRequestData(
+data class SendAuthenticationEmailRequest(
     val email: String
 )
