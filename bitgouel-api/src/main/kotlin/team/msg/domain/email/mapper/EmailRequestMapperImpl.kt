@@ -1,8 +1,8 @@
-package team.msg.domain.eamil.mapper
+package team.msg.domain.email.mapper
 
 import org.springframework.stereotype.Component
-import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRequestData
-import team.msg.domain.eamil.presentation.web.SendAuthenticationEmailWebRequest
+import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequestData
+import team.msg.domain.email.presentation.web.SendAuthenticationEmailWebRequest
 
 @Component
 class EmailRequestMapperImpl : EmailRequestMapper {

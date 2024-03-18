@@ -1,15 +1,18 @@
-package team.msg.domain.eamil.service
+package team.msg.domain.email.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.thymeleaf.context.Context
 import org.thymeleaf.spring5.SpringTemplateEngine
-import team.msg.domain.eamil.exception.AlreadyAuthenticatedEmailException
-import team.msg.domain.eamil.exception.EmailSendFailException
-import team.msg.domain.eamil.exception.TooManyEmailAuthenticationRequestException
-import team.msg.domain.eamil.presentation.data.request.SendAuthenticationEmailRequestData
+import team.msg.domain.email.exception.AlreadyAuthenticatedEmailException
+import team.msg.domain.email.exception.AuthCodeExpiredException
+import team.msg.domain.email.exception.EmailSendFailException
+import team.msg.domain.email.exception.MisMatchCodeException
+import team.msg.domain.email.exception.TooManyEmailAuthenticationRequestException
+import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequestData
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.global.config.properties.EmailProperties
@@ -31,15 +34,13 @@ class EmailServiceImpl(
         val email = request.email
         val code = UUID.randomUUID().toString()
 
-        val emailAuthentication = emailAuthenticationRepository.findById(email)
-            .orElseGet {
-                EmailAuthentication(
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(email)
+            ?: EmailAuthentication(
                     email = email,
                     isAuthentication = false,
                     code = code,
                     attemptCount = 0
-                )
-            }
+            )
 
         if(emailAuthentication.isAuthentication)
             throw AlreadyAuthenticatedEmailException("이미 인증된 이메일입니다. info : [ email = $email ]")
@@ -70,6 +71,25 @@ class EmailServiceImpl(
     }
 
     /**
+     * 인증 링크의 email과 코드로 이메일을 인증하는 비지니스 로직입니다.
+     * @param 인증할 email과 code
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun emailAuthentication(email: String, code: String) {
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]")
+
+        if (emailAuthentication.code != code)
+            throw MisMatchCodeException("인증 코드가 일치하지 않습니다. info : [ code = $code ]")
+
+        val updateEmailAuth = emailAuthentication.copy(
+            isAuthentication = true
+        )
+
+        emailAuthenticationRepository.save(updateEmailAuth)
+    }
+
+    /**
      * 인증 메일 템플릿을 생성하는 비지니스 로직입니다.
      * authentication-email-template 경로의 파일로 인증 메일에 필요한 html 템플릿을 생성합니다.
      * @param 인증할 이메일과 생성된 인증 코드
@@ -77,7 +97,7 @@ class EmailServiceImpl(
      */
     private fun createAuthenticationEmailTemplate(email: String, code: String): String {
         val context = Context()
-        val url = "${emailProperties.url}/email/?email=${email}&code=${code}"
+        val url = "${emailProperties.url}/email/authentication?email=${email}&code=${code}"
 
         context.setVariable("url", url)
 

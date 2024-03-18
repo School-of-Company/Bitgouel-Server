@@ -61,6 +61,7 @@ class SecurityConfig(
 
             // email
             .mvcMatchers(HttpMethod.POST, "/email").permitAll()
+            .mvcMatchers(HttpMethod.GET, "/email/authentication").permitAll()
 
             // club
             .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
