@@ -40,6 +40,7 @@ import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
+import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.Government
@@ -686,7 +687,10 @@ class AuthServiceImplTest : BehaviorSpec({
             property(User::password) { encodedNewPassword }
         }
 
-        val emailAuthentication = fixture<EmailAuthentication>()
+        val emailAuthentication = fixture<EmailAuthentication> {
+            property(EmailAuthentication::email) { email }
+            property(EmailAuthentication::isAuthentication) { true }
+        }
 
         every { userRepository.findByEmail(any()) } returns user
         every { emailAuthenticationRepository.findByIdOrNull(any()) } returns emailAuthentication
@@ -710,10 +714,25 @@ class AuthServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("인증되지 않은 이메일로 요청하면") {
+        When("인증요청을 보내지 않은 이메일로 요청하면") {
             every { emailAuthenticationRepository.findByIdOrNull(any()) } returns null
             Then("AuthCodeExpiredException 발생해야 한다.") {
                 shouldThrow<AuthCodeExpiredException> {
+                    authServiceImpl.changePassword(request)
+                }
+            }
+        }
+
+        When("인증되지 않은 이메일로 요청하면") {
+            val emailUnAuthentication = fixture<EmailAuthentication> {
+                property(EmailAuthentication::email) { email }
+                property(EmailAuthentication::isAuthentication) { false }
+            }
+
+            every { emailAuthenticationRepository.findByIdOrNull(any()) } returns emailUnAuthentication
+
+            Then("UnAuthenticatedEmailException 발생해야 한다.") {
+                shouldThrow<UnAuthenticatedEmailException> {
                     authServiceImpl.changePassword(request)
                 }
             }
