@@ -286,8 +286,7 @@ class AuthServiceImpl(
             ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
 
         if(!emailAuthentication.isAuthentication)
-            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다.")
-
+            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
 
         val encodedNewPassword = securityUtil.passwordEncode(changePasswordRequest.newPassword)
 
