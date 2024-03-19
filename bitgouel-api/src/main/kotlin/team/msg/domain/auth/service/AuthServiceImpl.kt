@@ -18,6 +18,9 @@ import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.email.exception.AuthCodeExpiredException
+import team.msg.domain.email.exception.UnAuthenticatedEmailException
+import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
@@ -53,6 +56,7 @@ class AuthServiceImpl(
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val emailAuthenticationRepository: EmailAuthenticationRepository,
     private val userUtil: UserUtil,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val bbozzakRepository: BbozzakRepository
@@ -267,6 +271,36 @@ class AuthServiceImpl(
             throw UserNotFoundException("존재하지 않는 유저입니다. info : [ userId =  ${token.userId} ]")
 
         refreshTokenRepository.delete(token)
+    }
+
+    /**
+     * 이메일이 인증된 사용자의 비밀번호를 변경하는 비지니스 로직입니다.
+     * @param 비밀번호를 변경할 계정의 이메일과 변경할 비밀번호
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun changePassword(changePasswordRequest: ChangePasswordRequest) {
+        val user = userRepository.findByEmail(changePasswordRequest.email)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email =  ${changePasswordRequest.email} ]")
+
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(changePasswordRequest.email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+
+        if(!emailAuthentication.isAuthentication)
+            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+
+        val encodedNewPassword = securityUtil.passwordEncode(changePasswordRequest.newPassword)
+
+        val modifiedPasswordUser = User(
+            id = user.id,
+            email = user.email,
+            name = user.name,
+            phoneNumber = user.phoneNumber,
+            password = encodedNewPassword,
+            authority = user.authority,
+            approveStatus = user.approveStatus
+        )
+
+        userRepository.save(modifiedPasswordUser)
     }
 
     /**

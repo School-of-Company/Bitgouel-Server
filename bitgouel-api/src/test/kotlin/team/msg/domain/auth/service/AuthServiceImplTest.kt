@@ -5,15 +5,31 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.auth.exception.*
+import team.msg.domain.auth.exception.AlreadyExistEmailException
+import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
+import team.msg.domain.auth.exception.InvalidRefreshTokenException
+import team.msg.domain.auth.exception.MisMatchPasswordException
+import team.msg.domain.auth.exception.RefreshTokenNotFoundException
+import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.model.RefreshToken
-import team.msg.domain.auth.presentation.data.request.*
+import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
+import team.msg.domain.auth.presentation.data.request.ChangePasswordRequest
+import team.msg.domain.auth.presentation.data.request.CompanyInstructorSignUpRequest
+import team.msg.domain.auth.presentation.data.request.GovernmentSignUpRequest
+import team.msg.domain.auth.presentation.data.request.LoginRequest
+import team.msg.domain.auth.presentation.data.request.ProfessorSignUpRequest
+import team.msg.domain.auth.presentation.data.request.StudentSignUpRequest
+import team.msg.domain.auth.presentation.data.request.TeacherSignUpRequest
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.repository.RefreshTokenRepository
 import team.msg.domain.bbozzak.model.Bbozzak
@@ -23,6 +39,10 @@ import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.email.exception.AuthCodeExpiredException
+import team.msg.domain.email.exception.UnAuthenticatedEmailException
+import team.msg.domain.email.model.EmailAuthentication
+import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
@@ -61,6 +81,7 @@ class AuthServiceImplTest : BehaviorSpec({
     val userUtil = mockk<UserUtil>()
     val applicationEventPublisher = mockk<ApplicationEventPublisher>()
     val bbozzakRepository = mockk<BbozzakRepository>()
+    val emailAuthenticationRepository = mockk<EmailAuthenticationRepository>()
     val authServiceImpl = AuthServiceImpl(
         userRepository,
         securityUtil,
@@ -74,6 +95,7 @@ class AuthServiceImplTest : BehaviorSpec({
         jwtTokenGenerator,
         jwtTokenParser,
         refreshTokenRepository,
+        emailAuthenticationRepository,
         userUtil,
         applicationEventPublisher,
         bbozzakRepository
@@ -642,6 +664,80 @@ class AuthServiceImplTest : BehaviorSpec({
                 }
             }
         }
+    }
+
+    //changePassword 테스트코드
+    Given("changePasswordRequest 가 주어질 때") {
+        val email = "email"
+        val encodedCurrentPassword = "encodedCurrentPassword"
+        val encodedNewPassword = "encodedNewPassword"
+        val newPassword = "newPassword"
+
+        val request = fixture<ChangePasswordRequest>{
+            property(ChangePasswordRequest::email) { email }
+            property(ChangePasswordRequest::newPassword) { newPassword }
+        }
+
+        val user = fixture<User>{
+            property(User::email) { email }
+            property(User::password) { encodedCurrentPassword }
+        }
+        val modifiedPasswordUser = fixture<User>{
+            property(User::email) { email }
+            property(User::password) { encodedNewPassword }
+        }
+
+        val emailAuthentication = fixture<EmailAuthentication> {
+            property(EmailAuthentication::email) { email }
+            property(EmailAuthentication::isAuthentication) { true }
+        }
+
+        every { userRepository.findByEmail(any()) } returns user
+        every { emailAuthenticationRepository.findByIdOrNull(any()) } returns emailAuthentication
+        every { securityUtil.passwordEncode(any()) } returns encodedNewPassword
+        every { userRepository.save(any()) } returns modifiedPasswordUser
+
+        When("비밀번호 변경을 요청하면") {
+            authServiceImpl.changePassword(request)
+
+            Then("유저가 저장되어야 한다.") {
+                verify(exactly = 1) { userRepository.save(any()) }
+            }
+        }
+
+        When("가입되지 않은 이메일로 요청하면") {
+            every { userRepository.findByEmail(any()) } returns null
+            Then("UserNotFoundException이 발생해야 한다.") {
+                shouldThrow<UserNotFoundException> {
+                    authServiceImpl.changePassword(request)
+                }
+            }
+        }
+
+        When("인증요청을 보내지 않은 이메일로 요청하면") {
+            every { emailAuthenticationRepository.findByIdOrNull(any()) } returns null
+            Then("AuthCodeExpiredException 발생해야 한다.") {
+                shouldThrow<AuthCodeExpiredException> {
+                    authServiceImpl.changePassword(request)
+                }
+            }
+        }
+
+        When("인증되지 않은 이메일로 요청하면") {
+            val emailUnAuthentication = fixture<EmailAuthentication> {
+                property(EmailAuthentication::email) { email }
+                property(EmailAuthentication::isAuthentication) { false }
+            }
+
+            every { emailAuthenticationRepository.findByIdOrNull(any()) } returns emailUnAuthentication
+
+            Then("UnAuthenticatedEmailException 발생해야 한다.") {
+                shouldThrow<UnAuthenticatedEmailException> {
+                    authServiceImpl.changePassword(request)
+                }
+            }
+        }
+
     }
 
     // withdraw 테스트 코드

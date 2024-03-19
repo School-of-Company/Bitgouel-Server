@@ -64,6 +64,13 @@ class AuthController(
         return ResponseEntity.ok(response)
     }
 
+    @PatchMapping("/password")
+    fun changePassword(@RequestBody @Valid webRequest: ChangePasswordWebRequest): ResponseEntity<Unit> {
+        val request = authRequestMapper.changePasswordWebRequestToDto(webRequest)
+        authService.changePassword(request)
+        return ResponseEntity.noContent().build()
+    }
+
     @PatchMapping
     fun reissueToken(@RequestHeader("RefreshToken") refreshToken: String): ResponseEntity<TokenResponse> {
         val response = authService.reissueToken(refreshToken)
