@@ -19,6 +19,7 @@ import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
+import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
@@ -281,8 +282,12 @@ class AuthServiceImpl(
         val user = userRepository.findByEmail(changePasswordRequest.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email =  ${changePasswordRequest.email} ]")
 
-        emailAuthenticationRepository.findByIdOrNull(changePasswordRequest.email)
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(changePasswordRequest.email)
             ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+
+        if(!emailAuthentication.isAuthentication)
+            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다.")
+
 
         val encodedNewPassword = securityUtil.passwordEncode(changePasswordRequest.newPassword)
 
