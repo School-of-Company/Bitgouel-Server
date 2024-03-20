@@ -12,9 +12,8 @@ import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.EmailSendFailException
 import team.msg.domain.email.exception.MisMatchCodeException
 import team.msg.domain.email.exception.TooManyEmailAuthenticationRequestException
-import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequest
 import team.msg.domain.email.model.EmailAuthentication
-import team.msg.domain.email.presentation.data.request.CheckEmailAuthenticationRequest
+import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequest
 import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponse
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.global.config.properties.EmailProperties
@@ -97,9 +96,9 @@ class EmailServiceImpl(
      * @return email의 인증 여부
      */
     @Transactional(readOnly = true)
-    override fun checkEmailAuthentication(request: CheckEmailAuthenticationRequest): CheckEmailAuthenticationResponse {
-        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(request.email)
-            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${request.email} ]")
+    override fun checkEmailAuthentication(email: String): CheckEmailAuthenticationResponse {
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = $email ]")
 
         val response = CheckEmailAuthenticationResponse(
             isAuthentication = emailAuthentication.isAuthentication
