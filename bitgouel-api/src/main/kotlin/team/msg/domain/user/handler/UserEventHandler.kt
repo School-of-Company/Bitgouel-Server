@@ -35,6 +35,7 @@ import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority.*
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.model.User
+import team.msg.domain.user.repository.UserRepository
 import team.msg.domain.withdraw.repository.WithdrawStudentRepository
 
 @Component
@@ -53,7 +54,8 @@ class UserEventHandler(
     private val postRepository: PostRepository,
     private val withdrawStudentRepository: WithdrawStudentRepository,
     private val inquiryRepository: InquiryRepository,
-    private val inquiryAnswerRepository: InquiryAnswerRepository
+    private val inquiryAnswerRepository: InquiryAnswerRepository,
+    private val userRepository: UserRepository
 ) {
 
     /**
@@ -62,6 +64,7 @@ class UserEventHandler(
      */
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun withdrawUserHandler(event: WithdrawUserEvent) {
+
         val user = event.user
 
         when (user.authority) {
@@ -110,6 +113,7 @@ class UserEventHandler(
                 lectureRepository.deleteAllByUserId(user.id)
                 postRepository.deleteAllByUserId(user.id)
                 companyInstructorRepository.delete(companyInstructor)
+                userRepository.deleteByIdIn(listOf(user.id))
             }
             ROLE_GOVERNMENT -> {
                 val government = governmentRepository findByUser user
@@ -122,6 +126,8 @@ class UserEventHandler(
 
             else -> throw UnApprovedUserException("회원가입 승인 대기 중인 유저입니다. info : [ userId = ${user.id} ]")
         }
+
+        userRepository.delete(user)
     }
 
     private infix fun StudentRepository.findByUser(user: User): Student =
