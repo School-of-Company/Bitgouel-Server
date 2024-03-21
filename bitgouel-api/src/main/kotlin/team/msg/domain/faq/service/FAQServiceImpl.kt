@@ -1,17 +1,16 @@
 package team.msg.domain.faq.service
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.repository.AdminRepository
-import team.msg.domain.faq.exception.FaqNotFoundException
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
-import team.msg.domain.faq.presentation.data.response.FaqsResponse
 import team.msg.domain.faq.presentation.data.response.FaqResponse
+import team.msg.domain.faq.presentation.data.response.FaqsResponse
 import team.msg.domain.faq.repository.FaqRepository
+
 
 @Service
 class FaqServiceImpl(
