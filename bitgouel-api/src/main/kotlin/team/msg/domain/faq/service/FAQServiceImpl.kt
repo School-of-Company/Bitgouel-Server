@@ -10,7 +10,6 @@ import team.msg.domain.faq.exception.FaqNotFoundException
 import team.msg.domain.faq.model.Faq
 import team.msg.domain.faq.presentation.data.request.CreateFaqRequest
 import team.msg.domain.faq.presentation.data.response.FaqsResponse
-import team.msg.domain.faq.presentation.data.response.FaqDetailsResponse
 import team.msg.domain.faq.presentation.data.response.FaqResponse
 import team.msg.domain.faq.repository.FaqRepository
 
@@ -53,17 +52,5 @@ class FaqServiceImpl(
         )
 
         return response
-    }
-
-    /**
-     * FAQ 상세 조회를 처리하는 비지니스 로직입니다.
-     * @param FAQ 를 상세 조회하기 위한 id 입니다.
-     */
-    @Transactional(rollbackFor = [Exception::class], readOnly = true)
-    override fun queryFaqDetails(id: Long): FaqDetailsResponse {
-        val faq = faqRepository.findByIdOrNull(id)
-            ?: throw FaqNotFoundException("존재하지 않는 faq 입니다. info : [ faqId = $id ]")
-
-        return FaqResponse.detailOf(faq)
     }
 }
