@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.data.repository.findByIdOrNull
+import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.certifiacation.model.Certification
@@ -28,6 +29,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.time.LocalDate
 import java.util.*
@@ -138,8 +140,12 @@ class CertificationServiceImplTest : BehaviorSpec ({
         val certificationAcquisitionDate = LocalDate.MAX
         val request = UUID.randomUUID()
 
+        val entity = fixture<BaseUUIDEntity>()
         val club = fixture<Club>()
-        val user = fixture<User>()
+        val user = fixture<User> {
+            property(User::id) { entity.id }
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
         val teacher = fixture<Teacher> {
             property(Teacher::club) { club }
         }
@@ -162,6 +168,7 @@ class CertificationServiceImplTest : BehaviorSpec ({
         }
 
         every { userUtil.queryCurrentUser() } returns user
+        every { userUtil.getAuthorityEntityAndOrganization(user).first } returns entity
         every { teacherRepository.findByUser(user) } returns teacher
         every { studentRepository.findStudentById(request) } returns student
         every { certificationRepository.findAllByStudentIdOrderByAcquisitionDateDesc(request) } returns listOf(certification)

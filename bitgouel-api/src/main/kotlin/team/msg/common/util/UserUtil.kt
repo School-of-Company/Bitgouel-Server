@@ -59,7 +59,7 @@ class UserUtil(
     private val postRepository: PostRepository,
     private val withdrawStudentRepository: WithdrawStudentRepository,
     private val inquiryRepository: InquiryRepository,
-    private val inquiryAnswerRepository: InquiryAnswerRepository,
+    private val inquiryAnswerRepository: InquiryAnswerRepository
 ) {
 
     fun queryCurrentUserId(): UUID {
