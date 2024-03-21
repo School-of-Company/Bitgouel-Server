@@ -25,7 +25,7 @@ class CustomUserRepositoryImpl(
      * @param 검색할 유저의 이름에 포함되는 keyword, 유저의 역할을 나타내는 authority, 유저의 승인 여부를 나타내는 approveStatus
      * @return 검색 조건에 부합하는 user 리스트
      */
-    override fun query(keyword: String, authority: Authority, approveStatus: ApproveStatus): List<User> =
+    override fun query(keyword: String, authority: Authority, approveStatus: ApproveStatus?): List<User> =
         queryFactory
             .selectFrom(user)
             .where(
@@ -93,6 +93,6 @@ class CustomUserRepositoryImpl(
     private fun authorityEq(authority: Authority): BooleanExpression? =
         if(authority == Authority.ROLE_USER) null else user.authority.eq(authority)
 
-    private fun approveStatusEq(approveStatus: ApproveStatus): BooleanExpression =
-        user.approveStatus.eq(approveStatus)
+    private fun approveStatusEq(approveStatus: ApproveStatus?): BooleanExpression? =
+        if(approveStatus == null) null else user.approveStatus.eq(approveStatus)
 }
