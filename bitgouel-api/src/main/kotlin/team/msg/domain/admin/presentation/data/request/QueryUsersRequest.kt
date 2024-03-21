@@ -6,5 +6,5 @@ import team.msg.domain.user.enums.Authority
 data class QueryUsersRequest(
     val keyword: String,
     val authority: Authority,
-    val approveStatus: ApproveStatus
+    val approveStatus: ApproveStatus?
 )

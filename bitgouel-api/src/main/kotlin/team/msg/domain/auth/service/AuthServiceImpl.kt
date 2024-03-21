@@ -280,7 +280,7 @@ class AuthServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun changePassword(changePasswordRequest: ChangePasswordRequest) {
         val user = userRepository.findByEmail(changePasswordRequest.email)
-            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email =  ${changePasswordRequest.email} ]")
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email = ${changePasswordRequest.email} ]")
 
         val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(changePasswordRequest.email)
             ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
