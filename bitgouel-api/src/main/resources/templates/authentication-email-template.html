@@ -1,12 +1,78 @@
-<!-- 아주 간단한 데모 html... 추후 메일 템플릿이 생기면 바꿔줄 것-->
-
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="utf-8">
-        <title>Title</title>
-    </head>
-    <body>
-        <a th:href="${url}">인증 링크</a>
-    </body>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org%22%3E/">
+<head>
+    <meta charset="utf-8" />
+    <title>Title</title>
+</head>
+<body>
+<div
+        style="
+        background-image: url(https://i.postimg.cc/kgKgQsrf/jason-blackeye-ny-L-rzw-P-Mk-unsplash.png);
+        width: 100%;
+        height: fit-content;
+        position: fixed;
+        top: 0;
+        left: 0;
+        text-align: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        box-sizing: border-box;
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+      "
+>
+    <div
+            style="
+          width: 100%;
+          background-color: rgba(255, 255, 255, 0.65);
+          backdrop-filter: blur(0.5rem);
+          height: fit-content;
+          padding-top: 3rem;
+          padding-bottom: 3rem;
+          box-sizing: border-box;
+        "
+    >
+        <div style="height: 100%">
+            <div style="text-align: center">
+            <span
+                    style="
+                font-size: 1.5rem;
+                font-weight: 500;
+                background-image: linear-gradient(to right, #298de2, #45dfdb);
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+              "
+            >빛고을 직업교육 혁신지구</span
+            >
+                <br />
+                <span style="font-size: 1.5rem; font-weight: 500"
+                >이메일 인증 안내</span
+                >
+                <br />
+                <span style="color: rgba(107, 107, 107, 0.5)">
+              _____________________
+            </span>
+                <div style="margin-bottom: 2rem; margin-top: 1rem">
+                    빛고을 직업교육 혁신지구에서 보내드립니다. <br />
+                    본인인증을 위해 아래 버튼을 눌러주세요.<br />
+                </div>
+                <a
+                        th:href="${url}"
+                        style="
+                background-color: #288be1;
+                border-radius: 0.5rem;
+                color: white;
+                cursor: pointer;
+                text-decoration: none;
+                padding: 0.625rem 3.5rem;
+              "
+                >인증 확인</a
+                >
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 </html>
