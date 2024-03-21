@@ -10,5 +10,5 @@ interface AdminService {
     fun approveUsers(userIds: List<UUID>)
     fun rejectUsers(userIds: List<UUID>)
     fun queryUserDetails(userId: UUID): UserDetailsResponse
-    fun forceWithdraw(userId: UUID)
+    fun forceWithdraw(userIds: List<UUID>)
 }
