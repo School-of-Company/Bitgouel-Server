@@ -13,6 +13,7 @@ import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.event.WithdrawUserEvent
@@ -29,10 +30,10 @@ class AdminServiceImplTest : BehaviorSpec({
     val fixture = kotlinFixture()
 
     val userRepository = mockk<UserRepository>()
-    val applicationEventPublisher = mockk<ApplicationEventPublisher>()
+    val userUtil = mockk<UserUtil>()
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
-        applicationEventPublisher = applicationEventPublisher
+        userUtil = userUtil
     )
 
     // queryUsers 테스트 코드
@@ -128,15 +129,11 @@ class AdminServiceImplTest : BehaviorSpec({
         }
 
         every { userRepository.findByIdIn(userIds) } returns listOf(user)
-        every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
+        every { userUtil.withdrawUser(user) } just Runs
         every { userRepository.deleteByIdIn(any()) } returns Unit
 
         When("User 회원가입 거절 시") {
             adminServiceImpl.rejectUsers(userIds)
-
-            Then("withdrawUserEvent 를 발행해야 한다") {
-                verify(exactly = 1) { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) }
-            }
 
             Then("User가 삭제가 되어야 한다") {
                 verify(exactly = 1) { userRepository.deleteByIdIn(userIds) }
@@ -195,17 +192,13 @@ class AdminServiceImplTest : BehaviorSpec({
         }
 
         every { userRepository.findByIdOrNull(userId) } returns user
-        every { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) } just Runs
+        every { userUtil.withdrawUser(user) } returns Unit
         every { userRepository.delete(user) } returns Unit
 
         When("User 강제 탈퇴 시") {
             adminServiceImpl.forceWithdraw(userId)
 
-            Then("withdrawUserEvent 를 발행해야 한다") {
-                verify(exactly = 1) { applicationEventPublisher.publishEvent(WithdrawUserEvent(user)) }
-            }
-
-            Then("User가 삭제가 되어야 한다") {
+            Then("User 가 삭제가 되어야 한다") {
                 verify(exactly = 1) { userRepository.delete(user) }
             }
         }
