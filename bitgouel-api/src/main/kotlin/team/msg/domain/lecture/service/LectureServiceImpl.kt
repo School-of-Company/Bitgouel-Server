@@ -324,7 +324,7 @@ class LectureServiceImpl(
             val registeredLecture = registeredLectureRepository.findAllByLecture(lecture)
 
             registeredLecture.forEachIndexed { serialNumber, it ->
-                val row = sheet.createRow(serialNumber+1)
+                val row = sheet.createRow(serialNumber + 1)
 
                 val club = it.student.club
 
@@ -344,7 +344,7 @@ class LectureServiceImpl(
                     professor.university,
                     lecture.department,
                     lecture.name,
-                    lectureDate.map { "${it.completeDate}, ${it.startTime} ~ ${it.endTime}"}.joinToString("\n"),
+                    lectureDate.joinToString("\n") { "${it.completeDate}, ${it.startTime} ~ ${it.endTime}" },
                     lecture.instructor,
                     club.school.highSchool.schoolName,
                     club.name,

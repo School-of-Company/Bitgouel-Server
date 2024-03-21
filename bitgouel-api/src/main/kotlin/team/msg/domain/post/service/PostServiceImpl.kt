@@ -126,6 +126,20 @@ class PostServiceImpl(
     }
 
     /**
+     * 게시글 리스트를 조회하는 비지니스 로직입니다.
+     * @param 가져올 게시글 유형과 게시글 리스트를 페이징 처리하기 위한 pageable
+     * @return 페이징 처리된 게시글 리스트
+     */
+    @Transactional(readOnly = true)
+    override fun queryPosts(lastPostId: UUID, type: FeedType): PostsResponse {
+        val posts = postRepository.findAll()
+
+        val response = PostResponse.pageOf(posts)
+
+        return response
+    }
+
+    /**
      * 게시글을 상세조회하는 비지니스 로직입니다.
      * @param 게시글을 상세 조회하기 위한 게시글 id
      * @return 상세조회한 게시글의 정보를 담은 dto
