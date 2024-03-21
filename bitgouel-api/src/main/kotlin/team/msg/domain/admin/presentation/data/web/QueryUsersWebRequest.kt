@@ -11,6 +11,6 @@ data class QueryUsersWebRequest(
     @RequestParam(required = false)
     val authority: Authority = Authority.ROLE_USER,
 
-    @RequestParam
-    val approveStatus: ApproveStatus
+    @RequestParam(required = false)
+    val approveStatus: ApproveStatus?
 )
