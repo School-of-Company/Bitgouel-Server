@@ -15,7 +15,7 @@ class WithdrawStudent(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "withdraw_user_id",nullable = false)
+    @Column(name = "withdraw_user_id", nullable = false)
     var id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)

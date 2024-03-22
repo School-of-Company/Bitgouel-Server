@@ -9,7 +9,7 @@ import java.util.*
 data class PostResponse (
     val id: UUID,
     val title: String,
-    val modifiedAt: LocalDateTime,
+    val modifiedAt: LocalDateTime
 ) {
     companion object {
         fun of(post: Post) =
