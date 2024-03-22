@@ -92,15 +92,15 @@ class AdminServiceImpl(
 
     /**
      * 유저를 강제 탈퇴 시키는 비지니스 로직입니다
-     * @param 유저를 삭제하기 위한 userId
+     * @param 유저를 삭제하기 위한 userIds
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun forceWithdraw(userId: UUID) {
-        val user = userRepository findById userId
+    override fun forceWithdraw(userIds: List<UUID>) {
+        val users = userRepository.findByIdIn(userIds)
 
-        userUtil.withdrawUser(user)
+        users.forEach { userUtil.withdrawUser(it) }
 
-        userRepository.delete(user)
+        userRepository.deleteByIdIn(userIds)
     }
 
 
