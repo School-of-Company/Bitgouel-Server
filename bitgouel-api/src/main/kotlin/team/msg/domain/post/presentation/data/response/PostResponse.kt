@@ -7,7 +7,7 @@ import team.msg.domain.post.repository.custom.projection.PostProjection
 import java.time.LocalDateTime
 import java.util.*
 
-data class PostResponse (
+data class PostResponse(
     val id: UUID,
     val title: String,
     val modifiedAt: LocalDateTime,
