@@ -4,6 +4,6 @@ import team.msg.domain.post.enums.FeedType
 
 class QueryAllPostsRequest(
     val postSequence: Int?,
-    val size: Long,
+    val size: Int,
     val type: FeedType?
 )

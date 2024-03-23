@@ -7,7 +7,7 @@ data class QueryAllPostsWebRequest(
     @RequestParam(required = false)
     val postSequence: Int?,
     @RequestParam
-    val size: Long,
+    val size: Int,
     @RequestParam(required = false)
     val type: FeedType?
 )

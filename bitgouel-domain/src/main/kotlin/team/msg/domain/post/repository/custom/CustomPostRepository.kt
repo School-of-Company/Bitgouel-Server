@@ -6,5 +6,5 @@ import java.util.*
 
 interface CustomPostRepository {
     fun deleteAllByUserId(userId: UUID)
-    fun findAll(postSequence: Int?, size: Long, feedType: FeedType?): List<PostProjection>
+    fun findAll(postSequence: Int?, size: Int, feedType: FeedType?): List<PostProjection>
 }

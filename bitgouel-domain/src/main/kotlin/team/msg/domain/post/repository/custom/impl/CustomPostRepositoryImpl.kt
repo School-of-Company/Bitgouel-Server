@@ -18,7 +18,7 @@ class CustomPostRepositoryImpl(
             .execute()
     }
 
-    override fun findAll(postSequence: Int?, size: Long, feedType: FeedType?): List<PostProjection> =
+    override fun findAll(postSequence: Int?, size: Int, feedType: FeedType?): List<PostProjection> =
         queryFactory
             .select(
                 QPostProjection(
@@ -32,7 +32,7 @@ class CustomPostRepositoryImpl(
             .where(isLastPostId(postSequence))
             .where(feedTypeEq(feedType))
             .orderBy(post.createdAt.asc())
-            .limit(size)
+            .limit(size.toLong())
             .fetch()
 
     private fun isLastPostId(postSequence: Int?): BooleanExpression? =

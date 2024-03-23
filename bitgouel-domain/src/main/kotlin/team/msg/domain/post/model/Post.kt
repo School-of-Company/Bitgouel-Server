@@ -23,7 +23,7 @@ class Post (
 
     @Generated(GenerationTime.INSERT)
     @Column(columnDefinition = "INT NOT NULL UNIQUE KEY auto_increment", nullable = false, insertable = false)
-    val postSequence: Long = 0,
+    val postSequence: Int = 0,
 
     @ElementCollection
     @CollectionTable(
