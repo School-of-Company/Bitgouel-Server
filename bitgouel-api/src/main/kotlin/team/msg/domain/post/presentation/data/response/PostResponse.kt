@@ -3,13 +3,15 @@ package team.msg.domain.post.presentation.data.response
 import org.springframework.data.domain.Page
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.model.Post
+import team.msg.domain.post.repository.custom.projection.PostProjection
 import java.time.LocalDateTime
 import java.util.*
 
 data class PostResponse (
     val id: UUID,
     val title: String,
-    val modifiedAt: LocalDateTime
+    val modifiedAt: LocalDateTime,
+    val postSequence: Long
 ) {
     companion object {
         fun of(post: Post) =
@@ -17,12 +19,26 @@ data class PostResponse (
                 id = post.id,
                 title = post.title,
                 modifiedAt = post.modifiedAt,
+                postSequence = post.postSequence
             )
 
-        fun listOf(posts: List<Post>) =
+        fun of(id: UUID, title: String, modifiedAt: LocalDateTime, postSequence: Long) =
+            PostResponse(
+                id = id,
+                title = title,
+                modifiedAt = modifiedAt,
+                postSequence = postSequence
+            )
+
+        fun listOf(postProjections: List<PostProjection>) =
             PostsResponse(
-                posts.map {
-                    of(it)
+                postProjections.map {
+                    PostResponse(
+                        id = it.id,
+                        title = it.title,
+                        modifiedAt = it.modifiedAt,
+                        postSequence = it.postSequence
+                    )
                 }
             )
 
