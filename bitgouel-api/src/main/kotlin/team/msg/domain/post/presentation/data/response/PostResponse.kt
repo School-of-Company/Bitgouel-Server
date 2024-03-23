@@ -11,7 +11,7 @@ data class PostResponse (
     val id: UUID,
     val title: String,
     val modifiedAt: LocalDateTime,
-    val postSequence: Long
+    val postSequence: Int
 ) {
     companion object {
         fun of(post: Post) =
@@ -22,7 +22,7 @@ data class PostResponse (
                 postSequence = post.postSequence
             )
 
-        fun of(id: UUID, title: String, modifiedAt: LocalDateTime, postSequence: Long) =
+        fun of(id: UUID, title: String, modifiedAt: LocalDateTime, postSequence: Int) =
             PostResponse(
                 id = id,
                 title = title,

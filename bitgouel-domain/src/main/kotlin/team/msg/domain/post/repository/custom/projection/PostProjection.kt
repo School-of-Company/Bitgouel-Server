@@ -8,5 +8,5 @@ data class PostProjection @QueryProjection constructor (
     val id: UUID,
     val title: String,
     val modifiedAt: LocalDateTime,
-    val postSequence: Long
+    val postSequence: Int
 )
