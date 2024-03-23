@@ -104,7 +104,6 @@ class SecurityConfig(
             // faq
             .mvcMatchers(HttpMethod.POST, "/faq").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/faq").permitAll()
-            .mvcMatchers(HttpMethod.GET, "/faq/{id}").permitAll()
 
             // certification
             .mvcMatchers(HttpMethod.POST, "/certification").hasRole(STUDENT)
@@ -121,7 +120,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.PATCH, "/admin").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/reject").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/admin/{user_id}").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.DELETE, "/admin/{user_id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/admin/withdraw").hasRole(ADMIN)
 
             // inquiry
             .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()

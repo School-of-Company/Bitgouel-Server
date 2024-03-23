@@ -191,15 +191,15 @@ class AdminServiceImplTest : BehaviorSpec({
             property(User::id) { userId }
         }
 
-        every { userRepository.findByIdOrNull(userId) } returns user
+        every { userRepository.findByIdIn(listOf(userId)) } returns listOf(user)
         every { userUtil.withdrawUser(user) } returns Unit
-        every { userRepository.delete(user) } returns Unit
+        every { userRepository.deleteByIdIn(listOf(userId)) } returns Unit
 
         When("User 강제 탈퇴 시") {
-            adminServiceImpl.forceWithdraw(userId)
+            adminServiceImpl.forceWithdraw(listOf(userId))
 
             Then("User 가 삭제가 되어야 한다") {
-                verify(exactly = 1) { userRepository.delete(user) }
+                verify(exactly = 1) { userRepository.deleteByIdIn(listOf(userId)) }
             }
         }
     }
