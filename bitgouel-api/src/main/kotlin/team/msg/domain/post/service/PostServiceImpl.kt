@@ -45,7 +45,6 @@ class PostServiceImpl(
                 userId = user.id,
                 title = title,
                 content = content,
-                postSequence = 0,
                 links = links,
                 feedType = feedType
             )
@@ -80,7 +79,6 @@ class PostServiceImpl(
             userId = post.userId,
             title = request.title,
             content = request.content,
-            postSequence = 0,
             links = request.links,
             feedType = post.feedType,
         )

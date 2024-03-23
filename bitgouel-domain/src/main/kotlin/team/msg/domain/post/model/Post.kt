@@ -21,10 +21,9 @@ class Post (
     @Column(columnDefinition = "TEXT", nullable = false)
     var content: String,
 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Generated(GenerationTime.INSERT)
     @Column(columnDefinition = "INT NOT NULL UNIQUE KEY auto_increment", nullable = false, insertable = false)
-    val postSequence: Long,
+    val postSequence: Long = 0,
 
     @ElementCollection
     @CollectionTable(
