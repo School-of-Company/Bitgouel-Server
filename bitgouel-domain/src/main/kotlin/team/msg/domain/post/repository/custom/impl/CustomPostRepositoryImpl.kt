@@ -17,19 +17,22 @@ class CustomPostRepositoryImpl(
             .execute()
     }
 
-    override fun findAll(lastPostId: UUID, size: Long, feedType: FeedType): List<Post> =
+    override fun findAll(postSequence: Int?, size: Long, feedType: FeedType?): List<Post> =
         queryFactory.selectFrom(post)
-            .where(isLastPostId(lastPostId))
-            .where(post.feedType.eq(feedType))
-            .orderBy(post.createdAt.desc())
+            .where(isLastPostId(postSequence))
+            .where(feedTypeEq(feedType))
+            .orderBy(post.createdAt.asc())
             .limit(size)
             .fetch()
 
-    private fun isLastPostId(postId: UUID): BooleanExpression? {
-        if (postId == null)
+    private fun isLastPostId(postSequence: Int?): BooleanExpression? {
+        if (postSequence == null)
             return null
 
-        return post.id.lt(postId)
+        return post.postSequence.gt(postSequence)
     }
+
+    private fun feedTypeEq(feedType: FeedType?): BooleanExpression? =
+        if (feedType == null) null else post.feedType.eq(feedType)
 
 }

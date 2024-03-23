@@ -19,8 +19,15 @@ data class PostResponse (
                 modifiedAt = post.modifiedAt,
             )
 
-        fun pageOf(posts: Page<Post>) =
+        fun listOf(posts: List<Post>) =
             PostsResponse(
+                posts.map {
+                    of(it)
+                }
+            )
+
+        fun pageOf(posts: Page<Post>) =
+            PagingPostsResponse(
                 posts.map {
                     of(it)
                 }
@@ -40,6 +47,10 @@ data class PostResponse (
 }
 
 data class PostsResponse(
+    val posts: List<PostResponse>
+)
+
+data class PagingPostsResponse(
     val posts: Page<PostResponse>
 )
 

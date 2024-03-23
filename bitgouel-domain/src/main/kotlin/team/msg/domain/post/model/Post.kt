@@ -1,17 +1,11 @@
 package team.msg.domain.post.model
 
-import javax.persistence.CollectionTable
-import javax.persistence.Column
-import javax.persistence.ElementCollection
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.JoinColumn
 import org.hibernate.annotations.Generated
 import org.hibernate.annotations.GenerationTime
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.post.enums.FeedType
 import java.util.*
+import javax.persistence.*
 
 @Entity
 class Post (
@@ -27,8 +21,9 @@ class Post (
     @Column(columnDefinition = "TEXT", nullable = false)
     var content: String,
 
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Generated(GenerationTime.INSERT)
-    @Column(columnDefinition = "INT", nullable = false, insertable = false)
+    @Column(columnDefinition = "INT NOT NULL UNIQUE KEY auto_increment", nullable = false, insertable = false)
     val postSequence: Long,
 
     @ElementCollection

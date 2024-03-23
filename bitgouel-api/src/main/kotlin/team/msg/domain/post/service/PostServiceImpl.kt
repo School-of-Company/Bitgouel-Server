@@ -11,7 +11,9 @@ import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
 import team.msg.domain.post.exception.PostNotFoundException
+import team.msg.domain.post.presentation.data.request.QueryAllPostsRequest
 import team.msg.domain.post.presentation.data.request.UpdatePostRequest
+import team.msg.domain.post.presentation.data.response.PagingPostsResponse
 import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
@@ -41,10 +43,11 @@ class PostServiceImpl(
             Post(
                 id = UUID.randomUUID(),
                 userId = user.id,
-                feedType = feedType,
                 title = title,
                 content = content,
-                links = links
+                postSequence = 0,
+                links = links,
+                feedType = feedType
             )
         }
 
@@ -75,10 +78,11 @@ class PostServiceImpl(
         val updatePost = Post(
             id = post.id,
             userId = post.userId,
-            feedType = post.feedType,
             title = request.title,
             content = request.content,
+            postSequence = 0,
             links = request.links,
+            feedType = post.feedType,
         )
 
         postRepository.save(updatePost)
@@ -117,7 +121,7 @@ class PostServiceImpl(
      * @return 페이징 처리된 게시글 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryPosts(type: FeedType, pageable: Pageable): PostsResponse {
+    override fun queryPosts(type: FeedType, pageable: Pageable): PagingPostsResponse {
         val posts = postRepository.findAllByFeedType(type, pageable)
 
         val response = PostResponse.pageOf(posts)
@@ -131,10 +135,10 @@ class PostServiceImpl(
      * @return 페이징 처리된 게시글 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryPosts(lastPostId: UUID, type: FeedType): PostsResponse {
-        val posts = postRepository.findAll()
+    override fun queryPosts(queryAllPostsRequest: QueryAllPostsRequest): PostsResponse {
+        val posts = postRepository.findAll(queryAllPostsRequest.postSequence, queryAllPostsRequest.size, queryAllPostsRequest.type)
 
-        val response = PostResponse.pageOf(posts)
+        val response = PostResponse.listOf(posts)
 
         return response
     }
