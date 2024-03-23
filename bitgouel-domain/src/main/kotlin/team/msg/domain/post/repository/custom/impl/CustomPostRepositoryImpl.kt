@@ -25,12 +25,8 @@ class CustomPostRepositoryImpl(
             .limit(size)
             .fetch()
 
-    private fun isLastPostId(postSequence: Int?): BooleanExpression? {
-        if (postSequence == null)
-            return null
-
-        return post.postSequence.gt(postSequence)
-    }
+    private fun isLastPostId(postSequence: Int?): BooleanExpression? =
+        if (postSequence == null) null else post.postSequence.gt(postSequence)
 
     private fun feedTypeEq(feedType: FeedType?): BooleanExpression? =
         if (feedType == null) null else post.feedType.eq(feedType)
