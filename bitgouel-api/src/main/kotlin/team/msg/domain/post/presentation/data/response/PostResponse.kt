@@ -22,14 +22,6 @@ data class PostResponse(
                 postSequence = post.postSequence
             )
 
-        fun of(id: UUID, title: String, modifiedAt: LocalDateTime, postSequence: Int) =
-            PostResponse(
-                id = id,
-                title = title,
-                modifiedAt = modifiedAt,
-                postSequence = postSequence
-            )
-
         fun listOf(postProjections: List<PostProjection>) =
             PostsResponse(
                 postProjections.map {
