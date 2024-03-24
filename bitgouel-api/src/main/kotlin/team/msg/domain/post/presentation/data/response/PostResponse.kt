@@ -22,15 +22,18 @@ data class PostResponse(
                 postSequence = post.postSequence
             )
 
+        fun of(postProjection: PostProjection) =
+            PostResponse(
+                id = postProjection.id,
+                title = postProjection.title,
+                modifiedAt = postProjection.modifiedAt,
+                postSequence = postProjection.postSequence
+            )
+
         fun listOf(postProjections: List<PostProjection>) =
             PostsResponse(
                 postProjections.map {
-                    PostResponse(
-                        id = it.id,
-                        title = it.title,
-                        modifiedAt = it.modifiedAt,
-                        postSequence = it.postSequence
-                    )
+                    of(it)
                 }
             )
 
