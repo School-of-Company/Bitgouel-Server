@@ -11,7 +11,9 @@ import team.msg.domain.post.repository.PostRepository
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.exception.ForbiddenPostException
 import team.msg.domain.post.exception.PostNotFoundException
+import team.msg.domain.post.presentation.data.request.QueryAllPostsRequest
 import team.msg.domain.post.presentation.data.request.UpdatePostRequest
+import team.msg.domain.post.presentation.data.response.PagingPostsResponse
 import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
@@ -41,10 +43,11 @@ class PostServiceImpl(
             Post(
                 id = UUID.randomUUID(),
                 userId = user.id,
-                feedType = feedType,
                 title = title,
                 content = content,
-                links = links
+                links = links,
+                feedType = feedType,
+                postSequence = 0
             )
         }
 
@@ -75,10 +78,11 @@ class PostServiceImpl(
         val updatePost = Post(
             id = post.id,
             userId = post.userId,
-            feedType = post.feedType,
             title = request.title,
             content = request.content,
             links = request.links,
+            feedType = post.feedType,
+            postSequence = post.postSequence
         )
 
         postRepository.save(updatePost)
@@ -117,10 +121,24 @@ class PostServiceImpl(
      * @return 페이징 처리된 게시글 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryPosts(type: FeedType, pageable: Pageable): PostsResponse {
+    override fun queryPosts(type: FeedType, pageable: Pageable): PagingPostsResponse {
         val posts = postRepository.findAllByFeedType(type, pageable)
 
         val response = PostResponse.pageOf(posts)
+
+        return response
+    }
+
+    /**
+     * 게시글 리스트를 조회하는 비지니스 로직입니다.
+     * @param 가져올 게시글 유형과 게시글 리스트를 페이징 처리하기 위한 pageable
+     * @return 페이징 처리된 게시글 리스트
+     */
+    @Transactional(readOnly = true)
+    override fun queryPosts(queryAllPostsRequest: QueryAllPostsRequest): PostsResponse {
+        val posts = postRepository.findAll(queryAllPostsRequest.postSequence, queryAllPostsRequest.size, queryAllPostsRequest.type)
+
+        val response = PostResponse.listOf(posts)
 
         return response
     }

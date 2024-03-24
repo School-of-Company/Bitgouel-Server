@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.post.enums.FeedType
 import team.msg.domain.post.mapper.PostRequestMapper
+import team.msg.domain.post.presentation.data.response.PagingPostsResponse
 import team.msg.domain.post.presentation.data.response.PostDetailsResponse
 import team.msg.domain.post.presentation.data.response.PostsResponse
 import team.msg.domain.post.presentation.web.CreatePostWebRequest
+import team.msg.domain.post.presentation.web.QueryAllPostsWebRequest
 import team.msg.domain.post.presentation.web.UpdatePostWebRequest
 import team.msg.domain.post.service.PostService
 import java.util.*
@@ -36,8 +38,15 @@ class PostController(
     }
 
     @GetMapping
-    fun queryPosts(@RequestParam type: FeedType, pageable: Pageable): ResponseEntity<PostsResponse> {
+    fun queryPosts(@RequestParam type: FeedType, pageable: Pageable): ResponseEntity<PagingPostsResponse> {
         val response = postService.queryPosts(type, pageable)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/all")
+    fun queryPosts(queryAllPostsWebRequest: QueryAllPostsWebRequest): ResponseEntity<PostsResponse> {
+        val request = postRequestMapper.queryAllPostsWebRequestToDto(queryAllPostsWebRequest)
+        val response = postService.queryPosts(request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 

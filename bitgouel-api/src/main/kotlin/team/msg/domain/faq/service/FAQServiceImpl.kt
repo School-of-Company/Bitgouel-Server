@@ -42,7 +42,7 @@ class FaqServiceImpl(
     /**
     * FAQ 전제 조회를 처리하는 비지니스 로직입니다.
     */
-    @Transactional(rollbackFor = [Exception::class], readOnly = true)
+    @Transactional(readOnly = true)
     override fun queryAllFaqs(): FaqsResponse {
         val faqs = faqRepository.findAll()
 
