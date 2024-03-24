@@ -51,6 +51,7 @@ class EmailServiceImpl(
 
         val updatedEmailAuthentication = emailAuthentication.copy(
             isAuthentication = false,
+            code = code,
             attemptCount = emailAuthentication.attemptCount + 1
         )
 
