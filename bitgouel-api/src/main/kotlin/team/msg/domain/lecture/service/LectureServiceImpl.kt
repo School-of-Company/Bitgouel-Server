@@ -5,7 +5,6 @@ import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -13,10 +12,8 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
-import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
-import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
@@ -58,7 +55,8 @@ class LectureServiceImpl(
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val registeredLectureService: RegisteredLectureService
 ) : LectureService{
 
     /**
@@ -191,16 +189,7 @@ class LectureServiceImpl(
 
         val lecture = lectureRepository findById id
 
-        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
-            throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
-
-        if(registeredLectureRepository.existsOne(student.id, lecture.id))
-            throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
-
-        val currentSignUpLectureStudent = registeredLectureRepository.countByLecture(lecture)
-
-        if(lecture.maxRegisteredUser <= currentSignUpLectureStudent)
-            throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $currentSignUpLectureStudent ]")
+        registeredLectureService.validateRegisterLectureCondition(student, lecture)
 
         val registeredLecture = RegisteredLecture(
             id = UUID.randomUUID(),

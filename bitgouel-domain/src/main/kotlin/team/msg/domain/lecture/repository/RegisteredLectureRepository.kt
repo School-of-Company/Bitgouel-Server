@@ -1,7 +1,11 @@
 package team.msg.domain.lecture.repository
 
+import javax.persistence.LockModeType
+import javax.persistence.QueryHint
 import org.springframework.data.jpa.repository.EntityGraph
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.QueryHints
 import org.springframework.data.repository.CrudRepository
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.RegisteredLecture
@@ -19,4 +23,6 @@ interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>,
     fun countByLecture(lecture: Lecture): Int
     @EntityGraph(attributePaths = ["student"])
     fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    fun countRegisteredLectureByLecture(lecture: Lecture): Int
 }
