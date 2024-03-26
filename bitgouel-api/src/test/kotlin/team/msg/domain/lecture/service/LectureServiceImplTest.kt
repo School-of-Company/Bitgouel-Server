@@ -29,11 +29,7 @@ import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
-import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
-import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
+import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
@@ -65,6 +61,7 @@ class LectureServiceImplTest : BehaviorSpec({
     val professorRepository = mockk<ProfessorRepository>()
     val userRepository = mockk<UserRepository>()
     val userUtil = mockk<UserUtil>()
+    val registeredLectureService = mockk<RegisteredLectureService>()
     val pageable = mockk<Pageable>()
     val lectureServiceImpl = LectureServiceImpl(
         lectureRepository,
@@ -74,7 +71,8 @@ class LectureServiceImplTest : BehaviorSpec({
         teacherRepository,
         professorRepository,
         userRepository,
-        userUtil
+        userUtil,
+        registeredLectureService
     )
 
     // createLecture 테스트 코드
