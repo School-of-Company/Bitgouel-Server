@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.model
 
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -7,6 +8,7 @@ import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
@@ -61,9 +63,6 @@ class Lecture(
 
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val instructor: String,
-
-    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
-    val maxRegisteredUser: Int,
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
