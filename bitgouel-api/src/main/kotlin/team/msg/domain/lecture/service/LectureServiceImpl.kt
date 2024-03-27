@@ -16,6 +16,7 @@ import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
+import team.msg.domain.lecture.exception.RegisteredLectureCountNotFoundException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
@@ -130,7 +131,8 @@ class LectureServiceImpl(
         val response = LecturesResponse(
             lectures.map {
                 val headCount = registeredLectureRepository.countByLecture(it)
-                LectureResponse.of(it,headCount)
+                val registeredLectureCount = registeredLectureCountRepository findByLecture it
+                LectureResponse.of(it, registeredLectureCount.maxRegisteredUser, headCount)
             }
         )
 
@@ -147,16 +149,19 @@ class LectureServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         val lecture = lectureRepository findById id
+
         val lectureDates = lectureDateRepository.findAllByLecture(lecture)
 
         val headCount = registeredLectureRepository.countByLecture(lecture)
+
+        val registeredLectureCount = registeredLectureCountRepository findByLecture lecture
 
         val isRegistered = if(user.authority == Authority.ROLE_STUDENT) {
             val student = studentRepository findByUser user
             registeredLectureRepository.existsOne(student.id, lecture.id)
         } else false
 
-        val response = LectureResponse.detailOf(lecture, headCount, isRegistered, lectureDates)
+        val response = LectureResponse.detailOf(lecture, registeredLectureCount.maxRegisteredUser, headCount, isRegistered, lectureDates)
 
         return response
     }
@@ -207,7 +212,7 @@ class LectureServiceImpl(
         if(registeredLectureRepository.existsOne(student.id, lecture.id))
             throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
 
-        val registeredLectureCount = registeredLectureCountRepository.findByLecture(lecture)
+        val registeredLectureCount = registeredLectureCountRepository findByLecture lecture
 
         if(registeredLectureCount.maxRegisteredUser <= registeredLectureCount.registeredUser)
             throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${registeredLectureCount.maxRegisteredUser}, currentSignUpLectureStudent = $registeredLectureCount ]")
@@ -397,4 +402,7 @@ class LectureServiceImpl(
 
     private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+
+    private infix fun RegisteredLectureCountRepository.findByLecture(lecture: Lecture): RegisteredLectureCount = this.findByLecture(lecture)
+        ?: throw RegisteredLectureCountNotFoundException("최대 수강 인원을 찾을 수 없습니다. info : [ lectureId = ${lecture.id} ]")
 }
