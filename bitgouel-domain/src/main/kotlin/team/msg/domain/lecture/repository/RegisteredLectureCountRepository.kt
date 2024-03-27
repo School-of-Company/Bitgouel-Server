@@ -9,5 +9,5 @@ import java.util.UUID
 
 interface RegisteredLectureCountRepository : CrudRepository<RegisteredLectureCount, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    fun findByLecture(lecture: Lecture): RegisteredLectureCount
+    fun findByLecture(lecture: Lecture): RegisteredLectureCount?
 }
