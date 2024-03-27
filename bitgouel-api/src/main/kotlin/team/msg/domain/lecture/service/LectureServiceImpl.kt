@@ -12,24 +12,28 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
+import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
+import team.msg.domain.lecture.model.RegisteredLectureCount
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
+import team.msg.domain.lecture.repository.RegisteredLectureCountRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -51,12 +55,12 @@ class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
     private val lectureDateRepository: LectureDateRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
+    private val registeredLectureCountRepository: RegisteredLectureCountRepository,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
-    private val userUtil: UserUtil,
-    private val registeredLectureService: RegisteredLectureService
+    private val userUtil: UserUtil
 ) : LectureService{
 
     /**
@@ -86,10 +90,18 @@ class LectureServiceImpl(
             lectureType = request.lectureType,
             credit = credit,
             instructor = user.name,
-            maxRegisteredUser = request.maxRegisteredUser
         )
 
         val savedLecture = lectureRepository.save(lecture)
+
+        val registeredLectureCount = RegisteredLectureCount(
+            id = UUID.randomUUID(),
+            registeredUser = 0,
+            maxRegisteredUser = request.maxRegisteredUser,
+            lecture = savedLecture
+        )
+
+        registeredLectureCountRepository.save(registeredLectureCount)
 
         val lectureDates = request.lectureDates.map {
             LectureDate(
