@@ -201,7 +201,16 @@ class LectureServiceImpl(
 
         val lecture = lectureRepository findById id
 
-        registeredLectureService.validateRegisterLectureCondition(student, lecture)
+        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
+            throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
+
+        if(registeredLectureRepository.existsOne(student.id, lecture.id))
+            throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
+
+        val registeredLectureCount = registeredLectureCountRepository.findByLecture(lecture)
+
+        if(registeredLectureCount.maxRegisteredUser <= registeredLectureCount.registeredUser)
+            throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${registeredLectureCount.maxRegisteredUser}, currentSignUpLectureStudent = $registeredLectureCount ]")
 
         val registeredLecture = RegisteredLecture(
             id = UUID.randomUUID(),
@@ -210,6 +219,15 @@ class LectureServiceImpl(
         )
 
         registeredLectureRepository.save(registeredLecture)
+
+        val updateRegisteredLectureCount = RegisteredLectureCount(
+            id = registeredLectureCount.id,
+            registeredUser = registeredLectureCount.registeredUser + 1,
+            maxRegisteredUser = registeredLectureCount.maxRegisteredUser,
+            lecture = lecture
+        )
+
+        registeredLectureCountRepository.save(updateRegisteredLectureCount)
 
         val updateCreditStudent = Student(
             id = student.id,
