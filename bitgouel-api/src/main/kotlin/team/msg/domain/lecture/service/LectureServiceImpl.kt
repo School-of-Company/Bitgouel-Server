@@ -62,7 +62,7 @@ class LectureServiceImpl(
     private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
     private val userUtil: UserUtil
-) : LectureService{
+) : LectureService {
 
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
@@ -130,9 +130,8 @@ class LectureServiceImpl(
 
         val response = LecturesResponse(
             lectures.map {
-                val headCount = registeredLectureRepository.countByLecture(it)
                 val registeredLectureCount = registeredLectureCountRepository findByLecture it
-                LectureResponse.of(it, registeredLectureCount.maxRegisteredUser, headCount)
+                LectureResponse.of(it, registeredLectureCount)
             }
         )
 
@@ -152,8 +151,6 @@ class LectureServiceImpl(
 
         val lectureDates = lectureDateRepository.findAllByLecture(lecture)
 
-        val headCount = registeredLectureRepository.countByLecture(lecture)
-
         val registeredLectureCount = registeredLectureCountRepository findByLecture lecture
 
         val isRegistered = if(user.authority == Authority.ROLE_STUDENT) {
@@ -161,7 +158,7 @@ class LectureServiceImpl(
             registeredLectureRepository.existsOne(student.id, lecture.id)
         } else false
 
-        val response = LectureResponse.detailOf(lecture, registeredLectureCount.maxRegisteredUser, headCount, isRegistered, lectureDates)
+        val response = LectureResponse.detailOf(lecture, registeredLectureCount, isRegistered, lectureDates)
 
         return response
     }
