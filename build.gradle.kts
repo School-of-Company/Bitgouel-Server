@@ -4,7 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.13.RELEASE"
     kotlin("plugin.spring") version "1.7.10"
     kotlin("plugin.jpa") version "1.7.10"
-    jacoco
+    id("jacoco")
 }
 
 subprojects {
@@ -64,10 +64,8 @@ jacoco {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        html.isEnabled = true
-        html.destination = file("$buildDir/reports/coverage")
-        csv.isEnabled = true
-        xml.isEnabled = true
+        xml.required.set(true)
+        xml.outputLocation.set(File("$buildDir/reports/jacoco/test/jacocoTestReport.xml"))
     }
 
     var excludes = mutableListOf<String>()
