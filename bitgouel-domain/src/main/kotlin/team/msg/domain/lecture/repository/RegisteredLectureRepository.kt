@@ -20,9 +20,6 @@ interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>,
     fun findAllByStudent(student: Student): List<RegisteredLecture>
     fun existsByStudentAndLecture(student: Student, lecture: Lecture): Boolean
     fun findByStudentAndLecture(student: Student, lecture: Lecture): RegisteredLecture?
-    fun countByLecture(lecture: Lecture): Int
     @EntityGraph(attributePaths = ["student"])
     fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    fun countRegisteredLectureByLecture(lecture: Lecture): Int
 }

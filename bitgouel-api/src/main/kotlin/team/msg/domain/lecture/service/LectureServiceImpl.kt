@@ -12,24 +12,29 @@ import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
+import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
+import team.msg.domain.lecture.exception.RegisteredLectureCountNotFoundException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
+import team.msg.domain.lecture.model.RegisteredLectureCount
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
+import team.msg.domain.lecture.repository.RegisteredLectureCountRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -51,13 +56,13 @@ class LectureServiceImpl(
     private val lectureRepository: LectureRepository,
     private val lectureDateRepository: LectureDateRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
+    private val registeredLectureCountRepository: RegisteredLectureCountRepository,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
-    private val userUtil: UserUtil,
-    private val registeredLectureService: RegisteredLectureService
-) : LectureService{
+    private val userUtil: UserUtil
+) : LectureService {
 
     /**
      * 강의 개설을 처리하는 비지니스 로직입니다.
@@ -86,10 +91,18 @@ class LectureServiceImpl(
             lectureType = request.lectureType,
             credit = credit,
             instructor = user.name,
-            maxRegisteredUser = request.maxRegisteredUser
         )
 
         val savedLecture = lectureRepository.save(lecture)
+
+        val registeredLectureCount = RegisteredLectureCount(
+            id = UUID.randomUUID(),
+            registeredUser = 0,
+            maxRegisteredUser = request.maxRegisteredUser,
+            lecture = savedLecture
+        )
+
+        registeredLectureCountRepository.save(registeredLectureCount)
 
         val lectureDates = request.lectureDates.map {
             LectureDate(
@@ -117,8 +130,8 @@ class LectureServiceImpl(
 
         val response = LecturesResponse(
             lectures.map {
-                val headCount = registeredLectureRepository.countByLecture(it)
-                LectureResponse.of(it,headCount)
+                val registeredLectureCount = registeredLectureCountRepository findByLecture it
+                LectureResponse.of(it, registeredLectureCount)
             }
         )
 
@@ -135,16 +148,17 @@ class LectureServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         val lecture = lectureRepository findById id
+
         val lectureDates = lectureDateRepository.findAllByLecture(lecture)
 
-        val headCount = registeredLectureRepository.countByLecture(lecture)
+        val registeredLectureCount = registeredLectureCountRepository findByLecture lecture
 
         val isRegistered = if(user.authority == Authority.ROLE_STUDENT) {
             val student = studentRepository findByUser user
             registeredLectureRepository.existsOne(student.id, lecture.id)
         } else false
 
-        val response = LectureResponse.detailOf(lecture, headCount, isRegistered, lectureDates)
+        val response = LectureResponse.detailOf(lecture, registeredLectureCount, isRegistered, lectureDates)
 
         return response
     }
@@ -189,7 +203,16 @@ class LectureServiceImpl(
 
         val lecture = lectureRepository findById id
 
-        registeredLectureService.validateRegisterLectureCondition(student, lecture)
+        if(lecture.getLectureStatus() == LectureStatus.CLOSED)
+            throw NotAvailableSignUpDateException("수강신청이 가능한 시간이 아닙니다. info : [ lectureId = ${lecture.id}, currentTime = ${LocalDateTime.now()} ]")
+
+        if(registeredLectureRepository.existsOne(student.id, lecture.id))
+            throw AlreadySignedUpLectureException("이미 신청한 강의입니다. info : [ lectureId = ${lecture.id}, studentId = ${student.id} ]")
+
+        val registeredLectureCount = registeredLectureCountRepository findByLecture lecture
+
+        if(registeredLectureCount.maxRegisteredUser <= registeredLectureCount.registeredUser)
+            throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${registeredLectureCount.maxRegisteredUser}, currentSignUpLectureStudent = $registeredLectureCount ]")
 
         val registeredLecture = RegisteredLecture(
             id = UUID.randomUUID(),
@@ -198,6 +221,15 @@ class LectureServiceImpl(
         )
 
         registeredLectureRepository.save(registeredLecture)
+
+        val updateRegisteredLectureCount = RegisteredLectureCount(
+            id = registeredLectureCount.id,
+            registeredUser = registeredLectureCount.registeredUser + 1,
+            maxRegisteredUser = registeredLectureCount.maxRegisteredUser,
+            lecture = lecture
+        )
+
+        registeredLectureCountRepository.save(updateRegisteredLectureCount)
 
         val updateCreditStudent = Student(
             id = student.id,
@@ -367,4 +399,7 @@ class LectureServiceImpl(
 
     private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+
+    private infix fun RegisteredLectureCountRepository.findByLecture(lecture: Lecture): RegisteredLectureCount = this.findByLecture(lecture)
+        ?: throw RegisteredLectureCountNotFoundException("최대 수강 인원을 찾을 수 없습니다. info : [ lectureId = ${lecture.id} ]")
 }

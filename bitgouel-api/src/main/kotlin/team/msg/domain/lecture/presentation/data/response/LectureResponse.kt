@@ -6,6 +6,7 @@ import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
+import team.msg.domain.lecture.model.RegisteredLectureCount
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.time.LocalDate
@@ -30,7 +31,7 @@ data class LectureResponse(
     val lecturer: String
 ) {
     companion object {
-        fun of(lecture: Lecture, headCount: Int): LectureResponse = LectureResponse(
+        fun of(lecture: Lecture, registeredLectureCount: RegisteredLectureCount): LectureResponse = LectureResponse(
             id = lecture.id,
             name = lecture.name,
             content = lecture.content,
@@ -42,12 +43,12 @@ data class LectureResponse(
             endDate = lecture.endDate,
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
-            headCount = headCount,
-            maxRegisteredUser = lecture.maxRegisteredUser,
+            headCount = registeredLectureCount.registeredUser,
+            maxRegisteredUser = registeredLectureCount.maxRegisteredUser,
             lecturer = lecture.instructor
         )
 
-        fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
+        fun detailOf(lecture: Lecture, registeredLectureCount: RegisteredLectureCount, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
             semester = lecture.semester,
@@ -60,8 +61,8 @@ data class LectureResponse(
             lectureDates = dateListOf(lectureDates),
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
-            headCount = headCount,
-            maxRegisteredUser = lecture.maxRegisteredUser,
+            headCount = registeredLectureCount.registeredUser,
+            maxRegisteredUser = registeredLectureCount.maxRegisteredUser,
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
             credit = lecture.credit
