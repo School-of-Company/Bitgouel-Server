@@ -31,7 +31,7 @@ data class LectureResponse(
     val lecturer: String
 ) {
     companion object {
-        fun of(lecture: Lecture, maxRegisteredUser: Int, headCount: Int): LectureResponse = LectureResponse(
+        fun of(lecture: Lecture, registeredLectureCount: RegisteredLectureCount): LectureResponse = LectureResponse(
             id = lecture.id,
             name = lecture.name,
             content = lecture.content,
@@ -43,12 +43,12 @@ data class LectureResponse(
             endDate = lecture.endDate,
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
-            headCount = headCount,
-            maxRegisteredUser = maxRegisteredUser,
+            headCount = registeredLectureCount.registeredUser,
+            maxRegisteredUser = registeredLectureCount.maxRegisteredUser,
             lecturer = lecture.instructor
         )
 
-        fun detailOf(lecture: Lecture, maxRegisteredUser: Int, headCount: Int, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
+        fun detailOf(lecture: Lecture, registeredLectureCount: RegisteredLectureCount, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
             semester = lecture.semester,
@@ -61,8 +61,8 @@ data class LectureResponse(
             lectureDates = dateListOf(lectureDates),
             lectureType = lecture.lectureType,
             lectureStatus = lecture.getLectureStatus(),
-            headCount = headCount,
-            maxRegisteredUser = maxRegisteredUser,
+            headCount = registeredLectureCount.registeredUser,
+            maxRegisteredUser = registeredLectureCount.maxRegisteredUser,
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
             credit = lecture.credit
