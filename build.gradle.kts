@@ -4,7 +4,6 @@ plugins {
     id("io.spring.dependency-management") version "1.0.13.RELEASE"
     kotlin("plugin.spring") version "1.7.10"
     kotlin("plugin.jpa") version "1.7.10"
-    id("jacoco")
 }
 
 subprojects {
@@ -16,12 +15,6 @@ subprojects {
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-spring") //all-open
-
-    apply(plugin = "jacoco")
-
-    jacoco {
-        toolVersion = "0.8.5"
-    }
 
     apply {
         plugin("org.jetbrains.kotlin.kapt")
@@ -39,6 +32,8 @@ subprojects {
 allprojects {
     group = "team.msg"
     version = "0.0.1-SNAPSHOT"
+
+    apply(plugin = "jacoco")
 
     tasks {
         compileKotlin {
@@ -61,10 +56,6 @@ allprojects {
         mavenCentral()
     }
 
-}
-
-jacoco {
-    toolVersion = "0.8.5"
 }
 
 tasks.register<JacocoReport>("jacocoRootReport") {
