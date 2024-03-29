@@ -17,6 +17,12 @@ subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-spring") //all-open
 
+    apply(plugin = "jacoco")
+
+    jacoco {
+        toolVersion = "0.8.5"
+    }
+
     apply {
         plugin("org.jetbrains.kotlin.kapt")
         version = "1.7.10"
@@ -61,23 +67,22 @@ jacoco {
     toolVersion = "0.8.5"
 }
 
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required.set(true)
-        xml.outputLocation.set(File("$buildDir/reports/jacoco/test/jacocoTestReport.xml"))
+tasks.register<JacocoReport>("jacocoRootReport") {
+    subprojects {
+        this@subprojects.plugins.withType<JacocoPlugin>().configureEach {
+            this@subprojects.tasks.matching {
+                it.extensions.findByType<JacocoTaskExtension>() != null
+            }
+                .configureEach {
+                    sourceSets(this@subprojects.the<SourceSetContainer>().named("main").get())
+                    executionData(this)
+                }
+        }
     }
 
-    var excludes = mutableListOf<String>()
-    excludes.add("some/path/for/exclude")
-
-    classDirectories.setFrom(
-        sourceSets.main.get().output.asFileTree.matching {
-            exclude(excludes)
-        }
-    )
-}
-
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
+    reports {
+        xml.outputLocation.set(File("${buildDir}/reports/jacoco/test/jacocoTestReport.xml"))
+        xml.required.set(true)
+        html.required.set(false)
+    }
 }
