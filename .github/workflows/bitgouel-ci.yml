@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Setup MySQL
         uses: samin/mysql-action@v1.1
@@ -48,11 +51,14 @@ jobs:
       - name: Run build with Gradle wrapper
         run: ./gradlew clean bitgouel-api:build -i
 
-      - name: Report to CodeCov
-        uses: codecov/codecov-action@v1
+      - name: codecov gradle
+        run: ./gradlew test jacocoRootReport
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./build/reports/jacoco/test/jacocoTestReport.xml
+          files: ./build/reports/jacoco/test/jacocoTestReport.xml
 
       - name: Bitgouel Server CI Discord Notification
         uses: sarisia/actions-status-discord@v1
