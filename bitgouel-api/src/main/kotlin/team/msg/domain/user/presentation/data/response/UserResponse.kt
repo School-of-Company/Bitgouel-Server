@@ -11,11 +11,13 @@ data class UserResponse (
     val authority: Authority
 ) {
     companion object {
-        fun listOf(user: User,organization: String) = UserPageResponse(
+        fun listOf(user: User, organization: String) = UserPageResponse(
             id = user.id,
             name = user.name,
             email = user.email,
-            phoneNumber = user.phoneNumber,
+            phoneNumber = user.phoneNumber.run {
+                "${substring(0, 3)}-${substring(3, 7)}-${substring(7)}"
+            },
             authority = user.authority,
             organization = organization
         )
