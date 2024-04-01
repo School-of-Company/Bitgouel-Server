@@ -23,7 +23,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
-    
+    implementation ("org.redisson:redisson-spring-data-27:3.27.2")
+    implementation ("org.redisson:redisson-spring-boot-starter:3.27.2")
     implementation(project(":bitgouel-domain"))
 }
 
