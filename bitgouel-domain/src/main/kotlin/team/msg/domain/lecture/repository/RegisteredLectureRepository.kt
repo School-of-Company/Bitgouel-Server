@@ -22,4 +22,5 @@ interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>,
     fun findByStudentAndLecture(student: Student, lecture: Lecture): RegisteredLecture?
     @EntityGraph(attributePaths = ["student"])
     fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
+    fun countByLecture(lecture: Lecture): Int
 }

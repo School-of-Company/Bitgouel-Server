@@ -25,7 +25,6 @@ import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
-import team.msg.domain.lecture.model.RegisteredLectureCount
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
@@ -33,7 +32,6 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
-import team.msg.domain.lecture.repository.RegisteredLectureCountRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -58,7 +56,6 @@ class LectureServiceImplTest : BehaviorSpec({
     val lectureRepository = mockk<LectureRepository>()
     val lectureDateRepository = mockk<LectureDateRepository>()
     val registeredLectureRepository = mockk<RegisteredLectureRepository>()
-    val registeredLectureCountRepository = mockk<RegisteredLectureCountRepository>()
     val studentRepository = mockk<StudentRepository>()
     val teacherRepository = mockk<TeacherRepository>()
     val professorRepository = mockk<ProfessorRepository>()
@@ -69,7 +66,6 @@ class LectureServiceImplTest : BehaviorSpec({
         lectureRepository,
         lectureDateRepository,
         registeredLectureRepository,
-        registeredLectureCountRepository,
         studentRepository,
         teacherRepository,
         professorRepository,
@@ -83,13 +79,11 @@ class LectureServiceImplTest : BehaviorSpec({
         val user = fixture<User>()
         val request = fixture<CreateLectureRequest>()
         val lecture = fixture<Lecture>()
-        val registeredLectureCount = fixture<RegisteredLectureCount>()
         val lectureDate = fixture<LectureDate>()
         val lectureDates = mutableListOf(lectureDate)
 
         every { userRepository.findByIdOrNull(any()) } returns user
         every { lectureRepository.save(any()) } returns lecture
-        every { registeredLectureCountRepository.save(any()) } returns registeredLectureCount
         every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
 
         When("Lecture 등록 요청을 하면") {
@@ -97,10 +91,6 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("Lecture 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { lectureRepository.save(any()) }
-            }
-
-            Then("registeredLectureCount 가 저장이 되어야 한다.") {
-                verify(exactly = 1) { registeredLectureCountRepository.save(any()) }
             }
 
             Then("LectureDate 가 저장이 되어야 한다.") {
@@ -150,6 +140,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { creditLectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
@@ -163,6 +154,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { universityLectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
@@ -170,10 +162,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::division) { division }
             property(Lecture::line) { line }
             property(Lecture::department) { department }
-        }
-        val registeredLectureCount = fixture<RegisteredLectureCount> {
-            property(RegisteredLectureCount::registeredUser) { headCount }
-            property(RegisteredLectureCount::maxRegisteredUser) { maxRegisteredUser }
         }
 
         val creditLectureResponse = fixture<LectureResponse> {
@@ -209,7 +197,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::department) { department }
         }
 
-        every { registeredLectureCountRepository.findByLecture(any()) } returns registeredLectureCount
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
 
         When("주어진 LectureType이 null이라면") {
             every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(creditLecture, universityLecture))
@@ -301,6 +289,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
@@ -311,16 +300,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::department) { department }
         }
 
-        val registeredLectureCount = fixture<RegisteredLectureCount> {
-            property(RegisteredLectureCount::registeredUser) { 0 }
-            property(RegisteredLectureCount::maxRegisteredUser) { maxRegisteredUser }
-            property(RegisteredLectureCount::lecture) { lecture }
-        }
-
         val lectureDateResponse = fixture<LectureDateResponse> {
-            property(LectureDateResponse::completeDate) { completeDate }
-            property(LectureDateResponse::startTime) { startTime }
-            property(LectureDateResponse::endTime) { endTime }
+            property(LectureDate::completeDate) { completeDate }
+            property(LectureDate::startTime) { startTime }
+            property(LectureDate::endTime) { endTime }
         }
 
         val lectureDateResponses = mutableListOf(lectureDateResponse)
@@ -348,9 +331,9 @@ class LectureServiceImplTest : BehaviorSpec({
         every { userUtil.queryCurrentUser() } returns user
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { lectureDateRepository.findAllByLecture(lecture) } returns lectureDates
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
         every { studentRepository.findByUser(any()) } returns student
         every { registeredLectureRepository.existsOne(any(), any()) } returns isRegistered
-        every { registeredLectureCountRepository.findByLecture(any()) } returns registeredLectureCount
 
         When("강의 상세 정보를 조회하면") {
             val result = lectureServiceImpl.queryLectureDetails(lectureId)
@@ -404,16 +387,11 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
-        }
-
-        val registeredLectureCount = fixture<RegisteredLectureCount> {
-            property(RegisteredLectureCount::registeredUser) { 0 }
-            property(RegisteredLectureCount::maxRegisteredUser) { maxRegisteredUser }
-            property(RegisteredLectureCount::lecture) { lecture }
         }
 
         val missDateLectureId = UUID.randomUUID()
@@ -424,15 +402,11 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { missEndDate }
             property(Lecture::instructor) { instructor }
             property(Lecture::credit) { credit }
-        }
-
-        val fullRegisteredLectureCount = fixture<RegisteredLectureCount> {
-            property(RegisteredLectureCount::registeredUser) { maxRegisteredUser }
-            property(RegisteredLectureCount::maxRegisteredUser) { maxRegisteredUser }
         }
 
         val registeredLecture = fixture<RegisteredLecture>()
@@ -441,10 +415,9 @@ class LectureServiceImplTest : BehaviorSpec({
         every { studentRepository.findByUser(any()) } returns student
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { registeredLectureRepository.existsOne(any(), any()) } returns false
+        every { registeredLectureRepository.countByLecture(any()) } returns headCount
         every { registeredLectureRepository.save(any()) } returns registeredLecture
         every { studentRepository.save(any()) } returns student
-        every { registeredLectureCountRepository.save(any()) } returns registeredLectureCount
-        every { registeredLectureCountRepository.findByLecture(lecture) } returns registeredLectureCount
 
 
         When("학생이 강의 수강 신청을 하면") {
@@ -490,7 +463,7 @@ class LectureServiceImplTest : BehaviorSpec({
         }
 
         When("수강 인원이 가득 찬 강의에 수강 신청을 하면") {
-            every { registeredLectureCountRepository.findByLecture(any()) } returns fullRegisteredLectureCount
+            every { registeredLectureRepository.countByLecture(any()) } returns maxRegisteredUser
 
             Then("OverMaxRegisteredUserException이 발생해야 한다.") {
                 shouldThrow<OverMaxRegisteredUserException> {
@@ -531,6 +504,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
@@ -545,6 +519,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { name }
             property(Lecture::content) { content }
             property(Lecture::lectureType) { lectureType }
+            property(Lecture::maxRegisteredUser) { maxRegisteredUser }
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { missEndDate }
             property(Lecture::instructor) { instructor }
@@ -755,4 +730,3 @@ class LectureServiceImplTest : BehaviorSpec({
         }
     }
 })
-
