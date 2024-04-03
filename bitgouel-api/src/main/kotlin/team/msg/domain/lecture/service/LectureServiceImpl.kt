@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.annotation.DistributedLock
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.LectureType
@@ -47,6 +48,7 @@ import team.msg.domain.user.repository.UserRepository
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Service
 class LectureServiceImpl(
@@ -184,6 +186,7 @@ class LectureServiceImpl(
      * @param 수강신청을 하기 위한 강의 id
      */
     @Transactional(rollbackFor = [Exception::class])
+    @DistributedLock("#id", 10, 5, TimeUnit.SECONDS)
     override fun signUpLecture(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
