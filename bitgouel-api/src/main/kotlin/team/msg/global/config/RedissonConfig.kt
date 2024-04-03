@@ -4,6 +4,7 @@ import org.redisson.Redisson
 import org.redisson.api.RedissonClient
 import org.redisson.client.codec.StringCodec
 import org.redisson.config.Config
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
@@ -14,7 +15,8 @@ class RedissonConfig(
         const val REDIS_PREFIX= "redis://"
     }
 
-    fun createRedissonClient(): RedissonClient {
+    @Bean
+    fun redissonClient(): RedissonClient {
         val config = Config()
         val codec = StringCodec()
         config.codec = codec
