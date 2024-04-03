@@ -6,10 +6,11 @@ import org.redisson.client.codec.StringCodec
 import org.redisson.config.Config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import team.msg.global.config.properties.RedisProperties
 
 @Configuration
 class RedissonConfig(
-    private val redisConfig: RedisConfig
+    private val redisProperties: RedisProperties
 ) {
     companion object {
         const val REDIS_PREFIX= "redis://"
@@ -21,7 +22,7 @@ class RedissonConfig(
         val codec = StringCodec()
         config.codec = codec
         config.useSingleServer().setAddress(
-            "$REDIS_PREFIX${redisConfig.host}:${redisConfig.port}"
+            "$REDIS_PREFIX${redisProperties.host}:${redisProperties.port}"
         )
         return Redisson.create(config)
     }
