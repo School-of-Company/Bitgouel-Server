@@ -4,5 +4,5 @@ import team.msg.global.error.GlobalErrorCode
 import team.msg.global.error.exception.BitgouelException
 
 class LockInterruptedException(
-    msg: String
-) : BitgouelException(msg, GlobalErrorCode.LOCK_INTERRUPTED.status)
+    message: String
+) : BitgouelException(message, GlobalErrorCode.LOCK_INTERRUPTED.status)
