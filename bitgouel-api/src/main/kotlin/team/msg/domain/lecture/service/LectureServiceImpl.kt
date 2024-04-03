@@ -186,7 +186,11 @@ class LectureServiceImpl(
      * @param 수강신청을 하기 위한 강의 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    @DistributedLock("#id", 10, 5, TimeUnit.SECONDS)
+    @DistributedLock(
+        key = "#id",
+        leaseTime = 10,
+        waitTime = 5,
+        timeUnit = TimeUnit.SECONDS)
     override fun signUpLecture(id: UUID) {
         val user = userUtil.queryCurrentUser()
 
