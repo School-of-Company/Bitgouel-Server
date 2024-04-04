@@ -243,7 +243,7 @@ class LectureServiceImplTest : BehaviorSpec({
     }
 
     // queryLectureDetails 테스트 코드
-    Given("Lecture id가 주어질 때") {
+    Given("Lecture id가 주어졌을 때") {
 
         val userId = UUID.randomUUID()
         val studentAuthority = Authority.ROLE_STUDENT
@@ -277,6 +277,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val completeDate = LocalDate.MAX
         val startTime = LocalTime.MIN
         val endTime = LocalTime.MAX
+
         val lectureDate = fixture<LectureDate> {
             property(LectureDate::completeDate) { completeDate }
             property(LectureDate::startTime) { startTime }
@@ -301,9 +302,9 @@ class LectureServiceImplTest : BehaviorSpec({
         }
 
         val lectureDateResponse = fixture<LectureDateResponse> {
-            property(LectureDate::completeDate) { completeDate }
-            property(LectureDate::startTime) { startTime }
-            property(LectureDate::endTime) { endTime }
+            property(LectureDateResponse::completeDate) { completeDate }
+            property(LectureDateResponse::startTime) { startTime }
+            property(LectureDateResponse::endTime) { endTime }
         }
 
         val lectureDateResponses = mutableListOf(lectureDateResponse)
