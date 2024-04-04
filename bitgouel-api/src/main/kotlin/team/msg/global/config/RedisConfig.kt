@@ -1,24 +1,20 @@
 package team.msg.global.config
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.StringRedisSerializer
+import team.msg.global.config.properties.RedisProperties
 
 @Configuration
 class RedisConfig(
-    @Value("spring.redis.host")
-    val host: String = "localhost",
-
-    @Value("spring.redis.port")
-    val port: String = "6379"
+    private val redisProperties: RedisProperties
 ) {
 
     @Bean
-    fun redisConnectionFactory(): RedisConnectionFactory = LettuceConnectionFactory(host, port.toInt())
+    fun redisConnectionFactory(): RedisConnectionFactory = LettuceConnectionFactory(redisProperties.host, redisProperties.port.toInt())
 
     @Bean
     fun redisTemplate(): RedisTemplate<String, Int> {
