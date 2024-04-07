@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.service
 
+import javax.servlet.http.HttpServletResponse
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
@@ -7,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.annotation.DistributedLock
@@ -286,7 +288,7 @@ class LectureServiceImpl(
     }
 
     @Transactional(readOnly = true,rollbackFor = [Exception::class])
-    override fun lectureReceiptStatusExcel(): ByteArray {
+    override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
         val headers = listOf(
             "연번" to 5,
@@ -365,9 +367,11 @@ class LectureServiceImpl(
             }
         }
 
-        ByteArrayOutputStream().use { stream ->
-            workBook.write(stream)
-            return stream.toByteArray()
+        response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.setHeader("Content-Disposition", "attachment;lecture_result.xlsx")
+
+        workBook.use {
+            it.write(response.outputStream)
         }
     }
 

@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.presentation
 
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
@@ -86,12 +87,8 @@ class LectureController(
     }
 
     @GetMapping("/excel")
-    fun lectureReceiptStatusExcel(): ResponseEntity<ByteArray> {
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        headers.setContentDispositionFormData("attachment", "sample.xlsx")
-        val result = lectureService.lectureReceiptStatusExcel()
-
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(result)
+    fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Void> {
+        lectureService.lectureReceiptStatusExcel(response)
+        return ResponseEntity.status(HttpStatus.OK).build()
     }
 }

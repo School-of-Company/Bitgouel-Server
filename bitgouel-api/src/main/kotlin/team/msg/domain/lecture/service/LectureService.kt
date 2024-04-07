@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.service
 
+import javax.servlet.http.HttpServletResponse
 import org.springframework.data.domain.Pageable
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
@@ -21,5 +22,5 @@ interface LectureService {
     fun signUpLecture(id: UUID)
     fun cancelSignUpLecture(id: UUID)
     fun queryInstructors(keyword: String): InstructorsResponse
-    fun lectureReceiptStatusExcel(): ByteArray
+    fun lectureReceiptStatusExcel(response: HttpServletResponse)
 }
