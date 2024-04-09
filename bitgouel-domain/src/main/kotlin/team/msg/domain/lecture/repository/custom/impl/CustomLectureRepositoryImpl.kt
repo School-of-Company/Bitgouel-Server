@@ -2,11 +2,13 @@ package team.msg.domain.lecture.repository.custom.impl
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureType
+import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.repository.custom.CustomLectureRepository
 import team.msg.domain.user.model.QUser.user
@@ -17,17 +19,27 @@ import java.util.Objects.isNull
 class CustomLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomLectureRepository {
-    override fun findAllByLectureType(pageable: Pageable,lectureType: LectureType?) = PageImpl(
-        queryFactory
+    override fun findAllByLectureType(pageable: Pageable,lectureType: LectureType?): Page<Lecture> {
+        val content = queryFactory
             .selectFrom(lecture)
             .leftJoin(lecture.user, user)
-            .fetchJoin()
             .where(
                 eqLectureType(lectureType)
             )
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
-            .fetch())
+            .fetch()
+
+        val count = queryFactory
+            .select(lecture.count())
+            .from(lecture)
+            .leftJoin(lecture.user, user)
+            .where(
+                eqLectureType(lectureType)
+            ).fetchOne()!!
+
+        return PageImpl(content, pageable, count);
+    }
 
     override fun deleteAllByUserId(userId: UUID) {
         queryFactory.delete(lecture)
