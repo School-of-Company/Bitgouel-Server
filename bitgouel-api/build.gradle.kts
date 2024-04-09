@@ -28,6 +28,7 @@ dependencies {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-actuator")
     }
     implementation(project(":bitgouel-domain"))
+    implementation("ca.pjer:logback-awslogs-appender:1.6.0")
 }
 
 kapt {
