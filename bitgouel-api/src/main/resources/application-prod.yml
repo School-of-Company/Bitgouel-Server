@@ -19,5 +19,17 @@ jwt:
   accessExpiration: ${ACCESS_EXP}
   refreshExpiration: ${REFRESH_EXP}
 
+logging:
+  discord:
+    webhook-url: ${DISCORD_WEBHOOK_URL}
+    avatar-url: ${DISCORD_AVATAR_URL}
+  config: classpath:logback-spring.xml
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+
 server:
   port: ${SERVER_PORT:8080}
