@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<configuration scan="true" scanPeriod="10 seconds">
+<configuration scan="true" scanPeriod="30 seconds">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-        <springProfile name="local | prod">
-            <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder>
-                    <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-                    <charset>${CONSOLE_LOG_CHARSET}</charset>
-                </encoder>
-            </appender>
+    <springProfile name="local | prod">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>${CONSOLE_LOG_CHARSET}</charset>
+            </encoder>
+        </appender>
 
-            <logger name="org.springframework" level="INFO">
-                <appender-ref ref="CONSOLE"/>
-            </logger>
-            <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
-                <appender-ref ref="CONSOLE"/>
-            </logger>
-            <logger name="team.msg" level="INFO">
-                <appender-ref ref="CONSOLE"/>
-            </logger>
-        </springProfile>
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="team.msg" level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
 
     <springProfile name="prod">
+        <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
+            <webhookUri>${DISCORD_WEBHOOK_URL}</webhookUri>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg %n</pattern>
+            </layout>
+            <username>Bitgouel-Server-Error-Log-Bot</username>
+            <avatarUrl>${DISCORD_AVATAR_URL}</avatarUrl>
+            <tts>false</tts>
+        </appender>
+
+        <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+            <appender-ref ref="DISCORD" />
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+        </appender>
+
         <appender name="CLOUD-WATCH" class="ca.pjer.logback.AwsLogsAppender">
             <layout>
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -40,12 +57,15 @@
 
         <logger name="org.springframework" level="INFO">
             <appender-ref ref="CLOUD-WATCH"/>
+            <appender-ref ref="ASYNC_DISCORD"/>
         </logger>
         <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
             <appender-ref ref="CLOUD-WATCH"/>
+            <appender-ref ref="ASYNC_DISCORD"/>
         </logger>
         <logger name="team.msg" level="INFO">
             <appender-ref ref="CLOUD-WATCH"/>
+            <appender-ref ref="ASYNC_DISCORD"/>
         </logger>
     </springProfile>
 </configuration>
