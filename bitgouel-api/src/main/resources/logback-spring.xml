@@ -3,7 +3,7 @@
 <configuration scan="true" scanPeriod="30 seconds">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-<!--        <springProfile name="local | prod">-->
+        <springProfile name="local | prod">
             <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder>
                     <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -20,9 +20,9 @@
             <logger name="team.msg" level="INFO">
                 <appender-ref ref="CONSOLE"/>
             </logger>
-<!--        </springProfile>-->
+        </springProfile>
 
-<!--    <springProfile name="prod">-->
+    <springProfile name="prod">
         <appender name="CLOUD-WATCH" class="ca.pjer.logback.AwsLogsAppender">
             <layout>
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -47,5 +47,5 @@
         <logger name="team.msg" level="INFO">
             <appender-ref ref="CLOUD-WATCH"/>
         </logger>
-<!--    </springProfile>-->
+    </springProfile>
 </configuration>

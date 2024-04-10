@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://${DB_URL}/${DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+
+jwt:
+  accessSecret: ${JWT_ACCESS}
+  refreshSecret: ${JWT_REFRESH}
+  accessExpiration: ${ACCESS_EXP}
+  refreshExpiration: ${REFRESH_EXP}
+
+server:
+  port: ${SERVER_PORT:8080}
