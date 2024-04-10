@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration scan="true" scanPeriod="30 seconds">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+<!--        <springProfile name="local | prod">-->
+            <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder>
+                    <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                    <charset>${CONSOLE_LOG_CHARSET}</charset>
+                </encoder>
+            </appender>
+
+            <logger name="org.springframework" level="INFO">
+                <appender-ref ref="CONSOLE"/>
+            </logger>
+            <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
+                <appender-ref ref="CONSOLE"/>
+            </logger>
+            <logger name="team.msg" level="INFO">
+                <appender-ref ref="CONSOLE"/>
+            </logger>
+<!--        </springProfile>-->
+
+<!--    <springProfile name="prod">-->
+        <appender name="CLOUD-WATCH" class="ca.pjer.logback.AwsLogsAppender">
+            <layout>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </layout>
+            <logGroupName>bitgouel</logGroupName>
+            <logStreamUuidPrefix>bitgouel-log-${timestamp}</logStreamUuidPrefix>
+            <logRegion>ap-northeast-2</logRegion>
+            <maxBatchLogEvents>50</maxBatchLogEvents>
+            <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+            <maxBlockTimeMillis>5000</maxBlockTimeMillis>
+            <retentionTimeDays>7</retentionTimeDays>
+            <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>
+            <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
+        </appender>
+
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="CLOUD-WATCH"/>
+        </logger>
+        <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
+            <appender-ref ref="CLOUD-WATCH"/>
+        </logger>
+        <logger name="team.msg" level="INFO">
+            <appender-ref ref="CLOUD-WATCH"/>
+        </logger>
+<!--    </springProfile>-->
+</configuration>
