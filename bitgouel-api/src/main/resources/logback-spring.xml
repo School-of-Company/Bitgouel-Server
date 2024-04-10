@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration scan="true" scanPeriod="10 seconds">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
         <springProfile name="local | prod">
@@ -28,7 +28,7 @@
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             </layout>
             <logGroupName>bitgouel</logGroupName>
-            <logStreamUuidPrefix>bitgouel-log-${timestamp}</logStreamUuidPrefix>
+            <logStreamUuidPrefix>bitgouel-log-</logStreamUuidPrefix>
             <logRegion>ap-northeast-2</logRegion>
             <maxBatchLogEvents>50</maxBatchLogEvents>
             <maxFlushTimeMillis>30000</maxFlushTimeMillis>
