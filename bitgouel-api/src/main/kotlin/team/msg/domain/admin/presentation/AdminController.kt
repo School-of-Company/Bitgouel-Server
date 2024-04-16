@@ -22,7 +22,7 @@ class AdminController(
     private val adminMapper: AdminMapper
 ) {
     @GetMapping
-    fun queryUser(webRequest: QueryUsersWebRequest): ResponseEntity<UsersResponse> {
+    fun queryUsers(webRequest: QueryUsersWebRequest): ResponseEntity<UsersResponse> {
         val request = adminMapper.queryUsersWebRequestToDto(webRequest)
         val response = adminService.queryUsers(request)
         return ResponseEntity.ok(response)
