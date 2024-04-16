@@ -22,7 +22,7 @@ class AdminController(
     private val adminMapper: AdminMapper
 ) {
     @GetMapping
-    fun queryUser(webRequest: QueryUsersWebRequest): ResponseEntity<UsersResponse> {
+    fun queryUsers(webRequest: QueryUsersWebRequest): ResponseEntity<UsersResponse> {
         val request = adminMapper.queryUsersWebRequestToDto(webRequest)
         val response = adminService.queryUsers(request)
         return ResponseEntity.ok(response)
@@ -41,6 +41,7 @@ class AdminController(
     }
 
     @GetMapping("/{user_id}")
+    @Deprecated("This API is deprecated. Use query user API instead")
     fun queryUserDetails(@PathVariable("user_id") userId: UUID): ResponseEntity<UserDetailsResponse> {
         val response = adminService.queryUserDetails(userId)
         return ResponseEntity.ok(response)
