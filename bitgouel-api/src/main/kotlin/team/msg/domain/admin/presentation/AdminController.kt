@@ -41,6 +41,7 @@ class AdminController(
     }
 
     @GetMapping("/{user_id}")
+    @Deprecated("This API is deprecated. Use query user API instead")
     fun queryUserDetails(@PathVariable("user_id") userId: UUID): ResponseEntity<UserDetailsResponse> {
         val response = adminService.queryUserDetails(userId)
         return ResponseEntity.ok(response)
