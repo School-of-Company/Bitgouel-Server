@@ -26,7 +26,9 @@ data class UserResponse (
             id = user.id,
             name = user.name,
             authority = user.authority,
-            approveStatus = user.approveStatus
+            approveStatus = user.approveStatus,
+            phoneNumber = user.phoneNumber,
+            email = user.email
         )
 
         fun listOf(users: List<User>) = UsersResponse(
@@ -57,7 +59,9 @@ data class AdminUserResponse(
     val id: UUID,
     val name: String,
     val authority: Authority,
-    val approveStatus: ApproveStatus
+    val approveStatus: ApproveStatus,
+    val phoneNumber: String,
+    val email: String
 )
 
 data class UsersResponse(
