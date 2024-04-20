@@ -27,6 +27,7 @@ dependencies {
     implementation ("org.redisson:redisson-spring-boot-starter:3.27.2") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-actuator")
     }
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation(project(":bitgouel-domain"))
 }
 
