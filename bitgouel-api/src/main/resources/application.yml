@@ -53,3 +53,9 @@ jwt:
   refreshSecret: ${JWT_REFRESH:Yml0Z291ZWw=Yml0Z291ZWw=Yml0Z291ZWw=}
   accessExpiration: ${ACCESS_EXP:1800}
   refreshExpiration: ${REFRESH_EXP:108000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
