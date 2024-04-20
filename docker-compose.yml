@@ -12,3 +12,5 @@ services:
     container_name: bitgouel-prometheus
     ports:
       - "9090:9090"
+    volumes:
+      - ./env/prometheus.yml:/etc/prometheus/prometheus.yml
