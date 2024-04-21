@@ -16,7 +16,6 @@ services:
     volumes:
       - ./env:/etc/prometheus
       - ./env/prometheus/volume:/prometheus
-    #      - ./env/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--web.enable-lifecycle'
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -31,7 +30,6 @@ services:
       - 3001:3000
     volumes:
       - ./env/grafana/volume:/var/lib/grafana
-      #      - ./grafana-data:/var/lib/grafana
     restart: always
     networks:
       - pormnet
