@@ -38,5 +38,3 @@ out/
 
 ### Monitoring ###
 env
-prometheus
-grafana
