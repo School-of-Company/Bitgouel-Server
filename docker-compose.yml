@@ -7,20 +7,35 @@ services:
     hostname: bitgouel-redis
     ports:
       - "6379:6379"
+
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus
     container_name: bitgouel-prometheus
     ports:
-      - "9090:9090"
+      - 9090:9090
     volumes:
-      - ./env/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./env:/etc/prometheus
+      - ./prometheus/volume:/prometheus
+    #      - ./env/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--web.enable-lifecycle'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: always
+    networks:
+      - pormnet
+
   grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    user: "$UID:$GID"
+    image: grafana/grafana
+    container_name: bitgouel-grafana
     ports:
-      - "3000:3000"
+      - 3001:3000
     volumes:
-      - ./grafana-data:/var/lib/grafana
-    depends_on:
-      - prometheus
+      - ./grafana/volume:/var/lib/grafana
+      #      - ./grafana-data:/var/lib/grafana
+    restart: always
+    networks:
+      - pormnet
+
+networks:
+  pormnet:
+    driver: bridge
