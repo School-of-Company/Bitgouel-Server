@@ -38,3 +38,5 @@ out/
 
 ### Monitoring ###
 env
+
+.DS_Store
