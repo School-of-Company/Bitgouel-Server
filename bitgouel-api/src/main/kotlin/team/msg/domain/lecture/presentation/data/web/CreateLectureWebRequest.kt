@@ -22,7 +22,7 @@ data class CreateLectureWebRequest(
     @field:NotBlank
     val content: String,
 
-    @field:NotBlank
+    @field:NotNull
     val semester: Semester,
 
     @field:NotBlank
