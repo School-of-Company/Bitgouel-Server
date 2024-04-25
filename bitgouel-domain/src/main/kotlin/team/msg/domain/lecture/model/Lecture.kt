@@ -1,6 +1,5 @@
 package team.msg.domain.lecture.model
 
-import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -8,11 +7,8 @@ import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-import javax.persistence.OneToOne
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
-import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
@@ -35,9 +31,8 @@ class Lecture(
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     val semester: Semester,
 
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
-    val division: Division,
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
+    val division: String,
 
     @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     val department: String,
@@ -54,9 +49,8 @@ class Lecture(
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
     val content: String,
 
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(40)", nullable = false)
-    val lectureType: LectureType,
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
+    val lectureType: String,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val credit: Int,
