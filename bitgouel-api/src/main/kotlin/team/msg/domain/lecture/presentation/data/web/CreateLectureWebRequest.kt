@@ -1,15 +1,12 @@
 package team.msg.domain.lecture.presentation.data.web
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
 import javax.validation.Valid
 import javax.validation.constraints.Future
 import javax.validation.constraints.FutureOrPresent
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 import team.msg.domain.lecture.enums.Semester
 import java.time.LocalDateTime
