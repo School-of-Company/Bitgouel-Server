@@ -25,8 +25,7 @@ data class CreateLectureWebRequest(
     @field:NotBlank
     val semester: Semester,
 
-    @field:NotNull
-    @Enumerated(EnumType.STRING)
+    @field:NotBlank
     val division: String,
 
     @field:NotBlank

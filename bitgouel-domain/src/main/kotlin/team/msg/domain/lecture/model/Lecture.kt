@@ -31,7 +31,6 @@ class Lecture(
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     val semester: Semester,
 
-    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val division: String,
 
@@ -50,7 +49,6 @@ class Lecture(
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
     val content: String,
 
-    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val lectureType: String,
 
