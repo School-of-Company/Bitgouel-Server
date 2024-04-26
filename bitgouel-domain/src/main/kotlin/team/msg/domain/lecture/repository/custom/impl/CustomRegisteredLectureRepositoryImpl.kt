@@ -32,8 +32,9 @@ class CustomRegisteredLectureRepositoryImpl(
 
     override fun findLecturesByStudentId(studentId: UUID): List<Lecture> =
         queryFactory.select(lecture)
-            .leftJoin(registeredLecture.lecture, lecture)
             .from(registeredLecture)
+            .leftJoin(registeredLecture.lecture, lecture)
+            .leftJoin(registeredLecture.student, student)
             .where(
                 student.id.eq(studentId)
             )
