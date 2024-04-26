@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
+import team.msg.domain.lecture.presentation.data.response.CompletedLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
@@ -90,5 +91,11 @@ class LectureController(
     fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Void> {
         lectureService.lectureReceiptStatusExcel(response)
         return ResponseEntity.status(HttpStatus.OK).build()
+    }
+
+    @GetMapping("/{student_id}/complete")
+    fun queryAllCompletedLecturesByStudent(@PathVariable("student_id") studentId: UUID): ResponseEntity<CompletedLecturesResponse> {
+        val response = lectureService.queryAllCompletedLecturesByStudent(studentId)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }
