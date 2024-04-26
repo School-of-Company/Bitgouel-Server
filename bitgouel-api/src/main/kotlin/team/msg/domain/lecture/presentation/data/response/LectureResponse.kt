@@ -88,6 +88,10 @@ data class LectureResponse(
         fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
             departments = departments
         )
+
+        fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
+            divisions = divisions
+        )
     }
 }
 
@@ -138,4 +142,8 @@ data class LinesResponse(
 
 data class DepartmentsResponse(
     val departments: List<String>
+)
+
+data class DivisionsResponse(
+    val divisions: List<String>
 )

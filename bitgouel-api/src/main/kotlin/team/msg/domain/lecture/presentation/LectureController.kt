@@ -3,9 +3,7 @@ package team.msg.domain.lecture.presentation
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
+import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
+import team.msg.domain.lecture.presentation.data.web.QueryAllDivisionsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLecturesWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLinesWebRequest
 import team.msg.domain.lecture.service.LectureService
@@ -83,6 +83,13 @@ class LectureController(
     fun queryAllDepartments(webRequest: QueryAllDepartmentsWebRequest): ResponseEntity<DepartmentsResponse> {
         val request = lectureRequestMapper.queryAllDepartmentsWebRequestToDto(webRequest)
         val response = lectureService.queryAllDepartments(request)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/division")
+    fun queryAllDivisions(webRequest: QueryAllDivisionsWebRequest): ResponseEntity<DivisionsResponse> {
+        val request = lectureRequestMapper.queryAllDivisionsWebRequestToDto(webRequest)
+        val response = lectureService.queryAllDivisions(request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
