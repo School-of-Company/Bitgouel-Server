@@ -64,6 +64,14 @@ class CustomLectureRepositoryImpl(
             .fetch()
             .distinct()
 
+    override fun findAllDivisions(keyword: String?): List<String> =
+        queryFactory
+            .select(lecture.division)
+            .from(lecture)
+            .where(eqDivision(keyword))
+            .fetch()
+            .distinct()
+
     private fun eqLectureType(lectureType: String?): BooleanExpression? =
         if(isNull(lectureType)) null else lecture.lectureType.contains(lectureType)
 
@@ -71,4 +79,6 @@ class CustomLectureRepositoryImpl(
         if(keyword.isNullOrBlank()) null else lecture.line.contains(keyword)
     private fun eqDepartment(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.department.contains(keyword)
+    private fun eqDivision(keyword: String?): BooleanExpression? =
+        if(keyword.isNullOrBlank()) null else lecture.division.contains(keyword)
 }
