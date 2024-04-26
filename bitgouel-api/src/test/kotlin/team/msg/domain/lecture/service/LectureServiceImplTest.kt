@@ -14,9 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
-import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
-import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
@@ -125,15 +123,15 @@ class LectureServiceImplTest : BehaviorSpec({
         val completeDate = LocalDateTime.MAX
         val lectureStatus = LectureStatus.OPENED
         val semester = Semester.FIRST_YEAR_FALL_SEMESTER
-        val division = Division.AUTOMOBILE_INDUSTRY
+        val division = "division"
         val line = "line"
         val department = "department"
 
         val creditLectureId = UUID.randomUUID()
-        val creditLectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+        val creditLectureType = "상호학점인정교육과정"
 
         val universityLectureId = UUID.randomUUID()
-        val universityLectureType = LectureType.UNIVERSITY_EXPLORATION_PROGRAM
+        val universityLectureType = "대학탐방프로그램"
 
         val creditLecture = fixture<Lecture> {
             property(Lecture::id) { creditLectureId }
@@ -268,10 +266,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
         val lectureStatus = LectureStatus.OPENED
-        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+        val lectureType = "상호학점인정교육과정"
         val isRegistered = false
         val semester = Semester.FIRST_YEAR_FALL_SEMESTER
-        val division = Division.AUTOMOBILE_INDUSTRY
+        val division = "자동차 산업"
         val line = "line"
         val department = "department"
         val completeDate = LocalDate.MAX
@@ -380,7 +378,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val headCount = 0
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+        val lectureType = "상호학점인정교육과정"
         val lectureDate = fixture<LectureDate>()
 
         val lecture = fixture<Lecture> {
@@ -498,7 +496,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val credit = 2
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val lectureType = LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM
+        val lectureType = "상호학점인정교육과정"
 
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
@@ -662,7 +660,7 @@ class LectureServiceImplTest : BehaviorSpec({
     Given("강의와 Division, keyword가 주어질 때"){
         val emptyKeyword = ""
         val keyword = "기"
-        val division = Division.AUTOMOBILE_INDUSTRY
+        val division = "자동차 산업"
 
         val request = fixture<QueryAllLinesRequest> {
             property(QueryAllLinesRequest::keyword) { keyword }

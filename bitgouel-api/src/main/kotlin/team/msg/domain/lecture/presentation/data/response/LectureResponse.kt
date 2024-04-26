@@ -1,8 +1,6 @@
 package team.msg.domain.lecture.presentation.data.response
 import org.springframework.data.domain.Page
-import team.msg.domain.lecture.enums.Division
 import team.msg.domain.lecture.enums.LectureStatus
-import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
@@ -18,12 +16,12 @@ data class LectureResponse(
     val name: String,
     val content: String,
     val semester: Semester,
-    val division: Division,
+    val division: String,
     val department: String,
     val line: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    val lectureType: LectureType,
+    val lectureType: String,
     val lectureStatus: LectureStatus,
     val headCount: Int,
     val maxRegisteredUser: Int,
@@ -90,6 +88,10 @@ data class LectureResponse(
         fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
             departments = departments
         )
+
+        fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
+            divisions = divisions
+        )
     }
 }
 
@@ -101,14 +103,14 @@ data class LectureDetailsResponse(
     val name: String,
     val content: String,
     val semester: Semester,
-    val division: Division,
+    val division: String,
     val department: String,
     val line: String,
     val createAt: LocalDateTime,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
     val lectureDates: List<LectureDateResponse>,
-    val lectureType: LectureType,
+    val lectureType: String,
     val lectureStatus: LectureStatus,
     val headCount: Int,
     val maxRegisteredUser: Int,
@@ -140,4 +142,8 @@ data class LinesResponse(
 
 data class DepartmentsResponse(
     val departments: List<String>
+)
+
+data class DivisionsResponse(
+    val divisions: List<String>
 )

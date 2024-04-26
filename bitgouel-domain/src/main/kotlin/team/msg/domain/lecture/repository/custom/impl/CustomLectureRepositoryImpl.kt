@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
-import team.msg.domain.lecture.enums.Division
-import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.repository.custom.CustomLectureRepository
@@ -19,7 +17,7 @@ import java.util.Objects.isNull
 class CustomLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomLectureRepository {
-    override fun findAllByLectureType(pageable: Pageable,lectureType: LectureType?): Page<Lecture> {
+    override fun findAllByLectureType(pageable: Pageable,lectureType: String?): Page<Lecture> {
         val content = queryFactory
             .selectFrom(lecture)
             .leftJoin(lecture.user, user)
@@ -47,12 +45,12 @@ class CustomLectureRepositoryImpl(
             .execute()
     }
 
-    override fun findAllLineByDivision(division: Division, keyword: String?): List<String> =
+    override fun findAllLineByDivision(division: String, keyword: String?): List<String> =
         queryFactory
             .select(lecture.line)
             .from(lecture)
             .where(
-                lecture.division.eq(division),
+                lecture.division.contains(division),
                 eqLine(keyword)
             )
             .fetch()
@@ -66,11 +64,21 @@ class CustomLectureRepositoryImpl(
             .fetch()
             .distinct()
 
-    private fun eqLectureType(lectureType: LectureType?): BooleanExpression? =
-        if(isNull(lectureType)) null else lecture.lectureType.eq(lectureType)
+    override fun findAllDivisions(keyword: String?): List<String> =
+        queryFactory
+            .select(lecture.division)
+            .from(lecture)
+            .where(eqDivision(keyword))
+            .fetch()
+            .distinct()
+
+    private fun eqLectureType(lectureType: String?): BooleanExpression? =
+        if(isNull(lectureType)) null else lecture.lectureType.contains(lectureType)
 
     private fun eqLine(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.line.contains(keyword)
     private fun eqDepartment(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.department.contains(keyword)
+    private fun eqDivision(keyword: String?): BooleanExpression? =
+        if(keyword.isNullOrBlank()) null else lecture.division.contains(keyword)
 }

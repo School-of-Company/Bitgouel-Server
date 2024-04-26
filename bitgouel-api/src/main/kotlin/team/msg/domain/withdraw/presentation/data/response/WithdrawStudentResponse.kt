@@ -6,13 +6,17 @@ import java.util.UUID
 data class WithdrawStudentResponse(
     val withdrawId: Long,
     val userId: UUID,
-    val studentName: String
+    val name: String,
+    val email: String,
+    val phoneNumber: String
 ) {
     companion object {
         fun of(withdraw: WithdrawStudent) = WithdrawStudentResponse(
             withdrawId = withdraw.id,
             userId = withdraw.student.user!!.id,
-            studentName = withdraw.student.user!!.name
+            name = withdraw.student.user!!.name,
+            email = withdraw.student.user!!.email,
+            phoneNumber = withdraw.student.user!!.phoneNumber
         )
 
         fun listOf(students: List<WithdrawStudent>) = WithdrawStudentResponses(

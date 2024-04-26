@@ -8,13 +8,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.annotation.DistributedLock
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
-import team.msg.domain.lecture.enums.LectureType
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
@@ -25,9 +23,11 @@ import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
+import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
@@ -47,7 +47,6 @@ import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
-import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -72,10 +71,7 @@ class LectureServiceImpl(
     override fun createLecture(request: CreateLectureRequest) {
         val user = userRepository findById request.userId
 
-        val credit = when(request.lectureType){
-            LectureType.MUTUAL_CREDIT_RECOGNITION_PROGRAM   -> request.credit
-            LectureType.UNIVERSITY_EXPLORATION_PROGRAM      -> 0
-        }
+        val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
 
         val lecture = Lecture(
             id = UUID.randomUUID(),
@@ -179,6 +175,20 @@ class LectureServiceImpl(
     override fun queryAllDepartments(request: QueryAllDepartmentsRequest): DepartmentsResponse {
         val departments = lectureRepository.findAllDepartment(request.keyword)
         val response = LectureResponse.departmentOf(departments)
+
+        return response
+    }
+
+    /**
+     * 서버에 저장된 구분 리스트를 조회하는 비지니스 로직입니다.
+     * 키워드를 통해 필터링 합니다.
+     * @param 키워드
+     * @return 구분 리스트 response
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllDivisions(request: QueryAllDivisionsRequest): DivisionsResponse {
+        val divisions = lectureRepository.findAllDivisions(request.keyword)
+        val response = LectureResponse.divisionOf(divisions)
 
         return response
     }
@@ -347,7 +357,7 @@ class LectureServiceImpl(
 
                 listOf(
                     (serialNumber+1).toString(),
-                    lecture.division.divisionName,
+                    lecture.division,
                     lecture.line,
                     lecture.semester.yearAndSemester,
                     professor.university,
