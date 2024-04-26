@@ -54,3 +54,4 @@ management:
     web:
       exposure:
         include: health, info, metrics, prometheus
+    enabled-by-default: false
