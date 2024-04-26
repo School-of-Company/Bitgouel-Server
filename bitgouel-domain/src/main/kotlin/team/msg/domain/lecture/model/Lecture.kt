@@ -59,7 +59,7 @@ class Lecture(
     val instructor: String,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
-    val maxRegisteredUser: Int,
+    val maxRegisteredUser: Int
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
