@@ -27,6 +27,12 @@ class Government(
     val club: Club,
 
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val governmentName: String
+    val governmentName: String,
+
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    val position: String,
+
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    val sectors: String
 
 ) : BaseUUIDEntity(id)
