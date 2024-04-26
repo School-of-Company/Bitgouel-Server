@@ -1,3 +1,8 @@
+server:
+  port: ${SERVER_PORT:8080}
+  tomcat:
+    mbeanregistry:
+      enabled: true
 
 spring:
   profiles:
@@ -37,3 +42,16 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+
+jwt:
+  accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}
+  refreshSecret: ${JWT_REFRESH:Yml0Z291ZWw=Yml0Z291ZWw=Yml0Z291ZWw=}
+  accessExpiration: ${ACCESS_EXP:1800}
+  refreshExpiration: ${REFRESH_EXP:108000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+    enabled-by-default: false

@@ -27,6 +27,8 @@ dependencies {
     implementation ("org.redisson:redisson-spring-boot-starter:3.27.2") {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-actuator")
     }
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("ca.pjer:logback-awslogs-appender:1.6.0")
     implementation("com.github.napstr:logback-discord-appender:1.0.0")
     implementation(project(":bitgouel-domain"))
