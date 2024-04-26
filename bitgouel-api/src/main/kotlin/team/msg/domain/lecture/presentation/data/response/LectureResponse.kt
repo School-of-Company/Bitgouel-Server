@@ -88,6 +88,15 @@ data class LectureResponse(
         fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
             departments = departments
         )
+
+        fun of(lecture: Lecture, currentCompletedDate: LocalDate) = CompletedLectureResponse(
+            id = lecture.id,
+            name = lecture.name,
+            lectureType = lecture.lectureType,
+            currentCompletedDate = currentCompletedDate,
+            lecturer = lecture.instructor,
+            isComplete = lecture.isComplete
+        )
     }
 }
 
@@ -138,4 +147,17 @@ data class LinesResponse(
 
 data class DepartmentsResponse(
     val departments: List<String>
+)
+
+data class CompletedLecturesResponse(
+    val lectures: List<CompletedLectureResponse>
+)
+
+data class CompletedLectureResponse(
+    val id: UUID,
+    val name: String,
+    val lectureType: String,
+    val currentCompletedDate: LocalDate,
+    val lecturer: String,
+    val isComplete: Boolean
 )
