@@ -25,6 +25,7 @@ import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.response.CompletedLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
@@ -277,6 +278,28 @@ class LectureServiceImpl(
                 LectureResponse.instructorOf(it.first, it.second)
             }
         )
+
+        return response
+    }
+
+    /**
+     * 유저가 신청한 강의 내역을 조회하는 비지니스 로직입니다.
+     *
+     * @param 조회할 유저 id
+     * @return 조회한 강의 정보를 담은 list dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllCompletedLecturesByStudent(studentId: UUID): CompletedLecturesResponse {
+        if(!studentRepository.existsById(studentId))
+            throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ id = $studentId ]")
+
+        val completedLectures = registeredLectureRepository.findLecturesByStudentId(studentId)
+            .mapNotNull { lecture ->
+                lectureDateRepository.findByLatestLectureDate(lecture.id)
+                    ?.let { latestLectureDate -> LectureResponse.of(lecture, latestLectureDate) }
+            }
+
+        val response = LectureResponse.completedOf(completedLectures)
 
         return response
     }

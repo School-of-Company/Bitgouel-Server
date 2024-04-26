@@ -97,6 +97,10 @@ data class LectureResponse(
             lecturer = lecture.instructor,
             isComplete = lecture.isComplete
         )
+
+        fun completedOf(completedLectures: List<CompletedLectureResponse>) = CompletedLecturesResponse(
+            lectures = completedLectures
+        )
     }
 }
 

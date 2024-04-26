@@ -6,6 +6,7 @@ import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.response.CompletedLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
@@ -22,5 +23,6 @@ interface LectureService {
     fun signUpLecture(id: UUID)
     fun cancelSignUpLecture(id: UUID)
     fun queryInstructors(keyword: String): InstructorsResponse
+    fun queryAllCompletedLecturesByStudent(studentId: UUID): CompletedLecturesResponse
     fun lectureReceiptStatusExcel(response: HttpServletResponse)
 }
