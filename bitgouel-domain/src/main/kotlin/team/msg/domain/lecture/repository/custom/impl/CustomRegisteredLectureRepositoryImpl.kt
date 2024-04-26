@@ -30,13 +30,23 @@ class CustomRegisteredLectureRepositoryImpl(
         return fetchOne != null
     }
 
-    override fun findLecturesByStudentId(studentId: UUID): List<Lecture> =
-        queryFactory.select(lecture)
+    override fun findLecturesAndIsCompleteByStudentId(studentId: UUID): List<Pair<Lecture, Boolean>> {
+        val fetch = queryFactory.select(lecture, registeredLecture.isComplete)
             .from(registeredLecture)
-            .leftJoin(registeredLecture.lecture, lecture)
-            .leftJoin(registeredLecture.student, student)
+            .leftJoin(registeredLecture.lecture,lecture)
+            .leftJoin(registeredLecture.student,student)
             .where(
                 student.id.eq(studentId)
             )
             .fetch()
+
+        return fetch.map {
+            Pair(
+                it[lecture]!!,
+                it[registeredLecture.isComplete]!!
+            )
+        }
+
+    }
+
 }

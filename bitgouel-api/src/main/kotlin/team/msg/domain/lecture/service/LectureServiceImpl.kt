@@ -301,10 +301,13 @@ class LectureServiceImpl(
                 throw ForbiddenCompletedLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
         }
 
-        val completedLectures = registeredLectureRepository.findLecturesByStudentId(studentId)
-            .mapNotNull { lecture ->
+        val completedLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
+            .mapNotNull {
+                val lecture = it.first
+                val isComplete = it.second
+
                 lectureDateRepository.findByLatestLectureDate(lecture.id)
-                    ?.let { latestLectureDate -> LectureResponse.of(lecture, latestLectureDate) }
+                    ?.let { latestLectureDate -> LectureResponse.of(lecture, isComplete, latestLectureDate) }
             }
 
         val response = LectureResponse.completedOf(completedLectures)

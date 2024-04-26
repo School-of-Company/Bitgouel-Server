@@ -89,13 +89,13 @@ data class LectureResponse(
             departments = departments
         )
 
-        fun of(lecture: Lecture, currentCompletedDate: LocalDate) = CompletedLectureResponse(
+        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate) = CompletedLectureResponse(
             id = lecture.id,
             name = lecture.name,
             lectureType = lecture.lectureType,
             currentCompletedDate = currentCompletedDate,
             lecturer = lecture.instructor,
-            isComplete = lecture.isComplete
+            isComplete = isComplete
         )
 
         fun completedOf(completedLectures: List<CompletedLectureResponse>) = CompletedLecturesResponse(

@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.model
 
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
@@ -20,5 +21,8 @@ class RegisteredLecture(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", columnDefinition = "BINARY(16)")
-    val lecture: Lecture
+    val lecture: Lecture,
+
+    @Column(columnDefinition = "TINYINT", nullable = false)
+    val isComplete: Boolean = false
 ) : BaseUUIDEntity(id)
