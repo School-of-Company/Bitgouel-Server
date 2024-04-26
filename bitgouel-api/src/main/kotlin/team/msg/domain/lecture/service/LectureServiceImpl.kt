@@ -14,6 +14,7 @@ import team.msg.common.annotation.DistributedLock
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.ForbiddenCompletedLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
@@ -41,6 +42,7 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
@@ -290,8 +292,14 @@ class LectureServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun queryAllCompletedLecturesByStudent(studentId: UUID): CompletedLecturesResponse {
-        if(!studentRepository.existsById(studentId))
-            throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ id = $studentId ]")
+        val user = userUtil.queryCurrentUser()
+        val student = studentRepository findById studentId
+
+        if(user.authority == Authority.ROLE_TEACHER) {
+            val teacher = teacherRepository findByUser user
+            if(teacher.club == student.club)
+                throw ForbiddenCompletedLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+        }
 
         val completedLectures = registeredLectureRepository.findLecturesByStudentId(studentId)
             .mapNotNull { lecture ->
@@ -401,8 +409,14 @@ class LectureServiceImpl(
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
+    private infix fun TeacherRepository.findByUser(user: User): Teacher = this.findByUser(user)
+        ?: throw TeacherNotFoundException("선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
     private infix fun StudentRepository.findByUser(user: User): Student = this.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun StudentRepository.findById(id: UUID): Student = this.findByIdOrNull(id)
+        ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = $id ]")
 
     private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
