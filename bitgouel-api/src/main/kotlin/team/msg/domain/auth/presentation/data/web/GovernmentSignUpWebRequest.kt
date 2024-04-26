@@ -31,5 +31,11 @@ data class GovernmentSignUpWebRequest(
     val clubName: String,
 
     @field:NotBlank
-    val governmentName: String
+    val governmentName: String,
+
+    @field:NotBlank
+    val position: String,
+
+    @field:NotBlank
+    val sectors: String
 )

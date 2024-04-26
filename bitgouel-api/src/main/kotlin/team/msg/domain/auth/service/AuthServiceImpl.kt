@@ -186,7 +186,9 @@ class AuthServiceImpl(
             id = UUID.randomUUID(),
             user = user,
             club = club,
-            governmentName = request.governmentName
+            governmentName = request.governmentName,
+            position = request.position,
+            sectors = request.sectors
         )
         governmentRepository.save(government)
     }

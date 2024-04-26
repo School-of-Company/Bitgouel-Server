@@ -9,5 +9,7 @@ data class GovernmentSignUpRequest(
     val password: String,
     val highSchool: HighSchool,
     val clubName: String,
-    val governmentName: String
+    val governmentName: String,
+    val position: String,
+    val sectors: String
 )
