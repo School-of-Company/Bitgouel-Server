@@ -139,7 +139,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
 
             // actuator
-            .mvcMatchers(HttpMethod.GET, "/actuator/prometheus/**").permitAll()
+            .mvcMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
 
             .anyRequest().denyAll()
             .and()
