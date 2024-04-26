@@ -30,5 +30,5 @@ class CustomLectureDateRepositoryImpl(
             .orderBy(
                 lectureDate.completeDate.desc()
             )
-            .fetchOne()
+            .fetchFirst()
 }
