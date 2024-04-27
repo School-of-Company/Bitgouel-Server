@@ -101,6 +101,8 @@ data class LectureResponse(
         fun completedOf(completedLectures: List<CompletedLectureResponse>) = CompletedLecturesResponse(
             lectures = completedLectures
         )
+        fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
+            divisions = divisions
     }
 }
 
@@ -164,4 +166,8 @@ data class CompletedLectureResponse(
     val currentCompletedDate: LocalDate,
     val lecturer: String,
     val isComplete: Boolean
+)
+
+data class DivisionsResponse(
+    val divisions: List<String>
 )
