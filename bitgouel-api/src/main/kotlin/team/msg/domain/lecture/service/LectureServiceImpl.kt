@@ -318,12 +318,12 @@ class LectureServiceImpl(
         }
 
         val completedLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
-            .mapNotNull {
+            .map {
                 val lecture = it.first
                 val isComplete = it.second
 
                 lectureDateRepository.findByLatestLectureDate(lecture.id)
-                    ?.let { latestLectureDate -> LectureResponse.of(lecture, isComplete, latestLectureDate) }
+                    .let { latestLectureDate -> LectureResponse.of(lecture, isComplete, latestLectureDate) }
             }
 
         val response = LectureResponse.completedOf(completedLectures)

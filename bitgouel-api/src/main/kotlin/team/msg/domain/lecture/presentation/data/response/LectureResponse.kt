@@ -89,7 +89,7 @@ data class LectureResponse(
             departments = departments
         )
         
-        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate) = CompletedLectureResponse(
+        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate?) = CompletedLectureResponse(
             id = lecture.id,
             name = lecture.name,
             lectureType = lecture.lectureType,
@@ -165,7 +165,7 @@ data class CompletedLectureResponse(
     val id: UUID,
     val name: String,
     val lectureType: String,
-    val currentCompletedDate: LocalDate,
+    val currentCompletedDate: LocalDate?,
     val lecturer: String,
     val isComplete: Boolean
 )
