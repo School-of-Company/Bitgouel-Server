@@ -103,6 +103,7 @@ data class LectureResponse(
         )
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
             divisions = divisions
+        )
     }
 }
 
