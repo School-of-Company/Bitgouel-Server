@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Monitoring ###
+env
+
+.DS_Store

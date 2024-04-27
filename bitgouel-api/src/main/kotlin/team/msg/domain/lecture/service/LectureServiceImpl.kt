@@ -24,10 +24,12 @@ import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.CompletedLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
+import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
@@ -176,6 +178,20 @@ class LectureServiceImpl(
     override fun queryAllDepartments(request: QueryAllDepartmentsRequest): DepartmentsResponse {
         val departments = lectureRepository.findAllDepartment(request.keyword)
         val response = LectureResponse.departmentOf(departments)
+
+        return response
+    }
+
+    /**
+     * 서버에 저장된 구분 리스트를 조회하는 비지니스 로직입니다.
+     * 키워드를 통해 필터링 합니다.
+     * @param 키워드
+     * @return 구분 리스트 response
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllDivisions(request: QueryAllDivisionsRequest): DivisionsResponse {
+        val divisions = lectureRepository.findAllDivisions(request.keyword)
+        val response = LectureResponse.divisionOf(divisions)
 
         return response
     }

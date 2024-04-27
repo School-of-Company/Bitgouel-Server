@@ -88,7 +88,7 @@ data class LectureResponse(
         fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
             departments = departments
         )
-
+        
         fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate) = CompletedLectureResponse(
             id = lecture.id,
             name = lecture.name,
@@ -101,6 +101,7 @@ data class LectureResponse(
         fun completedOf(completedLectures: List<CompletedLectureResponse>) = CompletedLecturesResponse(
             lectures = completedLectures
         )
+        
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
             divisions = divisions
         )

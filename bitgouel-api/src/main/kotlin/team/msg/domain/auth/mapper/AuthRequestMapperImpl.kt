@@ -75,7 +75,9 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             password = webRequest.password,
             highSchool = webRequest.highSchool,
             clubName = webRequest.clubName,
-            governmentName = webRequest.governmentName
+            governmentName = webRequest.governmentName,
+            position = webRequest.position,
+            sectors = webRequest.sectors
         )
 
     /**

@@ -10,4 +10,5 @@ interface CustomLectureRepository {
     fun deleteAllByUserId(userId: UUID)
     fun findAllLineByDivision(division: String, keyword: String?): List<String>
     fun findAllDepartment(keyword: String?): List<String>
+    fun findAllDivisions(keyword: String?): List<String>
 }

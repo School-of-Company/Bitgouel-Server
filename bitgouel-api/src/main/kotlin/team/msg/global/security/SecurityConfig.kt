@@ -14,6 +14,7 @@ import team.msg.global.security.handler.CustomAccessDeniedHandler
 import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
 import team.msg.global.security.jwt.JwtTokenParser
 
+
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtTokenParser: JwtTokenParser
@@ -138,7 +139,10 @@ class SecurityConfig(
              // withdraw
             .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
 
-            .anyRequest().authenticated()
+            // actuator
+            .mvcMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
+
+            .anyRequest().denyAll()
             .and()
 
             .exceptionHandling()
