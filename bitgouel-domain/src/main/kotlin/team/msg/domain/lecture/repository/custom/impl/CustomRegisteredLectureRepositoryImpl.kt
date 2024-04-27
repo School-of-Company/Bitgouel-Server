@@ -33,8 +33,8 @@ class CustomRegisteredLectureRepositoryImpl(
     override fun findLecturesAndIsCompleteByStudentId(studentId: UUID): List<Pair<Lecture, Boolean>> {
         val fetch = queryFactory.select(lecture, registeredLecture.isComplete)
             .from(registeredLecture)
-            .leftJoin(registeredLecture.lecture,lecture)
-            .leftJoin(registeredLecture.student,student)
+            .leftJoin(registeredLecture.lecture, lecture)
+            .leftJoin(registeredLecture.student, student)
             .where(
                 student.id.eq(studentId)
             )
