@@ -313,7 +313,7 @@ class LectureServiceImpl(
 
         if(user.authority == Authority.ROLE_TEACHER) {
             val teacher = teacherRepository findByUser user
-            if(teacher.club == student.club)
+            if(teacher.club != student.club)
                 throw ForbiddenCompletedLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
         }
 
