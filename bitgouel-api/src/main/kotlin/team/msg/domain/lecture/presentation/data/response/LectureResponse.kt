@@ -89,7 +89,7 @@ data class LectureResponse(
             departments = departments
         )
         
-        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate?) = CompletedLectureResponse(
+        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate?) = SignedUpLectureResponse(
             id = lecture.id,
             name = lecture.name,
             lectureType = lecture.lectureType,
@@ -98,8 +98,8 @@ data class LectureResponse(
             isComplete = isComplete
         )
 
-        fun completedOf(completedLectures: List<CompletedLectureResponse>) = CompletedLecturesResponse(
-            lectures = completedLectures
+        fun signedUpOf(lectures: List<SignedUpLectureResponse>) = SignedUpLecturesResponse(
+            lectures = lectures
         )
         
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
@@ -157,11 +157,11 @@ data class DepartmentsResponse(
     val departments: List<String>
 )
 
-data class CompletedLecturesResponse(
-    val lectures: List<CompletedLectureResponse>
+data class SignedUpLecturesResponse(
+    val lectures: List<SignedUpLectureResponse>
 )
 
-data class CompletedLectureResponse(
+data class SignedUpLectureResponse(
     val id: UUID,
     val name: String,
     val lectureType: String,

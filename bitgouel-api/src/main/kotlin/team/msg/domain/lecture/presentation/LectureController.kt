@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
-import team.msg.domain.lecture.presentation.data.response.CompletedLecturesResponse
+import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
@@ -101,8 +101,8 @@ class LectureController(
     }
 
     @GetMapping("/{student_id}/complete")
-    fun queryAllCompletedLecturesByStudent(@PathVariable("student_id") studentId: UUID): ResponseEntity<CompletedLecturesResponse> {
-        val response = lectureService.queryAllCompletedLecturesByStudent(studentId)
+    fun queryAllSignedUpLectures(@PathVariable("student_id") studentId: UUID): ResponseEntity<SignedUpLecturesResponse> {
+        val response = lectureService.queryAllSignedUpLectures(studentId)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }

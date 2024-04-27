@@ -19,7 +19,7 @@ class CustomLectureDateRepositoryImpl(
      * @param 최근 날짜를 조회할 강의 id
      * @return 최근 수강한 강의 날짜
      */
-    override fun findByLatestLectureDate(lectureId: UUID): LocalDate? =
+    override fun findByCurrentCompletedDate(lectureId: UUID): LocalDate? =
         queryFactory.select(lectureDate.completeDate)
             .from(lectureDate)
             .leftJoin(lectureDate.lecture, lecture)

@@ -27,7 +27,7 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
-import team.msg.domain.lecture.presentation.data.response.CompletedLecturesResponse
+import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
@@ -307,7 +307,7 @@ class LectureServiceImpl(
      * @return 조회한 강의 정보를 담은 list dto
      */
     @Transactional(readOnly = true)
-    override fun queryAllCompletedLecturesByStudent(studentId: UUID): CompletedLecturesResponse {
+    override fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse {
         val user = userUtil.queryCurrentUser()
 
         if(user.authority == Authority.ROLE_TEACHER) {
@@ -318,16 +318,16 @@ class LectureServiceImpl(
                 throw ForbiddenCompletedLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
         }
 
-        val completedLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
+        val signedUpLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
             .map {
                 val lecture = it.first
                 val isComplete = it.second
 
-                lectureDateRepository.findByLatestLectureDate(lecture.id)
-                    .let { latestLectureDate -> LectureResponse.of(lecture, isComplete, latestLectureDate) }
+                lectureDateRepository.findByCurrentCompletedDate(lecture.id)
+                    .let { currentCompletedDate -> LectureResponse.of(lecture, isComplete, currentCompletedDate) }
             }
 
-        val response = LectureResponse.completedOf(completedLectures)
+        val response = LectureResponse.signedUpOf(signedUpLectures)
 
         return response
     }

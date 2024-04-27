@@ -4,5 +4,5 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface CustomLectureDateRepository {
-    fun findByLatestLectureDate(lectureId: UUID): LocalDate?
+    fun findByCurrentCompletedDate(lectureId: UUID): LocalDate?
 }
