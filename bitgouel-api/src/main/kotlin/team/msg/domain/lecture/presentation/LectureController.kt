@@ -100,7 +100,7 @@ class LectureController(
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 
-    @GetMapping("/{student_id}/complete")
+    @GetMapping("/{student_id}/signup")
     fun queryAllSignedUpLectures(@PathVariable("student_id") studentId: UUID): ResponseEntity<SignedUpLecturesResponse> {
         val response = lectureService.queryAllSignedUpLectures(studentId)
         return ResponseEntity.status(HttpStatus.OK).body(response)
