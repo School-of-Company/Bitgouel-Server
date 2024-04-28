@@ -88,7 +88,20 @@ data class LectureResponse(
         fun departmentOf(departments: List<String>): DepartmentsResponse = DepartmentsResponse(
             departments = departments
         )
+        
+        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate?) = SignedUpLectureResponse(
+            id = lecture.id,
+            name = lecture.name,
+            lectureType = lecture.lectureType,
+            currentCompletedDate = currentCompletedDate,
+            lecturer = lecture.instructor,
+            isComplete = isComplete
+        )
 
+        fun signedUpOf(lectures: List<SignedUpLectureResponse>) = SignedUpLecturesResponse(
+            lectures = lectures
+        )
+        
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
             divisions = divisions
         )
@@ -142,6 +155,19 @@ data class LinesResponse(
 
 data class DepartmentsResponse(
     val departments: List<String>
+)
+
+data class SignedUpLecturesResponse(
+    val lectures: List<SignedUpLectureResponse>
+)
+
+data class SignedUpLectureResponse(
+    val id: UUID,
+    val name: String,
+    val lectureType: String,
+    val currentCompletedDate: LocalDate?,
+    val lecturer: String,
+    val isComplete: Boolean
 )
 
 data class DivisionsResponse(

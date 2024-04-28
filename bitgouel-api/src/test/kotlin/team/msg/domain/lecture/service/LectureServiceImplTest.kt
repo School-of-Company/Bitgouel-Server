@@ -12,11 +12,13 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
+import team.msg.domain.club.model.Club
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.ForbiddenCompletedLectureException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
@@ -25,6 +27,7 @@ import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
 import team.msg.domain.lecture.presentation.data.response.*
@@ -36,6 +39,7 @@ import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
@@ -700,10 +704,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val keyword = "자"
 
         val request = fixture<QueryAllDepartmentsRequest> {
-            property(QueryAllLinesRequest::keyword) { keyword }
+            property(QueryAllDepartmentsRequest::keyword) { keyword }
         }
         val emptyKeywordRequest = fixture<QueryAllDepartmentsRequest> {
-            property(QueryAllLinesRequest::keyword) { emptyKeyword }
+            property(QueryAllDepartmentsRequest::keyword) { emptyKeyword }
         }
 
         val departments = mutableListOf("자동차공학")
@@ -725,6 +729,127 @@ class LectureServiceImplTest : BehaviorSpec({
             val result = lectureServiceImpl.queryAllDepartments(request)
             Then("result와 response가 같아야 한다") {
                 result shouldBe response
+            }
+        }
+    }
+
+    // queryAllDivisions 테스트 코드
+    Given("강의와 keyword가 주어질 때"){
+        val emptyKeyword = ""
+        val keyword = "상호"
+
+        val request = fixture<QueryAllDivisionsRequest> {
+            property(QueryAllDivisionsRequest::keyword) { keyword }
+        }
+        val emptyKeywordRequest = fixture<QueryAllDivisionsRequest> {
+            property(QueryAllDivisionsRequest::keyword) { emptyKeyword }
+        }
+
+        val departments = mutableListOf("상호학점인정교육과정")
+        val emptyKeywordDepartments = mutableListOf("상호학점인정교육과정", "대학탐방프로그램")
+
+        val response = LectureResponse.divisionOf(departments)
+        val emptyKeywordResponse = LectureResponse.divisionOf(emptyKeywordDepartments)
+
+        When("keyqord가 빈 문자열일 때") {
+            every { lectureRepository.findAllDivisions(any()) } returns emptyKeywordDepartments
+            val result = lectureServiceImpl.queryAllDivisions(emptyKeywordRequest)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe emptyKeywordResponse
+            }
+        }
+
+        When("keyword가 특정 학과에 포함되는 문자열일 때"){
+            every { lectureRepository.findAllDivisions(any()) } returns departments
+            val result = lectureServiceImpl.queryAllDivisions(request)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+    }
+
+    // queryAllSignedUpLectures 테스트 코드
+    Given("user와 student id가 주어질 때") {
+        val userId = UUID.randomUUID()
+        val teacherId = UUID.randomUUID()
+        val studentId = UUID.randomUUID()
+
+        val club1 = fixture<Club>()
+        val club2 = fixture<Club>()
+
+        val teacherUser = fixture<User> {
+            property(User::id) { userId }
+            property(User::authority) { Authority.ROLE_TEACHER }
+        }
+        val teacher = fixture<Teacher> {
+            property(Teacher::id) { teacherId }
+            property(Teacher::user) { teacherUser }
+            property(Teacher::club) { club1 }
+        }
+
+        val adminUser = fixture<User> {
+            property(User::id) { userId }
+            property(User::authority) { Authority.ROLE_ADMIN }
+        }
+
+        val club1Student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::club) { club1 }
+        }
+        val club2Student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::club) { club2 }
+        }
+
+        val lectureId = UUID.randomUUID()
+        val lectureName = "name"
+        val lectureType = "type"
+        val lecturer = "lecturer"
+
+        val isComplete = false
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::name) { lectureName }
+            property(Lecture::lectureType) { lectureType }
+            property(Lecture::instructor) { lecturer }
+        }
+
+        val lectureDate1 = fixture<LectureDate> {
+            property(LectureDate::completeDate) { LocalDate.MIN }
+            property(LectureDate::lecture) { lecture }
+        }
+        val lectureDate2 = fixture<LectureDate> {
+            property(LectureDate::completeDate) { LocalDate.MAX }
+            property(LectureDate::lecture) { lecture }
+        }
+
+        val lectureAndIsComplete = listOf(Pair(lecture, isComplete))
+
+        val lectureResponse = LectureResponse.of(lecture, isComplete, LocalDate.MAX)
+        val response = LectureResponse.signedUpOf(listOf(lectureResponse))
+
+        every { teacherRepository.findByUser(teacherUser) } returns teacher
+
+        When("현재 로그인 한 유저가 Admin일 때") {
+            every { userUtil.queryCurrentUser() } returns adminUser
+            every { registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId) } returns lectureAndIsComplete
+            every { lectureDateRepository.findByCurrentCompletedDate(lectureId) } returns LocalDate.MAX
+
+            val result = lectureServiceImpl.queryAllSignedUpLectures(studentId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("현재 로그인 한 유저가 Teacher이고, 학생과 동아리가 다르면") {
+            every { userUtil.queryCurrentUser() } returns teacherUser
+            every { studentRepository.findByIdOrNull(any()) } returns club2Student
+
+            Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
+                shouldThrow<ForbiddenCompletedLectureException> {
+                    lectureServiceImpl.queryAllSignedUpLectures(studentId)
+                }
             }
         }
     }

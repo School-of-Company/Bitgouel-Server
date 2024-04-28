@@ -14,6 +14,7 @@ import team.msg.common.annotation.DistributedLock
 import team.msg.common.util.UserUtil
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.ForbiddenCompletedLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
@@ -26,6 +27,7 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
@@ -42,6 +44,7 @@ import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
+import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserNotFoundException
@@ -297,6 +300,38 @@ class LectureServiceImpl(
         return response
     }
 
+    /**
+     * 유저가 신청한 강의 내역을 조회하는 비지니스 로직입니다.
+     *
+     * @param 조회할 유저 id
+     * @return 조회한 강의 정보를 담은 list dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse {
+        val user = userUtil.queryCurrentUser()
+
+        if(user.authority == Authority.ROLE_TEACHER) {
+            val teacher = teacherRepository findByUser user
+            val student = studentRepository findById studentId
+
+            if(teacher.club != student.club)
+                throw ForbiddenCompletedLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+        }
+
+        val signedUpLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
+            .map {
+                val lecture = it.first
+                val isComplete = it.second
+
+                lectureDateRepository.findByCurrentCompletedDate(lecture.id)
+                    .let { currentCompletedDate -> LectureResponse.of(lecture, isComplete, currentCompletedDate) }
+            }
+
+        val response = LectureResponse.signedUpOf(signedUpLectures)
+
+        return response
+    }
+
     @Transactional(readOnly = true,rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
@@ -394,8 +429,14 @@ class LectureServiceImpl(
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
+    private infix fun TeacherRepository.findByUser(user: User): Teacher = this.findByUser(user)
+        ?: throw TeacherNotFoundException("선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
     private infix fun StudentRepository.findByUser(user: User): Student = this.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun StudentRepository.findById(id: UUID): Student = this.findByIdOrNull(id)
+        ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = $id ]")
 
     private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
