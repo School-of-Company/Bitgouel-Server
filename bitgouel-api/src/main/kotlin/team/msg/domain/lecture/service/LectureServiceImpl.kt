@@ -306,14 +306,10 @@ class LectureServiceImpl(
     }
 
     /**
-     * 강의에 신청한 학생 리스트를 조호하는 비지니스 로직입니다.
+     * 유저가 신청한 강의 내역을 조회하는 비지니스 로직입니다.
      *
-     * 기업 강사, 유관기관 강사, 대학 교수 -> 자기 강의만 조회할 수 있음 (다른 강사의 강의 학생 리스트 조회 시 예외)
-     * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 조회
-     * 어드민 -> 제한 없음
-     *
-     * @param 조회할 강의 id
-     * @return 조회한 학생 정보를 담은 list dto
+     * @param 조회할 유저 id
+     * @return 조회한 강의 정보를 담은 list dto
      */
     @Transactional(readOnly = true)
     override fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse {
@@ -341,6 +337,17 @@ class LectureServiceImpl(
         return response
     }
 
+    /**
+     * 강의에 신청한 학생 리스트를 조회하는 비지니스 로직입니다.
+     *
+     * 기업 강사, 유관기관 강사, 대학 교수 -> 자기 강의만 조회할 수 있음 (다른 강사의 강의 학생 리스트 조회 시 예외)
+     * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 조회
+     * 어드민 -> 제한 없음
+     *
+     * @param 조회할 강의 id
+     * @return 조회한 학생 정보를 담은 list dto
+     */
+    @Transactional(readOnly = true)
     override fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse {
         val user = userUtil.queryCurrentUser()
 
