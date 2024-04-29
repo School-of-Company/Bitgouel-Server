@@ -10,6 +10,8 @@ class WarmUpRunner(
     private val warmUpClient: WarmUpClient
 ): ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
-        warmUpClient.queryFaq()
+        runCatching {
+            warmUpClient.queryFaq()
+        }.onFailure {  }
     }
 }
