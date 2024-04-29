@@ -120,8 +120,8 @@ data class LectureResponse(
             )
         }
 
-        fun signedUpOf(students: List<SignedUpStudentResponse>) = SignedUpStudentsResponse(
-            students = students
+        fun signedUpOf(students: List<Student>) = SignedUpStudentsResponse(
+            students = students.map { of(it) }
         )
         
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
