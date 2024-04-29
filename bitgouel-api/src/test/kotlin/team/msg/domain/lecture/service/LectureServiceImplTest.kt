@@ -977,9 +977,9 @@ class LectureServiceImplTest : BehaviorSpec({
         every { teacherRepository.findByUser(teacherUser) } returns teacher
         every { bbozzakRepository.findByUser(bbozzakUser) } returns bbozzak
 
-        every { registeredLectureRepository.findStudentsByClubId(lectureId, clubAId) } returns clubAStudents
-        every { registeredLectureRepository.findStudentsByClubId(lectureId, clubBId) } returns clubBStudents
-        every { registeredLectureRepository.findStudents(lectureId) } returns students
+        every { registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(lectureId, clubAId) } returns clubAStudents
+        every { registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(lectureId, clubBId) } returns clubBStudents
+        every { registeredLectureRepository.findSignedUpStudentsByLectureId(lectureId) } returns students
 
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
 

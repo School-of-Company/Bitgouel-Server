@@ -50,7 +50,7 @@ class CustomRegisteredLectureRepositoryImpl(
 
     }
 
-    override fun findStudents(lectureId: UUID): List<Student> =
+    override fun findSignedUpStudentsByLectureId(lectureId: UUID): List<Student> =
         queryFactory.select(student)
             .from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
@@ -60,7 +60,7 @@ class CustomRegisteredLectureRepositoryImpl(
             )
             .fetch()
 
-    override fun findStudentsByClubId(lectureId: UUID, clubId: Long): List<Student> =
+    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID,clubId: Long): List<Student> =
         queryFactory.select(student)
             .from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
