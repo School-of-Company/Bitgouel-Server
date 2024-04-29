@@ -356,7 +356,7 @@ class LectureServiceImpl(
             Authority.ROLE_ADMIN -> registeredLectureRepository.findStudents(id)
             else -> {
                 val lecture = lectureRepository findById id
-                if(lecture.user == user)
+                if(lecture.user != user)
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
                 registeredLectureRepository.findStudents(id)
             }
