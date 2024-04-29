@@ -18,7 +18,7 @@ import team.msg.domain.government.model.Government
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.ForbiddenCompletedLectureException
+import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
@@ -847,7 +847,7 @@ class LectureServiceImplTest : BehaviorSpec({
             every { studentRepository.findByIdOrNull(any()) } returns club2Student
 
             Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
-                shouldThrow<ForbiddenCompletedLectureException> {
+                shouldThrow<ForbiddenSignedUpLectureException> {
                     lectureServiceImpl.queryAllSignedUpLectures(studentId)
                 }
             }
