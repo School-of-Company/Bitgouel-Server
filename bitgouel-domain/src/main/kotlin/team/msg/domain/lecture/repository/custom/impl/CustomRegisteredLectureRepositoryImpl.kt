@@ -1,12 +1,13 @@
 package team.msg.domain.lecture.repository.custom.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import team.msg.domain.club.model.QClub.club
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.model.QRegisteredLecture.registeredLecture
 import team.msg.domain.lecture.repository.custom.CustomRegisteredLectureRepository
 import team.msg.domain.student.model.QStudent.student
-import team.msg.domain.user.model.QUser
+import team.msg.domain.student.model.Student
 import java.util.*
 
 class CustomRegisteredLectureRepositoryImpl(
@@ -48,5 +49,27 @@ class CustomRegisteredLectureRepositoryImpl(
         }
 
     }
+
+    override fun findStudents(lectureId: UUID): List<Student> =
+        queryFactory.select(student)
+            .from(registeredLecture)
+            .leftJoin(registeredLecture.lecture, lecture)
+            .leftJoin(registeredLecture.student, student)
+            .where(
+                lecture.id.eq(lectureId)
+            )
+            .fetch()
+
+    override fun findStudentsByClubId(lectureId: UUID, clubId: Long): List<Student> =
+        queryFactory.select(student)
+            .from(registeredLecture)
+            .leftJoin(registeredLecture.lecture, lecture)
+            .leftJoin(registeredLecture.student, student)
+            .leftJoin(student.club, club)
+            .where(
+                lecture.id.eq(lectureId),
+                student.club.id.eq(clubId)
+            )
+            .fetch()
 
 }
