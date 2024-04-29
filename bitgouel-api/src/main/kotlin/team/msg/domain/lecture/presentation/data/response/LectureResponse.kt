@@ -4,6 +4,8 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
+import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.student.model.Student
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.time.LocalDate
@@ -101,6 +103,26 @@ data class LectureResponse(
         fun signedUpOf(lectures: List<SignedUpLectureResponse>) = SignedUpLecturesResponse(
             lectures = lectures
         )
+
+        fun of(student: Student) = student.run {
+            SignedUpStudentResponse(
+                id = id,
+                email = user!!.email,
+                name = user!!.name,
+                grade = grade,
+                classNumber = classRoom,
+                number = number,
+                phoneNumber = user!!.phoneNumber,
+                school = club.school.highSchool,
+                clubName = club.name,
+                cohort = cohort
+
+            )
+        }
+
+        fun signedUpOf(students: List<SignedUpStudentResponse>) = SignedUpStudentsResponse(
+            students = students
+        )
         
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
             divisions = divisions
@@ -168,6 +190,23 @@ data class SignedUpLectureResponse(
     val currentCompletedDate: LocalDate?,
     val lecturer: String,
     val isComplete: Boolean
+)
+
+data class SignedUpStudentsResponse(
+    val students: List<SignedUpStudentResponse>
+)
+
+data class SignedUpStudentResponse(
+    val id: UUID,
+    val email: String,
+    val name: String,
+    val grade: Int,
+    val classNumber: Int,
+    val number: Int,
+    val phoneNumber: String,
+    val school: HighSchool,
+    val clubName: String,
+    val cohort: Int
 )
 
 data class DivisionsResponse(
