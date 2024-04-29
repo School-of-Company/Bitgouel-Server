@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.annotation.DistributedLock
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
+import team.msg.domain.bbozzak.model.Bbozzak
+import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.ForbiddenCompletedLectureException
+import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
@@ -35,6 +38,7 @@ import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
+import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
@@ -61,6 +65,7 @@ class LectureServiceImpl(
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
+    private val bbozzakRepository: BbozzakRepository,
     private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
     private val userUtil: UserUtil
@@ -315,7 +320,7 @@ class LectureServiceImpl(
             val student = studentRepository findById studentId
 
             if(teacher.club != student.club)
-                throw ForbiddenCompletedLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+                throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
         }
 
         val signedUpLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
@@ -328,6 +333,43 @@ class LectureServiceImpl(
             }
 
         val response = LectureResponse.signedUpOf(signedUpLectures)
+
+        return response
+    }
+
+    /**
+     * 강의에 신청한 학생 리스트를 조회하는 비지니스 로직입니다.
+     *
+     * 기업 강사, 유관기관 강사, 대학 교수 -> 자기 강의만 조회할 수 있음 (다른 강사의 강의 학생 리스트 조회 시 예외)
+     * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 조회
+     * 어드민 -> 제한 없음
+     *
+     * @param 조회할 강의 id
+     * @return 조회한 학생 정보를 담은 list dto
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse {
+        val user = userUtil.queryCurrentUser()
+
+        val students = when(user.authority){
+            Authority.ROLE_TEACHER -> {
+                val teacher = teacherRepository findByUser user
+                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, teacher.club.id)
+            }
+            Authority.ROLE_BBOZZAK -> {
+                val bbozzak = bbozzakRepository findByUser user
+                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, bbozzak.club.id)
+            }
+            Authority.ROLE_ADMIN -> registeredLectureRepository.findSignedUpStudentsByLectureId(id)
+            else -> {
+                val lecture = lectureRepository findById id
+                if(lecture.user != user)
+                    throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
+                registeredLectureRepository.findSignedUpStudentsByLectureId(id)
+            }
+        }
+
+        val response = LectureResponse.signedUpOf(students)
 
         return response
     }
@@ -430,7 +472,10 @@ class LectureServiceImpl(
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
     private infix fun TeacherRepository.findByUser(user: User): Teacher = this.findByUser(user)
-        ?: throw TeacherNotFoundException("선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+
+    private infix fun BbozzakRepository.findByUser(user: User): Bbozzak = this.findByUser(user)
+        ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private infix fun StudentRepository.findByUser(user: User): Student = this.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")

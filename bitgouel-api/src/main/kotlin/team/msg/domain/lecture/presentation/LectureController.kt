@@ -21,6 +21,7 @@ import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
+import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsResponse
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDivisionsWebRequest
@@ -103,6 +104,12 @@ class LectureController(
     @GetMapping("/{student_id}/signup")
     fun queryAllSignedUpLectures(@PathVariable("student_id") studentId: UUID): ResponseEntity<SignedUpLecturesResponse> {
         val response = lectureService.queryAllSignedUpLectures(studentId)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @GetMapping("/student/{id}")
+    fun queryAllSignedUpStudents(@PathVariable id: UUID): ResponseEntity<SignedUpStudentsResponse> {
+        val response = lectureService.queryAllSignedUpStudents(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 }

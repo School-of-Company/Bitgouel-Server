@@ -12,13 +12,15 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.util.UserUtil
+import team.msg.domain.bbozzak.model.Bbozzak
+import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.ForbiddenCompletedLectureException
+import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
@@ -36,6 +38,8 @@ import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.school.model.School
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -62,6 +66,7 @@ class LectureServiceImplTest : BehaviorSpec({
     val teacherRepository = mockk<TeacherRepository>()
     val professorRepository = mockk<ProfessorRepository>()
     val userRepository = mockk<UserRepository>()
+    val bbozzakRepository = mockk<BbozzakRepository>()
     val userUtil = mockk<UserUtil>()
     val pageable = mockk<Pageable>()
     val lectureServiceImpl = LectureServiceImpl(
@@ -70,6 +75,7 @@ class LectureServiceImplTest : BehaviorSpec({
         registeredLectureRepository,
         studentRepository,
         teacherRepository,
+        bbozzakRepository,
         professorRepository,
         userRepository,
         userUtil
@@ -847,10 +853,182 @@ class LectureServiceImplTest : BehaviorSpec({
             every { studentRepository.findByIdOrNull(any()) } returns club2Student
 
             Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
-                shouldThrow<ForbiddenCompletedLectureException> {
+                shouldThrow<ForbiddenSignedUpLectureException> {
                     lectureServiceImpl.queryAllSignedUpLectures(studentId)
                 }
             }
         }
     }
+
+    // queryAllSignedUpLectures 테스트 코드
+    Given("lecture id가 주어질 때") {
+        val studentUserId = UUID.randomUUID()
+        val studentEmail = "email"
+        val studentName = "name"
+        val studentPhoneNumber = "phoneNumber"
+
+        val studentUserA = fixture<User>{
+            property(User::id) { studentUserId }
+            property(User::name) { studentName }
+            property(User::email) { studentEmail }
+            property(User::phoneNumber) { studentPhoneNumber}
+        }
+        val studentUserB = fixture<User>{
+            property(User::id) { studentUserId }
+            property(User::name) { studentName }
+            property(User::email) { studentEmail }
+            property(User::phoneNumber) { studentPhoneNumber}
+        }
+
+        val highSchool = HighSchool.KUMPA_TECHNICAL_HIGH_SCHOOL
+
+        val school = fixture<School> {
+            property(School::highSchool) { highSchool }
+        }
+        val clubAId = 0L
+        val clubBId = 1L
+        val clubAName = "clubAName"
+        val clubBName = "clubBName"
+
+        val clubA = fixture<Club> {
+            property(Club::id) { clubAId }
+            property(Club::school) { school }
+            property(Club::name) { clubAName }
+        }
+        val clubB = fixture<Club> {
+            property(Club::id) { clubBId }
+            property(Club::school) { school }
+            property(Club::name) { clubBName }
+        }
+
+        val studentId = UUID.randomUUID()
+        val grade = 1
+        val classRoom = 2
+        val number = 3
+        val cohort = 4
+
+        val studentA = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { studentUserA }
+            property(Student::club) { clubA }
+            property(Student::grade) { grade }
+            property(Student::classRoom) { classRoom }
+            property(Student::number) { number }
+            property(Student::cohort) { cohort }
+        }
+        val studentB = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { studentUserB }
+            property(Student::club) { clubB }
+            property(Student::grade) { grade }
+            property(Student::classRoom) { classRoom }
+            property(Student::number) { number }
+            property(Student::cohort) { cohort }
+        }
+
+        val students = listOf(studentA, studentB)
+        val clubAStudents = listOf(studentA)
+        val clubBStudents = listOf(studentB)
+
+        val teacherUser = fixture<User>() {
+            property(User::authority) { Authority.ROLE_TEACHER }
+
+        }
+        val teacher = fixture<Teacher> {
+            property(Teacher::user) { teacherUser }
+            property(Teacher::club) { clubA }
+        }
+
+        val bbozzakUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_BBOZZAK }
+        }
+        val bbozzak = fixture<Bbozzak> {
+            property(Bbozzak::user) { bbozzakUser }
+            property(Bbozzak::club) { clubB }
+        }
+
+        val professorUserAId = UUID.randomUUID()
+        val professorUserBId = UUID.randomUUID()
+
+        val professorUserA = fixture<User> {
+            property(User::id) { professorUserAId}
+            property(User::authority) { Authority.ROLE_PROFESSOR }
+        }
+        val professorUserB = fixture<User> {
+            property(User::id) { professorUserBId}
+            property(User::authority) { Authority.ROLE_PROFESSOR }
+        }
+
+        val adminUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_ADMIN }
+        }
+
+        val lectureId = UUID.randomUUID()
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::user) { professorUserA }
+        }
+
+        val allStudentsResponse = LectureResponse.signedUpOf(students)
+        val clubAStudentsResponse = LectureResponse.signedUpOf(clubAStudents)
+        val clubBStudentsResponse = LectureResponse.signedUpOf(clubBStudents)
+
+        every { teacherRepository.findByUser(teacherUser) } returns teacher
+        every { bbozzakRepository.findByUser(bbozzakUser) } returns bbozzak
+
+        every { registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(lectureId, clubAId) } returns clubAStudents
+        every { registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(lectureId, clubBId) } returns clubBStudents
+        every { registeredLectureRepository.findSignedUpStudentsByLectureId(lectureId) } returns students
+
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+
+        When("현재 로그인 한 유저가 Teacher라면"){
+            every { userUtil.queryCurrentUser() } returns teacherUser
+
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe clubAStudentsResponse
+            }
+        }
+
+        When("현재 로그인 한 유저가 Bbozzak라면"){
+            every { userUtil.queryCurrentUser() } returns bbozzakUser
+
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe clubBStudentsResponse
+            }
+        }
+
+        When("현재 로그인 한 유저가 Admin이라면") {
+            every { userUtil.queryCurrentUser() } returns adminUser
+
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe allStudentsResponse
+            }
+        }
+
+        When("현재 로그인 한 유저가 PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT이고 강의 강사라면") {
+            every { userUtil.queryCurrentUser() } returns professorUserA
+
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe allStudentsResponse
+            }
+        }
+
+        When("현재 로그인 한 유저가 PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT이고 강의 강사가 아니라면"){
+            every { userUtil.queryCurrentUser() } returns professorUserB
+
+            Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
+                shouldThrow<ForbiddenSignedUpLectureException> {
+                    lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+                }
+            }
+        }
+
+    }
+
 })

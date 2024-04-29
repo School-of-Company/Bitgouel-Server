@@ -14,6 +14,7 @@ import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
+import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsResponse
 import java.util.UUID
 
 interface LectureService {
@@ -27,5 +28,6 @@ interface LectureService {
     fun cancelSignUpLecture(id: UUID)
     fun queryInstructors(keyword: String): InstructorsResponse
     fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse
+    fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse
     fun lectureReceiptStatusExcel(response: HttpServletResponse)
 }
