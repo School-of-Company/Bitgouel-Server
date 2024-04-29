@@ -102,6 +102,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/lecture/line").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture/department").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture/{student_id}/signup").hasAnyRole(ADMIN, TEACHER)
+            .mvcMatchers(HttpMethod.GET, "/lecture/student/{id}").hasAnyRole(ADMIN, TEACHER, BBOZZAK, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/division").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/lecture/excel").hasRole(ADMIN)
 
