@@ -58,5 +58,8 @@ data class CreateLectureWebRequest(
     @field:NotNull
     @field:Min(5)
     @field:Max(10)
-    val maxRegisteredUser: Int
+    val maxRegisteredUser: Int,
+
+    @field:NotNull
+    val essentialComplete: Boolean
 )

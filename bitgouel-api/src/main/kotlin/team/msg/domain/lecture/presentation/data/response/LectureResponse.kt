@@ -27,7 +27,8 @@ data class LectureResponse(
     val lectureStatus: LectureStatus,
     val headCount: Int,
     val maxRegisteredUser: Int,
-    val lecturer: String
+    val lecturer: String,
+    val essentialComplete: Boolean
 ) {
     companion object {
         fun of(lecture: Lecture, headCount: Int): LectureResponse = LectureResponse(
@@ -44,7 +45,8 @@ data class LectureResponse(
             lectureStatus = lecture.getLectureStatus(),
             headCount = headCount,
             maxRegisteredUser = lecture.maxRegisteredUser,
-            lecturer = lecture.instructor
+            lecturer = lecture.instructor,
+            essentialComplete = lecture.essentialComplete
         )
 
         fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
@@ -64,7 +66,8 @@ data class LectureResponse(
             maxRegisteredUser = lecture.maxRegisteredUser,
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
-            credit = lecture.credit
+            credit = lecture.credit,
+            essentialComplete = lecture.essentialComplete
         )
 
         fun dateListOf(lectureDates: List<LectureDate>): List<LectureDateResponse> =
@@ -151,7 +154,8 @@ data class LectureDetailsResponse(
     val maxRegisteredUser: Int,
     val isRegistered: Boolean,
     val lecturer: String,
-    val credit: Int
+    val credit: Int,
+    val essentialComplete: Boolean
 )
 
 data class LectureDateResponse(

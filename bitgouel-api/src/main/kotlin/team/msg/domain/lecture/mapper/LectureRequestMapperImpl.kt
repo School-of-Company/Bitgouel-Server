@@ -32,7 +32,8 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         lectureType = webRequest.lectureType,
         credit = webRequest.credit,
         maxRegisteredUser = webRequest.maxRegisteredUser,
-        userId = webRequest.userId
+        userId = webRequest.userId,
+        essentialComplete = webRequest.essentialComplete
     )
 
     /**
