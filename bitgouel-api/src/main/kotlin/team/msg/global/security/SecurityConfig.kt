@@ -93,18 +93,18 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/post/{id}").hasAnyRole(COMPANY_INSTRUCTOR, BBOZZAK, PROFESSOR, GOVERNMENT, ADMIN)
 
             // lecture
-            .mvcMatchers(HttpMethod.POST, "/lecture").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture").authenticated()
             .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/{id}").authenticated()
-            .mvcMatchers(HttpMethod.GET, "/lecture/instructor").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "/lecture/line").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "/lecture/department").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/lecture/instructor").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/lecture/line").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
+            .mvcMatchers(HttpMethod.GET, "/lecture/department").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/{student_id}/signup").hasAnyRole(ADMIN, TEACHER)
             .mvcMatchers(HttpMethod.GET, "/lecture/student/{id}").hasAnyRole(ADMIN, TEACHER, BBOZZAK, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/{student_id}").hasAnyRole(ADMIN, TEACHER, BBOZZAK, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
-            .mvcMatchers(HttpMethod.GET, "/lecture/division").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/lecture/division").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/excel").hasRole(ADMIN)
 
             // faq
