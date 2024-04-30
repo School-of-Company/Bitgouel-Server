@@ -5,6 +5,7 @@ import team.msg.domain.club.model.QClub.club
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.model.QRegisteredLecture.registeredLecture
+import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.repository.custom.CustomRegisteredLectureRepository
 import team.msg.domain.student.model.QStudent.student
 import team.msg.domain.student.model.Student
@@ -72,4 +73,13 @@ class CustomRegisteredLectureRepositoryImpl(
             )
             .fetch()
 
+    override fun findByLectureIdAndStudentId(lectureId: UUID,studentId: UUID): RegisteredLecture? =
+        queryFactory.selectFrom(registeredLecture)
+            .leftJoin(registeredLecture.lecture, lecture)
+            .leftJoin(registeredLecture.student, student)
+            .where(
+                lecture.id.eq(lectureId),
+                student.id.eq(studentId)
+            )
+            .fetchOne()
 }

@@ -374,6 +374,55 @@ class LectureServiceImpl(
         return response
     }
 
+    /**
+     * 강의 수강 여부를 업데이트하는 비지니스 로직입니다.
+     *
+     * 기업 강사, 유관기관 강사, 대학 교수 -> 자기 강의 학생들만 변경할 수 있음 (다른 강사의 강의 학생 수강 여부 변경 시 예외)
+     * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 변경
+     * 어드민 -> 제한 없음
+     *
+     * @param 이수 상태를 변경할 강의 id와 학생 id, 변결될 강의 여부
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateLectureCompleteStatus(id: UUID, studentId: UUID, isComplete: Boolean) {
+        val user = userUtil.queryCurrentUser()
+
+        when(user.authority) {
+            Authority.ROLE_TEACHER -> {
+                val teacher = teacherRepository findByUser user
+                val student = studentRepository findById studentId
+
+                if(teacher.club != student.club)
+                    throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+            Authority.ROLE_BBOZZAK -> {
+                val bbozzak = bbozzakRepository findByUser user
+                val student = studentRepository findById studentId
+
+                if(bbozzak.club != student.club)
+                    throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+            Authority.ROLE_ADMIN -> { }
+            else -> {
+                val lecture = lectureRepository findById id
+                if (lecture.user != user)
+                    throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
+            }
+        }
+
+        val registeredLecture = registeredLectureRepository.findByLectureIdAndStudentId(id, studentId)
+            ?: throw UnSignedUpLectureException("학생의 강의 신청 기록을 찾을 수 없습니다. info : [ lectureId = $id, studentId = $studentId ]")
+        
+        val updatedRegisteredLecture = RegisteredLecture(
+            id = registeredLecture.id,
+            student = registeredLecture.student,
+            lecture = registeredLecture.lecture,
+            isComplete = isComplete
+        )
+
+        registeredLectureRepository.save(updatedRegisteredLecture)
+    }
+
     @Transactional(readOnly = true,rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()

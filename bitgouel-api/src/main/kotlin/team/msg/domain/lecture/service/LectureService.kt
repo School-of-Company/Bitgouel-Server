@@ -29,5 +29,6 @@ interface LectureService {
     fun queryInstructors(keyword: String): InstructorsResponse
     fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse
     fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse
+    fun updateLectureCompleteStatus(id: UUID, studentId: UUID, isComplete: Boolean)
     fun lectureReceiptStatusExcel(response: HttpServletResponse)
 }
