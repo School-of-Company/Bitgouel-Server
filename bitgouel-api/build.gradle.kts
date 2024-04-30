@@ -31,7 +31,14 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("ca.pjer:logback-awslogs-appender:1.6.0")
     implementation("com.github.napstr:logback-discord-appender:1.0.0")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation(project(":bitgouel-domain"))
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.5")
+    }
 }
 
 kapt {

@@ -54,4 +54,15 @@ management:
     web:
       exposure:
         include: health, info, metrics, prometheus
+      base-path: ${ACTUATOR_BASE_PATH:/actuator}
     enabled-by-default: false
+
+  endpoint:
+    health:
+      enabled: true
+
+    info:
+      enabled: true
+
+    prometheus:
+      enabled: true

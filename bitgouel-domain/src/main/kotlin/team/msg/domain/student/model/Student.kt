@@ -13,7 +13,7 @@ import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.club.model.Club
 import team.msg.domain.student.enums.StudentRole
 import team.msg.domain.user.model.User
-import java.util.UUID
+import java.util.*
 
 @Entity
 class Student(
@@ -48,5 +48,4 @@ class Student(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val studentRole: StudentRole
 
-) : BaseUUIDEntity(id) {
-}
+) : BaseUUIDEntity(id)
