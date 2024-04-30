@@ -930,7 +930,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val clubAStudents = listOf(studentA)
         val clubBStudents = listOf(studentB)
 
-        val teacherUser = fixture<User>() {
+        val teacherUser = fixture<User> {
             property(User::authority) { Authority.ROLE_TEACHER }
 
         }
@@ -951,11 +951,11 @@ class LectureServiceImplTest : BehaviorSpec({
         val professorUserBId = UUID.randomUUID()
 
         val professorUserA = fixture<User> {
-            property(User::id) { professorUserAId}
+            property(User::id) { professorUserAId }
             property(User::authority) { Authority.ROLE_PROFESSOR }
         }
         val professorUserB = fixture<User> {
-            property(User::id) { professorUserBId}
+            property(User::id) { professorUserBId }
             property(User::authority) { Authority.ROLE_PROFESSOR }
         }
 
@@ -1031,4 +1031,144 @@ class LectureServiceImplTest : BehaviorSpec({
 
     }
 
+    // updateLectureCompleteStatus 테스트 코드
+    Given("lecture id와 student id, isComplete가 주어질 때"){
+        val lectureId = UUID.randomUUID()
+        val studentId = UUID.randomUUID()
+        val isComplete = true
+
+        val highSchool = HighSchool.KUMPA_TECHNICAL_HIGH_SCHOOL
+        val school = fixture<School> {
+            property(School::highSchool) { highSchool }
+        }
+
+        val clubAId = 0L
+        val clubBId = 1L
+        val clubAName = "clubAName"
+        val clubBName = "clubBName"
+
+        val clubA = fixture<Club> {
+            property(Club::id) { clubAId }
+            property(Club::school) { school }
+            property(Club::name) { clubAName }
+        }
+        val clubB = fixture<Club> {
+            property(Club::id) { clubBId }
+            property(Club::school) { school }
+            property(Club::name) { clubBName }
+        }
+
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::club) { clubA }
+        }
+
+        val teacherUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_TEACHER }
+
+        }
+        val teacher = fixture<Teacher> {
+            property(Teacher::user) { teacherUser }
+            property(Teacher::club) { clubA }
+        }
+
+        val bbozzakUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_BBOZZAK }
+        }
+        val bbozzak = fixture<Bbozzak> {
+            property(Bbozzak::user) { bbozzakUser }
+            property(Bbozzak::club) { clubB }
+        }
+
+        val professorUserAId = UUID.randomUUID()
+        val professorUserBId = UUID.randomUUID()
+
+        val professorUserA = fixture<User> {
+            property(User::id) { professorUserAId }
+            property(User::authority) { Authority.ROLE_PROFESSOR }
+        }
+        val professorUserB = fixture<User> {
+            property(User::id) { professorUserBId }
+            property(User::authority) { Authority.ROLE_PROFESSOR }
+        }
+
+        val adminUser = fixture<User> {
+            property(User::authority) { Authority.ROLE_ADMIN }
+        }
+
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::user) { professorUserA }
+        }
+
+        val registeredLecture = fixture<RegisteredLecture> {
+            property(RegisteredLecture::lecture) { lecture }
+            property(RegisteredLecture::student) { student }
+            property(RegisteredLecture::isComplete) { false }
+        }
+
+        val updatedRegisteredLecture = fixture<RegisteredLecture> {
+            property(RegisteredLecture::lecture) { lecture }
+            property(RegisteredLecture::student) { student }
+            property(RegisteredLecture::isComplete) { isComplete }
+        }
+
+        every { teacherRepository.findByUser(teacherUser) } returns teacher
+        every { bbozzakRepository.findByUser(bbozzakUser) } returns bbozzak
+        every { studentRepository.findByIdOrNull(studentId) } returns student
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+
+        every { registeredLectureRepository.findByLectureIdAndStudentId(lectureId, studentId) } returns registeredLecture
+        every { registeredLectureRepository.save(any()) } returns updatedRegisteredLecture
+
+        When("현재 로그인 한 유저가 Bbozzak이나 Teacher이고, 학생과 같은 동아리에 소속되어있으면"){
+            every { userUtil.queryCurrentUser() } returns teacherUser
+
+            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+
+            Then("registerdLecture 가 저장이 되어야 한다.") {
+                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+            }
+        }
+
+        When("현재 로그인 한 유저가 Bbozzak이나 Teacher이고, 학생과 다른 동아리에 소속되어있으면"){
+            every { userUtil.queryCurrentUser() } returns bbozzakUser
+
+            Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
+                shouldThrow<ForbiddenSignedUpLectureException> {
+                    lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+                }
+            }
+        }
+
+        When("현재 로그인 한 유저가 Admin이면"){
+            every { userUtil.queryCurrentUser() } returns adminUser
+
+            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+
+            Then("registerdLecture 가 저장이 되어야 한다.") {
+                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+            }
+        }
+
+        When("현재 로그인 한 유저가 PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT이고 강의 강사라면") {
+            every { userUtil.queryCurrentUser() } returns professorUserA
+
+            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+
+            Then("registerdLecture 가 저장이 되어야 한다.") {
+                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+            }
+        }
+
+        When("현재 로그인 한 유저가 PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT이고 강의 강사가 아니라면"){
+            every { userUtil.queryCurrentUser() } returns professorUserB
+
+            Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
+                shouldThrow<ForbiddenSignedUpLectureException> {
+                    lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+                }
+            }
+        }
+    }
 })
