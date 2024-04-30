@@ -915,7 +915,8 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::classRoom) { classRoom }
             property(Student::number) { number }
             property(Student::cohort) { cohort }
-        }
+        }.let { Pair(it, true) }
+
         val studentB = fixture<Student> {
             property(Student::id) { studentId }
             property(Student::user) { studentUserB }
@@ -924,7 +925,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::classRoom) { classRoom }
             property(Student::number) { number }
             property(Student::cohort) { cohort }
-        }
+        }.let { Pair(it, true) }
 
         val students = listOf(studentA, studentB)
         val clubAStudents = listOf(studentA)
@@ -932,7 +933,6 @@ class LectureServiceImplTest : BehaviorSpec({
 
         val teacherUser = fixture<User> {
             property(User::authority) { Authority.ROLE_TEACHER }
-
         }
         val teacher = fixture<Teacher> {
             property(Teacher::user) { teacherUser }
@@ -970,9 +970,13 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::user) { professorUserA }
         }
 
-        val allStudentsResponse = LectureResponse.signedUpOf(students)
-        val clubAStudentsResponse = LectureResponse.signedUpOf(clubAStudents)
-        val clubBStudentsResponse = LectureResponse.signedUpOf(clubBStudents)
+        val allStudentsData = students.map { LectureResponse.of(it.first, it.second) }
+        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.first, it.second) }
+        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.first, it.second) }
+
+        val allStudentsResponse = LectureResponse.signedUpOf(allStudentsData)
+        val clubAStudentsResponse = LectureResponse.signedUpOf(clubAStudentsData)
+        val clubBStudentsResponse = LectureResponse.signedUpOf(clubBStudentsData)
 
         every { teacherRepository.findByUser(teacherUser) } returns teacher
         every { bbozzakRepository.findByUser(bbozzakUser) } returns bbozzak

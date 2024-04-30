@@ -107,7 +107,7 @@ data class LectureResponse(
             lectures = lectures
         )
 
-        fun of(student: Student) = student.run {
+        fun of(student: Student, isComplete: Boolean) = student.run {
             SignedUpStudentResponse(
                 id = id,
                 email = user!!.email,
@@ -118,13 +118,13 @@ data class LectureResponse(
                 phoneNumber = user!!.phoneNumber,
                 school = club.school.highSchool,
                 clubName = club.name,
-                cohort = cohort
-
+                cohort = cohort,
+                isComplete = isComplete
             )
         }
 
-        fun signedUpOf(students: List<Student>) = SignedUpStudentsResponse(
-            students = students.map { of(it) }
+        fun signedUpOf(students: List<SignedUpStudentResponse>) = SignedUpStudentsResponse(
+            students = students
         )
         
         fun divisionOf(divisions: List<String>): DivisionsResponse = DivisionsResponse(
@@ -210,7 +210,8 @@ data class SignedUpStudentResponse(
     val phoneNumber: String,
     val school: HighSchool,
     val clubName: String,
-    val cohort: Int
+    val cohort: Int,
+    val isComplete: Boolean
 )
 
 data class DivisionsResponse(
