@@ -402,9 +402,7 @@ class LectureServiceImpl(
                 if(bbozzak.club != student.club)
                     throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
             }
-            Authority.ROLE_ADMIN -> {
-
-            }
+            Authority.ROLE_ADMIN -> { }
             else -> {
                 val lecture = lectureRepository findById id
                 if (lecture.user != user)
