@@ -374,6 +374,26 @@ class LectureServiceImpl(
         return response
     }
 
+    /**
+     * 강의 수강 여부를 업데이트하는 비지니스 로직입니다.
+     *
+     * @param 이수 상태를 변경할 강의 id와 학생 id, 변결될 강의 여부
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateLectureCompleteStatus(id: UUID, studentId: UUID, isComplete: Boolean) {
+        val registeredLecture = registeredLectureRepository.findByLectureIdAndStudentId(id, studentId)
+            ?: throw UnSignedUpLectureException("학생의 강의 신청 기록을 찾을 수 없습니다. info : [ lectureId = $id, studentId = $studentId ]")
+        
+        val updatedRegisteredLecture = RegisteredLecture(
+            id = registeredLecture.id,
+            student = registeredLecture.student,
+            lecture = registeredLecture.lecture,
+            isComplete = isComplete
+        )
+
+        registeredLectureRepository.save(updatedRegisteredLecture)
+    }
+
     @Transactional(readOnly = true,rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
