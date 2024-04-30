@@ -51,8 +51,8 @@ class CustomRegisteredLectureRepositoryImpl(
 
     }
 
-    override fun findSignedUpStudentsByLectureId(lectureId: UUID): List<Student> =
-        queryFactory.select(student)
+    override fun findSignedUpStudentsByLectureId(lectureId: UUID): List<Pair<Student, Boolean>> {
+        val fetch = queryFactory.select(student, registeredLecture.isComplete)
             .from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
             .leftJoin(registeredLecture.student, student)
@@ -61,8 +61,16 @@ class CustomRegisteredLectureRepositoryImpl(
             )
             .fetch()
 
-    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID,clubId: Long): List<Student> =
-        queryFactory.select(student)
+        return fetch.map {
+            Pair(
+                it[student]!!,
+                it[registeredLecture.isComplete]!!
+            )
+        }
+    }
+
+    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID,clubId: Long): List<Pair<Student, Boolean>> {
+        val fetch = queryFactory.select(student, registeredLecture.isComplete)
             .from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
             .leftJoin(registeredLecture.student, student)
@@ -72,6 +80,14 @@ class CustomRegisteredLectureRepositoryImpl(
                 student.club.id.eq(clubId)
             )
             .fetch()
+
+        return fetch.map {
+            Pair(
+                it[student]!!,
+                it[registeredLecture.isComplete]!!
+            )
+        }
+    }
 
     override fun findByLectureIdAndStudentId(lectureId: UUID,studentId: UUID): RegisteredLecture? =
         queryFactory.selectFrom(registeredLecture)

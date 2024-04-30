@@ -368,7 +368,7 @@ class LectureServiceImpl(
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
                 registeredLectureRepository.findSignedUpStudentsByLectureId(id)
             }
-        }
+        }.map { LectureResponse.of(it.first, it.second) }
 
         val response = LectureResponse.signedUpOf(students)
 
