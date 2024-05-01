@@ -101,7 +101,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/lecture/instructor").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/line").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/department").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
-            .mvcMatchers(HttpMethod.GET, "/lecture/{student_id}/signup").hasAnyRole(ADMIN, TEACHER)
+            .mvcMatchers(HttpMethod.GET, "/lecture/{student_id}/signup").hasAnyRole(ADMIN, TEACHER, STUDENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/student/{id}").hasAnyRole(ADMIN, TEACHER, BBOZZAK, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}/{student_id}").hasAnyRole(ADMIN, TEACHER, BBOZZAK, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/division").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
