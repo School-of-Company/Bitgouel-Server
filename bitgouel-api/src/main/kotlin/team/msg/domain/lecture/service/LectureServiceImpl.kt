@@ -322,6 +322,11 @@ class LectureServiceImpl(
 
             if(teacher.club != student.club)
                 throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ teacherId = ${teacher.id} ]")
+        } else if(user.authority == Authority.ROLE_STUDENT) {
+            val student = studentRepository findById studentId
+
+            if(student.user != user)
+                throw ForbiddenSignedUpLectureException("자신의 수강 이력만 볼 수 있습니다. info : [ userId = ${user.id} ]")
         }
 
         val signedUpLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)

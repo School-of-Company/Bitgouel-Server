@@ -780,8 +780,8 @@ class LectureServiceImplTest : BehaviorSpec({
         val teacherId = UUID.randomUUID()
         val studentId = UUID.randomUUID()
 
-        val club1 = fixture<Club>()
-        val club2 = fixture<Club>()
+        val clubA = fixture<Club>()
+        val clubB = fixture<Club>()
 
         val teacherUser = fixture<User> {
             property(User::id) { userId }
@@ -790,7 +790,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val teacher = fixture<Teacher> {
             property(Teacher::id) { teacherId }
             property(Teacher::user) { teacherUser }
-            property(Teacher::club) { club1 }
+            property(Teacher::club) { clubB }
         }
 
         val adminUser = fixture<User> {
@@ -798,13 +798,28 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::authority) { Authority.ROLE_ADMIN }
         }
 
-        val club1Student = fixture<Student> {
-            property(Student::id) { studentId }
-            property(Student::club) { club1 }
+        val studentAUserId = UUID.randomUUID()
+        val studentBUserId = UUID.randomUUID()
+
+        val studentAUser = fixture<User> {
+            property(User::id) { studentAUserId }
+            property(User::authority) { Authority.ROLE_STUDENT }
         }
-        val club2Student = fixture<Student> {
+
+        val studentBUser = fixture<User> {
+            property(User::id) { studentBUserId }
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
+
+        val clubAStudent = fixture<Student> {
+            property(Student::user) { studentAUser }
             property(Student::id) { studentId }
-            property(Student::club) { club2 }
+            property(Student::club) { clubA }
+        }
+        val clubBStudent = fixture<Student> {
+            property(Student::user) { studentBUser }
+            property(Student::id) { studentId }
+            property(Student::club) { clubB }
         }
 
         val lectureId = UUID.randomUUID()
@@ -836,11 +851,12 @@ class LectureServiceImplTest : BehaviorSpec({
         val response = LectureResponse.signedUpOf(listOf(lectureResponse))
 
         every { teacherRepository.findByUser(teacherUser) } returns teacher
+        every { studentRepository.findByIdOrNull(any()) } returns clubAStudent
+        every { registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId) } returns lectureAndIsComplete
+        every { lectureDateRepository.findByCurrentCompletedDate(lectureId) } returns LocalDate.MAX
 
         When("현재 로그인 한 유저가 Admin일 때") {
             every { userUtil.queryCurrentUser() } returns adminUser
-            every { registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId) } returns lectureAndIsComplete
-            every { lectureDateRepository.findByCurrentCompletedDate(lectureId) } returns LocalDate.MAX
 
             val result = lectureServiceImpl.queryAllSignedUpLectures(studentId)
             Then("result와 response가 같아야 한다") {
@@ -848,9 +864,27 @@ class LectureServiceImplTest : BehaviorSpec({
             }
         }
 
+        When("협재 로그인 한 유저가 STUDENT이고, 자신의 정보를 조회한다면"){
+            every { userUtil.queryCurrentUser() } returns studentAUser
+
+            val result = lectureServiceImpl.queryAllSignedUpLectures(studentId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("협재 로그인 한 유저가 STUDNET이고, 타인의 정보를 조회한다면"){
+            every { userUtil.queryCurrentUser() } returns studentBUser
+
+            Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
+                shouldThrow<ForbiddenSignedUpLectureException> {
+                    lectureServiceImpl.queryAllSignedUpLectures(studentId)
+                }
+            }
+        }
+
         When("현재 로그인 한 유저가 Teacher이고, 학생과 동아리가 다르면") {
             every { userUtil.queryCurrentUser() } returns teacherUser
-            every { studentRepository.findByIdOrNull(any()) } returns club2Student
 
             Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
                 shouldThrow<ForbiddenSignedUpLectureException> {
