@@ -3,6 +3,7 @@ package team.msg.domain.admin.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
@@ -101,6 +102,15 @@ class AdminServiceImpl(
         users.forEach { userUtil.withdrawUser(it) }
 
         userRepository.deleteByIdIn(userIds)
+    }
+
+    /**
+     * 학생 리스트 엑셀을 업로드 하는 비지니스 로직입니다
+     * @param 학생 리스트 엑셀 업로드를 위한 MultipartFile
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun uploadStudentListExcel(multipartFile: MultipartFile) {
+
     }
 
 
