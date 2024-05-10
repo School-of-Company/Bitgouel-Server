@@ -127,6 +127,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/admin/reject").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/admin/{user_id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/admin/withdraw").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/admin/excel").hasRole(ADMIN)
 
             // inquiry
             .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
@@ -56,7 +57,7 @@ class AdminController(
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping
+    @PostMapping("/excel")
     fun uploadStudentListExcel(@RequestPart file: File): ResponseEntity<Void> {
         adminService.uploadStudentListExcel(file)
         return ResponseEntity.status(HttpStatus.OK).build()
