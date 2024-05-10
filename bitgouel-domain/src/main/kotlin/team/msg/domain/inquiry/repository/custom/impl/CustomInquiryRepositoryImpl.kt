@@ -15,8 +15,8 @@ class CustomInquiryRepositoryImpl(
     private val jpaQueryFactory: JPAQueryFactory
 ) : CustomInquiryRepository {
     override fun deleteAllByUserId(userId: UUID) {
-        jpaQueryFactory.delete(QInquiry.inquiry)
-            .where(QInquiry.inquiry.user.id.eq(userId))
+        jpaQueryFactory.delete(inquiry)
+            .where(inquiry.user.id.eq(userId))
             .execute()
     }
 

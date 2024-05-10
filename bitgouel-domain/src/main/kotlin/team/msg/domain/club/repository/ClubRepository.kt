@@ -8,6 +8,8 @@ import team.msg.domain.club.repository.custom.CustomClubRepository
 import team.msg.domain.school.model.School
 
 interface ClubRepository : JpaRepository<Club, Long>, CustomClubRepository {
+    fun findByName(name: String): Club?
+
     @EntityGraph(attributePaths = ["school"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByNameAndSchool(name: String, school: School): Club?
 

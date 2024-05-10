@@ -123,6 +123,7 @@ class PostServiceImpl(
     @Transactional(readOnly = true)
     override fun queryPosts(type: FeedType, pageable: Pageable): PagingPostsResponse {
         val posts = postRepository.findAllByFeedType(type, pageable)
+        postRepository.deleteAll()
 
         val response = PostResponse.pageOf(posts)
 

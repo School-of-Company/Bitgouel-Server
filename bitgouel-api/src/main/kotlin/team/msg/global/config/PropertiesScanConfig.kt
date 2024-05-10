@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration
 import team.msg.global.config.properties.EmailProperties
 import team.msg.global.config.properties.RedisProperties
 import team.msg.thirdparty.aws.AwsProperties
+import team.msg.thirdparty.aws.storage.properties.AwsS3Properties
 
 @Configuration
 @ConfigurationPropertiesScan(
@@ -13,7 +14,8 @@ import team.msg.thirdparty.aws.AwsProperties
         JwtProperties::class,
         EmailProperties::class,
         RedisProperties::class,
-        AwsProperties::class
+        AwsProperties::class,
+        AwsS3Properties::class
     ]
 )
 class PropertiesScanConfig

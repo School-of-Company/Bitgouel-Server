@@ -59,7 +59,7 @@ class AuthServiceImpl(
     private val emailAuthenticationRepository: EmailAuthenticationRepository,
     private val userUtil: UserUtil,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val bbozzakRepository: BbozzakRepository
+    private val bbozzakRepository: BbozzakRepository,
 ) : AuthService {
 
     /**
@@ -68,7 +68,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
-        val user = createUser(
+        val user = userUtil.createUser(
             request.email,
             request.name,
             request.phoneNumber,
@@ -98,7 +98,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
-        val user = createUser(
+        val user = userUtil.createUser(
             request.email,
             request.name,
             request.phoneNumber,
@@ -122,7 +122,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun bbozzakSignUp(request: BbozzakSignUpRequest) {
-        val user = createUser(
+        val user = userUtil.createUser(
             request.email,
             request.name,
             request.phoneNumber,
@@ -147,7 +147,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun professorSignUp(request: ProfessorSignUpRequest) {
-        val user = createUser(
+        val user = userUtil.createUser(
             request.email,
             request.name,
             request.phoneNumber,
@@ -172,7 +172,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
-        val user = createUser(
+        val user = userUtil.createUser(
             request.email,
             request.name,
             request.phoneNumber,
@@ -199,7 +199,7 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
-        val user = createUser(
+        val user = userUtil.createUser(
             request.email,
             request.name,
             request.phoneNumber,
@@ -315,28 +315,6 @@ class AuthServiceImpl(
         applicationEventPublisher.publishEvent(WithdrawUserEvent(user))
 
         userRepository.delete(user)
-    }
-
-    /**
-     * 유저 생성과 검증을 처리하는 private 메서드입니다.
-     * @param 유저 생성 및 검증하기 위한 email, name, phoneNumber, password, authority 입니다.
-     */
-    private fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
-        if (userRepository.existsByEmail(email))
-            throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info : [ email = $email ]")
-
-        if (userRepository.existsByPhoneNumber(phoneNumber))
-            throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
-
-        return User(
-            id = UUID.randomUUID(),
-            email = email,
-            name = name,
-            phoneNumber = phoneNumber,
-            password = securityUtil.passwordEncode(password),
-            authority = authority,
-            approveStatus = ApproveStatus.PENDING
-        )
     }
 
     /**
