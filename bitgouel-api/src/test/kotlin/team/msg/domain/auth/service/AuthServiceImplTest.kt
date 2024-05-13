@@ -692,8 +692,9 @@ class AuthServiceImplTest : BehaviorSpec({
             property(EmailAuthentication::isAuthentication) { true }
         }
 
-        every { userRepository.findByEmail(any()) } returns user
-        every { emailAuthenticationRepository.findByIdOrNull(any()) } returns emailAuthentication
+        every { userRepository.findByEmail(email) } returns user
+        every { emailAuthenticationRepository.findByIdOrNull(email) } returns emailAuthentication
+        every { emailAuthenticationRepository.delete(emailAuthentication) } returns Unit
         every { securityUtil.passwordEncode(any()) } returns encodedNewPassword
         every { userRepository.save(any()) } returns modifiedPasswordUser
 
@@ -702,6 +703,10 @@ class AuthServiceImplTest : BehaviorSpec({
 
             Then("유저가 저장되어야 한다.") {
                 verify(exactly = 1) { userRepository.save(any()) }
+            }
+
+            Then("인증이 초기화되어야 한다.") {
+                verify(exactly = 1) { emailAuthenticationRepository.delete(emailAuthentication) }
             }
         }
 
