@@ -16,12 +16,15 @@ import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.presentation.data.request.SendAuthenticationEmailRequest
 import team.msg.domain.email.presentation.data.response.CheckEmailAuthenticationResponse
 import team.msg.domain.email.repository.EmailAuthenticationRepository
+import team.msg.domain.user.exception.UserNotFoundException
+import team.msg.domain.user.repository.UserRepository
 import team.msg.global.config.properties.EmailProperties
 import java.util.*
 
 @Service
 class EmailServiceImpl(
     private val emailAuthenticationRepository: EmailAuthenticationRepository,
+    private val userRepository: UserRepository,
     private val templateEngine: SpringTemplateEngine,
     private val mailSender: JavaMailSender,
     private val emailProperties: EmailProperties
@@ -33,6 +36,10 @@ class EmailServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun sendAuthenticationEmail(request: SendAuthenticationEmailRequest) {
         val email = request.email
+
+        if(!userRepository.existsByEmail(email))
+            throw UserNotFoundException("이메일로 가입된 유저를 찾을 수 없습니다. info : [ email = $email ]")
+
         val code = UUID.randomUUID().toString()
 
         val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(email)
