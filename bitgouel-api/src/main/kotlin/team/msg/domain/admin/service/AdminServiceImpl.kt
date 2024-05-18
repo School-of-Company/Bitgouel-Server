@@ -1,9 +1,14 @@
 package team.msg.domain.admin.service
 
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.apache.poi.xssf.usermodel.XSSFWorkbookType
+import org.hibernate.exception.DataException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
@@ -19,6 +24,7 @@ import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.exception.InternalServerException
 import java.io.File
 import java.util.*
 
@@ -117,25 +123,37 @@ class AdminServiceImpl(
      * @param 학생 리스트 엑셀 업로드를 위한 MultipartFile
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun uploadStudentListExcel(file: File) {
-        val workbook = XSSFWorkbook(file.inputStream())
+    override fun uploadStudentListExcel(file: MultipartFile) {
+        val workbook = WorkbookFactory.create(file.inputStream)
+
         val sheet = workbook.getSheetAt(0)
 
-        sheet.forEach { row ->
-            val email = row.getCell(0).stringCellValue
-            val name = row.getCell(1).stringCellValue
-            val phoneNumber = row.getCell(2).stringCellValue
-            val password = row.getCell(3).stringCellValue
-            val clubName = row.getCell(4).stringCellValue
-            val grade = row.getCell(5).numericCellValue.toInt()
-            val classRoom = row.getCell(6).numericCellValue.toInt()
-            val number = row.getCell(7).numericCellValue.toInt()
-            val admissionNumber = row.getCell(8).numericCellValue.toInt()
+        try {
+            sheet.forEachIndexed { index, row ->
+                if (index == 0)
+                    return@forEachIndexed
 
-            val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
-            val club = clubRepository findByName clubName
-            studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber)
+                if (row.getCell(0).stringCellValue == "")
+                    return
 
+                val email = row.getCell(0).stringCellValue
+                val name = row.getCell(1).stringCellValue
+                val phoneNumber = row.getCell(2).numericCellValue.toString()
+                val password = row.getCell(3).stringCellValue
+                val clubName = row.getCell(4).stringCellValue
+                val grade = row.getCell(5).numericCellValue.toInt()
+                val classRoom = row.getCell(6).numericCellValue.toInt()
+                val number = row.getCell(7).numericCellValue.toInt()
+                val admissionNumber = row.getCell(8).numericCellValue.toInt()
+
+                val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
+
+                val club = clubRepository findByName clubName
+
+                studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber)
+            }
+        } catch (e: Exception) {
+            throw InternalServerException("잘못된 Excel 데이터가 있습니다.")
         }
     }
 

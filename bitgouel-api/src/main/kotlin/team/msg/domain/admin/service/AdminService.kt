@@ -1,5 +1,6 @@
 package team.msg.domain.admin.service
 
+import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
@@ -12,5 +13,5 @@ interface AdminService {
     fun rejectUsers(userIds: List<UUID>)
     fun queryUserDetails(userId: UUID): UserDetailsResponse
     fun forceWithdraw(userIds: List<UUID>)
-    fun uploadStudentListExcel(file: File)
+    fun uploadStudentListExcel(file: MultipartFile)
 }

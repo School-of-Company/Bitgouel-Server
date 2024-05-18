@@ -1,5 +1,6 @@
 package team.msg.global.error.handler
 
+import org.hibernate.exception.DataException
 import team.msg.global.error.DataErrorResponse
 import team.msg.global.error.ErrorResponse
 import team.msg.global.error.NoHandlerErrorResponse

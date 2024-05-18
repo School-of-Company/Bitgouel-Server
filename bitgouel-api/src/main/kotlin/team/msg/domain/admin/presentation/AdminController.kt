@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.admin.mapper.AdminMapper
 import team.msg.domain.admin.presentation.data.web.QueryUsersWebRequest
 import team.msg.domain.admin.service.AdminService
@@ -58,8 +59,10 @@ class AdminController(
     }
 
     @PostMapping("/excel")
-    fun uploadStudentListExcel(@RequestPart file: File): ResponseEntity<Void> {
+    fun uploadStudentListExcel(@RequestPart file: MultipartFile): ResponseEntity<Void> {
+        println("=====================================")
         adminService.uploadStudentListExcel(file)
+        println("=====================================")
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 }
