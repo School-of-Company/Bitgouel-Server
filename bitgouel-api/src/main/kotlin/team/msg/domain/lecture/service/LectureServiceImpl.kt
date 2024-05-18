@@ -15,6 +15,8 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
+import team.msg.domain.club.model.Club
+import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
@@ -42,8 +44,10 @@ import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsRespon
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.school.exception.SchoolNotFoundException
+import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -68,6 +72,8 @@ class LectureServiceImpl(
     private val bbozzakRepository: BbozzakRepository,
     private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
+    private val clubRepository: ClubRepository,
+    private val schoolRepository: SchoolRepository,
     private val userUtil: UserUtil
 ) : LectureService {
 
@@ -432,26 +438,34 @@ class LectureServiceImpl(
     @Transactional(readOnly = true,rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
+
+        val cellStyle = workBook.createCellStyle()
+        cellStyle.alignment = HorizontalAlignment.CENTER
+        cellStyle.verticalAlignment = VerticalAlignment.CENTER
+
+        // 엑셀 삽입할 헤더
         val headers = listOf(
-            "연번" to 5,
-            "구분" to 15,
-            "계열" to 10,
-            "학기" to 5,
-            "대학" to 15,
-            "학과" to 20 ,
-            "교과명" to 30,
-            "교육일정" to 25,
-            "담당교수" to 10,
-            "학교명" to 25,
-            "동아리" to 10,
-            "학년" to 5,
-            "학생 성명" to 30,
-            "담당 교사" to 10
+            "연번" to 10,
+            "학교" to 20,
+            "동아리명" to 20,
+            "학과명" to 20,
+            "반" to 5,
+            "이름" to 10,
+            "휴대폰 번호(학생)" to 20,
+            "담당교사명" to 20,
+            "휴대폰번호(담당교사)" to 20,
+            "이메일(담당교사)" to 20,
+            "강의명" to 30,
+            "학기" to 20,
+            "강의 구분" to 30,
+            "강의 과" to 20,
+            "강의 계열" to 30,
+            "강의 유형" to 30,
+            "담당 강사" to 20,
+            "학점" to 20,
+            "필수강의 여부" to 20,
+            "강의 이수 완료일" to 30
         )
-
-        val sheet = workBook.createSheet()
-
-        val headerRow = sheet.createRow(0)
 
         val font = workBook.createFont()
         font.fontName = "Arial"
@@ -462,49 +476,69 @@ class LectureServiceImpl(
         style.verticalAlignment = VerticalAlignment.CENTER
         style.setFont(font)
 
-        headers.forEachIndexed { idx, header ->
-            headerRow.createCellWithOptions(idx, header.first, style, 20F)
+        HighSchool.values().forEach { highSchool ->
+            // 엑셀 시트 생성
+            val sheet = workBook.createSheet(highSchool.schoolName)
 
-            sheet.autoSizeColumn(idx)
-            sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
-        }
+            // 열 생성
+            val headerRow = sheet.createRow(0)
 
-        val lectures = lectureRepository.findAll()
+            headers.forEachIndexed { idx, header ->
+                headerRow.createCellWithOptions(idx, header.first, style, 20F)
 
-        lectures.forEach { lecture ->
-            val registeredLecture = registeredLectureRepository.findAllByLecture(lecture)
+                sheet.autoSizeColumn(idx)
+                sheet.setColumnWidth(idx,sheet.getColumnWidth(idx) + (256 * header.second))
+            }
 
-            registeredLecture.forEachIndexed { serialNumber, it ->
-                val row = sheet.createRow(serialNumber + 1)
+            val school = schoolRepository.findByHighSchool(highSchool)
+                ?: throw SchoolNotFoundException("해당하는 학교를 찾을 수 없습니다. info : [ school = $highSchool]")
 
-                val club = it.student.club
+            val clubs = clubRepository.findAllBySchool(school)
 
-                val teacher = teacherRepository.findByClub(club)
-                    ?: throw TeacherNotFoundException("해당 동아리의 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
+            val students = clubs.map { club ->
+                studentRepository.findAllByClub(club)
+            }.flatten()
 
-                val professor = professorRepository.findByUser(lecture.user)
-                    ?: throw ProfessorNotFoundException("해당 교수를 찾을 수 없습니다 : [ userId = ${lecture.user.id}]")
+            val registeredLecture = students.map { student ->
+                val registeredLecture = registeredLectureRepository.findAllByStudent(student)
 
-                val lectureDate = lectureDateRepository.findAllByLecture(lecture)
+                student to registeredLecture
+            }
 
-                listOf(
-                    (serialNumber+1).toString(),
-                    lecture.division,
-                    lecture.line,
-                    lecture.semester.yearAndSemester,
-                    professor.university,
-                    lecture.department,
-                    lecture.name,
-                    lectureDate.joinToString("\n") { "${it.completeDate}, ${it.startTime} ~ ${it.endTime}" },
-                    lecture.instructor,
-                    club.school.highSchool.schoolName,
-                    club.name,
-                    it.student.grade.toString(),
-                    it.student.user!!.name,
-                    teacher.user!!.name
-                ).forEachIndexed { idx, data ->
-                    row.createCellWithOptions(idx, data, style, 40F)
-                    row.height = -1
+            registeredLecture.forEach { studentAndRegisteredLecture ->
+                val teacher  = teacherRepository findByClub studentAndRegisteredLecture.first.club
+
+                studentAndRegisteredLecture.second.forEachIndexed { idx, registeredLecture ->
+                    val lecture = registeredLecture.lecture
+
+                    val row = sheet.createRow(idx+1)
+
+                    listOf(
+                        (idx+1).toString(),
+                        school.highSchool.schoolName,
+                        studentAndRegisteredLecture.first.club.name,
+                        "",
+                        studentAndRegisteredLecture.first.classRoom.toString(),
+                        studentAndRegisteredLecture.first.user!!.name,
+                        studentAndRegisteredLecture.first.user!!.phoneNumber,
+                        teacher?.user!!.name,
+                        teacher.user!!.phoneNumber,
+                        teacher.user!!.email,
+                        lecture.name,
+                        lecture.semester.yearAndSemester,
+                        lecture.division,
+                        lecture.department,
+                        lecture.line,
+                        lecture.lectureType,
+                        lecture.instructor,
+                        lecture.credit.toString(),
+                        if(lecture.essentialComplete) "O" else "X"
+                    ).forEachIndexed {
+                        cellIdx, parameter ->
+                        val cell = row.createCell(cellIdx)
+                        cell.setCellValue(parameter)
+                        cell.cellStyle = cellStyle
+                    }
                 }
             }
         }
@@ -540,4 +574,7 @@ class LectureServiceImpl(
 
     private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
+
+    private infix fun TeacherRepository.findByClub(club: Club): Teacher? = this.findByClub(club)
+//        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ clubname = ${club.name} ]")
 }
