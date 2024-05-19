@@ -521,7 +521,7 @@ class LectureServiceImpl(
                         studentAndRegisteredLecture.first.classRoom.toString(),
                         studentAndRegisteredLecture.first.user!!.name,
                         studentAndRegisteredLecture.first.user!!.phoneNumber,
-                        teacher?.user!!.name,
+                        teacher.user!!.name,
                         teacher.user!!.phoneNumber,
                         teacher.user!!.email,
                         lecture.name,
@@ -575,6 +575,6 @@ class LectureServiceImpl(
     private infix fun UserRepository.findById(id: UUID): User = this.findByIdOrNull(id)
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 
-    private infix fun TeacherRepository.findByClub(club: Club): Teacher? = this.findByClub(club)
-//        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ clubname = ${club.name} ]")
+    private infix fun TeacherRepository.findByClub(club: Club): Teacher = this.findByClub(club)
+        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ clubname = ${club.name} ]")
 }
