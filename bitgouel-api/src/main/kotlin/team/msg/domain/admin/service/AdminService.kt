@@ -4,7 +4,6 @@ import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
-import java.io.File
 import java.util.*
 
 interface AdminService {

@@ -59,7 +59,7 @@ class AuthServiceImpl(
     private val emailAuthenticationRepository: EmailAuthenticationRepository,
     private val userUtil: UserUtil,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val bbozzakRepository: BbozzakRepository,
+    private val bbozzakRepository: BbozzakRepository
 ) : AuthService {
 
     /**
