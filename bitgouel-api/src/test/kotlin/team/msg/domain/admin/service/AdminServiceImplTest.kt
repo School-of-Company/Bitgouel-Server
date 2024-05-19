@@ -13,8 +13,10 @@ import io.mockk.verify
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
+import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserAlreadyApprovedException
@@ -31,9 +33,13 @@ class AdminServiceImplTest : BehaviorSpec({
 
     val userRepository = mockk<UserRepository>()
     val userUtil = mockk<UserUtil>()
+    val studentUtil = mockk<StudentUtil>()
+    val clubRepository = mockk<ClubRepository>()
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
-        userUtil = userUtil
+        userUtil = userUtil,
+        studentUtil = studentUtil,
+        clubRepository = clubRepository
     )
 
     // queryUsers 테스트 코드

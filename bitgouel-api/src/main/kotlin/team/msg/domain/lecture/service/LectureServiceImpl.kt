@@ -517,7 +517,7 @@ class LectureServiceImpl(
         }
     }
 
-    fun XSSFRow.createCellWithOptions(idx: Int, data: String,style: XSSFCellStyle, height: Float) {
+    fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle, height: Float) {
         val cell = this.createCell(idx)
         cell.setCellValue(data)
         cell.cellStyle = style

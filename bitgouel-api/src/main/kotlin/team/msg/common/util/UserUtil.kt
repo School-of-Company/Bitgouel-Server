@@ -4,9 +4,12 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import team.msg.common.entity.BaseUUIDEntity
+import team.msg.common.enums.ApproveStatus
 import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.model.Admin
 import team.msg.domain.admin.repository.AdminRepository
+import team.msg.domain.auth.exception.AlreadyExistEmailException
+import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
@@ -59,7 +62,8 @@ class UserUtil(
     private val postRepository: PostRepository,
     private val withdrawStudentRepository: WithdrawStudentRepository,
     private val inquiryRepository: InquiryRepository,
-    private val inquiryAnswerRepository: InquiryAnswerRepository
+    private val inquiryAnswerRepository: InquiryAnswerRepository,
+    private val securityUtil: SecurityUtil
 ) {
 
     fun queryCurrentUserId(): UUID {
@@ -195,6 +199,28 @@ class UserUtil(
 
             else -> throw UnApprovedUserException("회원가입 승인 대기 중인 유저입니다. info : [ userId = ${user.id} ]")
         }
+    }
+
+    /**
+     * 유저 생성과 검증을 처리하는 private 메서드입니다.
+     * @param 유저 생성 및 검증하기 위한 email, name, phoneNumber, password, authority 입니다.
+     */
+    fun createUser(email: String, name: String, phoneNumber: String, password: String, authority: Authority): User {
+        if (userRepository.existsByEmail(email))
+            throw AlreadyExistEmailException("이미 가입된 이메일을 기입하였습니다. info : [ email = $email ]")
+
+        if (userRepository.existsByPhoneNumber(phoneNumber))
+            throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
+
+        return User(
+            id = UUID.randomUUID(),
+            email = email,
+            name = name,
+            phoneNumber = phoneNumber,
+            password = securityUtil.passwordEncode(password),
+            authority = authority,
+            approveStatus = ApproveStatus.PENDING
+        )
     }
 
     private fun findStudentByUser(user: User) = studentRepository.findByUser(user)

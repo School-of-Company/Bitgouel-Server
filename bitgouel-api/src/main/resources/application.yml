@@ -46,7 +46,7 @@ spring:
 jwt:
   accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}
   refreshSecret: ${JWT_REFRESH:Yml0Z291ZWw=Yml0Z291ZWw=Yml0Z291ZWw=}
-  accessExpiration: ${ACCESS_EXP:1800}
+  accessExpiration: ${ACCESS_EXP:7200}
   refreshExpiration: ${REFRESH_EXP:108000}
 
 management:

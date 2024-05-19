@@ -1,11 +1,18 @@
 package team.msg.domain.admin.service
 
+import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
+import team.msg.domain.club.exception.ClubNotFoundException
+import team.msg.domain.club.model.Club
+import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
@@ -13,12 +20,15 @@ import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.exception.InternalServerException
 import java.util.*
 
 @Service
 class AdminServiceImpl(
     private val userRepository: UserRepository,
-    private val userUtil: UserUtil
+    private val userUtil: UserUtil,
+    private val studentUtil: StudentUtil,
+    private val clubRepository: ClubRepository
 ) : AdminService {
     /**
      * 유저를 전체 조회 및 이름, 역할, 승인 상태들로 조회하는 비즈니스 로직입니다
@@ -103,7 +113,48 @@ class AdminServiceImpl(
         userRepository.deleteByIdIn(userIds)
     }
 
+    /**
+     * 학생 리스트 엑셀을 업로드 하는 비지니스 로직입니다
+     * @param 학생 리스트 엑셀 업로드를 위한 MultipartFile
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun uploadStudentListExcel(file: MultipartFile) {
+        val workbook = WorkbookFactory.create(file.inputStream)
+
+        val sheet = workbook.getSheetAt(0)
+
+        try {
+            sheet.forEachIndexed { index, row ->
+                if (index == 0)
+                    return@forEachIndexed
+
+                if (row.getCell(0).stringCellValue == "")
+                    return
+
+                val email = row.getCell(0).stringCellValue
+                val name = row.getCell(1).stringCellValue
+                val phoneNumber = row.getCell(2).numericCellValue.toString()
+                val password = row.getCell(3).stringCellValue
+                val clubName = row.getCell(4).stringCellValue
+                val grade = row.getCell(5).numericCellValue.toInt()
+                val classRoom = row.getCell(6).numericCellValue.toInt()
+                val number = row.getCell(7).numericCellValue.toInt()
+                val admissionNumber = row.getCell(8).numericCellValue.toInt()
+
+                val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
+
+                val club = clubRepository findByName clubName
+
+                studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber)
+            }
+        } catch (e: Exception) {
+            throw InternalServerException("잘못된 Excel 데이터가 있습니다.")
+        }
+    }
 
     private infix fun UserRepository.findById(id: UUID): User =
         this.findByIdOrNull(id) ?: throw UserNotFoundException("유저를 찾을 수 없습니다. Info [ userId = $id ]")
+
+    private infix fun ClubRepository.findByName(clubName: String): Club =
+        this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. Info [ clubName = $clubName ]")
 }
