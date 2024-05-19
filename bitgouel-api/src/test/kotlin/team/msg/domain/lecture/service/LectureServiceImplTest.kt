@@ -15,6 +15,7 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.model.Club
+import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.Government
 import team.msg.domain.lecture.enums.LectureStatus
@@ -32,7 +33,11 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
-import team.msg.domain.lecture.presentation.data.response.*
+import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
+import team.msg.domain.lecture.presentation.data.response.LectureResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
@@ -40,6 +45,7 @@ import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.model.School
+import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -67,6 +73,8 @@ class LectureServiceImplTest : BehaviorSpec({
     val professorRepository = mockk<ProfessorRepository>()
     val userRepository = mockk<UserRepository>()
     val bbozzakRepository = mockk<BbozzakRepository>()
+    val clubRepository = mockk<ClubRepository>()
+    val schoolRepository = mockk<SchoolRepository>()
     val userUtil = mockk<UserUtil>()
     val pageable = mockk<Pageable>()
     val lectureServiceImpl = LectureServiceImpl(
@@ -78,6 +86,8 @@ class LectureServiceImplTest : BehaviorSpec({
         bbozzakRepository,
         professorRepository,
         userRepository,
+        clubRepository,
+        schoolRepository,
         userUtil
     )
 
