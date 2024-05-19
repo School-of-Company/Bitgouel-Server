@@ -32,7 +32,6 @@ dependencies {
     implementation("ca.pjer:logback-awslogs-appender:1.6.0")
     implementation("com.github.napstr:logback-discord-appender:1.0.0")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
     implementation(project(":bitgouel-domain"))
 }
 
