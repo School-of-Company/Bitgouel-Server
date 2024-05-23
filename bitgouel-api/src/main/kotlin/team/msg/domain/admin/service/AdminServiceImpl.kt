@@ -153,7 +153,7 @@ class AdminServiceImpl(
 
         val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
         if (!password.matches(passwordRegex))
-            throw InvalidPasswordException("유효하지 않는 비밀번호입니다. [ password = $password ]")
+            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. [ password = $password ]")
     }
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
