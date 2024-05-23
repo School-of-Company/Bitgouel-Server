@@ -3,6 +3,6 @@ package team.msg.domain.user.exception
 import team.msg.domain.user.exception.constant.UserErrorCode
 import team.msg.global.error.exception.BitgouelException
 
-class PasswordNotValidException(
+class InvalidPhoneNumberException(
     message: String
-) : BitgouelException(message, UserErrorCode.PASSWORD_NOT_VALID.status)
+) : BitgouelException(message, UserErrorCode.PHONE_NUMBER_NOT_VALID.status)

@@ -12,9 +12,9 @@ import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.exception.EmailNotValidException
-import team.msg.domain.user.exception.PasswordNotValidException
-import team.msg.domain.user.exception.PhoneNumberNotValidException
+import team.msg.domain.user.exception.InvalidEmailException
+import team.msg.domain.user.exception.InvalidPasswordException
+import team.msg.domain.user.exception.InvalidPhoneNumberException
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.UserResponse
@@ -145,15 +145,15 @@ class AdminServiceImpl(
     private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
         if (!email.matches(emailRegex))
-            throw EmailNotValidException("유효하지 않은 이메일입니다. [ email =  $email ]")
+            throw InvalidEmailException("유효하지 않은 이메일입니다. [ email =  $email ]")
 
         val phoneRegex = "^010[0-9]{8}\$".toRegex()
         if (!phoneNumber.matches(phoneRegex))
-            throw PhoneNumberNotValidException("유효하지 않은 휴대폰 번호입니다. [ phoneNumber = $phoneNumber ]")
+            throw InvalidPhoneNumberException("유효하지 않은 휴대폰 번호입니다. [ phoneNumber = $phoneNumber ]")
 
         val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
         if (!password.matches(passwordRegex))
-            throw PasswordNotValidException("유효하지 않는 비밀번호입니다. [ password = $password ]")
+            throw InvalidPasswordException("유효하지 않는 비밀번호입니다. [ password = $password ]")
     }
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
