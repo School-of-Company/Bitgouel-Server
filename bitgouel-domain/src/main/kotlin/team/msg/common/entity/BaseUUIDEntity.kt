@@ -1,4 +1,5 @@
 package team.msg.common.entity
+
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.proxy.HibernateProxy
 import org.springframework.data.domain.Persistable
