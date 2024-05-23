@@ -14,7 +14,7 @@ class InquiryAnswer(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
     val answer: String,
 
     @ManyToOne(fetch = FetchType.LAZY)

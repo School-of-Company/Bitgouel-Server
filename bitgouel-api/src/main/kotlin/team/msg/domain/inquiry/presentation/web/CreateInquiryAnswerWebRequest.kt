@@ -5,6 +5,6 @@ import javax.validation.constraints.Size
 
 data class CreateInquiryAnswerWebRequest(
     @field:NotBlank
-    @field:Size(max = 500)
+    @field:Size(max = 1000)
     val answer: String
 )

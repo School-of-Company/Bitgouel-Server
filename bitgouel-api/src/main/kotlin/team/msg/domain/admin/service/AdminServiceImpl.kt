@@ -152,6 +152,10 @@ class AdminServiceImpl(
         }
     }
 
+    private fun validateExcel(email: String, name: String, phoneNumber: String, password: String, grade: Int, classRoom: Int, number: Int, admissionNumber: Int) {
+
+    }
+
     private infix fun UserRepository.findById(id: UUID): User =
         this.findByIdOrNull(id) ?: throw UserNotFoundException("유저를 찾을 수 없습니다. Info [ userId = $id ]")
 
