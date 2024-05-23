@@ -15,8 +15,6 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.auth.exception.AlreadyExistEmailException
-import team.msg.domain.auth.exception.AlreadyExistPhoneNumberException
 import team.msg.domain.auth.exception.InvalidRefreshTokenException
 import team.msg.domain.auth.exception.MisMatchPasswordException
 import team.msg.domain.auth.exception.RefreshTokenNotFoundException
@@ -108,10 +106,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val request = fixture<StudentSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
+        val user = fixture<User>()
         val student = fixture<Student>()
 
-        every { userRepository.existsByEmail(request.email) } returns false
-        every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
+        every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { schoolRepository.findByHighSchool(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
@@ -123,26 +121,6 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("Student 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { studentRepository.save(any()) }
-            }
-        }
-
-        When("이미 존재하는 이메일로 학생 회원가입 요청을 하면") {
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            Then("AlreadyExistEmailException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.studentSignUp(request)
-                }
-            }
-        }
-
-        When("이미 존재하는 전화번호로 학생 회원가입 요청을 하면") {
-            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
-
-            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.studentSignUp(request)
-                }
             }
         }
 
@@ -174,8 +152,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val request = fixture<TeacherSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
+        val user = fixture<User>()
         val teacher = fixture<Teacher>()
 
+        every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
         every { schoolRepository.findByHighSchool(request.highSchool) } returns school
@@ -189,26 +169,6 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("Teacher 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { teacherRepository.save(any()) }
-            }
-        }
-
-        When("이미 존재하는 이메일로 선생님 회원가입 요청을 하면") {
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            Then("AlreadyExistEmailException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.teacherSignUp(request)
-                }
-            }
-        }
-
-        When("이미 존재하는 전화번호로 선생님 회원가입 요청을 하면") {
-            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
-
-            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.teacherSignUp(request)
-                }
             }
         }
 
@@ -240,8 +200,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val request = fixture<BbozzakSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
+        val user = fixture<User>()
         val bbozzak = fixture<Bbozzak>()
 
+        every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
         every { schoolRepository.findByHighSchool(request.highSchool) } returns school
@@ -255,26 +217,6 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("Bbozzak 이 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { bbozzakRepository.save(any()) }
-            }
-        }
-
-        When("이미 존재하는 이메일로 뽀짝 선생님 회원가입 요청을 하면") {
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            Then("AlreadyExistEmailException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.bbozzakSignUp(request)
-                }
-            }
-        }
-
-        When("이미 존재하는 전화번호로 뽀짝 선생님 회원가입 요청을 하면") {
-            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
-
-            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.bbozzakSignUp(request)
-                }
             }
         }
 
@@ -306,8 +248,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val request = fixture<ProfessorSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
+        val user = fixture<User>()
         val professor = fixture<Professor>()
 
+        every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
         every { schoolRepository.findByHighSchool(request.highSchool) } returns school
@@ -321,26 +265,6 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("Professor 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { professorRepository.save(any()) }
-            }
-        }
-
-        When("이미 존재하는 이메일로 대학교수 회원가입 요청을 하면") {
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            Then("AlreadyExistEmailException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.professorSignUp(request)
-                }
-            }
-        }
-
-        When("이미 존재하는 전화번호로 대학교수 회원가입 요청을 하면") {
-            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
-
-            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.professorSignUp(request)
-                }
             }
         }
 
@@ -372,8 +296,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val request = fixture<GovernmentSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
+        val user = fixture<User>()
         val government = fixture<Government>()
 
+        every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
         every { schoolRepository.findByHighSchool(request.highSchool) } returns school
@@ -387,26 +313,6 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("Government 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { governmentRepository.save(any()) }
-            }
-        }
-
-        When("이미 존재하는 이메일로 유관 기관 회원가입 요청을 하면") {
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            Then("AlreadyExistEmailException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.governmentSignUp(request)
-                }
-            }
-        }
-
-        When("이미 존재하는 전화번호로 유관 기관 회원가입 요청을 하면") {
-            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
-
-            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.governmentSignUp(request)
-                }
             }
         }
 
@@ -438,8 +344,10 @@ class AuthServiceImplTest : BehaviorSpec({
         val request = fixture<CompanyInstructorSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
+        val user = fixture<User>()
         val companyInstructor = fixture<CompanyInstructor>()
 
+        every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
         every { schoolRepository.findByHighSchool(request.highSchool) } returns school
@@ -453,26 +361,6 @@ class AuthServiceImplTest : BehaviorSpec({
             Then("CompanyInstructor 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
                 verify(exactly = 1) { companyInstructorRepository.save(any()) }
-            }
-        }
-
-        When("이미 존재하는 이메일로 기업 강사 회원가입 요청을 하면") {
-            every { userRepository.existsByEmail(request.email) } returns true
-
-            Then("AlreadyExistEmailException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistEmailException> {
-                    authServiceImpl.companyInstructorSignUp(request)
-                }
-            }
-        }
-
-        When("이미 존재하는 전화번호로 기업 강사 회원가입 요청을 하면") {
-            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
-
-            Then("AlreadyExistPhoneNumberException이 발생해야 한다.") {
-                shouldThrow<AlreadyExistPhoneNumberException> {
-                    authServiceImpl.companyInstructorSignUp(request)
-                }
             }
         }
 
