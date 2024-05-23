@@ -10,7 +10,6 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.StudentUtil
@@ -18,7 +17,6 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.AdminUserResponse
@@ -52,9 +50,10 @@ class AdminServiceImplTest : BehaviorSpec({
         val user = fixture<User> {
             property(User::id) { userId }
             property(User::name) { keyword }
+            property(User::email) { "s22000@gsm.hs.kr" }
+            property(User::phoneNumber) { "01012345678" }
             property(User::authority) { authority }
             property(User::approveStatus) { approveStatus }
-
         }
 
         val request = fixture<QueryUsersRequest> {
@@ -66,6 +65,8 @@ class AdminServiceImplTest : BehaviorSpec({
         val adminUserResponse = fixture<AdminUserResponse> {
             property(AdminUserResponse::id) { userId }
             property(AdminUserResponse::name) { keyword }
+            property(AdminUserResponse::email) { "s22000@gsm.hs.kr" }
+            property(AdminUserResponse::phoneNumber) { "01012345678" }
             property(AdminUserResponse::authority) { authority }
             property(AdminUserResponse::approveStatus) { approveStatus }
         }
