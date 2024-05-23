@@ -1,12 +1,14 @@
 package team.msg.domain.student.model
 
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import team.msg.common.entity.BaseUUIDEntity
-import team.msg.common.enums.ApproveStatus
 import team.msg.domain.teacher.model.Teacher
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.*
 
 @Entity
 class StudentActivity(

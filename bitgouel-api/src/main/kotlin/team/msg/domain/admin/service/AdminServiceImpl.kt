@@ -1,7 +1,6 @@
 package team.msg.domain.admin.service
 
 import org.apache.poi.ss.usermodel.WorkbookFactory
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -13,10 +12,11 @@ import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.InvalidEmailException
+import team.msg.domain.user.exception.InvalidPasswordException
+import team.msg.domain.user.exception.InvalidPhoneNumberException
 import team.msg.domain.user.exception.UserAlreadyApprovedException
-import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
-import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
@@ -89,18 +89,6 @@ class AdminServiceImpl(
     }
 
     /**
-     * 유저의 상세 정보를 조회하는 비즈니스 로직입니다
-     * @param 유저를 조회하기 위한 userId
-     * @return 조회한 user의 정보를 담은 dto
-     */
-    @Transactional(readOnly = true)
-    override fun queryUserDetails(userId: UUID): UserDetailsResponse {
-        val user = userRepository findById userId
-
-        return UserResponse.detailOf(user)
-    }
-
-    /**
      * 유저를 강제 탈퇴 시키는 비지니스 로직입니다
      * @param 유저를 삭제하기 위한 userIds
      */
@@ -123,37 +111,50 @@ class AdminServiceImpl(
 
         val sheet = workbook.getSheetAt(0)
 
-        try {
-            sheet.forEachIndexed { index, row ->
-                if (index == 0)
-                    return@forEachIndexed
+        sheet.forEachIndexed { index, row ->
+            if (index == 0)
+                return@forEachIndexed
 
-                if (row.getCell(0).stringCellValue == "")
-                    return
+            if (row.getCell(0).stringCellValue == "")
+                return
 
-                val email = row.getCell(0).stringCellValue
-                val name = row.getCell(1).stringCellValue
-                val phoneNumber = row.getCell(2).numericCellValue.toString()
-                val password = row.getCell(3).stringCellValue
-                val clubName = row.getCell(4).stringCellValue
-                val grade = row.getCell(5).numericCellValue.toInt()
-                val classRoom = row.getCell(6).numericCellValue.toInt()
-                val number = row.getCell(7).numericCellValue.toInt()
-                val admissionNumber = row.getCell(8).numericCellValue.toInt()
+            val email = row.getCell(0).stringCellValue
+            val name = row.getCell(1).stringCellValue
+            val phoneNumber = row.getCell(2).numericCellValue.toString()
+            val password = row.getCell(3).stringCellValue
+            val clubName = row.getCell(4).stringCellValue
+            val grade = row.getCell(5).numericCellValue.toInt()
+            val classRoom = row.getCell(6).numericCellValue.toInt()
+            val number = row.getCell(7).numericCellValue.toInt()
+            val admissionNumber = row.getCell(8).numericCellValue.toInt()
 
-                val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
+            validateExcelStudentData(email, phoneNumber, password)
 
-                val club = clubRepository findByName clubName
+            val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
 
+            val club = clubRepository findByName clubName
+
+            try {
                 studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber)
+            } catch (e: Exception) {
+                throw InternalServerException("서버 오류입니다.")
             }
-        } catch (e: Exception) {
-            throw InternalServerException("잘못된 Excel 데이터가 있습니다.")
         }
     }
 
-    private infix fun UserRepository.findById(id: UUID): User =
-        this.findByIdOrNull(id) ?: throw UserNotFoundException("유저를 찾을 수 없습니다. Info [ userId = $id ]")
+    private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
+        val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
+        if (!email.matches(emailRegex))
+            throw InvalidEmailException("유효하지 않은 이메일입니다. [ email =  $email ]")
+
+        val phoneRegex = "^010[0-9]{8}\$".toRegex()
+        if (!phoneNumber.matches(phoneRegex))
+            throw InvalidPhoneNumberException("유효하지 않은 휴대폰 번호입니다. [ phoneNumber = $phoneNumber ]")
+
+        val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
+        if (!password.matches(passwordRegex))
+            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. [ password = $password ]")
+    }
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. Info [ clubName = $clubName ]")

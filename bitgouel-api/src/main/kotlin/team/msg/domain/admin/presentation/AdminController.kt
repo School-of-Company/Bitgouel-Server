@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.admin.mapper.AdminMapper
 import team.msg.domain.admin.presentation.data.web.QueryUsersWebRequest
 import team.msg.domain.admin.service.AdminService
-import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import java.util.*
 
@@ -34,13 +33,6 @@ class AdminController(
     fun rejectUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
         adminService.rejectUsers(userIds)
         return ResponseEntity.noContent().build()
-    }
-
-    @GetMapping("/{user_id}")
-    @Deprecated("This API is deprecated. Use query user API instead")
-    fun queryUserDetails(@PathVariable("user_id") userId: UUID): ResponseEntity<UserDetailsResponse> {
-        val response = adminService.queryUserDetails(userId)
-        return ResponseEntity.ok(response)
     }
 
     @DeleteMapping("/withdraw")

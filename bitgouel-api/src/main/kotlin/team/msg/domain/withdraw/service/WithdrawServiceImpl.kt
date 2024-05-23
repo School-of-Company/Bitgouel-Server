@@ -27,5 +27,4 @@ class WithdrawServiceImpl(
         return WithdrawStudentResponse.listOf(withdrawStudents)
     }
 
-
 }

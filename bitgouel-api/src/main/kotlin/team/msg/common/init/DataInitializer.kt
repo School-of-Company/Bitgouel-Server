@@ -36,7 +36,6 @@ class DataInitializer(
             School(highSchool = HighSchool.GWANGJU_AUTOMATIC_EQUIPMENT_TECHNICAL_HIGH_SCHOOL),
             School(highSchool = HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL)
         )
-
     }
 
     /**
