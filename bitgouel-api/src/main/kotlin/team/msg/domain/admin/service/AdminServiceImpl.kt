@@ -13,6 +13,9 @@ import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.user.enums.Authority
+import team.msg.domain.user.exception.EmailNotValidException
+import team.msg.domain.user.exception.PasswordNotValidException
+import team.msg.domain.user.exception.PhoneNumberNotValidException
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
@@ -123,37 +126,49 @@ class AdminServiceImpl(
 
         val sheet = workbook.getSheetAt(0)
 
-        try {
-            sheet.forEachIndexed { index, row ->
-                if (index == 0)
-                    return@forEachIndexed
+        sheet.forEachIndexed { index, row ->
+            if (index == 0)
+                return@forEachIndexed
 
-                if (row.getCell(0).stringCellValue == "")
-                    return
+            if (row.getCell(0).stringCellValue == "")
+                return
 
-                val email = row.getCell(0).stringCellValue
-                val name = row.getCell(1).stringCellValue
-                val phoneNumber = row.getCell(2).numericCellValue.toString()
-                val password = row.getCell(3).stringCellValue
-                val clubName = row.getCell(4).stringCellValue
-                val grade = row.getCell(5).numericCellValue.toInt()
-                val classRoom = row.getCell(6).numericCellValue.toInt()
-                val number = row.getCell(7).numericCellValue.toInt()
-                val admissionNumber = row.getCell(8).numericCellValue.toInt()
+            val email = row.getCell(0).stringCellValue
+            val name = row.getCell(1).stringCellValue
+            val phoneNumber = row.getCell(2).numericCellValue.toString()
+            val password = row.getCell(3).stringCellValue
+            val clubName = row.getCell(4).stringCellValue
+            val grade = row.getCell(5).numericCellValue.toInt()
+            val classRoom = row.getCell(6).numericCellValue.toInt()
+            val number = row.getCell(7).numericCellValue.toInt()
+            val admissionNumber = row.getCell(8).numericCellValue.toInt()
 
-                val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
+            validateExcelStudentData(email, phoneNumber, password)
 
-                val club = clubRepository findByName clubName
+            val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
 
+            val club = clubRepository findByName clubName
+
+            try {
                 studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber)
+            } catch (e: Exception) {
+                throw InternalServerException("서버 오류입니다.")
             }
-        } catch (e: Exception) {
-            throw InternalServerException("잘못된 Excel 데이터가 있습니다.")
         }
     }
 
-    private fun validateExcel(email: String, name: String, phoneNumber: String, password: String, grade: Int, classRoom: Int, number: Int, admissionNumber: Int) {
+    private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
+        val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
+        if (!email.matches(emailRegex))
+            throw EmailNotValidException("유효하지 않은 이메일입니다. [ email =  $email ]")
 
+        val phoneRegex = "^010[0-9]{8}\$".toRegex()
+        if (!phoneNumber.matches(phoneRegex))
+            throw PhoneNumberNotValidException("유효하지 않은 휴대폰 번호입니다. [ phoneNumber = $phoneNumber ]")
+
+        val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
+        if (!password.matches(passwordRegex))
+            throw PasswordNotValidException("유효하지 않는 비밀번호입니다. [ password = $password ]")
     }
 
     private infix fun UserRepository.findById(id: UUID): User =
