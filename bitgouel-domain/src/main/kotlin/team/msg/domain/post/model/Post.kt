@@ -18,7 +18,7 @@ class Post (
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     var title: String,
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "VARCHAR(5000)", nullable = false)
     var content: String,
 
     @Generated(GenerationTime.INSERT)
