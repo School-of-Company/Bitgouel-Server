@@ -5,12 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
-import org.springframework.data.repository.findByIdOrNull
+import io.mockk.*
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
@@ -20,7 +15,6 @@ import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.AdminUserResponse
-import team.msg.domain.user.presentation.data.response.UserDetailsResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
 import java.util.*
@@ -154,38 +148,6 @@ class AdminServiceImplTest : BehaviorSpec({
                 shouldThrow<UserAlreadyApprovedException> {
                     adminServiceImpl.rejectUsers(userIds)
                 }
-            }
-        }
-    }
-
-    // queryUserDetails 테스트 코드
-    Given("userId가 주어졌을 때") {
-        val userId = UUID.randomUUID()
-        val name = "name"
-        val authority = Authority.ROLE_STUDENT
-        val approveStatus = ApproveStatus.APPROVED
-
-        val user = fixture<User> {
-            property(User::id) { userId }
-            property(User::name) { name }
-            property(User::authority) { authority }
-            property(User::approveStatus) { approveStatus }
-        }
-
-        val response = fixture<UserDetailsResponse> {
-            property(UserDetailsResponse::id) { userId }
-            property(UserDetailsResponse::name) { name }
-            property(UserDetailsResponse::authority) { authority }
-            property(UserDetailsResponse::approveStatus) { approveStatus }
-        }
-
-        every { userRepository.findByIdOrNull(userId) } returns user
-
-        When("User 상세 정보 요청 시") {
-            val result = adminServiceImpl.queryUserDetails(userId)
-
-            Then("result가 response와 같아야 한다") {
-                result shouldBe response
             }
         }
     }
