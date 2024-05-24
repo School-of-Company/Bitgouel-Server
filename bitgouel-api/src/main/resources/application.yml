@@ -66,3 +66,6 @@ management:
 
     prometheus:
       enabled: true
+
+aes:
+  bcrypt: ${AES_KEY}
