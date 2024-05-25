@@ -35,7 +35,6 @@ import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.event.WithdrawUserEvent
-import team.msg.domain.user.exception.InvalidPasswordException
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -302,19 +301,22 @@ class AuthServiceImpl(
      * @param 비밀번호를 변경할 계정의 이메일과 변경할 비밀번호
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun changePassword(changePasswordRequest: ChangePasswordRequest) {
-        val user = userRepository.findByEmail(changePasswordRequest.email)
-            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email = ${changePasswordRequest.email} ]")
+    override fun changePassword(request: ChangePasswordRequest) {
+        val password = securityUtil.decrypt(request.newPassword)
+        securityUtil.validatePassword(password)
 
-        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(changePasswordRequest.email)
-            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+        val user = userRepository.findByEmail(request.email)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email = ${request.email} ]")
+
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(request.email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${request.email} ]")
 
         if(!emailAuthentication.isAuthentication)
-            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${request.email} ]")
 
         emailAuthenticationRepository.delete(emailAuthentication)
 
-        val encodedNewPassword = securityUtil.passwordEncode(changePasswordRequest.newPassword)
+        val encodedNewPassword = securityUtil.passwordEncode(password)
 
         val modifiedPasswordUser = User(
             id = user.id,
