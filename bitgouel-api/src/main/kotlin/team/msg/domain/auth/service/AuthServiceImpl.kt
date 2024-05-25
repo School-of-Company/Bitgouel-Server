@@ -35,6 +35,7 @@ import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.event.WithdrawUserEvent
+import team.msg.domain.user.exception.InvalidPasswordException
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
@@ -228,6 +229,9 @@ class AuthServiceImpl(
 
         val user = userRepository.findByEmail(request.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
+
+        if (!securityUtil.isValidPassword(password))
+            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password $password ]")
 
         if (!securityUtil.isPasswordMatch(password, user.password))
             throw MisMatchPasswordException("비말번호가 일치하지 않습니다. info : [ password = $password ]")

@@ -4,6 +4,7 @@ import com.google.common.hash.Hashing
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import team.msg.domain.auth.exception.MisMatchPasswordException
+import team.msg.domain.user.exception.InvalidPasswordException
 import team.msg.global.security.aes.AesProperties
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -23,6 +24,9 @@ class SecurityUtil(
 
     fun isPasswordMatch(currentPassword: String, encodedPassword: String): Boolean =
         passwordEncoder.matches(currentPassword, encodedPassword)
+
+    fun isValidPassword(password: String): Boolean =
+        password.matches("^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\\\\\\\$%^&*]{8,24}\\\$".toRegex())
 
     fun decrypt(encryptedString: String): String =
         try {
