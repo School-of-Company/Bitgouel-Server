@@ -69,6 +69,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -99,6 +102,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -123,6 +129,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun bbozzakSignUp(request: BbozzakSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -148,6 +157,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun professorSignUp(request: ProfessorSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -173,6 +185,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -200,6 +215,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -226,12 +244,10 @@ class AuthServiceImpl(
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun login(request: LoginRequest): TokenResponse {
         val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
 
         val user = userRepository.findByEmail(request.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
-
-        if (!securityUtil.isValidPassword(password))
-            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password $password ]")
 
         if (!securityUtil.isPasswordMatch(password, user.password))
             throw MisMatchPasswordException("비말번호가 일치하지 않습니다. info : [ password = $password ]")

@@ -25,8 +25,10 @@ class SecurityUtil(
     fun isPasswordMatch(currentPassword: String, encodedPassword: String): Boolean =
         passwordEncoder.matches(currentPassword, encodedPassword)
 
-    fun isValidPassword(password: String): Boolean =
-        password.matches("^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\\\\\\\$%^&*]{8,24}\\\$".toRegex())
+    fun validatePassword(password: String) {
+        if (!password.matches("^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\\\\\\\$%^&*]{8,24}\\\$".toRegex()))
+            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password $password ]")
+    }
 
     fun decrypt(encryptedString: String): String =
         try {
