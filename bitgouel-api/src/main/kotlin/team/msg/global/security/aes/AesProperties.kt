@@ -7,4 +7,9 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConfigurationProperties("aes.bcrypt")
 class AesProperties(
     val secretKey: String
-)
+) {
+    companion object {
+        const val aes = "AES"
+        const val pkcs5Padding = "AES/CBC/PKCS5Padding"
+    }
+}
