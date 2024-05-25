@@ -83,6 +83,7 @@ class HttpLoggingAspect {
         for (i in parameterNames.indices) {
             params[parameterNames[i]] = args[i]
         }
+
         return params
     }
 }

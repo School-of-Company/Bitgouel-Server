@@ -126,7 +126,7 @@ class CertificationServiceImpl(
      * @param 자격증 id, 수정할 자격증의 내용
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun updateCertification(id: UUID, updateCertificationRequest: UpdateCertificationRequest) {
+    override fun updateCertification(id: UUID,request: UpdateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
         val student = studentRepository findByUser user
 
@@ -138,8 +138,8 @@ class CertificationServiceImpl(
         val updateCertification = Certification(
             id = certification.id,
             studentId = certification.studentId,
-            name = updateCertificationRequest.name,
-            acquisitionDate = updateCertificationRequest.acquisitionDate
+            name = request.name,
+            acquisitionDate = request.acquisitionDate
         )
 
         certificationRepository.save(updateCertification)

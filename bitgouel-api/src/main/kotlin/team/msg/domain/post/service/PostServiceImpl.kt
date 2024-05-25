@@ -135,8 +135,8 @@ class PostServiceImpl(
      * @return 페이징 처리된 게시글 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryPosts(queryAllPostsRequest: QueryAllPostsRequest): PostsResponse {
-        val posts = postRepository.findAll(queryAllPostsRequest.postSequence, queryAllPostsRequest.size, queryAllPostsRequest.type)
+    override fun queryPosts(request: QueryAllPostsRequest): PostsResponse {
+        val posts = postRepository.findAll(request.postSequence, request.size, request.type)
 
         val response = PostResponse.listOf(posts)
 
