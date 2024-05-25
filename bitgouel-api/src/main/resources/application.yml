@@ -68,4 +68,5 @@ management:
       enabled: true
 
 aes:
-  bcrypt: ${AES_KEY}
+  bcrypt:
+    secretKey: ${AES_KEY:bitgouelbitgouel}
