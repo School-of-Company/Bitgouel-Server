@@ -126,8 +126,8 @@ class LectureServiceImpl(
      * @return 조회한 강의의 정보를 담은 list dto
      */
     @Transactional(readOnly = true)
-    override fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse {
-        val lectureType = queryAllLectureRequest.lectureType
+    override fun queryAllLectures(pageable: Pageable, request: QueryAllLectureRequest): LecturesResponse {
+        val lectureType = request.lectureType
 
         val lectures = lectureRepository.findAllByLectureType(pageable, lectureType)
 

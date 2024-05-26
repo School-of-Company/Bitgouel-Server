@@ -68,6 +68,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun studentSignUp(request: StudentSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -98,6 +101,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun teacherSignUp(request: TeacherSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -122,6 +128,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun bbozzakSignUp(request: BbozzakSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -147,6 +156,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun professorSignUp(request: ProfessorSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -172,6 +184,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun governmentSignUp(request: GovernmentSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -199,6 +214,9 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun companyInstructorSignUp(request: CompanyInstructorSignUpRequest) {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userUtil.createUser(
             request.email,
             request.name,
@@ -224,11 +242,14 @@ class AuthServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class], readOnly = true)
     override fun login(request: LoginRequest): TokenResponse {
+        val password = securityUtil.decrypt(request.password)
+        securityUtil.validatePassword(password)
+
         val user = userRepository.findByEmail(request.email)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다.")
 
-        if (!securityUtil.isPasswordMatch(request.password, user.password))
-            throw MisMatchPasswordException("비말번호가 일치하지 않습니다. info : [ password = ${request.password} ]")
+        if (!securityUtil.isPasswordMatch(password, user.password))
+            throw MisMatchPasswordException("비말번호가 일치하지 않습니다. info : [ password = $password ]")
 
         if (user.approveStatus == ApproveStatus.PENDING)
             throw UnApprovedUserException("아직 회원가입 대기 중인 유저입니다. info : [ user = ${user.name} ]")
@@ -280,19 +301,22 @@ class AuthServiceImpl(
      * @param 비밀번호를 변경할 계정의 이메일과 변경할 비밀번호
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun changePassword(changePasswordRequest: ChangePasswordRequest) {
-        val user = userRepository.findByEmail(changePasswordRequest.email)
-            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email = ${changePasswordRequest.email} ]")
+    override fun changePassword(request: ChangePasswordRequest) {
+        val password = securityUtil.decrypt(request.newPassword)
+        securityUtil.validatePassword(password)
 
-        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(changePasswordRequest.email)
-            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+        val user = userRepository.findByEmail(request.email)
+            ?: throw UserNotFoundException("존재하지 않는 유저입니다. info : [ email = ${request.email} ]")
+
+        val emailAuthentication = emailAuthenticationRepository.findByIdOrNull(request.email)
+            ?: throw AuthCodeExpiredException("인증 코드가 만료되었거나 인증 메일을 보내지 않은 이메일입니다. info : [ email = ${request.email} ]")
 
         if(!emailAuthentication.isAuthentication)
-            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${changePasswordRequest.email} ]")
+            throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${request.email} ]")
 
         emailAuthenticationRepository.delete(emailAuthentication)
 
-        val encodedNewPassword = securityUtil.passwordEncode(changePasswordRequest.newPassword)
+        val encodedNewPassword = securityUtil.passwordEncode(password)
 
         val modifiedPasswordUser = User(
             id = user.id,

@@ -66,3 +66,7 @@ management:
 
     prometheus:
       enabled: true
+
+aes:
+  bcrypt:
+    secretKey: ${AES_KEY:bitgouelbitgouel}

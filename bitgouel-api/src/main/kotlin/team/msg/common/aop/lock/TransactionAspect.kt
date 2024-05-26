@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class TransactionAspect {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun proceed(proceedingJoinPoint: ProceedingJoinPoint): Any? {
-        return proceedingJoinPoint.proceed()
-    }
+    fun proceed(proceedingJoinPoint: ProceedingJoinPoint): Any? =
+        proceedingJoinPoint.proceed()
 }
