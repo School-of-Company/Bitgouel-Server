@@ -4,7 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.Configuration
 import team.msg.global.config.properties.EmailProperties
 import team.msg.global.config.properties.RedisProperties
-import team.msg.global.security.aes.AesProperties
 import team.msg.global.security.jwt.properties.JwtProperties
 
 @Configuration
@@ -12,8 +11,7 @@ import team.msg.global.security.jwt.properties.JwtProperties
     basePackageClasses = [
         JwtProperties::class,
         EmailProperties::class,
-        RedisProperties::class,
-        AesProperties::class
+        RedisProperties::class
     ]
 )
 class PropertiesScanConfig
