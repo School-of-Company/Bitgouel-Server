@@ -9,6 +9,6 @@ data class LoginWebRequest(
     @field:NotNull
     val email: String,
 
-    @field:Pattern(regexp = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\\\\\\\$%^&*]{8,24}\\\$")
+    @field:Pattern(regexp = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$")
     val password: String
 )
