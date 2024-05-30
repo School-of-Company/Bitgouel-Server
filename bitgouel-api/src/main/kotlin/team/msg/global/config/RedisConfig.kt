@@ -21,7 +21,7 @@ class RedisConfig(
         val redisTemplate = RedisTemplate<String, Int>()
         redisTemplate.keySerializer = StringRedisSerializer()
         redisTemplate.valueSerializer = StringRedisSerializer()
-        redisTemplate.connectionFactory = redisConnectionFactory()
+        redisTemplate.setConnectionFactory(redisConnectionFactory())
         return redisTemplate
     }
 }
