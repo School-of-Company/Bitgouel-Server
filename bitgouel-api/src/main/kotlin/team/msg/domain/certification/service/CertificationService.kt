@@ -6,8 +6,8 @@ import team.msg.domain.certification.presentation.data.response.CertificationsRe
 import java.util.UUID
 
 interface CertificationService {
-    fun createCertification(createCertificationRequest: CreateCertificationRequest)
+    fun createCertification(request: CreateCertificationRequest)
     fun queryCertifications(): CertificationsResponse
     fun queryCertifications(studentId: UUID): CertificationsResponse
-    fun updateCertification(id: UUID, updateCertificationRequest: UpdateCertificationRequest)
+    fun updateCertification(id: UUID,request: UpdateCertificationRequest)
 }

@@ -19,7 +19,7 @@ import java.util.UUID
 
 interface LectureService {
     fun createLecture(request: CreateLectureRequest)
-    fun queryAllLectures(pageable: Pageable, queryAllLectureRequest: QueryAllLectureRequest): LecturesResponse
+    fun queryAllLectures(pageable: Pageable,request: QueryAllLectureRequest): LecturesResponse
     fun queryLectureDetails(id: UUID): LectureDetailsResponse
     fun queryAllLines(request: QueryAllLinesRequest): LinesResponse
     fun queryAllDepartments(request: QueryAllDepartmentsRequest): DepartmentsResponse
