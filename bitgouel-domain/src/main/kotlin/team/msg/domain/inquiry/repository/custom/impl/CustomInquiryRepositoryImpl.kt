@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.model.Inquiry
-import team.msg.domain.inquiry.model.QInquiry
 import team.msg.domain.inquiry.model.QInquiry.inquiry
 import team.msg.domain.inquiry.repository.custom.CustomInquiryRepository
 import java.util.*

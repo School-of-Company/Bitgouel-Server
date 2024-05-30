@@ -20,7 +20,6 @@ class SecurityConfig(
     private val jwtTokenParser: JwtTokenParser
 ) {
     companion object {
-        const val USER = "USER"
         const val ADMIN = "ADMIN"
         const val STUDENT = "STUDENT"
         const val TEACHER = "TEACHER"

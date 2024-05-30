@@ -256,6 +256,7 @@ class LectureServiceImpl(
 
         studentRepository.save(updateCreditStudent)
     }
+
     /**
      * 강의에 대해 수강신청 취소하는 비지니스 로직입니다.
      * @param 수강신청을 취소하기 위한 강의 id

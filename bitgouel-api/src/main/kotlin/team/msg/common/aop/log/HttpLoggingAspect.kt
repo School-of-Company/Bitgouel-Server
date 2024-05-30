@@ -73,7 +73,7 @@ class HttpLoggingAspect {
         return result
     }
 
-    private fun params(joinPoint: JoinPoint): Map<*,*>? {
+    private fun params(joinPoint: JoinPoint): Map<*,*> {
         val codeSignature = joinPoint.signature as CodeSignature
         val parameterNames = codeSignature.parameterNames
         val args = joinPoint.args

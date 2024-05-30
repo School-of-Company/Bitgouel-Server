@@ -3,13 +3,8 @@ package team.msg.domain.lecture.exception.constant
 enum class LectureErrorCode(
     val status: Int
 ){
-    INVALID_LECTURE_TYPE(400),
-
     FORBIDDEN_SIGNED_UP_LECTURE(403),
-
     LECTURE_NOT_FOUND(404),
-    REGISTERED_LECTURE_COUNT_NOT_FOUND(404),
-
     ALREADY_APPROVED_LECTURE(409),
     ALREADY_SIGNED_UP_LECTURE(409),
     UNAPPROVED_LECTURE(409),

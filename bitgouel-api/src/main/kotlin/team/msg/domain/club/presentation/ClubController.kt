@@ -1,6 +1,5 @@
 package team.msg.domain.club.presentation
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
