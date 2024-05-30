@@ -101,7 +101,7 @@ class CertificationServiceImpl(
             is Teacher -> (teacherRepository findTeacherByUser user).club
             is Bbozzak -> (bbozzakRepository findBbozzakByUser user).club
             is Professor -> (professorRepository findProfessorByUser user).club
-            is CompanyInstructor -> (companyInstructorRepository findCompanyInstructorByUser  user).club
+            is CompanyInstructor -> (companyInstructorRepository findCompanyInstructorByUser user).club
             is Government -> (governmentRepository findGovernmentByUser user).club
             is Admin -> null
             else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")

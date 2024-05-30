@@ -35,6 +35,7 @@ class AdminServiceImpl(
      * @param 유저를 검색할 조건으로 keyword, authority, approveStatus
      * @return 학생 정보를 리스트로 담은 Dto
      */
+    @Transactional(readOnly = true)
     override fun queryUsers(request: QueryUsersRequest): UsersResponse {
         val users = userRepository.query(request.keyword, request.authority, request.approveStatus)
 

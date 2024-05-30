@@ -1,7 +1,7 @@
 server:
   port: ${SERVER_PORT:8080}
   tomcat:
-    mbeanregistry:
+    reregistration:
       enabled: true
 
 spring:
