@@ -15,7 +15,7 @@ class User(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @Column(columnDefinition = "VARCHAR(100) COLLATE utf8mb4_unicode_ci", nullable = false)
+    @Column(columnDefinition = "VARBINARY(100)", nullable = false)
     val email: String,
 
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
@@ -24,7 +24,7 @@ class User(
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val phoneNumber: String,
 
-    @Column(columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci", nullable = false)
+    @Column(columnDefinition = "VARBINARY(100)", nullable = false)
     val password: String,
 
     @Enumerated(EnumType.STRING)
