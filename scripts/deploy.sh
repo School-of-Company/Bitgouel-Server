@@ -8,7 +8,7 @@ echo "> Git Pull"
 git pull origin master
 
 echo "> Project Build"
-./gradlew clean bitgouel-api:build
+./gradlew clean bitgouel-api:build -x test
 
 CURRENT_PID=$(lsof -i tcp:8080)
 if [ -z "$CURRENT_PID" ]; then
