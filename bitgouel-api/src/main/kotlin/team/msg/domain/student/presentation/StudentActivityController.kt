@@ -37,36 +37,36 @@ class StudentActivityController(
     fun updateStudentActivity(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateStudentActivityWebRequest): ResponseEntity<Void> {
         val request = studentActivityMapper.updateStudentActivityWebRequestToDto(webRequest)
         studentActivityService.updateStudentActivity(id, request)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
     fun deleteStudentActivity(@PathVariable id: UUID): ResponseEntity<Void> {
         studentActivityService.deleteStudentActivity(id)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        return ResponseEntity.noContent().build()
     }
 
     @GetMapping
     fun queryAllStudentActivities(pageable: Pageable): ResponseEntity<StudentActivitiesResponse> {
         val response = studentActivityService.queryAllStudentActivities(pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{student_id}")
     fun queryStudentActivitiesByStudent(@PathVariable("student_id") studentId: UUID, pageable: Pageable): ResponseEntity<StudentActivitiesResponse> {
         val response = studentActivityService.queryStudentActivitiesByStudent(studentId, pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/my")
     fun queryMyStudentActivities(pageable: Pageable): ResponseEntity<StudentActivitiesResponse> {
         val response = studentActivityService.queryMyStudentActivities(pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{id}/detail")
     fun queryStudentActivityDetail(@PathVariable id: UUID): ResponseEntity<StudentActivityDetailsResponse> {
         val response = studentActivityService.queryStudentActivityDetail(id)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 }

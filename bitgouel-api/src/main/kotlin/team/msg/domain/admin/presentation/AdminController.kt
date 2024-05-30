@@ -1,6 +1,5 @@
 package team.msg.domain.admin.presentation
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -44,6 +43,6 @@ class AdminController(
     @PostMapping("/excel")
     fun uploadStudentListExcel(@RequestPart file: MultipartFile): ResponseEntity<Void> {
         adminService.uploadStudentListExcel(file)
-        return ResponseEntity.status(HttpStatus.OK).build()
+        return ResponseEntity.ok().build()
     }
 }

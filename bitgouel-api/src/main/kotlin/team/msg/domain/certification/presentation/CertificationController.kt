@@ -27,19 +27,19 @@ class CertificationController(
     @GetMapping
     fun queryCertifications(): ResponseEntity<CertificationsResponse> {
         val response = certificationService.queryCertifications()
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{student_id}")
     fun queryCertifications(@PathVariable("student_id") studentId: UUID): ResponseEntity<CertificationsResponse> {
         val response = certificationService.queryCertifications(studentId)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @PatchMapping("/{id}")
     fun updateCertification(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateCertificationWebRequest): ResponseEntity<Void> {
         val request = certificationRequestMapper.updateCertificationWebRequestToDto(webRequest)
         certificationService.updateCertification(id, request)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        return ResponseEntity.noContent().build()
     }
 }
