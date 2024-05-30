@@ -29,6 +29,7 @@ class EmailServiceImpl(
     private val mailSender: JavaMailSender,
     private val emailProperties: EmailProperties
 ) : EmailService {
+
     /**
      * 입력된 email로 인증 링크를 전송하는 비지니스 로직입니다.
      * @param 인증 링크가 전송될 email이 담긴 dto

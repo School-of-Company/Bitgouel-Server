@@ -70,7 +70,6 @@ class LectureServiceImpl(
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
     private val bbozzakRepository: BbozzakRepository,
-    private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
@@ -435,7 +434,7 @@ class LectureServiceImpl(
         registeredLectureRepository.save(updatedRegisteredLecture)
     }
 
-    @Transactional(readOnly = true,rollbackFor = [Exception::class])
+    @Transactional(readOnly = true, rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
 
@@ -557,6 +556,7 @@ class LectureServiceImpl(
         cell.cellStyle = style
         this.heightInPoints = height
     }
+
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
@@ -576,5 +576,5 @@ class LectureServiceImpl(
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 
     private infix fun TeacherRepository.findByClub(club: Club): Teacher = this.findByClub(club)
-        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ clubname = ${club.name} ]")
+        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ club = ${club.name} ]")
 }

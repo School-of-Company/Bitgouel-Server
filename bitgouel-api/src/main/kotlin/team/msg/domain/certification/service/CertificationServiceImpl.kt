@@ -97,12 +97,12 @@ class CertificationServiceImpl(
         val entity = userUtil.getAuthorityEntityAndOrganization(user).first
 
         val club = when(entity) {
-            is Student -> findStudentByUser(user).club
-            is Teacher -> findTeacherByUser(user).club
-            is Bbozzak -> findBbozzakByUser(user).club
-            is Professor -> findProfessorByUser(user).club
-            is CompanyInstructor -> findCompanyInstructorByUser(user).club
-            is Government -> findGovernmentByUser(user).club
+            is Student -> (studentRepository findStudentByUser user).club
+            is Teacher -> (teacherRepository findTeacherByUser user).club
+            is Bbozzak -> (bbozzakRepository findBbozzakByUser user).club
+            is Professor -> (professorRepository findProfessorByUser user).club
+            is CompanyInstructor -> (companyInstructorRepository findCompanyInstructorByUser  user).club
+            is Government -> (governmentRepository findGovernmentByUser user).club
             is Admin -> null
             else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
@@ -160,25 +160,28 @@ class CertificationServiceImpl(
         this.findByIdOrNull(id)
             ?: throw CertificationNotFoundException("존재하지 않는 자격증입니다. info : [ certificationId = $id ]")
 
-    private infix fun TeacherRepository.findByUser(user: User): Teacher =
+    private infix fun StudentRepository.findStudentByUser(user: User): Student =
         this.findByUser(user)
-            ?: throw TeacherNotFoundException("존재하지 않는 선생님입니다. info : [ userId = ${user.id} ]")
+            ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
-        ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+    private infix fun TeacherRepository.findTeacherByUser(user: User): Teacher =
+        this.findByUser(user)
+            ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findTeacherByUser(user: User) = teacherRepository.findByUser(user)
-        ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+    private infix fun BbozzakRepository.findBbozzakByUser(user: User): Bbozzak =
+        this.findByUser(user)
+            ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다.  info : [ userId = ${user.id} ]")
 
-    private fun findBbozzakByUser(user: User) = bbozzakRepository.findByUser(user)
-        ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다.  info : [ userId = ${user.id} ]")
+    private infix fun ProfessorRepository.findProfessorByUser(user: User): Professor =
+        this.findByUser(user)
+            ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findProfessorByUser(user: User) = professorRepository.findByUser(user)
-        ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+    private infix fun CompanyInstructorRepository.findCompanyInstructorByUser(user: User): CompanyInstructor =
+        this.findByUser(user)
+            ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
-        ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+    private infix fun GovernmentRepository.findGovernmentByUser(user: User): Government =
+        this.findByUser(user)
+            ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
-        ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 }
