@@ -16,8 +16,6 @@ import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
-import team.msg.domain.company.model.CompanyInstructor
-import team.msg.domain.government.model.Government
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
@@ -41,7 +39,6 @@ import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.model.School
@@ -140,7 +137,6 @@ class LectureServiceImplTest : BehaviorSpec({
         val maxRegisteredUser = 5
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val completeDate = LocalDateTime.MAX
         val lectureStatus = LectureStatus.OPENED
         val semester = Semester.FIRST_YEAR_FALL_SEMESTER
         val division = "division"
@@ -396,10 +392,9 @@ class LectureServiceImplTest : BehaviorSpec({
         val maxRegisteredUser = 5
         val credit = 2
         val headCount = 0
+        val lectureType = "상호학점인정교육과정"
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
-        val lectureType = "상호학점인정교육과정"
-        val lectureDate = fixture<LectureDate>()
 
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
@@ -609,10 +604,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::authority) { professorAuthority }
         }
         val university = "university"
-        val professor = fixture<Professor> {
-            property(Professor::user) { professorUser }
-            property(Professor::university) { university }
-        }
         val professorPair = Pair(professorUser, university)
         val professorResponse = LectureResponse.instructorOf(professorUser, university)
 
@@ -625,10 +616,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::authority) { companyInstructorAuthority }
         }
         val company = "company"
-        val companyInstructor = fixture<CompanyInstructor> {
-            property(CompanyInstructor::user) { companyInstructorUser }
-            property(CompanyInstructor::company) { company }
-        }
         val companyInstructorPair = Pair(companyInstructorUser, company)
         val companyInstructorResponse = LectureResponse.instructorOf(companyInstructorUser, company)
 
@@ -640,11 +627,6 @@ class LectureServiceImplTest : BehaviorSpec({
         }
         val governmentId = UUID.randomUUID()
         val governmentName = "governmentName"
-        val government = fixture<Government> {
-            property(Government::id) { governmentId }
-            property(Government::user) { governmentUser }
-            property(Government::governmentName) { governmentName }
-        }
         val governmentPair = Pair(governmentUser, governmentName)
         val governmentResponse = LectureResponse.instructorOf(governmentUser, governmentName)
 
@@ -826,11 +808,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::id) { studentId }
             property(Student::club) { clubA }
         }
-        val clubBStudent = fixture<Student> {
-            property(Student::user) { studentBUser }
-            property(Student::id) { studentId }
-            property(Student::club) { clubB }
-        }
 
         val lectureId = UUID.randomUUID()
         val lectureName = "name"
@@ -844,15 +821,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::name) { lectureName }
             property(Lecture::lectureType) { lectureType }
             property(Lecture::instructor) { lecturer }
-        }
-
-        val lectureDate1 = fixture<LectureDate> {
-            property(LectureDate::completeDate) { LocalDate.MIN }
-            property(LectureDate::lecture) { lecture }
-        }
-        val lectureDate2 = fixture<LectureDate> {
-            property(LectureDate::completeDate) { LocalDate.MAX }
-            property(LectureDate::lecture) { lecture }
         }
 
         val lectureAndIsComplete = listOf(Pair(lecture, isComplete))
