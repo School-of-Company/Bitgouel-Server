@@ -133,8 +133,7 @@ class LectureServiceImpl(
 
         val response = LecturesResponse(
             lectures.map {
-                val registeredLectureCount = registeredLectureRepository.countByLecture(it)
-                LectureResponse.of(it, registeredLectureCount)
+                LectureResponse.of(it.lecture, it.registeredLectureCount.toInt())
             }
         )
 

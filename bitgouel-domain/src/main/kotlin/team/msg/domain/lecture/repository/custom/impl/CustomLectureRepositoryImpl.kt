@@ -6,10 +6,11 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
-import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
+import team.msg.domain.lecture.model.QRegisteredLecture.registeredLecture
 import team.msg.domain.lecture.repository.custom.CustomLectureRepository
-import team.msg.domain.user.model.QUser.user
+import team.msg.domain.lecture.repository.custom.projection.LectureListProjection
+import team.msg.domain.lecture.repository.custom.projection.QLectureListProjection
 import java.util.*
 import java.util.Objects.isNull
 
@@ -17,13 +18,18 @@ import java.util.Objects.isNull
 class CustomLectureRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : CustomLectureRepository {
-    override fun findAllByLectureType(pageable: Pageable,lectureType: String?): Page<Lecture> {
-        val content = queryFactory
-            .selectFrom(lecture)
-            .leftJoin(lecture.user, user)
+    override fun findAllByLectureType(pageable: Pageable, lectureType: String?): Page<LectureListProjection> {
+        val content = queryFactory.select(
+            QLectureListProjection(
+                lecture,
+                registeredLecture.count()
+            )
+        ).from(lecture)
+            .leftJoin(registeredLecture).on(lecture.eq(registeredLecture.lecture))
             .where(
                 eqLectureType(lectureType)
             )
+            .groupBy(lecture)
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
@@ -31,12 +37,11 @@ class CustomLectureRepositoryImpl(
         val count = queryFactory
             .select(lecture.count())
             .from(lecture)
-            .leftJoin(lecture.user, user)
             .where(
                 eqLectureType(lectureType)
             ).fetchOne()!!
 
-        return PageImpl(content, pageable, count);
+        return PageImpl(content, pageable, count)
     }
 
     override fun deleteAllByUserId(userId: UUID) {
