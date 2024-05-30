@@ -43,7 +43,7 @@ class DataInitializer(
      * school, club id = 1인 엔티티가 존재하면 Data Init을 실행하지 않는다.
      */
     @EventListener(ApplicationReadyEvent::class)
-    @Transactional
+    @Transactional(readOnly = true)
     fun initData() {
         if(!schoolRepository.existsOne(1)) {
             log.info("=== RUN Init School Data ===")
