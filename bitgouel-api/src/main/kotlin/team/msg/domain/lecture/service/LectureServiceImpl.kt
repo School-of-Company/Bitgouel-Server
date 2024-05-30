@@ -1,6 +1,5 @@
 package team.msg.domain.lecture.service
 
-import javax.servlet.http.HttpServletResponse
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
@@ -18,29 +17,12 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.lecture.enums.LectureStatus
-import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
-import team.msg.domain.lecture.exception.LectureNotFoundException
-import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
-import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
-import team.msg.domain.lecture.exception.UnSignedUpLectureException
+import team.msg.domain.lecture.exception.*
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
-import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
-import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
-import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
-import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
-import team.msg.domain.lecture.presentation.data.response.LinesResponse
-import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
-import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsResponse
+import team.msg.domain.lecture.presentation.data.request.*
+import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
@@ -60,6 +42,7 @@ import team.msg.domain.user.repository.UserRepository
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class LectureServiceImpl(

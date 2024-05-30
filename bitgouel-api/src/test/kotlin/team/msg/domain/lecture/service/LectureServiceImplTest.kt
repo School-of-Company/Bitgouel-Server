@@ -18,28 +18,15 @@ import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
-import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
-import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
-import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
-import team.msg.domain.lecture.exception.UnSignedUpLectureException
+import team.msg.domain.lecture.exception.*
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
-import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
-import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
-import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
+import team.msg.domain.lecture.presentation.data.request.*
+import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -67,7 +54,6 @@ class LectureServiceImplTest : BehaviorSpec({
     val registeredLectureRepository = mockk<RegisteredLectureRepository>()
     val studentRepository = mockk<StudentRepository>()
     val teacherRepository = mockk<TeacherRepository>()
-    val professorRepository = mockk<ProfessorRepository>()
     val userRepository = mockk<UserRepository>()
     val bbozzakRepository = mockk<BbozzakRepository>()
     val clubRepository = mockk<ClubRepository>()
@@ -81,7 +67,6 @@ class LectureServiceImplTest : BehaviorSpec({
         studentRepository,
         teacherRepository,
         bbozzakRepository,
-        professorRepository,
         userRepository,
         clubRepository,
         schoolRepository,
@@ -594,7 +579,7 @@ class LectureServiceImplTest : BehaviorSpec({
     }
 
     // queryInstructors 테스트 코드
-    Given("강사와 keyword가 주어질 때"){
+    Given("강사와 keyword가 주어질 때") {
         val professorUserId = UUID.randomUUID()
         val professorUserName = "professor"
         val professorAuthority = Authority.ROLE_PROFESSOR
@@ -625,7 +610,6 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::name) { governmentUserName }
             property(User::authority) { governmentAuthority }
         }
-        val governmentId = UUID.randomUUID()
         val governmentName = "governmentName"
         val governmentPair = Pair(governmentUser, governmentName)
         val governmentResponse = LectureResponse.instructorOf(governmentUser, governmentName)
@@ -659,7 +643,7 @@ class LectureServiceImplTest : BehaviorSpec({
     }
 
     // queryAllLines 테스트 코드
-    Given("강의와 Division, keyword가 주어질 때"){
+    Given("강의와 Division, keyword가 주어질 때") {
         val emptyKeyword = ""
         val keyword = "기"
         val division = "자동차 산업"
@@ -1187,4 +1171,5 @@ class LectureServiceImplTest : BehaviorSpec({
             }
         }
     }
+
 })
