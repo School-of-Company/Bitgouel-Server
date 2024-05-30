@@ -1,5 +1,6 @@
 package team.msg.domain.certification.presentation
 
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -9,7 +10,6 @@ import team.msg.domain.certification.presentation.data.web.CreateCertificationWe
 import team.msg.domain.certification.presentation.data.web.UpdateCertificationWebRequest
 import team.msg.domain.certification.service.CertificationService
 import java.util.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/certification")

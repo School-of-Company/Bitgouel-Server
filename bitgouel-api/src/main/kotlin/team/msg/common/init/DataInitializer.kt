@@ -90,6 +90,7 @@ class DataInitializer(
             Club(7, gwangjuTechnicalHighSchool, "전자 히어로즈"),
             Club(8, gwangjuTechnicalHighSchool, "Civil 마스터"),
             Club(9, gwangjuTechnicalHighSchool, "건축연구소"),
+
             /**
             * Kumpa Technical HighSchool's Club
             * Kumpa Technical HighSchool ID = 2
@@ -101,6 +102,7 @@ class DataInitializer(
             Club(14, kumpaTechnicalHighSchool, "어썸"),
             Club(15, kumpaTechnicalHighSchool, "다이나믹"),
             Club(16, kumpaTechnicalHighSchool, "금호로80 베이커리"),
+
             /**
              * Jeonnam Technical HighSchool's Club
              * Jeonnam Technical HighSchool ID = 3
@@ -111,6 +113,7 @@ class DataInitializer(
             Club(20, jeonnamTechnicalHighSchool, "라온하제"),
             Club(21, jeonnamTechnicalHighSchool, "스카이드론"),
             Club(22, jeonnamTechnicalHighSchool, "그린라이트"),
+
             /**
              * Gwangju Girls Commercial HighSchool's Club
              * Gwangju Girls Commercial HighSchool ID = 4
@@ -118,10 +121,12 @@ class DataInitializer(
             Club(23, gwangjuGirlsCommercialHighSchool, "금융실무"),
             Club(24, gwangjuGirlsCommercialHighSchool, "소개팅"),
             Club(25, gwangjuGirlsCommercialHighSchool, "취사모"),
+
             /**
              * Jeonnam Girls Commercial HighSchool's Club
              * Jeonnam Girls Commercial HighSchool ID = 5
              */
+
             /**
              * Gwangju Natural Science HighSchool's Club
              * Gwangju Natural Science HighSchool ID = 6
@@ -130,6 +135,7 @@ class DataInitializer(
             Club(27, gwangjuNaturalScienceHighSchool, "뉴쿡"),
             Club(28, gwangjuNaturalScienceHighSchool, "베이커리 카페 CEO"),
             Club(29, gwangjuNaturalScienceHighSchool, "우아행"),
+
             /**
              * Gwangju Electronic Technical HighSchool's Club
              * Gwangju Electronic Technical HighSchool ID = 7
@@ -141,6 +147,7 @@ class DataInitializer(
             Club(34, gwangjuElectronicTechnicalHighSchool, "Tesla"),
             Club(35, gwangjuElectronicTechnicalHighSchool, "발자국"),
             Club(36, gwangjuElectronicTechnicalHighSchool, "M lab"),
+
             /**
              * Dongil HighSchool Of Future Science HighSchool's Club
              * Dongil HighSchool Of Future Science HighSchool ID = 8
@@ -154,6 +161,7 @@ class DataInitializer(
              * Seojin Girls HighSchool's Club
              * Seojin Girls HighSchool ID = 9
              */
+
             /**
              * Sungui Science Technology HighSchool's Club
              * Sungui Science Technology HighSchool ID = 10
@@ -168,6 +176,7 @@ class DataInitializer(
             Club(49, sunguiScienceTechnologyHighSchool, "내빵네빵"),
             Club(50, sunguiScienceTechnologyHighSchool, "카페바리"),
             Club(51, sunguiScienceTechnologyHighSchool, "쿠킹마스터즈"),
+
             /**
              * Songwon Girls Commercial HighSchool's Club
              * Songwon Girls Commercial HighSchool ID = 11
@@ -176,6 +185,7 @@ class DataInitializer(
             Club(53, songwonGirlsCommercialHighSchool, "미용서비스"),
             Club(54, songwonGirlsCommercialHighSchool, "뷰티아트"),
             Club(55, songwonGirlsCommercialHighSchool, "클로즈업"),
+
             /**
              * Gwangju Automatic Equipment Technical HighSchool's Club
              * Gwangju Automatic Equipment Technical HighSchool ID = 12

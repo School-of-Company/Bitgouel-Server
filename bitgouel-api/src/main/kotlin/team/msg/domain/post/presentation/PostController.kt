@@ -44,8 +44,8 @@ class PostController(
     }
 
     @GetMapping("/all")
-    fun queryPosts(queryAllPostsWebRequest: QueryAllPostsWebRequest): ResponseEntity<PostsResponse> {
-        val request = postRequestMapper.queryAllPostsWebRequestToDto(queryAllPostsWebRequest)
+    fun queryPosts(webRequest: QueryAllPostsWebRequest): ResponseEntity<PostsResponse> {
+        val request = postRequestMapper.queryAllPostsWebRequestToDto(webRequest)
         val response = postService.queryPosts(request)
         return ResponseEntity.ok(response)
     }

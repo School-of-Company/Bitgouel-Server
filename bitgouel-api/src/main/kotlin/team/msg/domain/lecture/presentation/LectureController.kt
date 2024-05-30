@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.lecture.mapper.LectureRequestMapper
-import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.presentation.data.response.LinesResponse
+import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsResponse
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
@@ -45,8 +45,8 @@ class LectureController(
     }
 
     @GetMapping
-    fun queryAllLectures(pageable: Pageable, WebRequest: QueryAllLecturesWebRequest): ResponseEntity<LecturesResponse>{
-        val request = lectureRequestMapper.queryLectureWebRequestToDto(WebRequest)
+    fun queryAllLectures(pageable: Pageable, webRequest: QueryAllLecturesWebRequest): ResponseEntity<LecturesResponse>{
+        val request = lectureRequestMapper.queryLectureWebRequestToDto(webRequest)
         val response = lectureService.queryAllLectures(pageable, request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
