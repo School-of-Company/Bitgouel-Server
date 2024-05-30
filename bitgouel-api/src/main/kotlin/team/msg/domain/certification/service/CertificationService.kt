@@ -9,5 +9,5 @@ interface CertificationService {
     fun createCertification(request: CreateCertificationRequest)
     fun queryCertifications(): CertificationsResponse
     fun queryCertifications(studentId: UUID): CertificationsResponse
-    fun updateCertification(id: UUID,request: UpdateCertificationRequest)
+    fun updateCertification(id: UUID, request: UpdateCertificationRequest)
 }
