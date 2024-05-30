@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
+import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.*
 import team.msg.domain.auth.presentation.data.request.*
@@ -28,8 +29,6 @@ import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
-import team.msg.domain.student.enums.StudentRole
-import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
@@ -59,7 +58,8 @@ class AuthServiceImpl(
     private val emailAuthenticationRepository: EmailAuthenticationRepository,
     private val userUtil: UserUtil,
     private val applicationEventPublisher: ApplicationEventPublisher,
-    private val bbozzakRepository: BbozzakRepository
+    private val bbozzakRepository: BbozzakRepository,
+    private val studentUtil: StudentUtil
 ) : AuthService {
 
     /**
@@ -78,18 +78,7 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
-        val student = Student(
-            id = UUID.randomUUID(),
-            user = user,
-            club = club,
-            grade = request.grade,
-            classRoom = request.classRoom,
-            number = request.number,
-            cohort = request.admissionNumber - 2020,
-            credit = 0,
-            studentRole = StudentRole.STUDENT
-        )
-        studentRepository.save(student)
+        studentUtil.createStudent(user, club, request.grade, request.classRoom, request.number, request.admissionNumber)
     }
 
     /**
