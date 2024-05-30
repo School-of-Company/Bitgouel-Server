@@ -12,9 +12,6 @@ import java.util.*
 interface StudentActivityRepository : JpaRepository<StudentActivity, UUID>, CustomStudentActivityRepository {
 
     @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
-    fun findAllByStudent(student: Student): List<StudentActivity>
-
-    @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
     fun findAllByStudent(student: Student, pageable: Pageable): Page<StudentActivity>
 
     @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
