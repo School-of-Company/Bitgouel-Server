@@ -1,6 +1,5 @@
 package team.msg.domain.club.presentation
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
@@ -18,24 +17,24 @@ class ClubController(
     @GetMapping
     fun queryAllClubs(@RequestParam("highSchool") highSchool: HighSchool): ResponseEntity<ClubsResponse> {
         val response = clubService.queryAllClubs(highSchool)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{id}")
     fun queryClubDetails(@PathVariable id: Long): ResponseEntity<ClubDetailsResponse> {
         val response = clubService.queryClubDetailsById(id)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/my")
     fun queryMyClubDetails(): ResponseEntity<ClubDetailsResponse> {
         val response = clubService.queryMyClubDetails()
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{id}/{student_id}")
     fun queryStudentDetails(@PathVariable("id") clubId: Long, @PathVariable("student_id") studentId: UUID): ResponseEntity<StudentDetailsResponse> {
         val response = clubService.queryStudentDetails(clubId, studentId)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 }

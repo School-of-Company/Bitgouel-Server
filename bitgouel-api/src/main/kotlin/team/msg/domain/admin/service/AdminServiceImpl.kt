@@ -30,11 +30,13 @@ class AdminServiceImpl(
     private val studentUtil: StudentUtil,
     private val clubRepository: ClubRepository
 ) : AdminService {
+
     /**
      * 유저를 전체 조회 및 이름, 역할, 승인 상태들로 조회하는 비즈니스 로직입니다
      * @param 유저를 검색할 조건으로 keyword, authority, approveStatus
      * @return 학생 정보를 리스트로 담은 Dto
      */
+    @Transactional(readOnly = true)
     override fun queryUsers(request: QueryUsersRequest): UsersResponse {
         val users = userRepository.query(request.keyword, request.authority, request.approveStatus)
 

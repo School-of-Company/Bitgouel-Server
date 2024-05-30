@@ -9,7 +9,7 @@ class ParamUtil {
 
     companion object {
 
-        val format = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss-z")
+        private val format = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss-z")
 
         fun strDateTimeToLocalDateTime(strDateTime: String): LocalDateTime {
             try {

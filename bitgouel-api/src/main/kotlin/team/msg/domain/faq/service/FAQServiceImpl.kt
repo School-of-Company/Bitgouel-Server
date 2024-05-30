@@ -11,7 +11,6 @@ import team.msg.domain.faq.presentation.data.response.FaqResponse
 import team.msg.domain.faq.presentation.data.response.FaqsResponse
 import team.msg.domain.faq.repository.FaqRepository
 
-
 @Service
 class FaqServiceImpl(
     private val faqRepository: FaqRepository,
@@ -28,7 +27,7 @@ class FaqServiceImpl(
         val user = userUtil.queryCurrentUser()
 
         val admin = adminRepository.findByUser(user)
-            ?: throw AdminNotFoundException("어드민을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+            ?: throw AdminNotFoundException("존재하지 않는 어드민입니다. info : [ userId = ${user.id} ]")
 
         val faq = Faq(
             question = createFaqRequest.question,

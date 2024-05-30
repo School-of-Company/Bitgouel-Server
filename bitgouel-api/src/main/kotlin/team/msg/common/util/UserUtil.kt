@@ -67,12 +67,9 @@ class UserUtil(
 ) {
 
     fun queryCurrentUserId(): UUID {
-        val principal = SecurityContextHolder.getContext().authentication.principal
-
-        val userId = if (principal is AuthDetails) {
-            UUID.fromString(principal.username)
-        } else {
-            UUID.fromString(principal.toString())
+        val userId = when (val principal = SecurityContextHolder.getContext().authentication.principal) {
+            is AuthDetails -> UUID.fromString(principal.username)
+            else -> UUID.fromString(principal.toString())
         }
 
         return userId
@@ -81,8 +78,10 @@ class UserUtil(
     fun queryCurrentUser(): User {
         val userId = queryCurrentUserId()
 
-        return userRepository.findByIdOrNull(userId)
+        val user = userRepository.findByIdOrNull(userId)
             ?: throw UserNotFoundException("존재하지 않는 유저입니다. : [ id = $userId ]")
+
+        return user
     }
 
     /**
@@ -93,47 +92,46 @@ class UserUtil(
     fun getAuthorityEntityAndOrganization(user: User): Pair<BaseUUIDEntity, String> {
         return when (user.authority) {
             Authority.ROLE_STUDENT -> {
-                val student = findStudentByUser(user)
+                val student = studentRepository findByUser user
                 val club = student.club
                 val school = club.school
                 val organization = "${school.highSchool.schoolName}/${club.name}/${student.grade}학년 ${student.classRoom}반 ${student.number}번"
                 Pair(student, organization)
             }
             Authority.ROLE_TEACHER -> {
-                val teacher = findTeacherByUser(user)
+                val teacher = teacherRepository findByUser user
                 val club = teacher.club
                 val school = club.school
                 val organization = "${school.highSchool.schoolName}/${club.name}"
                 Pair(teacher, organization)
             }
             Authority.ROLE_BBOZZAK -> {
-                val bbozzak = findBbozzakByUser(user)
+                val bbozzak = bbozzakRepository findByUser user
                 val club = bbozzak.club
                 val school = club.school
                 val organization = "${school.highSchool.schoolName}/${club.name}"
                 Pair(bbozzak, organization)
             }
             Authority.ROLE_PROFESSOR -> {
-                val professor = findProfessorByUser(user)
+                val professor = professorRepository findByUser user
                 val organization = professor.university
                 Pair(professor, organization)
             }
             Authority.ROLE_COMPANY_INSTRUCTOR -> {
-                val companyInstructor = findCompanyInstructorByUser(user)
+                val companyInstructor = companyInstructorRepository findByUser user
                 val organization = companyInstructor.company
                 Pair(companyInstructor, organization)
             }
             Authority.ROLE_GOVERNMENT -> {
-                val government = findGovernmentByUser(user)
+                val government = governmentRepository findByUser user
                 val organization = government.governmentName
                 Pair(government, organization)
             }
             Authority.ROLE_ADMIN -> {
-                val admin = findAdminByUser(user)
+                val admin = adminRepository findByUser user
                 val organization = "교육청"
                 Pair(admin, organization)
             }
-
             else -> throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority}]")
         }
     }
@@ -222,27 +220,6 @@ class UserUtil(
             approveStatus = ApproveStatus.PENDING
         )
     }
-
-    private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
-        ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
-
-    private fun findTeacherByUser(user: User) = teacherRepository.findByUser(user)
-        ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
-
-    private fun findBbozzakByUser(user: User) = bbozzakRepository.findByUser(user)
-        ?: throw BbozzakNotFoundException("뽀짝 선생님을 찾을 수 없습니다.  info : [ userId = ${user.id} ]")
-
-    private fun findProfessorByUser(user: User) = professorRepository.findByUser(user)
-        ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
-
-    private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
-        ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
-
-    private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
-        ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
-
-    private fun findAdminByUser(user: User) = adminRepository.findByUser(user)
-        ?: throw AdminNotFoundException("어드민을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private infix fun StudentRepository.findByUser(user: User): Student =
         this.findByUser(user) ?: throw StudentNotFoundException("존재하지 않는 학생 입니다. info : [ userId = ${user.id} ]")

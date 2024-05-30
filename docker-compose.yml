@@ -12,7 +12,7 @@ services:
     image: prom/prometheus
     container_name: bitgouel-prometheus
     ports:
-      - 9090:9090
+      - "9090:9090"
     volumes:
       - ./env:/etc/prometheus
       - ./env/prometheus/volume:/prometheus
@@ -28,7 +28,7 @@ services:
     image: grafana/grafana
     container_name: bitgouel-grafana
     ports:
-      - 3001:3000
+      - "3001:3000"
     volumes:
       - ./env/grafana/volume:/var/lib/grafana
     restart: always

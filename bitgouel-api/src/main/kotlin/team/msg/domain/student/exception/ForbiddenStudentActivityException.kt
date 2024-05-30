@@ -5,5 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class ForbiddenStudentActivityException(
     message: String
-) : BitgouelException(message, StudentActivityErrorCode.FORBIDDEN_STUDENT_ACTIVITY.status) {
-}
+) : BitgouelException(message, StudentActivityErrorCode.FORBIDDEN_STUDENT_ACTIVITY.status)

@@ -1,6 +1,5 @@
 package team.msg.domain.lecture.service
 
-import javax.servlet.http.HttpServletResponse
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
@@ -18,33 +17,15 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.lecture.enums.LectureStatus
-import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
-import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
-import team.msg.domain.lecture.exception.LectureNotFoundException
-import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
-import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
-import team.msg.domain.lecture.exception.UnSignedUpLectureException
+import team.msg.domain.lecture.exception.*
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
-import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
-import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
-import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
-import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
-import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
-import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
-import team.msg.domain.lecture.presentation.data.response.LectureResponse
-import team.msg.domain.lecture.presentation.data.response.LecturesResponse
-import team.msg.domain.lecture.presentation.data.response.LinesResponse
-import team.msg.domain.lecture.presentation.data.response.SignedUpStudentsResponse
+import team.msg.domain.lecture.presentation.data.request.*
+import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
@@ -61,6 +42,7 @@ import team.msg.domain.user.repository.UserRepository
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class LectureServiceImpl(
@@ -70,7 +52,6 @@ class LectureServiceImpl(
     private val studentRepository: StudentRepository,
     private val teacherRepository: TeacherRepository,
     private val bbozzakRepository: BbozzakRepository,
-    private val professorRepository: ProfessorRepository,
     private val userRepository: UserRepository,
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
@@ -258,6 +239,7 @@ class LectureServiceImpl(
 
         studentRepository.save(updateCreditStudent)
     }
+
     /**
      * 강의에 대해 수강신청 취소하는 비지니스 로직입니다.
      * @param 수강신청을 취소하기 위한 강의 id
@@ -435,7 +417,7 @@ class LectureServiceImpl(
         registeredLectureRepository.save(updatedRegisteredLecture)
     }
 
-    @Transactional(readOnly = true,rollbackFor = [Exception::class])
+    @Transactional(readOnly = true, rollbackFor = [Exception::class])
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
 
@@ -557,6 +539,7 @@ class LectureServiceImpl(
         cell.cellStyle = style
         this.heightInPoints = height
     }
+
     private infix fun LectureRepository.findById(id: UUID): Lecture = this.findByIdOrNull(id)
         ?: throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
 
@@ -576,5 +559,5 @@ class LectureServiceImpl(
         ?: throw UserNotFoundException("유저를 찾을 수 없습니다. info : [ userId = $id ]")
 
     private infix fun TeacherRepository.findByClub(club: Club): Teacher = this.findByClub(club)
-        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ clubname = ${club.name} ]")
+        ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ club = ${club.name} ]")
 }

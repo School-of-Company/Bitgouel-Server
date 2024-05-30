@@ -211,9 +211,6 @@ class StudentActivityServiceImpl(
         return response
     }
 
-    /**
-     * find ?: throw 로직을 단순화시킨 infix 함수들입니다.
-     */
     private infix fun StudentRepository.findByUser(user: User): Student =
         this.findByUser(user) ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 

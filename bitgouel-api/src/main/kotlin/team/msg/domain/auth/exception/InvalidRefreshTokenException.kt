@@ -5,5 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class InvalidRefreshTokenException(
     message: String
-) : BitgouelException(message, AuthErrorCode.INVALID_TOKEN.status){
-}
+) : BitgouelException(message, AuthErrorCode.INVALID_TOKEN.status)

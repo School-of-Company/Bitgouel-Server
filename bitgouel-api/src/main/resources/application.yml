@@ -1,7 +1,7 @@
 server:
   port: ${SERVER_PORT:8080}
   tomcat:
-    mbeanregistry:
+    reregistration:
       enabled: true
 
 spring:
@@ -39,9 +39,9 @@ spring:
             enable: true
             required: true
           auth: true
-          connectiontimeout: 5000
+          connection-timeout: 5000
           timeout: 5000
-          writetimeout: 5000
+          write timeout: 5000
 
 jwt:
   accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}

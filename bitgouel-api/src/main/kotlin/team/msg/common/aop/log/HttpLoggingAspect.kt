@@ -12,9 +12,8 @@ import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import team.msg.common.logger.LoggerDelegator
+import team.msg.global.exception.InternalServerException
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 @Aspect
 @Component
@@ -68,13 +67,13 @@ class HttpLoggingAspect {
             }
 
             else -> {
-                throw RuntimeException("유효하지 않은 Controller 반환 타입입니다.")
+                throw InternalServerException("유효하지 않은 Controller 반환 타입입니다.")
             }
         }
         return result
     }
 
-    private fun params(joinPoint: JoinPoint): Map<*,*>? {
+    private fun params(joinPoint: JoinPoint): Map<*,*> {
         val codeSignature = joinPoint.signature as CodeSignature
         val parameterNames = codeSignature.parameterNames
         val args = joinPoint.args

@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.SecurityUtil
+import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.InvalidRefreshTokenException
 import team.msg.domain.auth.exception.MisMatchPasswordException
@@ -80,6 +81,7 @@ class AuthServiceImplTest : BehaviorSpec({
     val applicationEventPublisher = mockk<ApplicationEventPublisher>()
     val bbozzakRepository = mockk<BbozzakRepository>()
     val emailAuthenticationRepository = mockk<EmailAuthenticationRepository>()
+    val studentUtil = mockk<StudentUtil>()
     val authServiceImpl = AuthServiceImpl(
         userRepository,
         securityUtil,
@@ -96,7 +98,8 @@ class AuthServiceImplTest : BehaviorSpec({
         emailAuthenticationRepository,
         userUtil,
         applicationEventPublisher,
-        bbozzakRepository
+        bbozzakRepository,
+        studentUtil
     )
 
     // studentSignUp 테스트 코드

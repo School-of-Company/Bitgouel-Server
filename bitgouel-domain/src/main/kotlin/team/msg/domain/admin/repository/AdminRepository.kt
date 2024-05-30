@@ -5,6 +5,6 @@ import team.msg.domain.admin.model.Admin
 import team.msg.domain.user.model.User
 import java.util.UUID
 
-interface AdminRepository : CrudRepository<Admin,UUID> {
+interface AdminRepository : CrudRepository<Admin, UUID> {
     fun findByUser(user: User): Admin?
 }

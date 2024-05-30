@@ -40,32 +40,32 @@ class PostController(
     @GetMapping
     fun queryPosts(@RequestParam type: FeedType, pageable: Pageable): ResponseEntity<PagingPostsResponse> {
         val response = postService.queryPosts(type, pageable)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/all")
-    fun queryPosts(queryAllPostsWebRequest: QueryAllPostsWebRequest): ResponseEntity<PostsResponse> {
-        val request = postRequestMapper.queryAllPostsWebRequestToDto(queryAllPostsWebRequest)
+    fun queryPosts(webRequest: QueryAllPostsWebRequest): ResponseEntity<PostsResponse> {
+        val request = postRequestMapper.queryAllPostsWebRequestToDto(webRequest)
         val response = postService.queryPosts(request)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @GetMapping("/{id}")
     fun queryPostDetails(@PathVariable id: UUID): ResponseEntity<PostDetailsResponse> {
         val response = postService.queryPostDetails(id)
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 
     @PatchMapping("/{id}")
     fun updatePost(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdatePostWebRequest): ResponseEntity<Void> {
         val request = postRequestMapper.updatePostWebRequestToDto(webRequest)
         postService.updatePost(id, request)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
     fun deletePost(@PathVariable id: UUID): ResponseEntity<Void> {
         postService.deletePost(id)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        return ResponseEntity.noContent().build()
     }
 }

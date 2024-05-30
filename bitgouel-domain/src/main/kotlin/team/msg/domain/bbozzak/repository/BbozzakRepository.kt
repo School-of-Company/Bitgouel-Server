@@ -5,6 +5,6 @@ import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.user.model.User
 import java.util.*
 
-interface BbozzakRepository : CrudRepository<Bbozzak,UUID> {
+interface BbozzakRepository : CrudRepository<Bbozzak, UUID> {
     fun findByUser(user: User): Bbozzak?
 }

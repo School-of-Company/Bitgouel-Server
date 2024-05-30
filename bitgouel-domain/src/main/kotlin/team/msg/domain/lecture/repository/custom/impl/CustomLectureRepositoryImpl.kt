@@ -36,7 +36,7 @@ class CustomLectureRepositoryImpl(
                 eqLectureType(lectureType)
             ).fetchOne()!!
 
-        return PageImpl(content, pageable, count);
+        return PageImpl(content, pageable, count)
     }
 
     override fun deleteAllByUserId(userId: UUID) {
