@@ -38,7 +38,7 @@ class LectureController(
     private val lectureService: LectureService
 ) {
     @PostMapping
-    fun createLecture(@Valid @RequestBody webRequest: CreateLectureWebRequest): ResponseEntity<Void> {
+    fun createLecture(@Valid @RequestBody webRequest: CreateLectureWebRequest): ResponseEntity<Unit> {
         val request = lectureRequestMapper.createLectureWebRequestToDto(webRequest)
         lectureService.createLecture(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
@@ -52,13 +52,13 @@ class LectureController(
     }
 
     @PostMapping("/{id}")
-    fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Unit> {
         lectureService.signUpLecture(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @DeleteMapping("/{id}")
-    fun cancelSignUpLecture(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun cancelSignUpLecture(@PathVariable id: UUID): ResponseEntity<Unit> {
         lectureService.cancelSignUpLecture(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
@@ -97,7 +97,7 @@ class LectureController(
     }
 
     @GetMapping("/excel")
-    fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Void> {
+    fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
         lectureService.lectureReceiptStatusExcel(response)
         return ResponseEntity.status(HttpStatus.OK).build()
     }
@@ -119,7 +119,7 @@ class LectureController(
         @PathVariable id: UUID, @PathVariable("student_id") studentId: UUID,
         @RequestParam isComplete: Boolean
     ): ResponseEntity<Unit> {
-        val response = lectureService.updateLectureCompleteStatus(id, studentId, isComplete)
+        lectureService.updateLectureCompleteStatus(id, studentId, isComplete)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
