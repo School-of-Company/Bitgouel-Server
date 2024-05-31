@@ -34,7 +34,8 @@ jobs:
       - name: Create application.yml on dev
         run: |
           touch ./bitgouel-api/src/main/resources/application.yml
-          echo "${{ secrets.BITGOUEL_DEV_ENV }}" > ./bitgouel-api/src/main/resources/application.yml
+          echo "${{ secrets.BITGOUEL_DEFAULT_ENV }}" > ./bitgouel-api/src/main/resources/application.yml
+          echo "${{ secrets.BITGOUEL_PROD_ENV }}" > ./bitgouel-api/src/main/resources/application-prod.yml
         shell: bash
 
       - name: Build with Gradle
