@@ -11,7 +11,6 @@ interface StudentRepository : CrudRepository<Student, UUID> {
 
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByUser(user: User): Student?
-    fun findIdByUser(user: User): UUID?
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
     fun findStudentById(id: UUID): Student?
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
