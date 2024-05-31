@@ -7,4 +7,5 @@ import java.util.UUID
 
 interface CertificationRepository : CrudRepository<Certification, UUID>, CustomCertificationRepository {
     fun findAllByStudentIdOrderByAcquisitionDateDesc(studentId: UUID): List<Certification>
+    fun findAllByStudentId(studentId: UUID): List<Certification>
 }

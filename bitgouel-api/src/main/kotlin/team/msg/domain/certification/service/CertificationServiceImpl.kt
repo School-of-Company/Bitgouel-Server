@@ -54,11 +54,11 @@ class CertificationServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun createCertification(request: CreateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
-        val student = studentRepository findByUser user
+        val studentId = studentRepository findStudentIdByUser user
 
         val certification = Certification(
             id = UUID.randomUUID(),
-            studentId = student.id,
+            studentId = studentId,
             name = request.name,
             acquisitionDate = request.acquisitionDate
         )
@@ -74,9 +74,9 @@ class CertificationServiceImpl(
     override fun queryCertifications(): CertificationsResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository findByUser user
+        val studentId = studentRepository findStudentIdByUser user
 
-        val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc student.id
+        val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc studentId
 
         val response = CertificationsResponse(
             CertificationResponse.listOf(certifications)
@@ -128,7 +128,7 @@ class CertificationServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun updateCertification(id: UUID, request: UpdateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
-        val student = studentRepository findByUser user
+        val student = studentRepository findStudentByUser user
 
         val certification = certificationRepository findById id
 
@@ -145,8 +145,8 @@ class CertificationServiceImpl(
         certificationRepository.save(updateCertification)
     }
 
-    private infix fun StudentRepository.findByUser(user: User): Student =
-        this.findByUser(user)
+    private infix fun StudentRepository.findStudentIdByUser(user: User): UUID =
+        this.findIdByUser(user)
             ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
 
     private infix fun StudentRepository.findStudentById(studentId: UUID): Student =

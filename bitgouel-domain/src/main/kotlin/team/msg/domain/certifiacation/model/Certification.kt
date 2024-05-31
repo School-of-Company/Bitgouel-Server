@@ -15,7 +15,7 @@ class Certification(
     @Column(name = "student_id", columnDefinition = "BINARY(16)")
     val studentId: UUID,
 
-    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(30)", nullable = false, unique = true)
     val name: String,
 
     @Column(columnDefinition = "DATE", nullable = false)
