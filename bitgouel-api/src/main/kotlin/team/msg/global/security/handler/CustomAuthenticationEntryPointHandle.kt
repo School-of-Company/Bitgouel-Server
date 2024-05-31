@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import team.msg.common.logger.LoggerDelegator
-import team.msg.global.exception.ForbiddenException
+import team.msg.global.exception.InvalidRoleException
 
 class CustomAuthenticationEntryPointHandler : AuthenticationEntryPoint {
 
@@ -13,6 +13,6 @@ class CustomAuthenticationEntryPointHandler : AuthenticationEntryPoint {
 
     override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authException: AuthenticationException?) {
         log.warn("========== AuthenticationEntryPoint ==========")
-        throw ForbiddenException("Forbidden")
+        throw InvalidRoleException("검증되지 않은 권한입니다.")
     }
 }
