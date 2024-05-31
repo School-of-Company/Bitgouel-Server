@@ -13,7 +13,6 @@ class WithdrawServiceImpl(
     private val withdrawStudentRepository: WithdrawStudentRepository
 ) : WithdrawService {
 
-
     /**
      * 탈퇴예정 학생들을 기수로 검색하는 비즈니스 로직
      * @param 학생 기수

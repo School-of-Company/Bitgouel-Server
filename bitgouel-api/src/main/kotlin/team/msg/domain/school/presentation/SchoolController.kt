@@ -1,6 +1,5 @@
 package team.msg.domain.school.presentation
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,6 +15,6 @@ class SchoolController(
     @GetMapping
     fun querySchools(): ResponseEntity<SchoolsResponse> {
         val response = schoolService.querySchools()
-        return ResponseEntity.status(HttpStatus.OK).body(response)
+        return ResponseEntity.ok(response)
     }
 }

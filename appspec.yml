@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source: /
-    destination: /home/ec2-user/Bitgouel-Server/
+    destination: /home/ec2-user/action/
     overwrite: yes
 
 permissions:

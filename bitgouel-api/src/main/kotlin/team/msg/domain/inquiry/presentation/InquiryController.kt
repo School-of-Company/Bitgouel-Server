@@ -74,7 +74,7 @@ class InquiryController(
     }
 
     @PostMapping("/{id}/answer")
-    fun replyInquiry(@PathVariable id: UUID , @Valid @RequestBody webRequest: CreateInquiryAnswerWebRequest): ResponseEntity<Void> {
+    fun replyInquiry(@PathVariable id: UUID, @Valid @RequestBody webRequest: CreateInquiryAnswerWebRequest): ResponseEntity<Void> {
         val request = inquiryMapper.createInquiryAnswerWebRequestToDto(webRequest)
         inquiryService.replyInquiry(id, request)
         return ResponseEntity.noContent().build()

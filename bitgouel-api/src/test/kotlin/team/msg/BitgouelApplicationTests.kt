@@ -10,5 +10,4 @@ class BitgouelApplicationTests {
     fun contextLoads() {
     }
 
-
 }

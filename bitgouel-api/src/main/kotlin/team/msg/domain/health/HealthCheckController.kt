@@ -11,6 +11,6 @@ class HealthCheckController(
 ) {
 
     @GetMapping
-    fun healthCheck() = ResponseEntity.ok("Bitgouel Server is OK, PORT = ${env.getProperty("server.port")}")
+    fun healthCheck(): ResponseEntity<String> = ResponseEntity.ok("Bitgouel Server is OK, PORT = ${env.getProperty("server.port")}")
 
 }

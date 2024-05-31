@@ -28,6 +28,7 @@ class PostServiceImpl(
     private val userRepository: UserRepository,
     private val userUtil: UserUtil
 ) : PostService {
+
     /**
      * 게시글을 생성하는 비지니스 로직입니다.
      * @param 게시글 생성에 필요한 정보가 담긴 dto

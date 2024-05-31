@@ -12,6 +12,7 @@ import java.util.*
 class StudentUtil(
     private val studentRepository: StudentRepository
 ) {
+
     fun createStudent(user: User, club: Club, grade: Int, classRoom: Int, number: Int, admissionNumber: Int) {
         val student = Student(
             id = UUID.randomUUID(),

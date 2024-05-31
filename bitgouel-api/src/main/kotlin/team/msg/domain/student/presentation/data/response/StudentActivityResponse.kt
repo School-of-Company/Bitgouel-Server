@@ -1,7 +1,6 @@
 package team.msg.domain.student.presentation.data.response
 
 import org.springframework.data.domain.Page
-import team.msg.common.enums.ApproveStatus
 import team.msg.domain.student.model.StudentActivity
 import team.msg.domain.user.model.User
 import java.time.LocalDate
