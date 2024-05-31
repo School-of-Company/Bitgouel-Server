@@ -27,6 +27,11 @@ import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
+import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
+import team.msg.domain.lecture.repository.custom.projection.LectureListProjection
+import team.msg.domain.lecture.repository.custom.projection.SignedUpStudentProjection
+import team.msg.domain.professor.model.Professor
+import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -113,12 +118,20 @@ class LectureServiceImplTest : BehaviorSpec({
     //queryAllLectures 테스트 코드
     Given("queryAllLectureRequest와 Pageable가 주어질 때") {
 
-        val queryAllLectureRequest = fixture<QueryAllLectureRequest>()
+        val queryAllLectureRequest = fixture<QueryAllLectureRequest> {
+            property(QueryAllLectureRequest::lectureType) { null }
+        }
+        val queryCreditLectureLectureRequest = fixture<QueryAllLectureRequest> {
+            property(QueryAllLectureRequest::lectureType) { "상호학점인정교육과정" }
+        }
+        val queryUniversityLectureRequest = fixture<QueryAllLectureRequest> {
+            property(QueryAllLectureRequest::lectureType) { "대학탐방프로그램" }
+        }
 
         val name = "name"
         val content = "content"
         val instructor = "instructor"
-        val headCount = 0
+        val headCount = 0L
         val maxRegisteredUser = 5
         val startDate = LocalDateTime.MIN
         val endDate = LocalDateTime.MAX
@@ -127,6 +140,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val division = "division"
         val line = "line"
         val department = "department"
+        val essentialComplete = true
 
         val creditLectureId = UUID.randomUUID()
         val creditLectureType = "상호학점인정교육과정"
@@ -147,6 +161,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::division) { division }
             property(Lecture::line) { line }
             property(Lecture::department) { department }
+            property(Lecture::essentialComplete) { essentialComplete }
         }
         val universityLecture = fixture<Lecture> {
             property(Lecture::id) { universityLectureId }
@@ -161,6 +176,17 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::division) { division }
             property(Lecture::line) { line }
             property(Lecture::department) { department }
+            property(Lecture::essentialComplete) { essentialComplete }
+        }
+
+        val creditLectureData = fixture<LectureListProjection> {
+            property(LectureListProjection::lecture) { creditLecture }
+            property(LectureListProjection::registeredLectureCount) { headCount }
+        }
+
+        val universityLectureData = fixture<LectureListProjection> {
+            property(LectureListProjection::lecture) { universityLecture }
+            property(LectureListProjection::registeredLectureCount) { headCount }
         }
 
         val creditLectureResponse = fixture<LectureResponse> {
@@ -168,7 +194,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::name) { name }
             property(LectureResponse::content) { content }
             property(LectureResponse::lectureType) { creditLectureType }
-            property(LectureResponse::headCount) { headCount }
+            property(LectureResponse::headCount) { headCount.toInt() }
             property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
             property(LectureResponse::startDate) { startDate }
             property(LectureResponse::endDate) { endDate }
@@ -178,13 +204,14 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::division) { division }
             property(LectureResponse::line) { line }
             property(LectureResponse::department) { department }
+            property(LectureResponse::essentialComplete) { essentialComplete }
         }
         val universityLectureResponse = fixture<LectureResponse> {
             property(LectureResponse::id) { universityLectureId }
             property(LectureResponse::name) { name }
             property(LectureResponse::content) { content }
             property(LectureResponse::lectureType) { universityLectureType }
-            property(LectureResponse::headCount) { headCount }
+            property(LectureResponse::headCount) { headCount.toInt() }
             property(LectureResponse::maxRegisteredUser) { maxRegisteredUser }
             property(LectureResponse::startDate) { startDate }
             property(LectureResponse::endDate) { endDate }
@@ -194,13 +221,14 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureResponse::division) { division }
             property(LectureResponse::line) { line }
             property(LectureResponse::department) { department }
+            property(LectureResponse::essentialComplete) { essentialComplete }
         }
 
-        every { registeredLectureRepository.countByLecture(any()) } returns headCount
+        every { lectureRepository.findAllByLectureType(pageable, null) } returns PageImpl(listOf(creditLectureData, universityLectureData))
+        every { lectureRepository.findAllByLectureType(pageable, "상호학점인정교육과정") } returns PageImpl(listOf(creditLectureData))
+        every { lectureRepository.findAllByLectureType(pageable, "대학탐방프로그램") } returns PageImpl(listOf(universityLectureData))
 
         When("주어진 LectureType이 null이라면") {
-            every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(creditLecture, universityLecture))
-
             val response = fixture<LecturesResponse> {
                 property(LecturesResponse::lectures) { PageImpl(listOf(creditLectureResponse, universityLectureResponse)) }
             }
@@ -212,14 +240,12 @@ class LectureServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("주어진 LectureType이 상호학점인정과정이라면") {
-            every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(creditLecture))
-
+        When("주어진 LectureType이 상호학점인정교육과정이라면") {
             val response = fixture<LecturesResponse> {
                 property(LecturesResponse::lectures) { PageImpl(listOf(creditLectureResponse)) }
             }
 
-            val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
+            val result = lectureServiceImpl.queryAllLectures(pageable, queryCreditLectureLectureRequest)
 
             Then("result와 response가 같아야 한다") {
                 result shouldBe response
@@ -227,13 +253,11 @@ class LectureServiceImplTest : BehaviorSpec({
         }
 
         When("주어진 LectureType이 대학탐방프로그램이라면") {
-            every { lectureRepository.findAllByLectureType(any(), any()) } returns PageImpl(listOf(universityLecture))
-
             val response = fixture<LecturesResponse> {
                 property(LecturesResponse::lectures) { PageImpl(listOf(universityLectureResponse)) }
             }
 
-            val result = lectureServiceImpl.queryAllLectures(pageable, queryAllLectureRequest)
+            val result = lectureServiceImpl.queryAllLectures(pageable, queryUniversityLectureRequest)
 
             Then("result와 response가 같아야 한다") {
                 result shouldBe response
@@ -806,8 +830,21 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::lectureType) { lectureType }
             property(Lecture::instructor) { lecturer }
         }
+        
+        val lectureDate1 = fixture<LectureDate> {
+            property(LectureDate::completeDate) { LocalDate.MIN }
+            property(LectureDate::lecture) { lecture }
+        }
+        val lectureDate2 = fixture<LectureDate> {
+            property(LectureDate::completeDate) { LocalDate.MAX }
+            property(LectureDate::lecture) { lecture }
+        }
 
-        val lectureAndIsComplete = listOf(Pair(lecture, isComplete))
+        val lectureAndIsCompleteData = fixture<LectureAndIsCompleteProjection> {
+            property(LectureAndIsCompleteProjection::lecture) { lecture }
+            property(LectureAndIsCompleteProjection::isComplete) { isComplete }
+        }
+        val lectureAndIsComplete = listOf(lectureAndIsCompleteData)
 
         val lectureResponse = LectureResponse.of(lecture, isComplete, LocalDate.MAX)
         val response = LectureResponse.signedUpOf(listOf(lectureResponse))
@@ -911,7 +948,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::classRoom) { classRoom }
             property(Student::number) { number }
             property(Student::cohort) { cohort }
-        }.let { Pair(it, true) }
+        }.let { SignedUpStudentProjection(it, true) }
 
         val studentB = fixture<Student> {
             property(Student::id) { studentId }
@@ -921,7 +958,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::classRoom) { classRoom }
             property(Student::number) { number }
             property(Student::cohort) { cohort }
-        }.let { Pair(it, true) }
+        }.let { SignedUpStudentProjection(it, true) }
 
         val students = listOf(studentA, studentB)
         val clubAStudents = listOf(studentA)
@@ -966,9 +1003,9 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::user) { professorUserA }
         }
 
-        val allStudentsData = students.map { LectureResponse.of(it.first, it.second) }
-        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.first, it.second) }
-        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.first, it.second) }
+        val allStudentsData = students.map { LectureResponse.of(it.student, it.isComplete) }
+        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.student, it.isComplete) }
+        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.student, it.isComplete) }
 
         val allStudentsResponse = LectureResponse.signedUpOf(allStudentsData)
         val clubAStudentsResponse = LectureResponse.signedUpOf(clubAStudentsData)

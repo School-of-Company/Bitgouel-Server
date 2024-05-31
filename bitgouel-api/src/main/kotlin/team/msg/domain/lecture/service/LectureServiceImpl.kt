@@ -114,8 +114,7 @@ class LectureServiceImpl(
 
         val response = LecturesResponse(
             lectures.map {
-                val registeredLectureCount = registeredLectureRepository.countByLecture(it)
-                LectureResponse.of(it, registeredLectureCount)
+                LectureResponse.of(it.lecture, it.registeredLectureCount.toInt())
             }
         )
 
@@ -319,8 +318,8 @@ class LectureServiceImpl(
 
         val signedUpLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
             .map {
-                val lecture = it.first
-                val isComplete = it.second
+                val lecture = it.lecture
+                val isComplete = it.isComplete
 
                 lectureDateRepository.findByCurrentCompletedDate(lecture.id)
                     .let { currentCompletedDate -> LectureResponse.of(lecture, isComplete, currentCompletedDate) }
@@ -361,7 +360,7 @@ class LectureServiceImpl(
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
                 registeredLectureRepository.findSignedUpStudentsByLectureId(id)
             }
-        }.map { LectureResponse.of(it.first, it.second) }
+        }.map { LectureResponse.of(it.student, it.isComplete) }
 
         val response = LectureResponse.signedUpOf(students)
 

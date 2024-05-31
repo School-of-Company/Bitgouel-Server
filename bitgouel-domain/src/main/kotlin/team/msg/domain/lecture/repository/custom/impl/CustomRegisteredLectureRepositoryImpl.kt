@@ -2,13 +2,15 @@ package team.msg.domain.lecture.repository.custom.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import team.msg.domain.club.model.QClub.club
-import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.model.QRegisteredLecture.registeredLecture
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.repository.custom.CustomRegisteredLectureRepository
+import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
+import team.msg.domain.lecture.repository.custom.projection.QLectureAndIsCompleteProjection
+import team.msg.domain.lecture.repository.custom.projection.QSignedUpStudentProjection
+import team.msg.domain.lecture.repository.custom.projection.SignedUpStudentProjection
 import team.msg.domain.student.model.QStudent.student
-import team.msg.domain.student.model.Student
 import java.util.*
 
 class CustomRegisteredLectureRepositoryImpl(
@@ -32,9 +34,13 @@ class CustomRegisteredLectureRepositoryImpl(
         return fetchOne != null
     }
 
-    override fun findLecturesAndIsCompleteByStudentId(studentId: UUID): List<Pair<Lecture, Boolean>> {
-        val fetch = queryFactory.select(lecture, registeredLecture.isComplete)
-            .from(registeredLecture)
+    override fun findLecturesAndIsCompleteByStudentId(studentId: UUID): List<LectureAndIsCompleteProjection> =
+        queryFactory.select(
+                QLectureAndIsCompleteProjection(
+                    lecture,
+                    registeredLecture.isComplete
+                )
+            ).from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
             .leftJoin(registeredLecture.student, student)
             .where(
@@ -42,18 +48,13 @@ class CustomRegisteredLectureRepositoryImpl(
             )
             .fetch()
 
-        return fetch.map {
-            Pair(
-                it[lecture]!!,
-                it[registeredLecture.isComplete]!!
-            )
-        }
-
-    }
-
-    override fun findSignedUpStudentsByLectureId(lectureId: UUID): List<Pair<Student, Boolean>> {
-        val fetch = queryFactory.select(student, registeredLecture.isComplete)
-            .from(registeredLecture)
+    override fun findSignedUpStudentsByLectureId(lectureId: UUID): List<SignedUpStudentProjection> =
+        queryFactory.select(
+                QSignedUpStudentProjection(
+                    student,
+                    registeredLecture.isComplete
+                )
+            ).from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
             .leftJoin(registeredLecture.student, student)
             .where(
@@ -61,17 +62,13 @@ class CustomRegisteredLectureRepositoryImpl(
             )
             .fetch()
 
-        return fetch.map {
-            Pair(
-                it[student]!!,
-                it[registeredLecture.isComplete]!!
-            )
-        }
-    }
-
-    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID,clubId: Long): List<Pair<Student, Boolean>> {
-        val fetch = queryFactory.select(student, registeredLecture.isComplete)
-            .from(registeredLecture)
+    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID,clubId: Long): List<SignedUpStudentProjection> =
+        queryFactory.select(
+                QSignedUpStudentProjection(
+                    student,
+                    registeredLecture.isComplete
+                )
+            ).from(registeredLecture)
             .leftJoin(registeredLecture.lecture, lecture)
             .leftJoin(registeredLecture.student, student)
             .leftJoin(student.club, club)
@@ -80,14 +77,6 @@ class CustomRegisteredLectureRepositoryImpl(
                 student.club.id.eq(clubId)
             )
             .fetch()
-
-        return fetch.map {
-            Pair(
-                it[student]!!,
-                it[registeredLecture.isComplete]!!
-            )
-        }
-    }
 
     override fun findByLectureIdAndStudentId(lectureId: UUID,studentId: UUID): RegisteredLecture? =
         queryFactory.selectFrom(registeredLecture)
