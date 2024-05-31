@@ -10,6 +10,7 @@ import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.certifiacation.model.Certification
 import team.msg.domain.certifiacation.repository.CertificationRepository
+import team.msg.domain.certification.exception.AlreadyAcquiredCertificationException
 import team.msg.domain.certification.exception.CertificationNotFoundException
 import team.msg.domain.certification.exception.ForbiddenCertificationException
 import team.msg.domain.certification.presentation.data.request.CreateCertificationRequest
@@ -54,7 +55,14 @@ class CertificationServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun createCertification(request: CreateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
-        val student = studentRepository findByUser user
+        val student = studentRepository findStudentByUser user
+
+        val certifications = certificationRepository findAllByStudentId student.id
+
+        certifications.forEach {
+            if (it.name == request.name)
+                throw AlreadyAcquiredCertificationException("이미 취득한 자격증입니다. info : [ certificationName = ${it.name} ]")
+        }
 
         val certification = Certification(
             id = UUID.randomUUID(),
@@ -74,7 +82,7 @@ class CertificationServiceImpl(
     override fun queryCertifications(): CertificationsResponse {
         val user = userUtil.queryCurrentUser()
 
-        val student = studentRepository findByUser user
+        val student = studentRepository findStudentByUser user
 
         val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc student.id
 
@@ -128,7 +136,7 @@ class CertificationServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun updateCertification(id: UUID, request: UpdateCertificationRequest) {
         val user = userUtil.queryCurrentUser()
-        val student = studentRepository findByUser user
+        val student = studentRepository findStudentByUser user
 
         val certification = certificationRepository findById id
 
@@ -145,16 +153,15 @@ class CertificationServiceImpl(
         certificationRepository.save(updateCertification)
     }
 
-    private infix fun StudentRepository.findByUser(user: User): Student =
-        this.findByUser(user)
-            ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ userId = ${user.id} ]")
-
     private infix fun StudentRepository.findStudentById(studentId: UUID): Student =
         this.findStudentById(studentId)
             ?: throw StudentNotFoundException("존재하지 않는 학생입니다. info : [ studentId = $studentId ]")
 
     private infix fun CertificationRepository.findAllByStudentIdOrderByAcquisitionDateDesc(studentId: UUID): List<Certification> =
         this.findAllByStudentIdOrderByAcquisitionDateDesc(studentId)
+
+    private infix fun CertificationRepository.findAllByStudentId(studentId: UUID): List<Certification> =
+        this.findAllByStudentId(studentId)
 
     private infix fun CertificationRepository.findById(id: UUID): Certification =
         this.findByIdOrNull(id)
