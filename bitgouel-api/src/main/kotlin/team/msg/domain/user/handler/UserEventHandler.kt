@@ -64,7 +64,6 @@ class UserEventHandler(
      */
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun withdrawUserHandler(event: WithdrawUserEvent) {
-
         val user = event.user
 
         when (user.authority) {

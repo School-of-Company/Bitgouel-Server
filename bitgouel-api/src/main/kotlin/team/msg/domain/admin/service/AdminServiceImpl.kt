@@ -51,12 +51,11 @@ class AdminServiceImpl(
     override fun approveUsers(userIds: List<UUID>) {
         val users = userRepository.findByIdIn(userIds)
 
-        users.forEach {
-            if (it.approveStatus == ApproveStatus.APPROVED)
-                throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${it.id} ]")
-        }
-
         val approvedUsers = users.map {
+            if (it.approveStatus == ApproveStatus.APPROVED) {
+                throw UserAlreadyApprovedException("이미 승인된 유저입니다. Info : [ userId = ${it.id} ]")
+            }
+
             User(
                 id = it.id,
                 email = it.email,
@@ -160,4 +159,5 @@ class AdminServiceImpl(
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. Info [ clubName = $clubName ]")
+
 }

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.user.exception.MisMatchPasswordException
+import team.msg.domain.auth.exception.MisMatchPasswordException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.request.ModifyPasswordRequest
 import team.msg.domain.user.presentation.data.response.UserPageResponse
