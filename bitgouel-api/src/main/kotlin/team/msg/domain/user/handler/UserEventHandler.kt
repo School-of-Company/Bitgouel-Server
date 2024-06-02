@@ -147,4 +147,5 @@ class UserEventHandler(
 
     private infix fun GovernmentRepository.findByUser(user: User): Government =
         this.findByUser(user) ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
+
 }
