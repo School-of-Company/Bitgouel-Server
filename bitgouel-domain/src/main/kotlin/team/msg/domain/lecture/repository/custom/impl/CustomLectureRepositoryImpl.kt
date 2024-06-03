@@ -82,8 +82,11 @@ class CustomLectureRepositoryImpl(
 
     private fun eqLine(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.line.contains(keyword)
+
     private fun eqDepartment(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.department.contains(keyword)
+
     private fun eqDivision(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.division.contains(keyword)
+
 }

@@ -17,7 +17,6 @@ import team.msg.common.util.SecurityUtil
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.InvalidRefreshTokenException
-import team.msg.domain.auth.exception.MisMatchPasswordException
 import team.msg.domain.auth.exception.RefreshTokenNotFoundException
 import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.model.RefreshToken
@@ -54,6 +53,7 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.event.WithdrawUserEvent
+import team.msg.domain.user.exception.MisMatchPasswordException
 import team.msg.domain.user.exception.UserNotFoundException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository

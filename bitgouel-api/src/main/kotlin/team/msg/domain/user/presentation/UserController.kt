@@ -18,6 +18,7 @@ class UserController (
     private val userService: UserService,
     private val userRequestMapper: UserRequestMapper
 ) {
+
     @GetMapping
     fun queryUserPage(): ResponseEntity<UserPageResponse> {
         val response = userService.queryUserPage()
@@ -30,4 +31,5 @@ class UserController (
         userService.modifyPassword(request)
         return ResponseEntity.noContent().build()
     }
+
 }

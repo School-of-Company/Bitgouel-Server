@@ -17,6 +17,7 @@ class UserServiceImpl(
     private val securityUtil: SecurityUtil,
     private val userRepository: UserRepository
 ) : UserService {
+
     /**
      * 현재 로그인한 유저의 마이페이지를 조회하는 비지니스 로직입니다.
      * @return 조회한 마이페이지 정보가 담긴 dto
@@ -54,4 +55,5 @@ class UserServiceImpl(
 
         userRepository.save(modifiedPasswordUser)
     }
+
 }
