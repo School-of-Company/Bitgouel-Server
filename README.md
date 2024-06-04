@@ -39,7 +39,7 @@
 
 ## ERD
 
-![Erd](./assets/img/bitgoeul_erd.png)
+![Erd](./assets/img/bitgouel_erd.png)
 
 ---
 
