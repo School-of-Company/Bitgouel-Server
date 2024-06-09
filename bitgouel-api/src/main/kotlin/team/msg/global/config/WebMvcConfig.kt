@@ -9,11 +9,12 @@ class WebMvcConfig : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedMethods("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS")
+            .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
             .allowedOrigins(
                 "http://localhost:3000",
                 "https://xn--299a9h0c783fmff8wewxc6hq8rfa3165a.com",
-                "https://빛고을직업교육혁신지구.com"
+                "https://빛고을직업교육혁신지구.com",
+                "https://bitgouel-admin.vercel.app"
             )
             .allowCredentials(true)
     }
