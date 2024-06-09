@@ -18,6 +18,7 @@ import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.auth.exception.InvalidRefreshTokenException
 import team.msg.domain.auth.exception.RefreshTokenNotFoundException
+import team.msg.domain.auth.exception.SameAsOldPasswordException
 import team.msg.domain.auth.exception.UnApprovedUserException
 import team.msg.domain.auth.model.RefreshToken
 import team.msg.domain.auth.presentation.data.request.BbozzakSignUpRequest
@@ -587,6 +588,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { emailAuthenticationRepository.findByIdOrNull(email) } returns emailAuthentication
         every { emailAuthenticationRepository.delete(emailAuthentication) } returns Unit
         every { securityUtil.passwordEncode(any()) } returns encodedNewPassword
+        every { securityUtil.isPasswordMatch(newPassword, encodedCurrentPassword) } returns false
         every { userRepository.save(any()) } returns modifiedPasswordUser
 
         When("비밀번호 변경을 요청하면") {
@@ -632,6 +634,17 @@ class AuthServiceImplTest : BehaviorSpec({
                     authServiceImpl.changePassword(request)
                 }
             }
+        }
+
+        When("새 비밀번호가 기존 비밀번호와 일치하면") {
+            every { securityUtil.isPasswordMatch(newPassword, encodedCurrentPassword) } returns true
+
+            Then("SameAsOldPasswordException 예외가 발생해야 한다.") {
+                shouldThrow<SameAsOldPasswordException> {
+                    authServiceImpl.changePassword(request)
+                }
+            }
+
         }
 
     }
