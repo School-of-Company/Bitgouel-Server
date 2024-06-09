@@ -42,7 +42,7 @@ class PostServiceImpl(
 
         val post = request.run {
             Post(
-                id = UUID.randomUUID(),
+                id = UUID(0, 0),
                 userId = user.id,
                 title = title,
                 content = content,

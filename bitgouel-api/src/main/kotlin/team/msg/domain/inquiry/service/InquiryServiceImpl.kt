@@ -39,7 +39,7 @@ class InquiryServiceImpl(
         val currentUser = userUtil.queryCurrentUser()
 
         val inquiry = Inquiry(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = currentUser,
             question = request.question,
             questionDetail = request.questionDetail,
@@ -170,7 +170,7 @@ class InquiryServiceImpl(
         val inquiry = inquiryRepository findById id
 
         val inquiryAnswer = InquiryAnswer(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             answer = request.answer,
             admin = currentUser,
             inquiryId = inquiry.id

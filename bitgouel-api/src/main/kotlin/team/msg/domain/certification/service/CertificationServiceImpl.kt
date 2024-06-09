@@ -65,7 +65,7 @@ class CertificationServiceImpl(
         }
 
         val certification = Certification(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             studentId = student.id,
             name = request.name,
             acquisitionDate = request.acquisitionDate

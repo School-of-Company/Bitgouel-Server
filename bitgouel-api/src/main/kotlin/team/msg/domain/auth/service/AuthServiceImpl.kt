@@ -79,7 +79,22 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
+<<<<<<< Updated upstream
         studentUtil.createStudent(user, club, request.grade, request.classRoom, request.number, request.admissionNumber)
+=======
+        val student = Student(
+            id = UUID(0, 0),
+            user = user,
+            club = club,
+            grade = request.grade,
+            classRoom = request.classRoom,
+            number = request.number,
+            cohort = request.admissionNumber - 2020,
+            credit = 0,
+            studentRole = StudentRole.STUDENT
+        )
+        studentRepository.save(student)
+>>>>>>> Stashed changes
     }
 
     /**
@@ -99,7 +114,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val teacher = Teacher(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club
         )
@@ -123,7 +138,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val bbozzak = Bbozzak(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club
         )
@@ -148,7 +163,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val professor = Professor(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             university = request.university
@@ -173,7 +188,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val government = Government(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             governmentName = request.governmentName,
@@ -200,7 +215,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val companyInstructor = CompanyInstructor(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             company = request.company
