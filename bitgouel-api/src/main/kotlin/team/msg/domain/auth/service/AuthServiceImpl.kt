@@ -282,7 +282,7 @@ class AuthServiceImpl(
 
         val encodedNewPassword = securityUtil.passwordEncode(request.newPassword)
 
-        if(user.password == encodedNewPassword)
+        if(securityUtil.isPasswordMatch(request.newPassword, user.password))
             throw SameAsOldPasswordException("기존 비밀번호와 새 비밀번호가 일치합니다. info : [ password = ${request.newPassword} ]")
 
         emailAuthenticationRepository.delete(emailAuthentication)
