@@ -280,9 +280,12 @@ class AuthServiceImpl(
         if(!emailAuthentication.isAuthentication)
             throw UnAuthenticatedEmailException("아직 인증되지 않은 이메일입니다. info : [ email = ${request.email} ]")
 
-        emailAuthenticationRepository.delete(emailAuthentication)
-
         val encodedNewPassword = securityUtil.passwordEncode(request.newPassword)
+
+        if(securityUtil.isPasswordMatch(request.newPassword, user.password))
+            throw SameAsOldPasswordException("기존 비밀번호와 새 비밀번호가 일치합니다. info : [ password = ${request.newPassword} ]")
+
+        emailAuthenticationRepository.delete(emailAuthentication)
 
         val modifiedPasswordUser = User(
             id = user.id,

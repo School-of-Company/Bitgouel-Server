@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.UserUtil
+import team.msg.domain.auth.exception.SameAsOldPasswordException
 import team.msg.domain.user.exception.MisMatchPasswordException
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.request.ModifyPasswordRequest
@@ -42,6 +43,9 @@ class UserServiceImpl(
             throw MisMatchPasswordException("비밀번호가 일치하지 않습니다. info : [ password = ${request.currentPassword} ]")
 
         val encodedNewPassword = securityUtil.passwordEncode(request.newPassword)
+
+        if(securityUtil.isPasswordMatch(request.newPassword, user.password))
+            throw SameAsOldPasswordException("기존 비밀번호와 새 비밀번호가 일치합니다. info : [ password = ${request.newPassword} ]")
 
         val modifiedPasswordUser = User(
             id = user.id,
