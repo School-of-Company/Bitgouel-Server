@@ -29,6 +29,8 @@ import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
+import team.msg.domain.student.enums.StudentRole
+import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
@@ -79,9 +81,8 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
-<<<<<<< Updated upstream
         studentUtil.createStudent(user, club, request.grade, request.classRoom, request.number, request.admissionNumber)
-=======
+
         val student = Student(
             id = UUID(0, 0),
             user = user,
@@ -94,7 +95,6 @@ class AuthServiceImpl(
             studentRole = StudentRole.STUDENT
         )
         studentRepository.save(student)
->>>>>>> Stashed changes
     }
 
     /**
