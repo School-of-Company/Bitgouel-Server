@@ -9,7 +9,7 @@
 ## How to clone?
 
 ```
-   https://github.com/GSM-MSG/Bitgouel-Server.git
+https://github.com/GSM-MSG/Bitgouel-Server.git
 ```
 
 ## Contributing
