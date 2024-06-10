@@ -211,7 +211,7 @@ class UserUtil(
             throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
 
         return User(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             email = email,
             name = name,
             phoneNumber = phoneNumber,

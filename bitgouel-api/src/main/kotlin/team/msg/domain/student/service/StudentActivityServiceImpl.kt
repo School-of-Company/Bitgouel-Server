@@ -51,7 +51,7 @@ class StudentActivityServiceImpl(
         val teacher = teacherRepository findByClub student.club
 
         val studentActivity = StudentActivity(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             title = request.title,
             content = request.content,
             credit = request.credit,

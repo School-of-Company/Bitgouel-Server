@@ -29,7 +29,6 @@ import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
-import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
 import team.msg.domain.user.enums.Authority
@@ -47,7 +46,6 @@ class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val securityUtil: SecurityUtil,
     private val clubRepository: ClubRepository,
-    private val studentRepository: StudentRepository,
     private val schoolRepository: SchoolRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
@@ -99,7 +97,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val teacher = Teacher(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club
         )
@@ -123,7 +121,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val bbozzak = Bbozzak(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club
         )
@@ -148,7 +146,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val professor = Professor(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             university = request.university
@@ -173,7 +171,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val government = Government(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             governmentName = request.governmentName,
@@ -200,7 +198,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val companyInstructor = CompanyInstructor(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             company = request.company

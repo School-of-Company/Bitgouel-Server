@@ -87,7 +87,6 @@ class AuthServiceImplTest : BehaviorSpec({
         userRepository,
         securityUtil,
         clubRepository,
-        studentRepository,
         schoolRepository,
         teacherRepository,
         professorRepository,

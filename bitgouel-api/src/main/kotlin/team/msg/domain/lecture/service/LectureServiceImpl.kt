@@ -69,7 +69,7 @@ class LectureServiceImpl(
         val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
 
         val lecture = Lecture(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             name = request.name,
             semester = request.semester,
@@ -90,7 +90,7 @@ class LectureServiceImpl(
 
         val lectureDates = request.lectureDates.map {
             LectureDate(
-                id = UUID.randomUUID(),
+                id = UUID(0, 0),
                 lecture = savedLecture,
                 completeDate = it.completeDate,
                 startTime = it.startTime,
@@ -217,7 +217,7 @@ class LectureServiceImpl(
             throw OverMaxRegisteredUserException("수강 인원이 가득 찼습니다. info : [ maxRegisteredUser = ${lecture.maxRegisteredUser}, currentSignUpLectureStudent = $registeredLectureCount ]")
 
         val registeredLecture = RegisteredLecture(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             student = student,
             lecture = lecture
         )

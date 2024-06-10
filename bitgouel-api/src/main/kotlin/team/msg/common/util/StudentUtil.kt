@@ -15,7 +15,7 @@ class StudentUtil(
 
     fun createStudent(user: User, club: Club, grade: Int, classRoom: Int, number: Int, admissionNumber: Int) {
         val student = Student(
-            id = UUID.randomUUID(),
+            id = UUID(0, 0),
             user = user,
             club = club,
             grade = grade,
