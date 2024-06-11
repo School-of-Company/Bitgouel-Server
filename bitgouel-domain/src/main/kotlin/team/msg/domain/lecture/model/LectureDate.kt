@@ -26,5 +26,5 @@ class LectureDate (
     val startTime: LocalTime,
 
     @Column(nullable = false, updatable = false, columnDefinition = "TIME")
-    val endTime: LocalTime,
+    val endTime: LocalTime
 ) : BaseUUIDEntity(id)

@@ -1,11 +1,11 @@
 package team.msg.domain.admin.model
 
-import team.msg.common.entity.BaseUUIDEntity
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.OneToOne
+import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.user.model.User
 import java.util.*
 

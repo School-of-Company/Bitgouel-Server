@@ -27,21 +27,21 @@ class StudentActivityController(
     private val studentActivityMapper: StudentActivityMapper
 ) {
     @PostMapping
-    fun createStudentActivity(@RequestBody @Valid webRequest: CreateStudentActivityWebRequest): ResponseEntity<Void> {
+    fun createStudentActivity(@RequestBody @Valid webRequest: CreateStudentActivityWebRequest): ResponseEntity<Unit> {
         val request = studentActivityMapper.createStudentActivityWebRequestToDto(webRequest)
         studentActivityService.createStudentActivity(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PatchMapping("/{id}")
-    fun updateStudentActivity(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateStudentActivityWebRequest): ResponseEntity<Void> {
+    fun updateStudentActivity(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateStudentActivityWebRequest): ResponseEntity<Unit> {
         val request = studentActivityMapper.updateStudentActivityWebRequestToDto(webRequest)
         studentActivityService.updateStudentActivity(id, request)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
-    fun deleteStudentActivity(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun deleteStudentActivity(@PathVariable id: UUID): ResponseEntity<Unit> {
         studentActivityService.deleteStudentActivity(id)
         return ResponseEntity.noContent().build()
     }

@@ -1,5 +1,6 @@
 package team.msg.domain.auth.presentation
 
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -7,7 +8,6 @@ import team.msg.domain.auth.mapper.AuthRequestMapper
 import team.msg.domain.auth.presentation.data.response.TokenResponse
 import team.msg.domain.auth.presentation.data.web.*
 import team.msg.domain.auth.service.AuthService
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/auth")
@@ -15,43 +15,44 @@ class AuthController(
     private val authService: AuthService,
     private val authRequestMapper: AuthRequestMapper
 ) {
+
     @PostMapping("/student")
-    fun studentSignUp(@RequestBody @Valid webRequest: StudentSignUpWebRequest): ResponseEntity<Void> {
+    fun studentSignUp(@RequestBody @Valid webRequest: StudentSignUpWebRequest): ResponseEntity<Unit> {
         val request = authRequestMapper.studentSignUpWebRequestToDto(webRequest)
         authService.studentSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/teacher")
-    fun teacherSignUp(@RequestBody @Valid webRequest: TeacherSignUpWebRequest): ResponseEntity<Void> {
+    fun teacherSignUp(@RequestBody @Valid webRequest: TeacherSignUpWebRequest): ResponseEntity<Unit> {
         val request = authRequestMapper.teacherSignUpWebRequestToDto(webRequest)
         authService.teacherSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/bbozzak")
-    fun bbozzakSignUp(@RequestBody @Valid webRequest: BbozzakSignUpWebRequest) : ResponseEntity<Void> {
+    fun bbozzakSignUp(@RequestBody @Valid webRequest: BbozzakSignUpWebRequest) : ResponseEntity<Unit> {
         val request = authRequestMapper.bbozzakSignUpWebRequestToDto(webRequest)
         authService.bbozzakSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/professor")
-    fun professorSignUp(@RequestBody @Valid webRequest: ProfessorSignUpWebRequest): ResponseEntity<Void> {
+    fun professorSignUp(@RequestBody @Valid webRequest: ProfessorSignUpWebRequest): ResponseEntity<Unit> {
         val request = authRequestMapper.professorSignUpWebRequestToDto(webRequest)
         authService.professorSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/government")
-    fun governmentSignUp(@RequestBody @Valid webRequest: GovernmentSignUpWebRequest): ResponseEntity<Void> {
+    fun governmentSignUp(@RequestBody @Valid webRequest: GovernmentSignUpWebRequest): ResponseEntity<Unit> {
         val request = authRequestMapper.governmentSignUpWebRequestToDto(webRequest)
         authService.governmentSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/company-instructor")
-    fun companyInstructorSignUp(@RequestBody @Valid webRequest: CompanyInstructorSignUpWebRequest): ResponseEntity<Void> {
+    fun companyInstructorSignUp(@RequestBody @Valid webRequest: CompanyInstructorSignUpWebRequest): ResponseEntity<Unit> {
         val request = authRequestMapper.companyInstructorSignUpWebRequestToDto(webRequest)
         authService.companyInstructorSignUp(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
@@ -78,14 +79,15 @@ class AuthController(
     }
 
     @DeleteMapping
-    fun logout(@RequestHeader("RefreshToken") refreshToken: String): ResponseEntity<Void> {
+    fun logout(@RequestHeader("RefreshToken") refreshToken: String): ResponseEntity<Unit> {
         authService.logout(refreshToken)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/withdraw")
-    fun withdraw(): ResponseEntity<Void> {
+    fun withdraw(): ResponseEntity<Unit> {
         authService.withdraw()
         return ResponseEntity.noContent().build()
     }
+
 }

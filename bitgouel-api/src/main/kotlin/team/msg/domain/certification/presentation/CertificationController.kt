@@ -18,7 +18,7 @@ class CertificationController(
     private val certificationRequestMapper: CertificationRequestMapper
 ) {
     @PostMapping
-    fun createCertification(@RequestBody @Valid webRequest: CreateCertificationWebRequest): ResponseEntity<Void> {
+    fun createCertification(@RequestBody @Valid webRequest: CreateCertificationWebRequest): ResponseEntity<Unit> {
         val request = certificationRequestMapper.createCertificationWebRequestToDto(webRequest)
         certificationService.createCertification(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
@@ -37,7 +37,7 @@ class CertificationController(
     }
 
     @PatchMapping("/{id}")
-    fun updateCertification(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateCertificationWebRequest): ResponseEntity<Void> {
+    fun updateCertification(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdateCertificationWebRequest): ResponseEntity<Unit> {
         val request = certificationRequestMapper.updateCertificationWebRequestToDto(webRequest)
         certificationService.updateCertification(id, request)
         return ResponseEntity.noContent().build()
