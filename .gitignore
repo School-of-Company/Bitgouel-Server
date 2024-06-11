@@ -37,6 +37,6 @@ out/
 .vscode/
 
 ### Monitoring ###
-env
+.env
 
 .DS_Store
