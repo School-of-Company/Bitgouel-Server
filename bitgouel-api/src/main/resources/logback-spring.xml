@@ -33,9 +33,9 @@
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_WEBHOOK_URL}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
-                <pattern>%d{yyyy-MM-dd HH:mm:ss} %msg%n```%ex{full}```</pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} ```%msg%n%ex{full}```</pattern>
             </layout>
-            <username>Bitgouel-Server-Error-Log-Bot</username>
+            <username>빛고을 오류 알리미</username>
             <avatarUrl>${DISCORD_AVATAR_URL}</avatarUrl>
             <tts>false</tts>
         </appender>

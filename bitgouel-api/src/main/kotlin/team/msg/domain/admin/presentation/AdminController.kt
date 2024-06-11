@@ -23,25 +23,25 @@ class AdminController(
     }
 
     @PatchMapping
-    fun approveUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
+    fun approveUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Unit> {
         adminService.approveUsers(userIds)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/reject")
-    fun rejectUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
+    fun rejectUsers(@RequestParam userIds: List<UUID>): ResponseEntity<Unit> {
         adminService.rejectUsers(userIds)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/withdraw")
-    fun forceWithdraw(@RequestParam userIds: List<UUID>): ResponseEntity<Void> {
+    fun forceWithdraw(@RequestParam userIds: List<UUID>): ResponseEntity<Unit> {
         adminService.forceWithdraw(userIds)
         return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/excel")
-    fun uploadStudentListExcel(@RequestPart file: MultipartFile): ResponseEntity<Void> {
+    fun uploadStudentListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
         adminService.uploadStudentListExcel(file)
         return ResponseEntity.ok().build()
     }

@@ -19,5 +19,5 @@ class School(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "highSchool", columnDefinition = "VARCHAR(100)", nullable = false, unique = true)
-    val highSchool: HighSchool // 학교 이름 상수
+    val highSchool: HighSchool
 )

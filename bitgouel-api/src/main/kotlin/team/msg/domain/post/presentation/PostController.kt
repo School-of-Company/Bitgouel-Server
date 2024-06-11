@@ -31,7 +31,7 @@ class PostController(
     private val postRequestMapper: PostRequestMapper
 ) {
     @PostMapping
-    fun createPost(@RequestBody @Valid webRequest: CreatePostWebRequest): ResponseEntity<Void> {
+    fun createPost(@RequestBody @Valid webRequest: CreatePostWebRequest): ResponseEntity<Unit> {
         val request = postRequestMapper.createPostWebRequestToDto(webRequest)
         postService.createPost(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
@@ -57,14 +57,14 @@ class PostController(
     }
 
     @PatchMapping("/{id}")
-    fun updatePost(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdatePostWebRequest): ResponseEntity<Void> {
+    fun updatePost(@PathVariable id: UUID, @RequestBody @Valid webRequest: UpdatePostWebRequest): ResponseEntity<Unit> {
         val request = postRequestMapper.updatePostWebRequestToDto(webRequest)
         postService.updatePost(id, request)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
-    fun deletePost(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun deletePost(@PathVariable id: UUID): ResponseEntity<Unit> {
         postService.deletePost(id)
         return ResponseEntity.noContent().build()
     }

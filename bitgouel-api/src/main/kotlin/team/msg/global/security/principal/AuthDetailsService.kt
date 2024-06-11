@@ -10,7 +10,7 @@ import team.msg.domain.user.repository.UserRepository
 import java.util.*
 
 @Service
-@Transactional(rollbackFor = [Exception::class], readOnly = true)
+@Transactional(readOnly = true)
 class AuthDetailsService(
     private val userRepository: UserRepository
 ) : UserDetailsService {

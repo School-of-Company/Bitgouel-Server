@@ -29,7 +29,7 @@ class InquiryController(
 ) {
 
     @PostMapping
-    fun createInquiry(@Valid @RequestBody webRequest: CreateInquiryWebRequest): ResponseEntity<Void> {
+    fun createInquiry(@Valid @RequestBody webRequest: CreateInquiryWebRequest): ResponseEntity<Unit> {
         val request = inquiryMapper.createInquiryWebRequestToDto(webRequest)
         inquiryService.createInquiry(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
@@ -55,26 +55,26 @@ class InquiryController(
     }
 
     @DeleteMapping("/{id}")
-    fun deleteInquiry(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun deleteInquiry(@PathVariable id: UUID): ResponseEntity<Unit> {
         inquiryService.deleteInquiry(id)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}/reject")
-    fun rejectInquiry(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun rejectInquiry(@PathVariable id: UUID): ResponseEntity<Unit> {
         inquiryService.rejectInquiry(id)
         return ResponseEntity.noContent().build()
     }
 
     @PatchMapping("/{id}")
-    fun updateInquiry(@PathVariable id: UUID, @Valid @RequestBody webRequest: UpdateInquiryWebRequest): ResponseEntity<Void> {
+    fun updateInquiry(@PathVariable id: UUID, @Valid @RequestBody webRequest: UpdateInquiryWebRequest): ResponseEntity<Unit> {
         val request = inquiryMapper.updateInquiryWebRequestToDto(webRequest)
         inquiryService.updateInquiry(id, request)
         return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/{id}/answer")
-    fun replyInquiry(@PathVariable id: UUID, @Valid @RequestBody webRequest: CreateInquiryAnswerWebRequest): ResponseEntity<Void> {
+    fun replyInquiry(@PathVariable id: UUID, @Valid @RequestBody webRequest: CreateInquiryAnswerWebRequest): ResponseEntity<Unit> {
         val request = inquiryMapper.createInquiryAnswerWebRequestToDto(webRequest)
         inquiryService.replyInquiry(id, request)
         return ResponseEntity.noContent().build()
