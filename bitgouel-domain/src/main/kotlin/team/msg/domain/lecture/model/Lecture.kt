@@ -7,6 +7,7 @@ import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import org.hibernate.annotations.ColumnDefault
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
@@ -64,9 +65,9 @@ class Lecture(
     @Column(columnDefinition = "TINYINT", nullable = false)
     val essentialComplete: Boolean,
 
+    @ColumnDefault("0")
     @Column(columnDefinition = "TINYINT", nullable = false)
     val isDeleted: Boolean
-
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
