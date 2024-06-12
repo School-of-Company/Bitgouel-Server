@@ -83,8 +83,7 @@ class LectureServiceImpl(
             credit = credit,
             instructor = user.name,
             maxRegisteredUser = request.maxRegisteredUser,
-            essentialComplete = request.essentialComplete,
-            isDeleted = false
+            essentialComplete = request.essentialComplete
         )
 
         val savedLecture = lectureRepository.save(lecture)

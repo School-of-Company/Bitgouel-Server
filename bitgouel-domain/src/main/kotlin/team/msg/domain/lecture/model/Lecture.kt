@@ -65,9 +65,8 @@ class Lecture(
     @Column(columnDefinition = "TINYINT", nullable = false)
     val essentialComplete: Boolean,
 
-    @ColumnDefault("0")
     @Column(columnDefinition = "TINYINT", nullable = false)
-    val isDeleted: Boolean
+    val isDeleted: Boolean = false
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
