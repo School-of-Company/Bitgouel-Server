@@ -38,7 +38,8 @@ class CustomLectureRepositoryImpl(
             .select(lecture.count())
             .from(lecture)
             .where(
-                eqLectureType(lectureType)
+                eqLectureType(lectureType),
+                eqIsDeleted(false)
             ).fetchOne()!!
 
         return PageImpl(content, pageable, count)
@@ -89,4 +90,6 @@ class CustomLectureRepositoryImpl(
     private fun eqDivision(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.division.contains(keyword)
 
+    private fun eqIsDeleted(isDeleted: Boolean): BooleanExpression =
+         lecture.isDeleted.eq(isDeleted)
 }
