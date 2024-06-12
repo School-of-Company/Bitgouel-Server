@@ -12,7 +12,7 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Entity
 class Lecture(
@@ -62,7 +62,11 @@ class Lecture(
     val maxRegisteredUser: Int,
 
     @Column(columnDefinition = "TINYINT", nullable = false)
-    val essentialComplete: Boolean
+    val essentialComplete: Boolean,
+
+    @Column(columnDefinition = "TINYINT", nullable = false)
+    val isDeleted: Boolean
+
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
