@@ -46,7 +46,8 @@ class CustomLectureRepositoryImpl(
     }
 
     override fun deleteAllByUserId(userId: UUID) {
-        queryFactory.delete(lecture)
+        queryFactory.update(lecture)
+            .set(lecture.isDeleted, true)
             .where(lecture.user.id.eq(userId))
             .execute()
     }
