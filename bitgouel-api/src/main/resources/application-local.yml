@@ -4,11 +4,11 @@ spring:
       on-profile: local
 
   datasource:
+    url: jdbc:mysql://${DB_URL:localhost:3306}/${DB_NAME:bitgouel}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:Esperer123!}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      jdbc-url: jdbc:mysql://${DB_URL:localhost:3306}/${DB_NAME:bitgouel}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-      username: ${DB_USER:root}
-      password: ${DB_PASSWORD:Esperer123!}
-      driver-class-name: com.mysql.cj.jdbc.Driver
       auto-commit: false
 
   redis:
