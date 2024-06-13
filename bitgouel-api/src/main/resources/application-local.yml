@@ -9,6 +9,7 @@ spring:
       username: ${DB_USER:root}
       password: ${DB_PASSWORD:Esperer123!}
       driver-class-name: com.mysql.cj.jdbc.Driver
+      auto-commit: false
 
   redis:
     host: ${REDIS_HOST:localhost}
