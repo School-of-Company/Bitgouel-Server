@@ -19,5 +19,9 @@ class School(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "highSchool", columnDefinition = "VARCHAR(100)", nullable = false, unique = true)
-    val highSchool: HighSchool
+    val highSchool: HighSchool,
+
+    @Column(name = "logoImageUrl", columnDefinition = "VARCHAR(100)", nullable = false)
+    val logoImageUrl: String
+
 )
