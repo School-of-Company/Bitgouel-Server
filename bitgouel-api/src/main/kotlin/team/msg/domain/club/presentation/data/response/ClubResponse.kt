@@ -16,14 +16,14 @@ data class ClubResponse(
             ClubResponse(
                 id = it.id,
                 name = it.name,
-                schoolName = it.school.highSchool.schoolName
+                schoolName = it.school.highSchool
             )
         }
 
         fun detailOf(club: Club, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
             clubId = club.id,
             clubName = club.name,
-            highSchoolName = club.school.highSchool.schoolName,
+            highSchoolName = club.school.highSchool,
             headCount = students.size,
             students = StudentResponse.listOf(students),
             teacher = TeacherResponse(

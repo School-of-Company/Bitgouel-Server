@@ -30,5 +30,5 @@ interface LectureService {
     fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse
     fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse
     fun updateLectureCompleteStatus(id: UUID, studentId: UUID, isComplete: Boolean)
-    fun lectureReceiptStatusExcel(response: HttpServletResponse)
+//    fun lectureReceiptStatusExcel(response: HttpServletResponse)
 }

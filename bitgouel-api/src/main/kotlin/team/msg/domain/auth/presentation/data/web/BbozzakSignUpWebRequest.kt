@@ -1,8 +1,5 @@
 package team.msg.domain.auth.presentation.data.web
 
-import team.msg.domain.school.enums.HighSchool
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -24,8 +21,7 @@ data class BbozzakSignUpWebRequest(
     val password: String,
 
     @field:NotNull
-    @Enumerated(EnumType.STRING)
-    val highSchool: HighSchool,
+    val highSchool: String,
 
     @field:NotBlank
     val clubName: String

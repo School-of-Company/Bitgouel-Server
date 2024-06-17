@@ -26,7 +26,6 @@ import team.msg.domain.government.model.Government
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.teacher.model.Teacher
@@ -314,7 +313,7 @@ class AuthServiceImpl(
      * 학교와 동아리 이름을 받아 동아리 객체를 리턴하는 private 메서드입니다.
      * @param 동아리 객체를 리턴하기 위한 highSchool, clubName 입니다.
      */
-    private fun queryClub(highSchool: HighSchool, clubName: String): Club {
+    private fun queryClub(highSchool: String, clubName: String): Club {
         val school = schoolRepository.findByHighSchool(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ highSchool = $highSchool ]")
 

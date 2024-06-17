@@ -96,11 +96,11 @@ class LectureController(
         return ResponseEntity.ok(response)
     }
 
-    @GetMapping("/excel")
-    fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
-        lectureService.lectureReceiptStatusExcel(response)
-        return ResponseEntity.ok().build()
-    }
+//    @GetMapping("/excel")
+//    fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
+//        lectureService.lectureReceiptStatusExcel(response)
+//        return ResponseEntity.ok().build()
+//    }
 
     @GetMapping("/{student_id}/signup")
     fun queryAllSignedUpLectures(@PathVariable("student_id") studentId: UUID): ResponseEntity<SignedUpLecturesResponse> {
