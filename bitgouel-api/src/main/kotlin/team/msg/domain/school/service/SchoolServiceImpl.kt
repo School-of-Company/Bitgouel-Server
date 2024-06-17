@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.school.model.School
+import team.msg.domain.school.presentation.data.request.CreateSchoolRequest
 import team.msg.domain.school.presentation.data.response.SchoolResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.repository.SchoolRepository
@@ -34,5 +36,20 @@ class SchoolServiceImpl(
         )
 
         return response
+    }
+
+    /**
+     * 학교를 생성하는 비지니스 로직
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun createSchool(request: CreateSchoolRequest) {
+        val schools = schoolRepository.findAll()
+
+        val school = School(
+            highSchool = request.schoolName,
+            logoImageUrl = request.logoImage
+        )
+
+        schoolRepository.save(school)
     }
 }
