@@ -28,6 +28,7 @@ import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebReque
 import team.msg.domain.lecture.presentation.data.web.QueryAllDivisionsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLecturesWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLinesWebRequest
+import team.msg.domain.lecture.presentation.data.web.UpdateLectureWebRequest
 import team.msg.domain.lecture.service.LectureService
 import java.util.*
 
@@ -49,6 +50,13 @@ class LectureController(
         val request = lectureRequestMapper.queryLectureWebRequestToDto(webRequest)
         val response = lectureService.queryAllLectures(pageable, request)
         return ResponseEntity.status(HttpStatus.OK).body(response)
+    }
+
+    @PatchMapping("/{id}")
+    fun createLecture(@PathVariable id: UUID, @Valid @RequestBody webRequest: UpdateLectureWebRequest): ResponseEntity<Unit> {
+        val request = lectureRequestMapper.updateLectureWebRequestToDto(webRequest)
+        lectureService.updateLecture(id, request)
+        return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/{id}")
