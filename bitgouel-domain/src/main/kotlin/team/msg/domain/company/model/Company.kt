@@ -11,7 +11,7 @@ class Company(
     @Column(name = "id", nullable = false, unique = false)
     val id: Long = 0,
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     val name: String,
 
     @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)

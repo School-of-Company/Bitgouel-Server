@@ -14,7 +14,7 @@ class University(
     @Column(name = "id", nullable = false, unique = false)
     val id: Long = 0,
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     val name: String,
 
     @Column(name = "department", columnDefinition = "VARCHAR(50)", nullable = false)
