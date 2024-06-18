@@ -132,6 +132,8 @@ class LectureServiceImpl(
 
         val savedLecture = lectureRepository.save(lecture)
 
+        lectureDateRepository.deleteAllByLectureId(id)
+
         val lectureDates = request.lectureDates.map {
             LectureDate(
                 id = UUID(0, 0),
@@ -141,9 +143,7 @@ class LectureServiceImpl(
                 endTime = it.endTime
             )
         }
-
         lectureDateRepository.saveAll(lectureDates)
-        lectureDateRepository.deleteAllByLectureId(id)
     }
 
     /**
