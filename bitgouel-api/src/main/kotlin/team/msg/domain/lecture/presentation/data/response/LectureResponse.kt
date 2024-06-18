@@ -115,7 +115,7 @@ data class LectureResponse(
                 classNumber = classRoom,
                 number = number,
                 phoneNumber = user!!.phoneNumber,
-                school = club.school.highSchool,
+                school = club.school.name,
                 clubName = club.name,
                 cohort = cohort,
                 isComplete = isComplete

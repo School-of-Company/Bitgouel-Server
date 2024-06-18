@@ -53,7 +53,7 @@ class ClubServiceImpl(
      */
     @Transactional(readOnly = true)
     override fun queryAllClubs(highSchool: String): ClubsResponse {
-        val school = schoolRepository.findByHighSchool(highSchool)
+        val school = schoolRepository.findByName(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool ]")
 
         val clubs = clubRepository.findAllBySchool(school)

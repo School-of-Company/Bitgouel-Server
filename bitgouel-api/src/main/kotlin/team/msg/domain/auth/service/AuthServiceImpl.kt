@@ -314,7 +314,7 @@ class AuthServiceImpl(
      * @param 동아리 객체를 리턴하기 위한 highSchool, clubName 입니다.
      */
     private fun queryClub(highSchool: String, clubName: String): Club {
-        val school = schoolRepository.findByHighSchool(highSchool)
+        val school = schoolRepository.findByName(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ highSchool = $highSchool ]")
 
         val club = clubRepository.findByNameAndSchool(clubName, school)

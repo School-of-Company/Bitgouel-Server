@@ -16,14 +16,14 @@ data class ClubResponse(
             ClubResponse(
                 id = it.id,
                 name = it.name,
-                schoolName = it.school.highSchool
+                schoolName = it.school.name
             )
         }
 
         fun detailOf(club: Club, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
             clubId = club.id,
             clubName = club.name,
-            highSchoolName = club.school.highSchool,
+            schoolName = club.school.name,
             headCount = students.size,
             students = StudentResponse.listOf(students),
             teacher = TeacherResponse(
@@ -48,7 +48,7 @@ data class ClubsResponse(
 data class ClubDetailsResponse(
     val clubId: Long,
     val clubName: String,
-    val highSchoolName: String,
+    val schoolName: String,
     val headCount: Int,
     val students: List<StudentResponse>,
     val teacher: TeacherResponse
