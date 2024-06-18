@@ -1,22 +1,21 @@
-//package team.msg.common.init
-//
-//import org.springframework.boot.context.event.ApplicationReadyEvent
-//import org.springframework.context.event.EventListener
-//import org.springframework.stereotype.Component
-//import org.springframework.transaction.annotation.Transactional
-//import team.msg.common.logger.LoggerDelegator
-//import team.msg.domain.club.model.Club
-//import team.msg.domain.club.repository.ClubRepository
-//import team.msg.domain.school.enums.HighSchool
-//import team.msg.domain.school.model.School
-//import team.msg.domain.school.repository.SchoolRepository
-//import java.util.*
-//
-//@Component
-//class DataInitializer(
-//    private val schoolRepository: SchoolRepository,
-//    private val clubRepository: ClubRepository
-//) {
+package team.msg.common.init
+
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+import team.msg.common.logger.LoggerDelegator
+import team.msg.domain.club.model.Club
+import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.school.model.School
+import team.msg.domain.school.repository.SchoolRepository
+import java.util.*
+
+@Component
+class DataInitializer(
+    private val schoolRepository: SchoolRepository,
+    private val clubRepository: ClubRepository
+) {
 //
 //    private val log by LoggerDelegator()
 //
@@ -203,4 +202,4 @@
 //        )
 //        clubRepository.saveAll(clubList)
 //    }
-//}
+}
