@@ -43,7 +43,7 @@ import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.GovernmentInstructor
-import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
@@ -73,7 +73,7 @@ class AuthServiceImplTest : BehaviorSpec({
     val studentRepository = mockk<StudentRepository>()
     val teacherRepository = mockk<TeacherRepository>()
     val professorRepository = mockk<ProfessorRepository>()
-    val governmentRepository = mockk<GovernmentRepository>()
+    val governmentInstructorRepository = mockk<GovernmentInstructorRepository>()
     val companyInstructorRepository = mockk<CompanyInstructorRepository>()
     val jwtTokenGenerator = mockk<JwtTokenGenerator>()
     val jwtTokenParser = mockk<JwtTokenParser>()
@@ -90,7 +90,7 @@ class AuthServiceImplTest : BehaviorSpec({
         schoolRepository,
         teacherRepository,
         professorRepository,
-        governmentRepository,
+        governmentInstructorRepository,
         companyInstructorRepository,
         jwtTokenGenerator,
         jwtTokenParser,
@@ -308,14 +308,14 @@ class AuthServiceImplTest : BehaviorSpec({
         every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
-        every { governmentRepository.save(any()) } returns governmentInstructor
+        every { governmentInstructorRepository.save(any()) } returns governmentInstructor
 
         When("유관 기관 회원가입 요청을 하면") {
             authServiceImpl.governmentSignUp(request)
 
             Then("Government 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
-                verify(exactly = 1) { governmentRepository.save(any()) }
+                verify(exactly = 1) { governmentInstructorRepository.save(any()) }
             }
         }
 

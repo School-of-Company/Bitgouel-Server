@@ -16,7 +16,7 @@ import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
-import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.lecture.repository.LectureRepository
@@ -46,7 +46,7 @@ class UserEventHandler(
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
-    private val governmentRepository: GovernmentRepository,
+    private val governmentInstructorRepository: GovernmentInstructorRepository,
     private val registeredLectureRepository: RegisteredLectureRepository,
     private val adminRepository: AdminRepository,
     private val lectureRepository: LectureRepository,
@@ -115,12 +115,12 @@ class UserEventHandler(
                 userRepository.deleteByIdIn(listOf(user.id))
             }
             ROLE_GOVERNMENT -> {
-                val government = governmentRepository findByUser user
+                val government = governmentInstructorRepository findByUser user
 
                 inquiryRepository.deleteAllByUserId(user.id)
                 lectureRepository.deleteAllByUserId(user.id)
                 postRepository.deleteAllByUserId(user.id)
-                governmentRepository.delete(government)
+                governmentInstructorRepository.delete(government)
             }
 
             else -> throw UnApprovedUserException("회원가입 승인 대기 중인 유저입니다. info : [ userId = ${user.id} ]")
@@ -145,7 +145,7 @@ class UserEventHandler(
     private infix fun CompanyInstructorRepository.findByUser(user: User): CompanyInstructor =
         this.findByUser(user) ?: throw CompanyNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
 
-    private infix fun GovernmentRepository.findByUser(user: User): GovernmentInstructor =
+    private infix fun GovernmentInstructorRepository.findByUser(user: User): GovernmentInstructor =
         this.findByUser(user) ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
 
 }

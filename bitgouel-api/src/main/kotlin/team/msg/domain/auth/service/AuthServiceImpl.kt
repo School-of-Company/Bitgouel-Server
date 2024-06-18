@@ -23,7 +23,7 @@ import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.GovernmentInstructor
-import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
@@ -48,7 +48,7 @@ class AuthServiceImpl(
     private val schoolRepository: SchoolRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
-    private val governmentRepository: GovernmentRepository,
+    private val governmentInstructorRepository: GovernmentInstructorRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
@@ -177,7 +177,7 @@ class AuthServiceImpl(
             position = request.position,
             sectors = request.sectors
         )
-        governmentRepository.save(governmentInstructor)
+        governmentInstructorRepository.save(governmentInstructor)
     }
 
     /**

@@ -15,7 +15,7 @@ import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
-import team.msg.domain.government.repository.GovernmentRepository
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -43,7 +43,7 @@ class ClubServiceImpl(
     private val bbozzakRepository: BbozzakRepository,
     private val professorRepository: ProfessorRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
-    private val governmentRepository: GovernmentRepository
+    private val governmentInstructorRepository: GovernmentInstructorRepository
 ) : ClubService {
 
     /**
@@ -148,7 +148,7 @@ class ClubServiceImpl(
     private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
         ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
+    private fun findGovernmentByUser(user: User) = governmentInstructorRepository.findByUser(user)
         ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
 }
