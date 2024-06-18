@@ -95,21 +95,21 @@ class UserUtil(
                 val student = studentRepository findByUser user
                 val club = student.club
                 val school = club.school
-                val organization = "${school.highSchool.schoolName}/${club.name}/${student.grade}학년 ${student.classRoom}반 ${student.number}번"
+                val organization = "${school.name}/${club.name}/${student.grade}학년 ${student.classRoom}반 ${student.number}번"
                 Pair(student, organization)
             }
             Authority.ROLE_TEACHER -> {
                 val teacher = teacherRepository findByUser user
                 val club = teacher.club
                 val school = club.school
-                val organization = "${school.highSchool.schoolName}/${club.name}"
+                val organization = "${school.name}/${club.name}"
                 Pair(teacher, organization)
             }
             Authority.ROLE_BBOZZAK -> {
                 val bbozzak = bbozzakRepository findByUser user
                 val club = bbozzak.club
                 val school = club.school
-                val organization = "${school.highSchool.schoolName}/${club.name}"
+                val organization = "${school.name}/${club.name}"
                 Pair(bbozzak, organization)
             }
             Authority.ROLE_PROFESSOR -> {

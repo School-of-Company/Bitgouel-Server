@@ -44,7 +44,6 @@ import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
 import team.msg.domain.lecture.repository.custom.projection.LectureListProjection
 import team.msg.domain.lecture.repository.custom.projection.SignedUpStudentProjection
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -897,7 +896,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::lectureType) { lectureType }
             property(Lecture::instructor) { lecturer }
         }
-        
+
         val lectureDate1 = fixture<LectureDate> {
             property(LectureDate::completeDate) { LocalDate.MIN }
             property(LectureDate::lecture) { lecture }
@@ -966,6 +965,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val studentEmail = "email"
         val studentName = "name"
         val studentPhoneNumber = "phoneNumber"
+        val schoolName = "광주소프트웨어마이스터고등학교"
 
         val studentUserA = fixture<User>{
             property(User::id) { studentUserId }
@@ -980,10 +980,8 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::phoneNumber) { studentPhoneNumber}
         }
 
-        val highSchool = HighSchool.KUMPA_TECHNICAL_HIGH_SCHOOL
-
         val school = fixture<School> {
-            property(School::highSchool) { highSchool }
+            property(School::name) { schoolName }
         }
         val clubAId = 0L
         val clubBId = 1L
@@ -1140,10 +1138,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureId = UUID.randomUUID()
         val studentId = UUID.randomUUID()
         val isComplete = true
+        val schoolName = "광주소프트웨어마이스터고등학교"
 
-        val highSchool = HighSchool.KUMPA_TECHNICAL_HIGH_SCHOOL
         val school = fixture<School> {
-            property(School::highSchool) { highSchool }
+            property(School::name) { schoolName }
         }
 
         val clubAId = 0L

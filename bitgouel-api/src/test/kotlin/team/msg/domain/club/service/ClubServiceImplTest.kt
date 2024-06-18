@@ -20,7 +20,6 @@ import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.repository.ProfessorRepository
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -68,9 +67,8 @@ class ClubServiceImplTest : BehaviorSpec({
         val schoolName = "광주소프트웨어마이스터고등학교"
 
         val school = fixture<School> {
-            property(School::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
+            property(School::name) { schoolName }
         }
-        val highSchool = fixture<HighSchool>()
         val club = fixture<Club> {
             property(Club::id) { clubId }
             property(Club::name) { clubName }
@@ -85,11 +83,11 @@ class ClubServiceImplTest : BehaviorSpec({
             property(ClubsResponse::clubs) { listOf(clubResponse) }
         }
 
-        every { schoolRepository.findByHighSchool(highSchool) } returns school
+        every { schoolRepository.findByName(school.name) } returns school
         every { clubRepository.findAllBySchool(school) } returns listOf(club)
 
         When("동아리 전체 조회 요청을 하면") {
-            val result = clubServiceImpl.queryAllClubs(highSchool)
+            val result = clubServiceImpl.queryAllClubs(schoolName)
 
             Then("result와 response가 같아야 한다.") {
                 result shouldBe response
@@ -97,11 +95,11 @@ class ClubServiceImplTest : BehaviorSpec({
         }
 
         When("존재하지 않는 학교로 요청하면") {
-            every { schoolRepository.findByHighSchool(highSchool) } returns null
+            every { schoolRepository.findByName(school.name) } returns null
 
             Then("SchoolNotFoundException 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
-                    clubServiceImpl.queryAllClubs(highSchool)
+                    clubServiceImpl.queryAllClubs(schoolName)
                 }
             }
         }
@@ -120,7 +118,7 @@ class ClubServiceImplTest : BehaviorSpec({
         val teacherName = "김주홍"
 
         val school = fixture<School> {
-            property(School::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
+            property(School::name) { schoolName }
         }
         val studentUser = fixture<User> {
             property(User::name) { studentName }
@@ -152,7 +150,7 @@ class ClubServiceImplTest : BehaviorSpec({
         val response = fixture<ClubDetailsResponse> {
             property(ClubDetailsResponse::clubId) { clubId }
             property(ClubDetailsResponse::clubName) { clubName }
-            property(ClubDetailsResponse::highSchoolName) { schoolName }
+            property(ClubDetailsResponse::schoolName) { schoolName }
             property(ClubDetailsResponse::headCount) { headCount }
             property(ClubDetailsResponse::students) { listOf(studentResponse) }
             property(ClubDetailsResponse::teacher) { teacherResponse }
@@ -201,7 +199,7 @@ class ClubServiceImplTest : BehaviorSpec({
             property(User::authority) { Authority.ROLE_TEACHER }
         }
         val school = fixture<School> {
-            property(School::highSchool) { HighSchool.GWANGJU_SOFTWARE_MEISTER_HIGH_SCHOOL }
+            property(School::name) { schoolName }
         }
         val club = fixture<Club> {
             property(Club::id) { clubId }
@@ -231,7 +229,7 @@ class ClubServiceImplTest : BehaviorSpec({
         val response = fixture<ClubDetailsResponse> {
             property(ClubDetailsResponse::clubId) { clubId }
             property(ClubDetailsResponse::clubName) { clubName }
-            property(ClubDetailsResponse::highSchoolName) { schoolName }
+            property(ClubDetailsResponse::schoolName) { schoolName }
             property(ClubDetailsResponse::headCount) { headCount }
             property(ClubDetailsResponse::students) { listOf(studentResponse) }
             property(ClubDetailsResponse::teacher) { teacherResponse }

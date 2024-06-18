@@ -27,7 +27,7 @@ class SchoolServiceImpl(
                 val clubs = clubRepository.findAllBySchool(it)
                 SchoolResponse(
                     id = it.id,
-                    schoolName = it.highSchool.schoolName,
+                    schoolName = it.name,
                     clubs = ClubResponse.schoolOf(clubs)
                 )
             }
