@@ -42,7 +42,7 @@ import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
-import team.msg.domain.government.model.Government
+import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -300,7 +300,7 @@ class AuthServiceImplTest : BehaviorSpec({
         val school = fixture<School>()
         val club = fixture<Club>()
         val user = fixture<User>()
-        val government = fixture<Government>()
+        val governmentInstructor = fixture<GovernmentInstructor>()
 
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
@@ -308,7 +308,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
-        every { governmentRepository.save(any()) } returns government
+        every { governmentRepository.save(any()) } returns governmentInstructor
 
         When("유관 기관 회원가입 요청을 하면") {
             authServiceImpl.governmentSignUp(request)

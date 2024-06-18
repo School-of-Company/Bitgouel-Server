@@ -14,7 +14,7 @@ import team.msg.domain.company.exception.CompanyNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
-import team.msg.domain.government.model.Government
+import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
 import team.msg.domain.professor.model.Professor
@@ -101,7 +101,7 @@ class ClubServiceImpl(
             is Bbozzak -> findBbozzakByUser(user).club
             is Professor -> findProfessorByUser(user).club
             is CompanyInstructor -> findCompanyInstructorByUser(user).club
-            is Government -> findGovernmentByUser(user).club
+            is GovernmentInstructor -> findGovernmentByUser(user).club
             else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
 

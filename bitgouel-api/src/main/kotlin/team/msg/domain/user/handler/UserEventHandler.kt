@@ -15,7 +15,7 @@ import team.msg.domain.company.exception.CompanyNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.GovernmentNotFoundException
-import team.msg.domain.government.model.Government
+import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
 import team.msg.domain.inquiry.repository.InquiryRepository
@@ -145,7 +145,7 @@ class UserEventHandler(
     private infix fun CompanyInstructorRepository.findByUser(user: User): CompanyInstructor =
         this.findByUser(user) ?: throw CompanyNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
 
-    private infix fun GovernmentRepository.findByUser(user: User): Government =
+    private infix fun GovernmentRepository.findByUser(user: User): GovernmentInstructor =
         this.findByUser(user) ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
 
 }

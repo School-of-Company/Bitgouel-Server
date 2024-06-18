@@ -22,7 +22,7 @@ import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.repository.EmailAuthenticationRepository
-import team.msg.domain.government.model.Government
+import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
@@ -169,7 +169,7 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
-        val government = Government(
+        val governmentInstructor = GovernmentInstructor(
             id = UUID(0, 0),
             user = user,
             club = club,
@@ -177,7 +177,7 @@ class AuthServiceImpl(
             position = request.position,
             sectors = request.sectors
         )
-        governmentRepository.save(government)
+        governmentRepository.save(governmentInstructor)
     }
 
     /**

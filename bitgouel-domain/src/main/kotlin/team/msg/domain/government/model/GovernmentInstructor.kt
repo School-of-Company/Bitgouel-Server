@@ -13,7 +13,7 @@ import team.msg.domain.user.model.User
 import java.util.UUID
 
 @Entity
-class Government(
+class GovernmentInstructor(
 
     @get:JvmName("getIdentifier")
     override var id: UUID,
