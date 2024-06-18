@@ -17,10 +17,10 @@ import team.msg.domain.certification.presentation.data.request.CreateCertificati
 import team.msg.domain.certification.presentation.data.request.UpdateCertificationRequest
 import team.msg.domain.certification.presentation.data.response.CertificationResponse
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
-import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.exception.CompanyInstructorNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.exception.GovernmentInstructorNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
@@ -185,10 +185,10 @@ class CertificationServiceImpl(
 
     private infix fun CompanyInstructorRepository.findCompanyInstructorByUser(user: User): CompanyInstructor =
         this.findByUser(user)
-            ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+            ?: throw CompanyInstructorNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private infix fun GovernmentInstructorRepository.findGovernmentByUser(user: User): GovernmentInstructor =
         this.findByUser(user)
-            ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+            ?: throw GovernmentInstructorNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
 }

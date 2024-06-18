@@ -4,7 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.company.model.QCompanyInstructor.companyInstructor
-import team.msg.domain.government.model.QGovernment.government
+import team.msg.domain.government.model.QGovernmentInstructor.governmentInstructor
 import team.msg.domain.professor.model.QProfessor.professor
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.QUser.user
@@ -58,11 +58,11 @@ class CustomUserRepositoryImpl(
      * @return 검색 조건에 부합하는 user와 소속 기관 리스트
      */
     override fun queryInstructorsAndOrganization(keyword: String): List<Pair<User, String>> =
-        queryFactory.select(user, professor.university, companyInstructor.company, government.governmentName)
+        queryFactory.select(user, professor.university, companyInstructor.company.name, governmentInstructor.government.name)
             .from(user)
             .leftJoin(professor).on(user.eq(professor.user))
             .leftJoin(companyInstructor).on(user.eq(companyInstructor.user))
-            .leftJoin(government).on(user.eq(government.user))
+            .leftJoin(governmentInstructor).on(user.eq(governmentInstructor.user))
             .where(
                 user.authority.`in`(Authority.ROLE_PROFESSOR, Authority.ROLE_COMPANY_INSTRUCTOR, Authority.ROLE_GOVERNMENT),
                 nameLike(keyword)
@@ -73,18 +73,18 @@ class CustomUserRepositoryImpl(
                 val user = tuple[user]!!
                 val organization = when(user.authority) {
                     Authority.ROLE_PROFESSOR -> tuple[professor.university]
-                    Authority.ROLE_COMPANY_INSTRUCTOR -> tuple[companyInstructor.company]
-                    Authority.ROLE_GOVERNMENT -> tuple[government.governmentName]
+                    Authority.ROLE_COMPANY_INSTRUCTOR -> tuple[companyInstructor.company.name]
+                    Authority.ROLE_GOVERNMENT -> tuple[governmentInstructor.government.name]
                     else -> null
                 } ?: "소속 없음"
-                Pair(user,organization)
+                Pair(user, organization)
             }
 
     private fun organizationNameLike(keyword: String): BooleanExpression? =
         if (keyword.isBlank()) null
         else professor.university.like("%$keyword%")
-            .or(companyInstructor.company.like("%$keyword%"))
-            .or(government.governmentName.like("%$keyword%"))
+            .or(companyInstructor.company.name.like("%$keyword%"))
+            .or(governmentInstructor.government.name.like("%$keyword%"))
 
 
     private fun nameLike(keyword: String): BooleanExpression? =
@@ -95,4 +95,5 @@ class CustomUserRepositoryImpl(
 
     private fun approveStatusEq(approveStatus: ApproveStatus?): BooleanExpression? =
         if(approveStatus == null) null else user.approveStatus.eq(approveStatus)
+
 }

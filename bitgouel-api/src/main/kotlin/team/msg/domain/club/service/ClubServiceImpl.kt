@@ -10,10 +10,10 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
-import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.exception.CompanyInstructorNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.exception.GovernmentInstructorNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.professor.exception.ProfessorNotFoundException
@@ -146,9 +146,9 @@ class ClubServiceImpl(
         ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
-        ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        ?: throw CompanyInstructorNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private fun findGovernmentByUser(user: User) = governmentInstructorRepository.findByUser(user)
-        ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        ?: throw GovernmentInstructorNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
 }

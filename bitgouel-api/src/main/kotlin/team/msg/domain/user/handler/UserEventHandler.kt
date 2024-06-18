@@ -11,10 +11,10 @@ import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.certifiacation.repository.CertificationRepository
-import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.exception.CompanyInstructorNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.exception.GovernmentInstructorNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.inquiry.repository.InquiryAnswerRepository
@@ -143,9 +143,9 @@ class UserEventHandler(
         this.findByUser(user) ?: throw ProfessorNotFoundException("존재하지 않는 대학 교수 입니다. info : [ userId = ${user.id} ]")
 
     private infix fun CompanyInstructorRepository.findByUser(user: User): CompanyInstructor =
-        this.findByUser(user) ?: throw CompanyNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
+        this.findByUser(user) ?: throw CompanyInstructorNotFoundException("존재하지 않는 기업 강사 입니다. info : [ userId = ${user.id} ]")
 
     private infix fun GovernmentInstructorRepository.findByUser(user: User): GovernmentInstructor =
-        this.findByUser(user) ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
+        this.findByUser(user) ?: throw GovernmentInstructorNotFoundException("존재하지 않는 유관 기관 입니다. info : [ userId = ${user.id} ]")
 
 }

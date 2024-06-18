@@ -17,13 +17,17 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.company.exception.CompanyNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.company.repository.CompanyRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.repository.EmailAuthenticationRepository
+import team.msg.domain.government.exception.GovernmentNotfoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
+import team.msg.domain.government.repository.GovernmentRepository
 import team.msg.domain.professor.model.Professor
 import team.msg.domain.professor.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
@@ -57,7 +61,9 @@ class AuthServiceImpl(
     private val userUtil: UserUtil,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val bbozzakRepository: BbozzakRepository,
-    private val studentUtil: StudentUtil
+    private val studentUtil: StudentUtil,
+    private val governmentRepository: GovernmentRepository,
+    private val companyRepository: CompanyRepository
 ) : AuthService {
 
     /**
@@ -169,11 +175,14 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
+        val government = governmentRepository.findByName(request.governmentName)
+            ?: throw GovernmentNotfoundException("존재하지 않는 유관 기관입니다. info = [ governmentName = ${request.governmentName} ]")
+
         val governmentInstructor = GovernmentInstructor(
             id = UUID(0, 0),
             user = user,
             club = club,
-            governmentName = request.governmentName,
+            government = government,
             position = request.position,
             sectors = request.sectors
         )
@@ -196,11 +205,14 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
+        val company = companyRepository.findByName(request.companyName)
+            ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info [ companyName = ${request.companyName}")
+
         val companyInstructor = CompanyInstructor(
             id = UUID(0, 0),
             user = user,
             club = club,
-            company = request.company
+            company = company
         )
         companyInstructorRepository.save(companyInstructor)
     }

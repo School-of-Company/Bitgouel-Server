@@ -7,5 +7,5 @@ data class CompanyInstructorSignUpRequest(
     val password: String,
     val highSchool: String,
     val clubName: String,
-    val company: String
+    val companyName: String
 )
