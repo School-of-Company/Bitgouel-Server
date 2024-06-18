@@ -26,8 +26,9 @@ class GovernmentInstructor(
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val governmentName: String,
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "government_id")
+    val government: Government,
 
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val position: String,
