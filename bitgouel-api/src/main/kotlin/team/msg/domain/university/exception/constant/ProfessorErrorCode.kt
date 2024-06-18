@@ -1,4 +1,4 @@
-package team.msg.domain.professor.exception.constant
+package team.msg.domain.university.exception.constant
 
 enum class ProfessorErrorCode(
     val status: Int

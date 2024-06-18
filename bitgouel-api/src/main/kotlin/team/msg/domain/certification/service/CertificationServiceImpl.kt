@@ -23,9 +23,9 @@ import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.exception.GovernmentInstructorNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
-import team.msg.domain.professor.exception.ProfessorNotFoundException
-import team.msg.domain.professor.model.Professor
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.university.exception.ProfessorNotFoundException
+import team.msg.domain.university.model.Professor
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository

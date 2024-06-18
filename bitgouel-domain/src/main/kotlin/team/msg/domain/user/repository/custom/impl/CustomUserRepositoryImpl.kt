@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import team.msg.common.enums.ApproveStatus
 import team.msg.domain.company.model.QCompanyInstructor.companyInstructor
 import team.msg.domain.government.model.QGovernmentInstructor.governmentInstructor
-import team.msg.domain.professor.model.QProfessor.professor
+import team.msg.domain.university.model.QProfessor.professor
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.QUser.user
 import team.msg.domain.user.model.User

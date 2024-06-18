@@ -26,9 +26,9 @@ import team.msg.domain.inquiry.repository.InquiryRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.post.repository.PostRepository
-import team.msg.domain.professor.exception.ProfessorNotFoundException
-import team.msg.domain.professor.model.Professor
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.university.exception.ProfessorNotFoundException
+import team.msg.domain.university.model.Professor
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentActivityRepository

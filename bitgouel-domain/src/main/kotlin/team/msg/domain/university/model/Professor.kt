@@ -1,7 +1,6 @@
-package team.msg.domain.professor.model
+package team.msg.domain.university.model
 
 import javax.persistence.CascadeType
-import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
@@ -26,7 +25,8 @@ class Professor(
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val university: String
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id")
+    val university: University
 
 ) : BaseUUIDEntity(id)

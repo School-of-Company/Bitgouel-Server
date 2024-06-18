@@ -21,7 +21,7 @@ class CompanyInstructor(
     val club: Club,
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "company_id")
     val company: Company
 
 ) : BaseUUIDEntity(id)

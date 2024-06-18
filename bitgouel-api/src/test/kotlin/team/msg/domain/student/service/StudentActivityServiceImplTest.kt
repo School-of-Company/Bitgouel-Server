@@ -16,7 +16,7 @@ import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.government.model.GovernmentInstructor
-import team.msg.domain.professor.model.Professor
+import team.msg.domain.university.model.Professor
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student

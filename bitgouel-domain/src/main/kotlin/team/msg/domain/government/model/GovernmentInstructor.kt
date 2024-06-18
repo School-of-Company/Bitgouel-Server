@@ -1,6 +1,5 @@
 package team.msg.domain.government.model
 
-import team.msg.common.entity.BaseUUIDEntity
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -8,9 +7,10 @@ import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.OneToOne
+import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.club.model.Club
 import team.msg.domain.user.model.User
-import java.util.UUID
+import java.util.*
 
 @Entity
 class GovernmentInstructor(

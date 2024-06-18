@@ -1,6 +1,6 @@
-package team.msg.domain.professor.exception
+package team.msg.domain.university.exception
 
-import team.msg.domain.professor.exception.constant.ProfessorErrorCode
+import team.msg.domain.university.exception.constant.ProfessorErrorCode
 import team.msg.global.error.exception.BitgouelException
 
 class ProfessorNotFoundException(

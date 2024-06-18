@@ -22,7 +22,7 @@ import team.msg.domain.certification.presentation.data.response.CertificationsRe
 import team.msg.domain.club.model.Club
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentInstructorRepository
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository

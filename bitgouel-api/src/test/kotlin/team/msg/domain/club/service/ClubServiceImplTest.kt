@@ -19,7 +19,7 @@ import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.repository.GovernmentInstructorRepository
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
