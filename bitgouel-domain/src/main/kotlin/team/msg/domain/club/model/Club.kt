@@ -1,5 +1,6 @@
 package team.msg.domain.club.model
 
+import team.msg.common.enums.Industry
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -24,6 +25,9 @@ class Club(
     val school: School,
 
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
-    val name: String
+    val name: String,
+
+    @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)
+    val industry: Industry
 
 )
