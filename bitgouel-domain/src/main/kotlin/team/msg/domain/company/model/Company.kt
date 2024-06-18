@@ -1,17 +1,16 @@
 package team.msg.domain.company.model
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import team.msg.common.entity.BaseUUIDEntity
-import java.util.*
+import javax.persistence.*
 
 @Entity
 class Company(
 
-    @get:JvmName("getIdentifier")
-    override var id: UUID,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = false)
+    val id: Long = 0,
 
     @Column(name = "name")
     val name: String
 
-) : BaseUUIDEntity(id)
+)
