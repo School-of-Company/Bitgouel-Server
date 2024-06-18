@@ -17,7 +17,7 @@ class Club(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = false)
+    @Column(name = "id", nullable = false)
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
