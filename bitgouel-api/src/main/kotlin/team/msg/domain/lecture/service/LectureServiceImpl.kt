@@ -106,7 +106,9 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateLecture(id: UUID, request: UpdateLectureRequest) {
-        val findLecture = lectureRepository findById id
+        if(!lectureRepository.existsById(id))
+            throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
+
         val user = userRepository findById request.userId
 
         val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
