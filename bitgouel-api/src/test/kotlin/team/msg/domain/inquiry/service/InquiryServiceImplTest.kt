@@ -172,7 +172,7 @@ class InquiryServiceImplTest : BehaviorSpec ({
         }
 
         every { userUtil.queryCurrentUser() } returns user
-        every { inquiryRepository.findByIdOrNull(inquiryId) } returns inquiry
+        every { inquiryRepository.findByIdOrNull(any()) } returns inquiry
         every { inquiryAnswerRepository.findByInquiryId(any()) } returns inquiryAnswer
 
         When("문의사항 상세 조회 요청을 하면") {
