@@ -102,6 +102,51 @@ class LectureServiceImpl(
     }
 
     /**
+     * 강의 정보 수정을 처리하는 비지니스 로직입니다.
+     * @param 수정할 강의 id, 수정할 강의의 데이터를 담은 request Dto
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateLecture(id: UUID, request: UpdateLectureRequest) {
+        val findLecture = lectureRepository findById id
+        val user = userRepository findById request.userId
+
+        val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
+
+        val lecture = Lecture(
+            id = id,
+            user = user,
+            name = request.name,
+            semester = request.semester,
+            division = request.division,
+            department = request.department,
+            line = request.line,
+            startDate = request.startDate,
+            endDate = request.endDate,
+            content = request.content,
+            lectureType = request.lectureType,
+            credit = credit,
+            instructor = user.name,
+            maxRegisteredUser = request.maxRegisteredUser,
+            essentialComplete = request.essentialComplete
+        )
+
+        val savedLecture = lectureRepository.save(lecture)
+
+        val lectureDates = request.lectureDates.map {
+            LectureDate(
+                id = UUID(0, 0),
+                lecture = savedLecture,
+                completeDate = it.completeDate,
+                startTime = it.startTime,
+                endTime = it.endTime
+            )
+        }
+
+        lectureDateRepository.saveAll(lectureDates)
+        lectureDateRepository.deleteAllByLectureId(id)
+    }
+
+    /**
      * 강의를 조회하는 비지니스 로직입니다.
      * @param 조회할 강의의 승인 상태를 담은 request dto와 pageable dto
      * @return 조회한 강의의 정보를 담은 list dto
