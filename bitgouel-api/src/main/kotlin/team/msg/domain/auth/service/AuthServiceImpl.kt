@@ -34,6 +34,8 @@ import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.university.exception.UniversityNotFoundException
+import team.msg.domain.university.repository.UniversityRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.MisMatchPasswordException
@@ -63,7 +65,8 @@ class AuthServiceImpl(
     private val bbozzakRepository: BbozzakRepository,
     private val studentUtil: StudentUtil,
     private val governmentRepository: GovernmentRepository,
-    private val companyRepository: CompanyRepository
+    private val companyRepository: CompanyRepository,
+    private val universityRepository: UniversityRepository
 ) : AuthService {
 
     /**
@@ -150,11 +153,14 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
+        val university = universityRepository.findByName(request.university)
+            ?: throw UniversityNotFoundException("존재하지 않는 대학교입니다. info [ universityName = ${request.university} ]")
+
         val professor = Professor(
             id = UUID(0, 0),
             user = user,
             club = club,
-            university = request.university
+            university = university
         )
         professorRepository.save(professor)
     }
@@ -206,7 +212,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val company = companyRepository.findByName(request.companyName)
-            ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info [ companyName = ${request.companyName}")
+            ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info [ companyName = ${request.companyName} ]")
 
         val companyInstructor = CompanyInstructor(
             id = UUID(0, 0),

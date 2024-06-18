@@ -114,7 +114,7 @@ class UserUtil(
             }
             Authority.ROLE_PROFESSOR -> {
                 val professor = professorRepository findByUser user
-                val organization = professor.university
+                val organization = professor.university.name
                 Pair(professor, organization)
             }
             Authority.ROLE_COMPANY_INSTRUCTOR -> {

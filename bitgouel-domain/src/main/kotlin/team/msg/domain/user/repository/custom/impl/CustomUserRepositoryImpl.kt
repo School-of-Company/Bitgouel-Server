@@ -58,7 +58,7 @@ class CustomUserRepositoryImpl(
      * @return 검색 조건에 부합하는 user와 소속 기관 리스트
      */
     override fun queryInstructorsAndOrganization(keyword: String): List<Pair<User, String>> =
-        queryFactory.select(user, professor.university, companyInstructor.company.name, governmentInstructor.government.name)
+        queryFactory.select(user, professor.university.name, companyInstructor.company.name, governmentInstructor.government.name)
             .from(user)
             .leftJoin(professor).on(user.eq(professor.user))
             .leftJoin(companyInstructor).on(user.eq(companyInstructor.user))
@@ -72,7 +72,7 @@ class CustomUserRepositoryImpl(
             .map { tuple ->
                 val user = tuple[user]!!
                 val organization = when(user.authority) {
-                    Authority.ROLE_PROFESSOR -> tuple[professor.university]
+                    Authority.ROLE_PROFESSOR -> tuple[professor.university.name]
                     Authority.ROLE_COMPANY_INSTRUCTOR -> tuple[companyInstructor.company.name]
                     Authority.ROLE_GOVERNMENT -> tuple[governmentInstructor.government.name]
                     else -> null
@@ -82,7 +82,7 @@ class CustomUserRepositoryImpl(
 
     private fun organizationNameLike(keyword: String): BooleanExpression? =
         if (keyword.isBlank()) null
-        else professor.university.like("%$keyword%")
+        else professor.university.name.like("%$keyword%")
             .or(companyInstructor.company.name.like("%$keyword%"))
             .or(governmentInstructor.government.name.like("%$keyword%"))
 
