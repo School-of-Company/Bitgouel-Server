@@ -10,7 +10,7 @@ class School(
     @Column(name = "id", nullable = false, unique = false)
     val id: Long = 0,
 
-    @Column(name = "name", columnDefinition = "VARCHAR(100)", nullable = false, unique = true)
+    @Column(name = "name", columnDefinition = "VARCHAR(100)", nullable = false, unique = true, updatable = false)
     val name: String
 
 )
