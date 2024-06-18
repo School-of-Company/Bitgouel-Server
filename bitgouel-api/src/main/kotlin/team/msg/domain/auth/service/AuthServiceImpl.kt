@@ -212,7 +212,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val company = companyRepository.findByName(request.companyName)
-            ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info [ companyName = ${request.companyName} ]")
+            ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info : [ companyName = ${request.companyName} ]")
 
         val companyInstructor = CompanyInstructor(
             id = UUID(0, 0),
