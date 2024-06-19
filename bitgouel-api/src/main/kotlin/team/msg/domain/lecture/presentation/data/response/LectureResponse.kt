@@ -65,6 +65,7 @@ data class LectureResponse(
             maxRegisteredUser = lecture.maxRegisteredUser,
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
+            userId = lecture.user.id,
             credit = lecture.credit,
             essentialComplete = lecture.essentialComplete
         )
@@ -152,6 +153,7 @@ data class LectureDetailsResponse(
     val headCount: Int,
     val maxRegisteredUser: Int,
     val isRegistered: Boolean,
+    val userId: UUID,
     val lecturer: String,
     val credit: Int,
     val essentialComplete: Boolean
