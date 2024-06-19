@@ -21,8 +21,8 @@ import team.msg.domain.certification.presentation.data.response.CertificationRes
 import team.msg.domain.certification.presentation.data.response.CertificationsResponse
 import team.msg.domain.club.model.Club
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.government.repository.GovernmentInstructorRepository
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -46,7 +46,7 @@ class CertificationServiceImplTest : BehaviorSpec ({
     val bbozzakRepository = mockk<BbozzakRepository>()
     val professorRepository = mockk<ProfessorRepository>()
     val companyInstructorRepository = mockk<CompanyInstructorRepository>()
-    val governmentRepository = mockk<GovernmentRepository>()
+    val governmentInstructorRepository = mockk<GovernmentInstructorRepository>()
     val certificationServiceImpl = CertificationServiceImpl(
         certificationRepository,
         studentRepository,
@@ -55,7 +55,7 @@ class CertificationServiceImplTest : BehaviorSpec ({
         bbozzakRepository,
         professorRepository,
         companyInstructorRepository,
-        governmentRepository
+        governmentInstructorRepository
     )
 
     // createCertification 테스트 코드

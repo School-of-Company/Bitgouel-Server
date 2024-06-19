@@ -7,7 +7,7 @@ class School(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = false)
+    @Column(name = "id", nullable = false)
     val id: Long = 0,
 
     @Column(name = "name", columnDefinition = "VARCHAR(100)", nullable = false, unique = true, updatable = false)

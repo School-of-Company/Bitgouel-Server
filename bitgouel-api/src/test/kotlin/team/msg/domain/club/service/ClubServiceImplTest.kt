@@ -18,8 +18,8 @@ import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.government.repository.GovernmentInstructorRepository
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -48,7 +48,7 @@ class ClubServiceImplTest : BehaviorSpec({
     val bbozzakRepository = mockk<BbozzakRepository>()
     val professorRepository = mockk<ProfessorRepository>()
     val companyInstructorRepository = mockk<CompanyInstructorRepository>()
-    val governmentRepository = mockk<GovernmentRepository>()
+    val governmentInstructorRepository = mockk<GovernmentInstructorRepository>()
     val clubServiceImpl = ClubServiceImpl(
         clubRepository,
         schoolRepository,
@@ -57,7 +57,7 @@ class ClubServiceImplTest : BehaviorSpec({
         bbozzakRepository,
         professorRepository,
         companyInstructorRepository,
-        governmentRepository
+        governmentInstructorRepository
     )
 
     // queryAllClubsService 테스트 코드

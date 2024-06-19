@@ -10,15 +10,15 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
-import team.msg.domain.company.exception.CompanyNotFoundException
+import team.msg.domain.company.exception.CompanyInstructorNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
-import team.msg.domain.government.GovernmentNotFoundException
-import team.msg.domain.government.model.Government
-import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.exception.ProfessorNotFoundException
-import team.msg.domain.professor.model.Professor
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.government.exception.GovernmentInstructorNotFoundException
+import team.msg.domain.government.model.GovernmentInstructor
+import team.msg.domain.government.repository.GovernmentInstructorRepository
+import team.msg.domain.university.exception.ProfessorNotFoundException
+import team.msg.domain.university.model.Professor
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -43,7 +43,7 @@ class ClubServiceImpl(
     private val bbozzakRepository: BbozzakRepository,
     private val professorRepository: ProfessorRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
-    private val governmentRepository: GovernmentRepository
+    private val governmentInstructorRepository: GovernmentInstructorRepository
 ) : ClubService {
 
     /**
@@ -101,7 +101,7 @@ class ClubServiceImpl(
             is Bbozzak -> findBbozzakByUser(user).club
             is Professor -> findProfessorByUser(user).club
             is CompanyInstructor -> findCompanyInstructorByUser(user).club
-            is Government -> findGovernmentByUser(user).club
+            is GovernmentInstructor -> findGovernmentByUser(user).club
             else ->  throw InvalidRoleException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
 
@@ -146,9 +146,9 @@ class ClubServiceImpl(
         ?: throw ProfessorNotFoundException("대학 교수를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
     private fun findCompanyInstructorByUser(user: User) = companyInstructorRepository.findByUser(user)
-        ?: throw CompanyNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+        ?: throw CompanyInstructorNotFoundException("기업 강사를 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
-    private fun findGovernmentByUser(user: User) = governmentRepository.findByUser(user)
-        ?: throw GovernmentNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
+    private fun findGovernmentByUser(user: User) = governmentInstructorRepository.findByUser(user)
+        ?: throw GovernmentInstructorNotFoundException("유관기관을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
 }

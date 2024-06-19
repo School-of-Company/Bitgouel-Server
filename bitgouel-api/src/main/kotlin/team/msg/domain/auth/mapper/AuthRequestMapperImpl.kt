@@ -91,7 +91,7 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             password = webRequest.password,
             highSchool = webRequest.highSchool,
             clubName = webRequest.clubName,
-            company = webRequest.company
+            companyName = webRequest.company
         )
 
     /**
