@@ -15,8 +15,8 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
 import team.msg.domain.company.model.CompanyInstructor
-import team.msg.domain.government.model.Government
-import team.msg.domain.professor.model.Professor
+import team.msg.domain.government.model.GovernmentInstructor
+import team.msg.domain.university.model.Professor
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
@@ -382,7 +382,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         val invalidBbozzak = fixture<Bbozzak>()
         val professor = fixture<Professor>()
         val companyInstructor = fixture<CompanyInstructor>()
-        val government = fixture<Government>()
+        val governmentInstructor = fixture<GovernmentInstructor>()
         val studentActivity = fixture<StudentActivity> {
             property(StudentActivity::id) { studentActivityId }
             property(StudentActivity::title) { title }
@@ -465,7 +465,7 @@ class StudentActivityServiceImplTest : BehaviorSpec({
         }
 
         When("Government 역할이 요청을 보낸다면") {
-            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns government
+            every { userUtil.getAuthorityEntityAndOrganization(user).first } returns governmentInstructor
 
             Then("ForbiddenStudentActivityException 이 발생해야 한다") {
                 shouldThrow<ForbiddenStudentActivityException> {

@@ -36,16 +36,20 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.company.model.Company
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.company.repository.CompanyRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.model.EmailAuthentication
 import team.msg.domain.email.repository.EmailAuthenticationRepository
 import team.msg.domain.government.model.Government
+import team.msg.domain.government.model.GovernmentInstructor
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.model.Professor
-import team.msg.domain.professor.repository.ProfessorRepository
+import team.msg.domain.university.model.Professor
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -53,6 +57,8 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.university.model.University
+import team.msg.domain.university.repository.UniversityRepository
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.MisMatchPasswordException
 import team.msg.domain.user.exception.UserNotFoundException
@@ -73,7 +79,7 @@ class AuthServiceImplTest : BehaviorSpec({
     val studentRepository = mockk<StudentRepository>()
     val teacherRepository = mockk<TeacherRepository>()
     val professorRepository = mockk<ProfessorRepository>()
-    val governmentRepository = mockk<GovernmentRepository>()
+    val governmentInstructorRepository = mockk<GovernmentInstructorRepository>()
     val companyInstructorRepository = mockk<CompanyInstructorRepository>()
     val jwtTokenGenerator = mockk<JwtTokenGenerator>()
     val jwtTokenParser = mockk<JwtTokenParser>()
@@ -83,6 +89,9 @@ class AuthServiceImplTest : BehaviorSpec({
     val bbozzakRepository = mockk<BbozzakRepository>()
     val emailAuthenticationRepository = mockk<EmailAuthenticationRepository>()
     val studentUtil = mockk<StudentUtil>()
+    val governmentRepository = mockk<GovernmentRepository>()
+    val companyRepository = mockk<CompanyRepository>()
+    val universityRepository = mockk<UniversityRepository>()
     val authServiceImpl = AuthServiceImpl(
         userRepository,
         securityUtil,
@@ -90,7 +99,7 @@ class AuthServiceImplTest : BehaviorSpec({
         schoolRepository,
         teacherRepository,
         professorRepository,
-        governmentRepository,
+        governmentInstructorRepository,
         companyInstructorRepository,
         jwtTokenGenerator,
         jwtTokenParser,
@@ -99,7 +108,10 @@ class AuthServiceImplTest : BehaviorSpec({
         userUtil,
         applicationEventPublisher,
         bbozzakRepository,
-        studentUtil
+        studentUtil,
+        governmentRepository,
+        companyRepository,
+        universityRepository
     )
 
     // studentSignUp 테스트 코드
@@ -113,7 +125,7 @@ class AuthServiceImplTest : BehaviorSpec({
         val student = fixture<Student>()
 
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
-        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
         every { studentRepository.save(any()) } returns student
@@ -128,7 +140,7 @@ class AuthServiceImplTest : BehaviorSpec({
         }
 
         When("존재하지 않는 학교로 학생 회원가입 요청을 하면") {
-            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+            every { schoolRepository.findByName(request.highSchool) } returns null
 
             Then("SchoolNotFoundException 가 터져야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
@@ -161,7 +173,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
-        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
         every { teacherRepository.save(any()) } returns teacher
@@ -176,7 +188,7 @@ class AuthServiceImplTest : BehaviorSpec({
         }
 
         When("존재하지 않는 학교로 선생님 회원가입 요청을 하면") {
-            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+            every { schoolRepository.findByName(request.highSchool) } returns null
 
             Then("SchoolNotFoundException 가 터져야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
@@ -209,7 +221,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
-        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
         every { bbozzakRepository.save(any()) } returns bbozzak
@@ -224,7 +236,7 @@ class AuthServiceImplTest : BehaviorSpec({
         }
 
         When("존재하지 않는 학교로 뽀짝 선생님 회원가입 요청을 하면") {
-            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+            every { schoolRepository.findByName(request.highSchool) } returns null
 
             Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
@@ -247,19 +259,22 @@ class AuthServiceImplTest : BehaviorSpec({
     // professorSignUp 테스트 코드
     Given("ProfessorSignUpRequest 가 주어지면") {
         val encodedPassword = "123456789a@"
+        val name = "대학교"
 
         val request = fixture<ProfessorSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val user = fixture<User>()
         val professor = fixture<Professor>()
+        val university = fixture<University>()
 
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
-        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
+        every { universityRepository.findByName(name) } returns university
         every { professorRepository.save(any()) } returns professor
 
         When("대학교수 회원가입 요청을 하면") {
@@ -272,7 +287,7 @@ class AuthServiceImplTest : BehaviorSpec({
         }
 
         When("존재하지 않는 학교로 대학교수 회원가입 요청을 하면") {
-            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+            every { schoolRepository.findByName(request.highSchool) } returns null
 
             Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
@@ -295,32 +310,35 @@ class AuthServiceImplTest : BehaviorSpec({
     // governmentSignUp 테스트 코드
     Given("GovernmentSignUpRequest 가 주어지면") {
         val encodedPassword = "123456789a@"
+        val governmentName = "유관기관"
 
         val request = fixture<GovernmentSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val user = fixture<User>()
+        val governmentInstructor = fixture<GovernmentInstructor>()
         val government = fixture<Government>()
 
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
-        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
-        every { governmentRepository.save(any()) } returns government
+        every { governmentRepository.findByName(governmentName) } returns government
+        every { governmentInstructorRepository.save(any()) } returns governmentInstructor
 
         When("유관 기관 회원가입 요청을 하면") {
             authServiceImpl.governmentSignUp(request)
 
             Then("Government 가 저장이 되어야 한다.") {
                 verify(exactly = 0) { userRepository.save(any()) }
-                verify(exactly = 1) { governmentRepository.save(any()) }
+                verify(exactly = 1) { governmentInstructorRepository.save(any()) }
             }
         }
 
         When("존재하지 않는 학교로 유관 기관 회원가입 요청을 하면") {
-            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+            every { schoolRepository.findByName(request.highSchool) } returns null
 
             Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
@@ -343,19 +361,22 @@ class AuthServiceImplTest : BehaviorSpec({
     // companyInstructorSignUp 테스트 코드
     Given("CompanyInstructorSignUpRequest 가 주어지면") {
         val encodedPassword = "123456789a@"
+        val companyName = "기업"
 
         val request = fixture<CompanyInstructorSignUpRequest>()
         val school = fixture<School>()
         val club = fixture<Club>()
         val user = fixture<User>()
         val companyInstructor = fixture<CompanyInstructor>()
+        val company = fixture<Company>()
 
         every { userUtil.createUser(any(), any(), any(), any(), any()) } returns user
         every { userRepository.existsByEmail(request.email) } returns false
         every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
-        every { schoolRepository.findByHighSchool(request.highSchool) } returns school
+        every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
+        every { companyRepository.findByName(companyName) } returns company
         every { companyInstructorRepository.save(any()) } returns companyInstructor
 
         When("기업 강사가 회원가입 요청을 하면") {
@@ -368,7 +389,7 @@ class AuthServiceImplTest : BehaviorSpec({
         }
 
         When("존재하지 않는 학교로 기업 강사 회원가입 요청을 하면") {
-            every { schoolRepository.findByHighSchool(request.highSchool) } returns null
+            every { schoolRepository.findByName(request.highSchool) } returns null
 
             Then("SchoolNotFoundException이 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {

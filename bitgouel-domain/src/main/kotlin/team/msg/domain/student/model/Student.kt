@@ -36,7 +36,6 @@ class Student(
     val classRoom: Int,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
-    val number: Int,
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val cohort: Int,

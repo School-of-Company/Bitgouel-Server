@@ -26,7 +26,6 @@ import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -457,9 +456,11 @@ class LectureServiceImpl(
         style.verticalAlignment = VerticalAlignment.CENTER
         style.setFont(font)
 
-        HighSchool.values().forEach { highSchool ->
+        val schools = schoolRepository.findAll()
+
+        schools.forEach { highSchool ->
             // 엑셀 시트 생성
-            val sheet = workBook.createSheet(highSchool.schoolName)
+            val sheet = workBook.createSheet(highSchool.name)
 
             // 열 생성
             val headerRow = sheet.createRow(0)
@@ -471,7 +472,7 @@ class LectureServiceImpl(
                 sheet.setColumnWidth(idx,sheet.getColumnWidth(idx) + (256 * header.second))
             }
 
-            val school = schoolRepository.findByHighSchool(highSchool)
+            val school = schoolRepository.findByName(highSchool.name)
                 ?: throw SchoolNotFoundException("해당하는 학교를 찾을 수 없습니다. info : [ school = $highSchool]")
 
             val clubs = clubRepository.findAllBySchool(school)
@@ -496,7 +497,7 @@ class LectureServiceImpl(
 
                     listOf(
                         (idx+1).toString(),
-                        school.highSchool.schoolName,
+                        school.name,
                         studentAndRegisteredLecture.first.club.name,
                         "",
                         studentAndRegisteredLecture.first.classRoom.toString(),
