@@ -159,7 +159,7 @@ class LectureServiceImplTest : BehaviorSpec({
             }
         }
 
-        When("존재하지 않는 강의 id로 욫청을 하면") {
+        When("존재하지 않는 강의 id로 요청을 하면") {
             every { lectureRepository.findByIdOrNull(lectureId) } returns null
 
             Then("LectureNotFoundException 예외가 발생해야 한다.") {
