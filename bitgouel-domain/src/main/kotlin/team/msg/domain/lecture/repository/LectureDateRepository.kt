@@ -8,4 +8,5 @@ import java.util.*
 
 interface LectureDateRepository : CrudRepository<LectureDate, UUID>, CustomLectureDateRepository {
     fun findAllByLecture(lecture: Lecture): List<LectureDate>
+    fun deleteAllByLectureId(id: UUID)
 }
