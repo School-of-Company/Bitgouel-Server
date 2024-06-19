@@ -33,6 +33,7 @@ dependencies {
     implementation("com.github.napstr:logback-discord-appender:1.0.0")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("com.google.guava:guava:11.0.2")
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
     implementation(project(":bitgouel-domain"))
 }
 
