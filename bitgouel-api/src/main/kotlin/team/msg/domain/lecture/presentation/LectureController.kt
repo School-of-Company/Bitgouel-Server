@@ -33,6 +33,13 @@ class LectureController(
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
+    @PatchMapping("/{id}")
+    fun updateLecture(@PathVariable id: UUID, @Valid @RequestBody webRequest: UpdateLectureWebRequest): ResponseEntity<Unit> {
+        val request = lectureRequestMapper.updateLectureWebRequestToDto(webRequest)
+        lectureService.updateLecture(id, request)
+        return ResponseEntity.noContent().build()
+    }
+
     @PostMapping("/{id}")
     fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Unit> {
         lectureService.signUpLecture(id)

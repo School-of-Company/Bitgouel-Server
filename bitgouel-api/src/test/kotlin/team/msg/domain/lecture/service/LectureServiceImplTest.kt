@@ -20,6 +20,7 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
 import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
+import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
 import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
@@ -31,6 +32,7 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.request.UpdateLectureRequest
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
@@ -118,6 +120,61 @@ class LectureServiceImplTest : BehaviorSpec({
             Then("UserNotFoundException 예외가 발생해야 한다.") {
                 shouldThrow<UserNotFoundException> {
                     lectureServiceImpl.createLecture(request)
+                }
+            }
+
+        }
+    }
+
+    // updateLecture 테스트 코드
+    Given("Lecture id와 UpdateLectureRequest 가 주어질 때") {
+
+        val user = fixture<User>()
+        val lectureId = UUID.randomUUID()
+        val request = fixture<UpdateLectureRequest>()
+        val lecture = fixture<Lecture>()
+        val updatedLecture = fixture<Lecture>()
+        val lectureDate = fixture<LectureDate>()
+        val lectureDates = mutableListOf(lectureDate)
+
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { userRepository.findByIdOrNull(any()) } returns user
+        every { lectureRepository.save(any()) } returns updatedLecture
+        every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
+        every { lectureDateRepository.deleteAllByLectureId(lectureId) } returns Unit
+
+        When("Lecture 수정 요청을 하면") {
+            lectureServiceImpl.updateLecture(lectureId, request)
+
+            Then("Lecture 가 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureRepository.save(any()) }
+            }
+
+            Then("LectureDate 가 새로 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureDateRepository.saveAll(any<List<LectureDate>>()) }
+            }
+
+            Then("저장됐었던 LectureDate 가 삭제 되어야 한다.") {
+                verify(exactly = 1) { lectureDateRepository.deleteAllByLectureId(lectureId) }
+            }
+        }
+
+        When("존재하지 않는 강의 id로 요청을 하면") {
+            every { lectureRepository.findByIdOrNull(lectureId) } returns null
+
+            Then("LectureNotFoundException 예외가 발생해야 한다.") {
+                shouldThrow<LectureNotFoundException> {
+                    lectureServiceImpl.updateLecture(lectureId, request)
+                }
+            }
+        }
+
+        When("존재하지 않는 유저 id로 요청을 하면") {
+            every { userRepository.findByIdOrNull(any()) } returns null
+
+            Then("UserNotFoundException 예외가 발생해야 한다.") {
+                shouldThrow<UserNotFoundException> {
+                    lectureServiceImpl.updateLecture(lectureId, request)
                 }
             }
 
