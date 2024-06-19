@@ -9,6 +9,7 @@ class SchoolRequestMapperImpl : SchoolRequestMapper {
 
     override fun createSchoolWebRequestToDto(webRequest: CreateSchoolWebRequest): CreateSchoolRequest =
         CreateSchoolRequest(
-            schoolName = webRequest.schoolName
+            schoolName = webRequest.schoolName,
+            logoImage = webRequest.logoImage
         )
 }

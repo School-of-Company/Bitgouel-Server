@@ -5,5 +5,5 @@ import team.msg.domain.school.presentation.data.response.SchoolsResponse
 
 interface SchoolService {
     fun querySchools(): SchoolsResponse
-    fun createSchool(request: CreateSchoolRequest)
+//    fun createSchool(request: CreateSchoolRequest)
 }
