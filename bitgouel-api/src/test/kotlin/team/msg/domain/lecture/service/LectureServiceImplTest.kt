@@ -293,6 +293,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureId = UUID.randomUUID()
         val name = "name"
         val content = "content"
+        val instructorUserId = UUID.randomUUID()
+        val instructorUser = fixture<User> {
+            property(User::id) { instructorUserId }
+        }
         val instructor = "instructor"
         val headCount = 0
         val maxRegisteredUser = 5
@@ -326,6 +330,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
+            property(Lecture::user) { instructorUser }
             property(Lecture::credit) { credit }
             property(Lecture::semester) { semester }
             property(Lecture::division) { division }
@@ -351,6 +356,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::endDate) { endDate }
             property(LectureDetailsResponse::lectureDates) { lectureDateResponses }
             property(LectureDetailsResponse::lecturer) { instructor }
+            property(LectureDetailsResponse::userId) { instructorUserId }
             property(LectureDetailsResponse::lectureStatus) { lectureStatus }
             property(LectureDetailsResponse::isRegistered) { isRegistered }
             property(LectureDetailsResponse::createAt) { lecture.createdAt }
