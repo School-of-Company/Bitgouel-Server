@@ -1,12 +1,15 @@
 package team.msg.domain.school.service
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
+import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.presentation.data.request.CreateSchoolRequest
+import team.msg.domain.school.presentation.data.request.UpdateSchoolRequest
 import team.msg.domain.school.presentation.data.response.SchoolResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.repository.SchoolRepository
@@ -63,4 +66,25 @@ class SchoolServiceImpl(
 
         schoolRepository.save(school)
     }
+
+
+    /**
+     * 학교를 수정하는 비지니스 로직
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateSchool(id: Long, request: UpdateSchoolRequest) {
+        val school = schoolRepository.findByIdOrNull(id)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
+
+        awsS3Util.deleteImage(school.logoImageUrl)
+
+        val imageName = awsS3Util.uploadImage(request.logoImage, UUID.randomUUID().toString())
+
+        val updateSchool = School(
+            logoImageUrl = imageName,
+            name = request.schoolName
+        )
+        schoolRepository.save(updateSchool)
+    }
+
 }
