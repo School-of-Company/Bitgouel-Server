@@ -14,7 +14,7 @@ import team.msg.domain.school.presentation.data.response.SchoolResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.thirdparty.aws.s3.AwsS3Util
-import java.util.UUID
+import java.util.*
 
 @Service
 class SchoolServiceImpl(
@@ -85,6 +85,14 @@ class SchoolServiceImpl(
             name = request.schoolName
         )
         schoolRepository.save(updateSchool)
+    }
+
+    /**
+     * 학교를 삭제하는 비지니스 로직
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deleteSchool(id: Long) {
+        schoolRepository.deleteById(id)
     }
 
 }

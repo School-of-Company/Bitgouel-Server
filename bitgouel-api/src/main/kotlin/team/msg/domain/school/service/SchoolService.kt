@@ -8,4 +8,5 @@ interface SchoolService {
     fun querySchools(): SchoolsResponse
     fun createSchool(request: CreateSchoolRequest)
     fun updateSchool(id: Long, request: UpdateSchoolRequest)
+    fun deleteSchool(id: Long)
 }
