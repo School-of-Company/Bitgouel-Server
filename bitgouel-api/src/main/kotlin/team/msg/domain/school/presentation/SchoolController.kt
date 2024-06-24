@@ -3,6 +3,7 @@ package team.msg.domain.school.presentation
 import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -40,6 +41,12 @@ class SchoolController(
     fun updateSchool(@PathVariable id: Long, @RequestBody @Valid webRequest: UpdateSchoolWebRequest): ResponseEntity<Unit> {
         val request = schoolRequestMapper.updateSchoolWebRequestToDto(webRequest)
         schoolService.updateSchool(id, request)
+        return ResponseEntity.noContent().build()
+    }
+
+    @DeleteMapping("{id}")
+    fun deleteSchool(@PathVariable id: Long): ResponseEntity<Unit> {
+        schoolService.deleteSchool(id)
         return ResponseEntity.noContent().build()
     }
 
