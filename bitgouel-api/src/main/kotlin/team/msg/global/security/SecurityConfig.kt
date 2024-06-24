@@ -142,6 +142,12 @@ class SecurityConfig(
              // withdraw
             .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
 
+            // school
+            .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)
+
             // actuator
             .mvcMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
 
