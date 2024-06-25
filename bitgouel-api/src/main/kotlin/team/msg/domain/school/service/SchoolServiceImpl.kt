@@ -51,11 +51,8 @@ class SchoolServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createSchool(request: CreateSchoolRequest, logoImage: MultipartFile) {
-        val schools = schoolRepository.findAll()
-
-        schools.forEach { school ->
-            if (school.name == request.schoolName)
-                throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${school.name} ]")
+        if (schoolRepository.existsByName(request.schoolName)) {
+            throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${request.schoolName} ]")
         }
 
         val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
@@ -76,6 +73,10 @@ class SchoolServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
+        if (schoolRepository.existsByName(request.schoolName)) {
+            throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${request.schoolName} ]")
+        }
+
         val school = schoolRepository.findByIdOrNull(id)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
 

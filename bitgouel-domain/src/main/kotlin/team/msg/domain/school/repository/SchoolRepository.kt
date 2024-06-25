@@ -6,4 +6,5 @@ import team.msg.domain.school.repository.custom.CustomSchoolRepository
 
 interface SchoolRepository : CrudRepository<School, Long>, CustomSchoolRepository {
     fun findByName(name: String): School?
+    fun existsByName(name: String): Boolean
 }
