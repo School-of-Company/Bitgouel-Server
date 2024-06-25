@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
+import team.msg.domain.school.exception.InvalidExtensionException
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.presentation.data.request.CreateSchoolRequest
@@ -77,11 +78,15 @@ class SchoolServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
         if (schoolRepository.existsByName(request.schoolName)) {
-            throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${request.schoolName} ]")
+            throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info : [ schoolName = ${request.schoolName} ]")
+        }
+
+        if (logoImage.contentType !in listOf(JPEG, JPG, PNG, HEIC)) {
+            throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType}")
         }
 
         val school = schoolRepository.findByIdOrNull(id)
-            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ schoolId = $id ]")
 
         awsS3Util.deleteImage(school.logoImageUrl)
 
@@ -110,4 +115,11 @@ class SchoolServiceImpl(
         schoolRepository.deleteById(id)
     }
 
+
+    companion object {
+        const val JPEG = "image/jpeg"
+        const val PNG = "image/png"
+        const val JPG = "image/jpg"
+        const val HEIC = "image/heic"
+    }
 }

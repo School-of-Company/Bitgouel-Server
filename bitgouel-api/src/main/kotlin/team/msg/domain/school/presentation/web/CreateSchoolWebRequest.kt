@@ -5,7 +5,7 @@ import team.msg.common.enums.Line
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-class CreateSchoolWebRequest(
+data class CreateSchoolWebRequest(
 
     @field:NotBlank
     val schoolName: String,
