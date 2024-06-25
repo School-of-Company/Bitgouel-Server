@@ -38,7 +38,7 @@ class SchoolController(
         return ResponseEntity.noContent().build()
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     fun deleteSchool(@PathVariable id: Long): ResponseEntity<Unit> {
         schoolService.deleteSchool(id)
         return ResponseEntity.noContent().build()
