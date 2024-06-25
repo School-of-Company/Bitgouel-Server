@@ -3,6 +3,7 @@ package team.msg.domain.school.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
@@ -49,7 +50,7 @@ class SchoolServiceImpl(
      * 학교를 생성하는 비지니스 로직
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun createSchool(request: CreateSchoolRequest) {
+    override fun createSchool(request: CreateSchoolRequest, logoImage: MultipartFile) {
         val schools = schoolRepository.findAll()
 
         schools.forEach { school ->
@@ -57,7 +58,7 @@ class SchoolServiceImpl(
                 throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${school.name} ]")
         }
 
-        val imageName = awsS3Util.uploadImage(request.logoImage, UUID.randomUUID().toString())
+        val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val school = School(
             logoImageUrl = imageName,

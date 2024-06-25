@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.school.mapper.SchoolRequestMapper
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.presentation.web.CreateSchoolWebRequest
@@ -31,9 +33,9 @@ class SchoolController(
     }
 
     @PostMapping
-    fun createSchool(@RequestBody @Valid webRequest: CreateSchoolWebRequest): ResponseEntity<Unit> {
+    fun createSchool(@RequestPart("webRequest") @Valid webRequest: CreateSchoolWebRequest, @RequestPart("logoImage") logoImage: MultipartFile): ResponseEntity<Unit> {
         val request = schoolRequestMapper.createSchoolWebRequestToDto(webRequest)
-        schoolService.createSchool(request)
+        schoolService.createSchool(request, logoImage)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 

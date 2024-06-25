@@ -11,8 +11,7 @@ class SchoolRequestMapperImpl : SchoolRequestMapper {
 
     override fun createSchoolWebRequestToDto(webRequest: CreateSchoolWebRequest): CreateSchoolRequest =
         CreateSchoolRequest(
-            schoolName = webRequest.schoolName,
-            logoImage = webRequest.logoImage
+            schoolName = webRequest.schoolName
         )
 
     override fun updateSchoolWebRequestToDto(webRequest: UpdateSchoolWebRequest): UpdateSchoolRequest =
