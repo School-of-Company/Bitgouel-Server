@@ -5,7 +5,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import team.msg.common.enums.Industry
+import team.msg.common.enums.Field
 
 @Entity
 class Government(
@@ -19,6 +19,6 @@ class Government(
     val name: String,
 
     @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)
-    val industry: Industry
+    val field: Field
 
 )

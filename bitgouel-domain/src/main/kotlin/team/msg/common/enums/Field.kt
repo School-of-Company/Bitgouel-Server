@@ -7,7 +7,7 @@ package team.msg.common.enums
  * AI_CONVERGENCE - AI 융복합
  * CULTURE - 문화산업
  */
-enum class Industry {
+enum class Field {
     FUTURISTIC_TRANSPORTATION_EQUIPMENT,
     ENERGY,
     MEDICAL_HEALTHCARE,

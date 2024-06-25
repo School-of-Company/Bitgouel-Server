@@ -1,6 +1,6 @@
 package team.msg.domain.company.model
 
-import team.msg.common.enums.Industry
+import team.msg.common.enums.Field
 import javax.persistence.*
 
 @Entity
@@ -15,6 +15,6 @@ class Company(
     val name: String,
 
     @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)
-    val industry: Industry
+    val field: Field
 
 )
