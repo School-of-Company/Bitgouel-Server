@@ -102,6 +102,7 @@ class SchoolServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteSchool(id: Long) {
+        clubRepository.deleteAllBySchoolId(id)
         schoolRepository.deleteById(id)
     }
 
