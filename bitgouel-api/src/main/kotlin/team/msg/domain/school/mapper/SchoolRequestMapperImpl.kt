@@ -11,13 +11,16 @@ class SchoolRequestMapperImpl : SchoolRequestMapper {
 
     override fun createSchoolWebRequestToDto(webRequest: CreateSchoolWebRequest): CreateSchoolRequest =
         CreateSchoolRequest(
-            schoolName = webRequest.schoolName
+            schoolName = webRequest.schoolName,
+            field = webRequest.field,
+            line = webRequest.line
         )
 
     override fun updateSchoolWebRequestToDto(webRequest: UpdateSchoolWebRequest): UpdateSchoolRequest =
         UpdateSchoolRequest(
             schoolName = webRequest.schoolName,
-            logoImage = webRequest.logoImage
+            field = webRequest.field,
+            line = webRequest.line
         )
 
 }

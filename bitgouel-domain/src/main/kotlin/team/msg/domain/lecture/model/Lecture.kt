@@ -12,7 +12,7 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.user.model.User
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Entity
 class Lecture(

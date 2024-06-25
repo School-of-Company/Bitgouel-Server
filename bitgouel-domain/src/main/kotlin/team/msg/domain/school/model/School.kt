@@ -19,11 +19,11 @@ class School(
     val name: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "field", columnDefinition = "VARCHAR(10)", nullable = false)
+    @Column(name = "field", columnDefinition = "VARCHAR(50)", nullable = false)
     val field: Field,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "line", columnDefinition = "VARCHAR(10)", nullable = false)
+    @Column(name = "line", columnDefinition = "VARCHAR(50)", nullable = false)
     val line: Line
 
 )

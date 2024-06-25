@@ -1,8 +1,10 @@
 package team.msg.domain.school.presentation.data.request
 
-import org.springframework.web.multipart.MultipartFile
+import team.msg.common.enums.Field
+import team.msg.common.enums.Line
 
 class UpdateSchoolRequest(
     val schoolName: String,
-    val logoImage: MultipartFile
+    val field: Field,
+    val line: Line
 )

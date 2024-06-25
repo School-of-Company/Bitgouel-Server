@@ -62,7 +62,9 @@ class SchoolServiceImpl(
 
         val school = School(
             logoImageUrl = imageName,
-            name = request.schoolName
+            name = request.schoolName,
+            field = request.field,
+            line = request.line
         )
 
         schoolRepository.save(school)
@@ -73,17 +75,19 @@ class SchoolServiceImpl(
      * 학교를 수정하는 비지니스 로직
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun updateSchool(id: Long, request: UpdateSchoolRequest) {
+    override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
         val school = schoolRepository.findByIdOrNull(id)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
 
         awsS3Util.deleteImage(school.logoImageUrl)
 
-        val imageName = awsS3Util.uploadImage(request.logoImage, UUID.randomUUID().toString())
+        val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val updateSchool = School(
             logoImageUrl = imageName,
-            name = request.schoolName
+            name = request.schoolName,
+            field = request.field,
+            line = request.line
         )
         schoolRepository.save(updateSchool)
     }

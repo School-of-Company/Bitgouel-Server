@@ -1,13 +1,16 @@
 package team.msg.domain.school.presentation.web
 
+import team.msg.common.enums.Field
+import team.msg.common.enums.Line
 import javax.validation.constraints.NotBlank
-import org.springframework.web.multipart.MultipartFile
 
 class UpdateSchoolWebRequest(
 
     @field:NotBlank
     val schoolName: String,
 
-    val logoImage: MultipartFile
+    val field: Field,
+
+    val line: Line
 
 )

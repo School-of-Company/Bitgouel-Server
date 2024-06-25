@@ -8,6 +8,6 @@ import team.msg.domain.school.presentation.data.response.SchoolsResponse
 interface SchoolService {
     fun querySchools(): SchoolsResponse
     fun createSchool(request: CreateSchoolRequest, logoImage: MultipartFile)
-    fun updateSchool(id: Long, request: UpdateSchoolRequest)
+    fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile)
     fun deleteSchool(id: Long)
 }
