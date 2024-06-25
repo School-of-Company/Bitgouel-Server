@@ -38,6 +38,9 @@ class SchoolServiceImpl(
                 SchoolResponse(
                     id = it.id,
                     schoolName = it.name,
+                    field = it.field,
+                    line = it.line,
+                    logoImageUrl = it.logoImageUrl,
                     clubs = ClubResponse.schoolOf(clubs)
                 )
             }
