@@ -30,10 +30,8 @@ class AwsS3UtilImpl(
                         CannedAccessControlList.PublicRead
                     )
             )
-        }.onFailure { e ->
-            println(e.message)
-            println(e.printStackTrace())
-            throw InternalServerException("이미지 업로드에 실패했습니다. ${e.message} + ${e.printStackTrace()}")
+        }.onFailure {
+            throw InternalServerException("이미지 업로드에 실패했습니다.")
         }
 
         val imageUrl = amazonS3.getUrl(awsS3Properties.bucket, fileName).toString()
