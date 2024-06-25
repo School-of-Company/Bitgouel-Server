@@ -84,6 +84,7 @@ class SchoolServiceImpl(
         val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val updateSchool = School(
+            id = id,
             logoImageUrl = imageName,
             name = request.schoolName,
             field = request.field,

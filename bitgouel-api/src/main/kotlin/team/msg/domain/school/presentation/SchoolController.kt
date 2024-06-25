@@ -1,23 +1,15 @@
 package team.msg.domain.school.presentation
 
-import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.school.mapper.SchoolRequestMapper
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.presentation.web.CreateSchoolWebRequest
 import team.msg.domain.school.presentation.web.UpdateSchoolWebRequest
 import team.msg.domain.school.service.SchoolService
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/school")
@@ -40,7 +32,7 @@ class SchoolController(
     }
 
     @PatchMapping("/{id}")
-    fun updateSchool(@PathVariable id: Long, @RequestBody @Valid webRequest: UpdateSchoolWebRequest, @RequestPart("logoImage") logoImage: MultipartFile): ResponseEntity<Unit> {
+    fun updateSchool(@PathVariable id: Long, @RequestPart @Valid webRequest: UpdateSchoolWebRequest, @RequestPart("logoImage") logoImage: MultipartFile): ResponseEntity<Unit> {
         val request = schoolRequestMapper.updateSchoolWebRequestToDto(webRequest)
         schoolService.updateSchool(id, request, logoImage)
         return ResponseEntity.noContent().build()
