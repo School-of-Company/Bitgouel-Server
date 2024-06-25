@@ -102,6 +102,10 @@ class SchoolServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteSchool(id: Long) {
+        val school = schoolRepository.findByIdOrNull(id)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
+
+        awsS3Util.deleteImage(school.logoImageUrl)
         clubRepository.deleteAllBySchoolId(id)
         schoolRepository.deleteById(id)
     }
