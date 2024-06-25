@@ -48,8 +48,6 @@ import team.msg.domain.government.model.Government
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.university.model.Professor
-import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
@@ -57,7 +55,9 @@ import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.university.model.Professor
 import team.msg.domain.university.model.University
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.university.repository.UniversityRepository
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.MisMatchPasswordException
@@ -274,7 +274,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
-        every { universityRepository.findByName(name) } returns university
+        every { universityRepository.findByName(any()) } returns university
         every { professorRepository.save(any()) } returns professor
 
         When("대학교수 회원가입 요청을 하면") {
@@ -325,7 +325,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
-        every { governmentRepository.findByName(governmentName) } returns government
+        every { governmentRepository.findByName(any()) } returns government
         every { governmentInstructorRepository.save(any()) } returns governmentInstructor
 
         When("유관 기관 회원가입 요청을 하면") {
@@ -376,7 +376,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
-        every { companyRepository.findByName(companyName) } returns company
+        every { companyRepository.findByName(any()) } returns company
         every { companyInstructorRepository.save(any()) } returns companyInstructor
 
         When("기업 강사가 회원가입 요청을 하면") {

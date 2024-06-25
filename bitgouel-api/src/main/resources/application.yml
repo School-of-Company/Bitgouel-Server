@@ -5,6 +5,9 @@ server:
       enabled: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
   profiles:
     active: ${PROFILE:local}
   mvc:
