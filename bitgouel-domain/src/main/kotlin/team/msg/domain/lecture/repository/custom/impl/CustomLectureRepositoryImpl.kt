@@ -38,14 +38,16 @@ class CustomLectureRepositoryImpl(
             .select(lecture.count())
             .from(lecture)
             .where(
-                eqLectureType(lectureType)
+                eqLectureType(lectureType),
+                eqIsDeleted(false)
             ).fetchOne()!!
 
         return PageImpl(content, pageable, count)
     }
 
     override fun deleteAllByUserId(userId: UUID) {
-        queryFactory.delete(lecture)
+        queryFactory.update(lecture)
+            .set(lecture.isDeleted, true)
             .where(lecture.user.id.eq(userId))
             .execute()
     }
@@ -89,4 +91,6 @@ class CustomLectureRepositoryImpl(
     private fun eqDivision(keyword: String?): BooleanExpression? =
         if(keyword.isNullOrBlank()) null else lecture.division.contains(keyword)
 
+    private fun eqIsDeleted(isDeleted: Boolean): BooleanExpression =
+         lecture.isDeleted.eq(isDeleted)
 }

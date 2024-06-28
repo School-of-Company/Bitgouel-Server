@@ -65,7 +65,7 @@ data class LectureResponse(
             maxRegisteredUser = lecture.maxRegisteredUser,
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
-            userId = lecture.user.id,
+            userId = lecture.user!!.id,
             credit = lecture.credit,
             essentialComplete = lecture.essentialComplete
         )

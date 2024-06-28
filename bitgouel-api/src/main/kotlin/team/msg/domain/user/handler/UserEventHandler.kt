@@ -37,6 +37,7 @@ import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.model.User
 import team.msg.domain.user.repository.UserRepository
 import team.msg.domain.withdraw.repository.WithdrawStudentRepository
+import java.util.UUID
 
 @Component
 class UserEventHandler(
@@ -101,6 +102,7 @@ class UserEventHandler(
                 val professor = professorRepository findByUser user
 
                 inquiryRepository.deleteAllByUserId(user.id)
+                lectureRepository.updateAllByUser(user)
                 lectureRepository.deleteAllByUserId(user.id)
                 postRepository.deleteAllByUserId(user.id)
                 professorRepository.delete(professor)
@@ -109,6 +111,7 @@ class UserEventHandler(
                 val companyInstructor = companyInstructorRepository findByUser user
 
                 inquiryRepository.deleteAllByUserId(user.id)
+                lectureRepository.updateAllByUser(user)
                 lectureRepository.deleteAllByUserId(user.id)
                 postRepository.deleteAllByUserId(user.id)
                 companyInstructorRepository.delete(companyInstructor)
@@ -118,6 +121,7 @@ class UserEventHandler(
                 val government = governmentInstructorRepository findByUser user
 
                 inquiryRepository.deleteAllByUserId(user.id)
+                lectureRepository.updateAllByUser(user)
                 lectureRepository.deleteAllByUserId(user.id)
                 postRepository.deleteAllByUserId(user.id)
                 governmentInstructorRepository.delete(government)

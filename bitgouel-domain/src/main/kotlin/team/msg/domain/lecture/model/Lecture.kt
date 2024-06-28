@@ -7,6 +7,7 @@ import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import org.hibernate.annotations.ColumnDefault
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
@@ -21,8 +22,8 @@ class Lecture(
     override var id: UUID,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
-    val user: User,
+    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = true)
+    val user: User?,
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val name: String,
@@ -62,7 +63,10 @@ class Lecture(
     val maxRegisteredUser: Int,
 
     @Column(columnDefinition = "TINYINT", nullable = false)
-    val essentialComplete: Boolean
+    val essentialComplete: Boolean,
+
+    @Column(columnDefinition = "TINYINT", nullable = false)
+    val isDeleted: Boolean = false
 ) : BaseUUIDEntity(id) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
