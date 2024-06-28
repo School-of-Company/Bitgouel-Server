@@ -22,8 +22,8 @@ class Lecture(
     override var id: UUID,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
-    val user: User,
+    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = true)
+    val user: User?,
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     val name: String,
