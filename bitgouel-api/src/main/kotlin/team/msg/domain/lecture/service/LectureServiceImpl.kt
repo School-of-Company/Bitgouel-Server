@@ -149,6 +149,42 @@ class LectureServiceImpl(
         }
         lectureDateRepository.saveAll(lectureDates)
     }
+    /**
+     * 강의를 논리적으로 삭제하는 비지니스 로직입니다.
+     * @param 논리적으로 삭제할 강의 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deleteLecture(id: UUID) {
+        val lecture = lectureRepository findById id
+
+        val currentUser = userUtil.queryCurrentUser()
+
+        if(currentUser.authority != Authority.ROLE_ADMIN && lecture.user?.id != currentUser.id)
+            throw ForbiddenLectureException("강의를 삭제할 수 있는 권한이 없습니다. info : [ userId = ${currentUser.id} ]")
+
+        val updatedLecture = lecture.run {
+            Lecture(
+                id = id,
+                user = user,
+                name = name,
+                semester = semester,
+                division = division,
+                department = department,
+                line = line,
+                startDate = startDate,
+                endDate = endDate,
+                content = content,
+                lectureType = lectureType,
+                credit = credit,
+                instructor = name,
+                maxRegisteredUser = maxRegisteredUser,
+                essentialComplete = essentialComplete,
+                isDeleted = true
+            )
+        }
+
+        lectureRepository.save(updatedLecture)
+    }
 
     /**
      * 강의를 조회하는 비지니스 로직입니다.
