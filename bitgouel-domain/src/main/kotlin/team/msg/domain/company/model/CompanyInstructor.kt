@@ -20,7 +20,8 @@ class CompanyInstructor(
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val company: String
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    val company: Company
 
 ) : BaseUUIDEntity(id)

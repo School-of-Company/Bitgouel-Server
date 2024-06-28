@@ -94,6 +94,7 @@ class SecurityConfig(
             // lecture
             .mvcMatchers(HttpMethod.POST, "/lecture").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/lecture").authenticated()
+            .mvcMatchers(HttpMethod.PATCH, "/lecture/{id}").hasAnyRole(ADMIN, COMPANY_INSTRUCTOR, PROFESSOR, GOVERNMENT)
             .mvcMatchers(HttpMethod.POST, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.DELETE, "/lecture/{id}").hasRole(STUDENT)
             .mvcMatchers(HttpMethod.GET, "/lecture/{id}").authenticated()
@@ -140,6 +141,12 @@ class SecurityConfig(
 
              // withdraw
             .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
+
+            // school
+            .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)
 
             // actuator
             .mvcMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()

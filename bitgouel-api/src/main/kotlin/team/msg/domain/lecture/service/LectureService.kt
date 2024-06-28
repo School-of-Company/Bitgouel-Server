@@ -7,6 +7,7 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.request.UpdateLectureRequest
 import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
 import team.msg.domain.lecture.presentation.data.response.DivisionsResponse
@@ -19,6 +20,7 @@ import java.util.UUID
 
 interface LectureService {
     fun createLecture(request: CreateLectureRequest)
+    fun updateLecture(id: UUID, request: UpdateLectureRequest)
     fun queryAllLectures(pageable: Pageable, request: QueryAllLectureRequest): LecturesResponse
     fun queryLectureDetails(id: UUID): LectureDetailsResponse
     fun queryAllLines(request: QueryAllLinesRequest): LinesResponse

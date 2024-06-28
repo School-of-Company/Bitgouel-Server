@@ -1,4 +1,4 @@
-package team.msg.domain.professor.model
+package team.msg.domain.government.model
 
 import javax.persistence.CascadeType
 import javax.persistence.Column
@@ -13,7 +13,7 @@ import team.msg.domain.user.model.User
 import java.util.*
 
 @Entity
-class Professor(
+class GovernmentInstructor(
 
     @get:JvmName("getIdentifier")
     override var id: UUID,
@@ -26,7 +26,14 @@ class Professor(
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "government_id")
+    val government: Government,
+
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val university: String
+    val position: String,
+
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    val sectors: String
 
 ) : BaseUUIDEntity(id)

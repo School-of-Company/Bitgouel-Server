@@ -8,8 +8,8 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
 import team.msg.domain.company.model.CompanyInstructor
-import team.msg.domain.government.model.Government
-import team.msg.domain.professor.model.Professor
+import team.msg.domain.government.model.GovernmentInstructor
+import team.msg.domain.university.model.Professor
 import team.msg.domain.student.exception.ForbiddenStudentActivityException
 import team.msg.domain.student.exception.StudentActivityNotFoundException
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -203,7 +203,7 @@ class StudentActivityServiceImpl(
             }
             is Professor, 
             is CompanyInstructor, 
-            is Government ->  throw ForbiddenStudentActivityException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
+            is GovernmentInstructor ->  throw ForbiddenStudentActivityException("유효하지 않은 권한입니다. info : [ userAuthority = ${user.authority} ]")
         }
         
         val response = StudentActivityResponse.detailOf(studentActivity)

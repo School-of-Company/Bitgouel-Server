@@ -1,38 +1,24 @@
 package team.msg.domain.government.model
 
-import team.msg.common.entity.BaseUUIDEntity
-import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.OneToOne
-import team.msg.domain.club.model.Club
-import team.msg.domain.user.model.User
-import java.util.UUID
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import team.msg.common.enums.Field
 
 @Entity
 class Government(
 
-    @get:JvmName("getIdentifier")
-    override var id: UUID,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = false)
+    val id: Long = 0,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
-    @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
-    val user: User?,
+    @Column(name = "name", nullable = false)
+    val name: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id", nullable = false)
-    val club: Club,
+    @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)
+    val field: Field
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val governmentName: String,
-
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val position: String,
-
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    val sectors: String
-
-) : BaseUUIDEntity(id)
+)

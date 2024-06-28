@@ -26,7 +26,6 @@ import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -98,6 +97,53 @@ class LectureServiceImpl(
             )
         }
 
+        lectureDateRepository.saveAll(lectureDates)
+    }
+
+    /**
+     * 강의 정보 수정을 처리하는 비지니스 로직입니다.
+     * @param 수정할 강의 id, 수정할 강의의 데이터를 담은 request Dto
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateLecture(id: UUID, request: UpdateLectureRequest) {
+        if(!lectureRepository.existsById(id))
+            throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
+
+        val user = userRepository findById request.userId
+
+        val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
+
+        val lecture = Lecture(
+            id = id,
+            user = user,
+            name = request.name,
+            semester = request.semester,
+            division = request.division,
+            department = request.department,
+            line = request.line,
+            startDate = request.startDate,
+            endDate = request.endDate,
+            content = request.content,
+            lectureType = request.lectureType,
+            credit = credit,
+            instructor = user.name,
+            maxRegisteredUser = request.maxRegisteredUser,
+            essentialComplete = request.essentialComplete
+        )
+
+        val savedLecture = lectureRepository.save(lecture)
+
+        lectureDateRepository.deleteAllByLectureId(id)
+
+        val lectureDates = request.lectureDates.map {
+            LectureDate(
+                id = UUID(0, 0),
+                lecture = savedLecture,
+                completeDate = it.completeDate,
+                startTime = it.startTime,
+                endTime = it.endTime
+            )
+        }
         lectureDateRepository.saveAll(lectureDates)
     }
 
@@ -457,9 +503,11 @@ class LectureServiceImpl(
         style.verticalAlignment = VerticalAlignment.CENTER
         style.setFont(font)
 
-        HighSchool.values().forEach { highSchool ->
+        val schools = schoolRepository.findAll()
+
+        schools.forEach { highSchool ->
             // 엑셀 시트 생성
-            val sheet = workBook.createSheet(highSchool.schoolName)
+            val sheet = workBook.createSheet(highSchool.name)
 
             // 열 생성
             val headerRow = sheet.createRow(0)
@@ -471,7 +519,7 @@ class LectureServiceImpl(
                 sheet.setColumnWidth(idx,sheet.getColumnWidth(idx) + (256 * header.second))
             }
 
-            val school = schoolRepository.findByHighSchool(highSchool)
+            val school = schoolRepository.findByName(highSchool.name)
                 ?: throw SchoolNotFoundException("해당하는 학교를 찾을 수 없습니다. info : [ school = $highSchool]")
 
             val clubs = clubRepository.findAllBySchool(school)
@@ -496,7 +544,7 @@ class LectureServiceImpl(
 
                     listOf(
                         (idx+1).toString(),
-                        school.highSchool.schoolName,
+                        school.name,
                         studentAndRegisteredLecture.first.club.name,
                         "",
                         studentAndRegisteredLecture.first.classRoom.toString(),
@@ -559,4 +607,5 @@ class LectureServiceImpl(
 
     private infix fun TeacherRepository.findByClub(club: Club): Teacher = this.findByClub(club)
         ?: throw TeacherNotFoundException("해당 동아리의 취업 동아리 선생님을 찾을 수 없습니다. info : [ club = ${club.name} ]")
+
 }

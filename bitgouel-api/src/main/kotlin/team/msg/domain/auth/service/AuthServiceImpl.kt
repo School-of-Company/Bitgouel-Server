@@ -17,20 +17,25 @@ import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.company.exception.CompanyNotFoundException
 import team.msg.domain.company.model.CompanyInstructor
 import team.msg.domain.company.repository.CompanyInstructorRepository
+import team.msg.domain.company.repository.CompanyRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.repository.EmailAuthenticationRepository
-import team.msg.domain.government.model.Government
+import team.msg.domain.government.exception.GovernmentNotfoundException
+import team.msg.domain.government.model.GovernmentInstructor
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
-import team.msg.domain.professor.model.Professor
-import team.msg.domain.professor.repository.ProfessorRepository
-import team.msg.domain.school.enums.HighSchool
+import team.msg.domain.university.model.Professor
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.university.exception.UniversityNotFoundException
+import team.msg.domain.university.repository.UniversityRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.event.WithdrawUserEvent
 import team.msg.domain.user.exception.MisMatchPasswordException
@@ -49,7 +54,7 @@ class AuthServiceImpl(
     private val schoolRepository: SchoolRepository,
     private val teacherRepository: TeacherRepository,
     private val professorRepository: ProfessorRepository,
-    private val governmentRepository: GovernmentRepository,
+    private val governmentInstructorRepository: GovernmentInstructorRepository,
     private val companyInstructorRepository: CompanyInstructorRepository,
     private val jwtTokenGenerator: JwtTokenGenerator,
     private val jwtTokenParser: JwtTokenParser,
@@ -58,7 +63,10 @@ class AuthServiceImpl(
     private val userUtil: UserUtil,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val bbozzakRepository: BbozzakRepository,
-    private val studentUtil: StudentUtil
+    private val studentUtil: StudentUtil,
+    private val governmentRepository: GovernmentRepository,
+    private val companyRepository: CompanyRepository,
+    private val universityRepository: UniversityRepository
 ) : AuthService {
 
     /**
@@ -145,11 +153,14 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
+        val university = universityRepository.findByName(request.university)
+            ?: throw UniversityNotFoundException("존재하지 않는 대학교입니다. info [ universityName = ${request.university} ]")
+
         val professor = Professor(
             id = UUID(0, 0),
             user = user,
             club = club,
-            university = request.university
+            university = university
         )
         professorRepository.save(professor)
     }
@@ -170,15 +181,18 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
-        val government = Government(
+        val government = governmentRepository.findByName(request.governmentName)
+            ?: throw GovernmentNotfoundException("존재하지 않는 유관 기관입니다. info = [ governmentName = ${request.governmentName} ]")
+
+        val governmentInstructor = GovernmentInstructor(
             id = UUID(0, 0),
             user = user,
             club = club,
-            governmentName = request.governmentName,
+            government = government,
             position = request.position,
             sectors = request.sectors
         )
-        governmentRepository.save(government)
+        governmentInstructorRepository.save(governmentInstructor)
     }
 
     /**
@@ -197,11 +211,14 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
+        val company = companyRepository.findByName(request.companyName)
+            ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info : [ companyName = ${request.companyName} ]")
+
         val companyInstructor = CompanyInstructor(
             id = UUID(0, 0),
             user = user,
             club = club,
-            company = request.company
+            company = company
         )
         companyInstructorRepository.save(companyInstructor)
     }
@@ -314,8 +331,8 @@ class AuthServiceImpl(
      * 학교와 동아리 이름을 받아 동아리 객체를 리턴하는 private 메서드입니다.
      * @param 동아리 객체를 리턴하기 위한 highSchool, clubName 입니다.
      */
-    private fun queryClub(highSchool: HighSchool, clubName: String): Club {
-        val school = schoolRepository.findByHighSchool(highSchool)
+    private fun queryClub(highSchool: String, clubName: String): Club {
+        val school = schoolRepository.findByName(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ highSchool = $highSchool ]")
 
         val club = clubRepository.findByNameAndSchool(clubName, school)

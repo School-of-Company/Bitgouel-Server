@@ -18,21 +18,32 @@ import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
-import team.msg.domain.lecture.exception.*
+import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
+import team.msg.domain.lecture.exception.LectureNotFoundException
+import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
+import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
+import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
 import team.msg.domain.lecture.model.RegisteredLecture
-import team.msg.domain.lecture.presentation.data.request.*
-import team.msg.domain.lecture.presentation.data.response.*
+import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.request.UpdateLectureRequest
+import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
+import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
+import team.msg.domain.lecture.presentation.data.response.LectureResponse
+import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
 import team.msg.domain.lecture.repository.custom.projection.LectureListProjection
 import team.msg.domain.lecture.repository.custom.projection.SignedUpStudentProjection
-import team.msg.domain.professor.model.Professor
-import team.msg.domain.professor.repository.ProfessorRepository
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.school.model.School
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -109,6 +120,61 @@ class LectureServiceImplTest : BehaviorSpec({
             Then("UserNotFoundException 예외가 발생해야 한다.") {
                 shouldThrow<UserNotFoundException> {
                     lectureServiceImpl.createLecture(request)
+                }
+            }
+
+        }
+    }
+
+    // updateLecture 테스트 코드
+    Given("Lecture id와 UpdateLectureRequest 가 주어질 때") {
+
+        val user = fixture<User>()
+        val lectureId = UUID.randomUUID()
+        val request = fixture<UpdateLectureRequest>()
+        val lecture = fixture<Lecture>()
+        val updatedLecture = fixture<Lecture>()
+        val lectureDate = fixture<LectureDate>()
+        val lectureDates = mutableListOf(lectureDate)
+
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { userRepository.findByIdOrNull(any()) } returns user
+        every { lectureRepository.save(any()) } returns updatedLecture
+        every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
+        every { lectureDateRepository.deleteAllByLectureId(lectureId) } returns Unit
+
+        When("Lecture 수정 요청을 하면") {
+            lectureServiceImpl.updateLecture(lectureId, request)
+
+            Then("Lecture 가 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureRepository.save(any()) }
+            }
+
+            Then("LectureDate 가 새로 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureDateRepository.saveAll(any<List<LectureDate>>()) }
+            }
+
+            Then("저장됐었던 LectureDate 가 삭제 되어야 한다.") {
+                verify(exactly = 1) { lectureDateRepository.deleteAllByLectureId(lectureId) }
+            }
+        }
+
+        When("존재하지 않는 강의 id로 요청을 하면") {
+            every { lectureRepository.findByIdOrNull(lectureId) } returns null
+
+            Then("LectureNotFoundException 예외가 발생해야 한다.") {
+                shouldThrow<LectureNotFoundException> {
+                    lectureServiceImpl.updateLecture(lectureId, request)
+                }
+            }
+        }
+
+        When("존재하지 않는 유저 id로 요청을 하면") {
+            every { userRepository.findByIdOrNull(any()) } returns null
+
+            Then("UserNotFoundException 예외가 발생해야 한다.") {
+                shouldThrow<UserNotFoundException> {
+                    lectureServiceImpl.updateLecture(lectureId, request)
                 }
             }
 
@@ -284,6 +350,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureId = UUID.randomUUID()
         val name = "name"
         val content = "content"
+        val instructorUserId = UUID.randomUUID()
+        val instructorUser = fixture<User> {
+            property(User::id) { instructorUserId }
+        }
         val instructor = "instructor"
         val headCount = 0
         val maxRegisteredUser = 5
@@ -317,6 +387,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::startDate) { startDate }
             property(Lecture::endDate) { endDate }
             property(Lecture::instructor) { instructor }
+            property(Lecture::user) { instructorUser }
             property(Lecture::credit) { credit }
             property(Lecture::semester) { semester }
             property(Lecture::division) { division }
@@ -342,6 +413,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::endDate) { endDate }
             property(LectureDetailsResponse::lectureDates) { lectureDateResponses }
             property(LectureDetailsResponse::lecturer) { instructor }
+            property(LectureDetailsResponse::userId) { instructorUserId }
             property(LectureDetailsResponse::lectureStatus) { lectureStatus }
             property(LectureDetailsResponse::isRegistered) { isRegistered }
             property(LectureDetailsResponse::createAt) { lecture.createdAt }
@@ -830,7 +902,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::lectureType) { lectureType }
             property(Lecture::instructor) { lecturer }
         }
-        
+
         val lectureDate1 = fixture<LectureDate> {
             property(LectureDate::completeDate) { LocalDate.MIN }
             property(LectureDate::lecture) { lecture }
@@ -899,6 +971,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val studentEmail = "email"
         val studentName = "name"
         val studentPhoneNumber = "phoneNumber"
+        val schoolName = "광주소프트웨어마이스터고등학교"
 
         val studentUserA = fixture<User>{
             property(User::id) { studentUserId }
@@ -913,10 +986,8 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::phoneNumber) { studentPhoneNumber}
         }
 
-        val highSchool = HighSchool.KUMPA_TECHNICAL_HIGH_SCHOOL
-
         val school = fixture<School> {
-            property(School::highSchool) { highSchool }
+            property(School::name) { schoolName }
         }
         val clubAId = 0L
         val clubBId = 1L
@@ -1073,10 +1144,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureId = UUID.randomUUID()
         val studentId = UUID.randomUUID()
         val isComplete = true
+        val schoolName = "광주소프트웨어마이스터고등학교"
 
-        val highSchool = HighSchool.KUMPA_TECHNICAL_HIGH_SCHOOL
         val school = fixture<School> {
-            property(School::highSchool) { highSchool }
+            property(School::name) { schoolName }
         }
 
         val clubAId = 0L

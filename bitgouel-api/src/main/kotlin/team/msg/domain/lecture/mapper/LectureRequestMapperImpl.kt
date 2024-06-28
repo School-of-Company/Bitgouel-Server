@@ -7,12 +7,14 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.request.UpdateLectureRequest
 import team.msg.domain.lecture.presentation.data.web.CreateLectureWebRequest
 import team.msg.domain.lecture.presentation.data.web.LectureDateWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDepartmentsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllDivisionsWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLecturesWebRequest
 import team.msg.domain.lecture.presentation.data.web.QueryAllLinesWebRequest
+import team.msg.domain.lecture.presentation.data.web.UpdateLectureWebRequest
 
 @Component
 class LectureRequestMapperImpl : LectureRequestMapper{
@@ -20,6 +22,26 @@ class LectureRequestMapperImpl : LectureRequestMapper{
      * Lecture 개설 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
      */
     override fun createLectureWebRequestToDto(webRequest: CreateLectureWebRequest) = CreateLectureRequest(
+        name = webRequest.name,
+        content = webRequest.content,
+        semester = webRequest.semester,
+        division = webRequest.division,
+        department = webRequest.department,
+        line = webRequest.line,
+        startDate = webRequest.startDate,
+        endDate = webRequest.endDate,
+        lectureDates = webRequest.lectureDates.map { lectureDateWebRequestToDto(it) },
+        lectureType = webRequest.lectureType,
+        credit = webRequest.credit,
+        maxRegisteredUser = webRequest.maxRegisteredUser,
+        userId = webRequest.userId,
+        essentialComplete = webRequest.essentialComplete
+    )
+
+    /**
+     * Lecture 수정 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
+     */
+    override fun updateLectureWebRequestToDto(webRequest: UpdateLectureWebRequest) = UpdateLectureRequest(
         name = webRequest.name,
         content = webRequest.content,
         semester = webRequest.semester,

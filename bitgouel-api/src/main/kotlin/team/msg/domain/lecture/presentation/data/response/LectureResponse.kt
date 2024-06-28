@@ -4,7 +4,6 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
-import team.msg.domain.school.enums.HighSchool
 import team.msg.domain.student.model.Student
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
@@ -66,6 +65,7 @@ data class LectureResponse(
             maxRegisteredUser = lecture.maxRegisteredUser,
             isRegistered = isRegistered,
             lecturer = lecture.instructor,
+            userId = lecture.user.id,
             credit = lecture.credit,
             essentialComplete = lecture.essentialComplete
         )
@@ -116,7 +116,7 @@ data class LectureResponse(
                 classNumber = classRoom,
                 number = number,
                 phoneNumber = user!!.phoneNumber,
-                school = club.school.highSchool,
+                school = club.school.name,
                 clubName = club.name,
                 cohort = cohort,
                 isComplete = isComplete
@@ -153,6 +153,7 @@ data class LectureDetailsResponse(
     val headCount: Int,
     val maxRegisteredUser: Int,
     val isRegistered: Boolean,
+    val userId: UUID,
     val lecturer: String,
     val credit: Int,
     val essentialComplete: Boolean
@@ -208,7 +209,7 @@ data class SignedUpStudentResponse(
     val classNumber: Int,
     val number: Int,
     val phoneNumber: String,
-    val school: HighSchool,
+    val school: String,
     val clubName: String,
     val cohort: Int,
     val isComplete: Boolean
