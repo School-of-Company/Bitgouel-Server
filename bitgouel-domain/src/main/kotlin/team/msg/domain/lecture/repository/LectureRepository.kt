@@ -10,7 +10,7 @@ import java.util.*
 
 
 interface LectureRepository : JpaRepository<Lecture, UUID>, CustomLectureRepository {
-    @Query("select l from Lecture l where l.id = :id and l.isDeleted = false ")
+    @Query("select l from Lecture l where l.id = :id and l.isDeleted = false")
     override fun findById(id: UUID): Optional<Lecture>
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
