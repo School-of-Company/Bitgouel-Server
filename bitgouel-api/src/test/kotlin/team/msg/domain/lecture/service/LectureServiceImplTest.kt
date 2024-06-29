@@ -143,7 +143,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureId = UUID.randomUUID()
         val request = fixture<UpdateLectureRequest>()
         val lecture = fixture<Lecture> {
-            Lecture(Lecture::user) { professorUser }
+            property(Lecture::user) { professorUser }
         }
         val updatedLecture = fixture<Lecture>()
         val lectureDate = fixture<LectureDate>()
@@ -192,6 +192,76 @@ class LectureServiceImplTest : BehaviorSpec({
             }
 
         }
+
+        When("어드민이 아니고, 강의를 담당한 강사도 아닌 유저가 요청을 하면") {
+            every { userUtil.queryCurrentUser() } returns studentUser
+
+            Then("ForbiddenLectureException 예외가 발생해야 한다.") {
+                shouldThrow<ForbiddenLectureException> {
+                    lectureServiceImpl.deleteLecture(lectureId)
+                }
+            }
+        }
+    }
+
+    // deleteLecture 테스트 코드
+    Given("Lecture id가 주어질 때 d") {
+
+        val professorUserId = UUID.randomUUID()
+        val professorUser = fixture<User> {
+            property(User::id) { professorUserId }
+            property(User::authority) { Authority.ROLE_PROFESSOR }
+        }
+        val studentId = UUID.randomUUID()
+        val studentUser = fixture<User> {
+            property(User::id) { studentId }
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
+        val lectureId = UUID.randomUUID()
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::user) { professorUser }
+            property(Lecture::isDeleted) { false }
+        }
+        val deletedLecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+            property(Lecture::user) { professorUser }
+            property(Lecture::isDeleted) { true }
+        }
+
+        every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
+        every { userUtil.queryCurrentUser() } returns professorUser
+        every { userRepository.findByIdOrNull(any()) } returns professorUser
+        every { lectureRepository.save(lecture) } returns deletedLecture
+
+        When("Lecture 삭제 요청을 하면") {
+            lectureServiceImpl.deleteLecture(lectureId)
+
+            Then("Lecture가 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureRepository.save(any()) }
+            }
+        }
+
+        When("존재하지 않는 강의 id로 요청을 하면") {
+            every { lectureRepository.findByIdOrNull(lectureId) } returns null
+
+            Then("LectureNotFoundException 예외가 발생해야 한다.") {
+                shouldThrow<LectureNotFoundException> {
+                    lectureServiceImpl.deleteLecture(lectureId)
+                }
+            }
+        }
+
+        When("어드민이 아니고, 강의를 담당한 강사도 아닌 유저가 요청을 하면") {
+            every { userUtil.queryCurrentUser() } returns studentUser
+
+            Then("ForbiddenLectureException 예외가 발생해야 한다.") {
+                shouldThrow<ForbiddenLectureException> {
+                    lectureServiceImpl.deleteLecture(lectureId)
+                }
+            }
+        }
+
     }
 
     //queryAllLectures 테스트 코드
