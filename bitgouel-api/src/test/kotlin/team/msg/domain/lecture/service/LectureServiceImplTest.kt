@@ -19,6 +19,7 @@ import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
+import team.msg.domain.lecture.exception.ForbiddenLectureException
 import team.msg.domain.lecture.exception.ForbiddenSignedUpLectureException
 import team.msg.domain.lecture.exception.LectureNotFoundException
 import team.msg.domain.lecture.exception.NotAvailableSignUpDateException
@@ -129,16 +130,28 @@ class LectureServiceImplTest : BehaviorSpec({
     // updateLecture 테스트 코드
     Given("Lecture id와 UpdateLectureRequest 가 주어질 때") {
 
-        val user = fixture<User>()
+        val professorUserId = UUID.randomUUID()
+        val professorUser = fixture<User> {
+            property(User::id) { professorUserId }
+            property(User::authority) { Authority.ROLE_PROFESSOR }
+        }
+        val studentUserId = UUID.randomUUID()
+        val studentUser = fixture<User> {
+            property(User::id) { studentUserId }
+            property(User::authority) { Authority.ROLE_STUDENT }
+        }
         val lectureId = UUID.randomUUID()
         val request = fixture<UpdateLectureRequest>()
-        val lecture = fixture<Lecture>()
+        val lecture = fixture<Lecture> {
+            Lecture(Lecture::user) { professorUser }
+        }
         val updatedLecture = fixture<Lecture>()
         val lectureDate = fixture<LectureDate>()
         val lectureDates = mutableListOf(lectureDate)
 
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
-        every { userRepository.findByIdOrNull(any()) } returns user
+        every { userRepository.findByIdOrNull(any()) } returns professorUser
+        every { userUtil.queryCurrentUser() } returns professorUser
         every { lectureRepository.save(any()) } returns updatedLecture
         every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
         every { lectureDateRepository.deleteAllByLectureId(lectureId) } returns Unit
