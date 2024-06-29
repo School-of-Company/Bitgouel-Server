@@ -232,13 +232,13 @@ class LectureServiceImplTest : BehaviorSpec({
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { userUtil.queryCurrentUser() } returns professorUser
         every { userRepository.findByIdOrNull(any()) } returns professorUser
-        every { lectureRepository.save(lecture) } returns deletedLecture
+        every { lectureRepository.delete(lecture) } returns Unit
 
         When("Lecture 삭제 요청을 하면") {
             lectureServiceImpl.deleteLecture(lectureId)
 
-            Then("Lecture가 저장이 되어야 한다.") {
-                verify(exactly = 1) { lectureRepository.save(any()) }
+            Then("Lecture가 논리적으로 삭제되어야 한다.") {
+                verify(exactly = 1) { lectureRepository.delete(any()) }
             }
         }
 
