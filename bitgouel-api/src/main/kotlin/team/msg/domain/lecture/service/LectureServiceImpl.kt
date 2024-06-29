@@ -162,28 +162,7 @@ class LectureServiceImpl(
         if(currentUser.authority != Authority.ROLE_ADMIN && lecture.user?.id != currentUser.id)
             throw ForbiddenLectureException("강의를 삭제할 수 있는 권한이 없습니다. info : [ userId = ${currentUser.id} ]")
 
-        val updatedLecture = lecture.run {
-            Lecture(
-                id = id,
-                user = user,
-                name = name,
-                semester = semester,
-                division = division,
-                department = department,
-                line = line,
-                startDate = startDate,
-                endDate = endDate,
-                content = content,
-                lectureType = lectureType,
-                credit = credit,
-                instructor = name,
-                maxRegisteredUser = maxRegisteredUser,
-                essentialComplete = essentialComplete,
-                isDeleted = true
-            )
-        }
-
-        lectureRepository.save(updatedLecture)
+        lectureRepository.delete(lecture)
     }
 
     /**
