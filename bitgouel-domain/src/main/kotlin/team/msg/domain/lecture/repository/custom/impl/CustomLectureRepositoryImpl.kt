@@ -27,7 +27,8 @@ class CustomLectureRepositoryImpl(
         ).from(lecture)
             .leftJoin(registeredLecture).on(lecture.eq(registeredLecture.lecture))
             .where(
-                eqLectureType(lectureType)
+                eqLectureType(lectureType),
+                eqIsDeleted(false)
             )
             .groupBy(lecture)
             .offset(pageable.offset)
@@ -58,7 +59,8 @@ class CustomLectureRepositoryImpl(
             .from(lecture)
             .where(
                 lecture.division.contains(division),
-                eqLine(keyword)
+                eqLine(keyword),
+                eqIsDeleted(false)
             )
             .fetch()
             .distinct()
@@ -67,7 +69,10 @@ class CustomLectureRepositoryImpl(
         queryFactory
             .select(lecture.department)
             .from(lecture)
-            .where(eqDepartment(keyword))
+            .where(
+                eqDepartment(keyword),
+                eqIsDeleted(false)
+            )
             .fetch()
             .distinct()
 
@@ -75,7 +80,10 @@ class CustomLectureRepositoryImpl(
         queryFactory
             .select(lecture.division)
             .from(lecture)
-            .where(eqDivision(keyword))
+            .where(
+                eqDivision(keyword),
+                eqIsDeleted(false)
+            )
             .fetch()
             .distinct()
 
