@@ -106,16 +106,19 @@ class LectureServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateLecture(id: UUID, request: UpdateLectureRequest) {
-        if(!lectureRepository.existsById(id))
-            throw LectureNotFoundException("존재하지 않는 강의입니다. info : [ lectureId = $id ]")
+        val lecture = lectureRepository findById id
+        val instructorUser = userRepository findById request.userId
 
-        val user = userRepository findById request.userId
+        val currentUser = userUtil.queryCurrentUser()
+
+        if(currentUser.authority != Authority.ROLE_ADMIN && lecture.user?.id != currentUser.id)
+            throw ForbiddenLectureException("강의를 수정할 수 있는 권한이 없습니다. info : [ userId = ${currentUser.id} ]")
 
         val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
 
-        val lecture = Lecture(
+        val updatedLecture = Lecture(
             id = id,
-            user = user,
+            user = instructorUser,
             name = request.name,
             semester = request.semester,
             division = request.division,
@@ -126,12 +129,12 @@ class LectureServiceImpl(
             content = request.content,
             lectureType = request.lectureType,
             credit = credit,
-            instructor = user.name,
+            instructor = instructorUser.name,
             maxRegisteredUser = request.maxRegisteredUser,
             essentialComplete = request.essentialComplete
         )
 
-        val savedLecture = lectureRepository.save(lecture)
+        val savedLecture = lectureRepository.save(updatedLecture)
 
         lectureDateRepository.deleteAllByLectureId(id)
 
@@ -145,6 +148,21 @@ class LectureServiceImpl(
             )
         }
         lectureDateRepository.saveAll(lectureDates)
+    }
+    /**
+     * 강의를 논리적으로 삭제하는 비지니스 로직입니다.
+     * @param 논리적으로 삭제할 강의 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deleteLecture(id: UUID) {
+        val lecture = lectureRepository findById id
+
+        val currentUser = userUtil.queryCurrentUser()
+
+        if(currentUser.authority != Authority.ROLE_ADMIN && lecture.user?.id != currentUser.id)
+            throw ForbiddenLectureException("강의를 삭제할 수 있는 권한이 없습니다. info : [ userId = ${currentUser.id} ]")
+
+        lectureRepository.delete(lecture)
     }
 
     /**

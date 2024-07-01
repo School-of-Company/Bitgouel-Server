@@ -40,6 +40,12 @@ class LectureController(
         return ResponseEntity.noContent().build()
     }
 
+    @DeleteMapping("/{id}/soft")
+    fun deleteLecture(@PathVariable id: UUID): ResponseEntity<Unit> {
+        lectureService.deleteLecture(id)
+        return ResponseEntity.noContent().build()
+    }
+
     @PostMapping("/{id}")
     fun signUpLecture(@PathVariable id: UUID): ResponseEntity<Unit> {
         lectureService.signUpLecture(id)

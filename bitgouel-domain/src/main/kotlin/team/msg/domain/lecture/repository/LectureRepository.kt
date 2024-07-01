@@ -13,6 +13,10 @@ interface LectureRepository : JpaRepository<Lecture, UUID>, CustomLectureReposit
     @Query("select l from Lecture l where l.id = :id and l.isDeleted = false")
     override fun findById(id: UUID): Optional<Lecture>
 
+    @Modifying
+    @Query("update Lecture l set l.isDeleted = true where l = :entity")
+    override fun delete(entity: Lecture)
+
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update Lecture l set l.user = null where l.user = :user")
     fun updateAllByUser(user: User)
