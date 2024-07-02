@@ -1,6 +1,5 @@
 package team.msg.domain.student.model
 
-import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -21,7 +20,7 @@ class Student(
     @get:JvmName(name = "getIdentifier")
     override var id: UUID,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
 

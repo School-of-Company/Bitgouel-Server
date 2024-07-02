@@ -1,6 +1,5 @@
 package team.msg.domain.university.model
 
-import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
@@ -17,7 +16,7 @@ class Professor(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
 

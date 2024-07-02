@@ -1,10 +1,14 @@
 package team.msg.domain.company.model
 
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.club.model.Club
 import team.msg.domain.user.model.User
 import java.util.*
-import javax.persistence.*
 
 @Entity
 class CompanyInstructor(
@@ -12,7 +16,7 @@ class CompanyInstructor(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
 
