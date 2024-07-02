@@ -4,7 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.government.exception.AlreadyExistGovernmentException
-import team.msg.domain.government.exception.GovernmentNotfoundException
+import team.msg.domain.government.exception.GovernmentNotFoundException
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.presentation.request.CreateGovernmentRequestData
 import team.msg.domain.government.presentation.response.GovernmentResponse
@@ -58,7 +58,7 @@ class GovernmentServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteGovernment(id: Long) {
         val government = governmentRepository.findByIdOrNull(id)
-            ?: throw GovernmentNotfoundException("존재하지 않는 유관기관입니다. info : [ governmentId = $id ]")
+            ?: throw GovernmentNotFoundException("존재하지 않는 유관기관입니다. info : [ governmentId = $id ]")
 
         governmentRepository.delete(government)
     }

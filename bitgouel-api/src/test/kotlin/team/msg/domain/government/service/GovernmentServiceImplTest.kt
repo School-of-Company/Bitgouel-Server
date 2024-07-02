@@ -10,7 +10,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.Field
-import team.msg.domain.government.GovernmentNotFoundException
+import team.msg.domain.government.exception.GovernmentNotFoundException
 import team.msg.domain.government.exception.AlreadyExistGovernmentException
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.presentation.request.CreateGovernmentRequestData
