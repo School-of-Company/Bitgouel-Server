@@ -25,11 +25,11 @@ class Club(
     @JoinColumn(name = "school_id", nullable = false)
     val school: School,
 
-    @Column(columnDefinition = "VARCHAR(30)", nullable = false)
+    @Column(name = "name", columnDefinition = "VARCHAR(30)", nullable = false)
     val name: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)
+    @Column(name = "field", columnDefinition = "VARCHAR(100)", nullable = false)
     val field: Field
 
 )
