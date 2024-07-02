@@ -18,7 +18,7 @@ class GovernmentInstructor(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.MERGE])
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.PERSIST])
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
 
