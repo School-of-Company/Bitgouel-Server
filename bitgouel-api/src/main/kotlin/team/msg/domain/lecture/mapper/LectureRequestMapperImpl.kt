@@ -18,9 +18,6 @@ import team.msg.domain.lecture.presentation.data.web.UpdateLectureWebRequest
 
 @Component
 class LectureRequestMapperImpl : LectureRequestMapper{
-    /**
-     * Lecture 개설 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun createLectureWebRequestToDto(webRequest: CreateLectureWebRequest) = CreateLectureRequest(
         name = webRequest.name,
         content = webRequest.content,
@@ -38,9 +35,6 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         essentialComplete = webRequest.essentialComplete
     )
 
-    /**
-     * Lecture 수정 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun updateLectureWebRequestToDto(webRequest: UpdateLectureWebRequest) = UpdateLectureRequest(
         name = webRequest.name,
         content = webRequest.content,
@@ -58,40 +52,25 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         essentialComplete = webRequest.essentialComplete
     )
 
-    /**
-     * Lecture Date web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     private fun lectureDateWebRequestToDto(webRequest: LectureDateWebRequest) = LectureDateRequest(
         completeDate = webRequest.completeDate,
         startTime = webRequest.startTime,
         endTime = webRequest.endTime
     )
 
-    /**
-     * Lecture list 검색 web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun queryLectureWebRequestToDto(webRequest: QueryAllLecturesWebRequest) = QueryAllLectureRequest(
         lectureType = webRequest.type
     )
     
-    /**
-     * 계열 조회 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun queryAllLinesWebRequestToDto(webRequest: QueryAllLinesWebRequest) = QueryAllLinesRequest(
         division = webRequest.division,
         keyword = webRequest.keyword
     )
 
-    /**
-     * 학과 조회 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun queryAllDepartmentsWebRequestToDto(webRequest: QueryAllDepartmentsWebRequest) = QueryAllDepartmentsRequest(
         keyword = webRequest.keyword
     )
 
-    /**
-     * 구분 조회 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun queryAllDivisionsWebRequestToDto(webRequest: QueryAllDivisionsWebRequest) = QueryAllDivisionsRequest(
         keyword = webRequest.keyword
     )
