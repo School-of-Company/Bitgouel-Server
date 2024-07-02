@@ -13,7 +13,7 @@ import team.msg.domain.government.repository.GovernmentRepository
 
 @Service
 class GovernmentServiceImpl(
-    private val governmentRepository: GovernmentRepository,
+    private val governmentRepository: GovernmentRepository
 ) : GovernmentService {
     /**
      * 유관기관을 생성하는 비지니스 로직입니다.
