@@ -13,7 +13,7 @@ class UniversityController(
     private val universityService: UniversityService
 ) {
     @GetMapping
-    fun queryAllUniversity(): ResponseEntity<UniversitiesResponse> {
+    fun queryUniversities(): ResponseEntity<UniversitiesResponse> {
         val response = universityService.queryUniversities()
         return ResponseEntity.ok(response)
     }
