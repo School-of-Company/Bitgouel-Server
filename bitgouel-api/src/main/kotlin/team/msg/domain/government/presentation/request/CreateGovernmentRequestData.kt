@@ -1,8 +1,8 @@
 package team.msg.domain.government.presentation.request
 
-import javax.validation.constraints.NotBlank
+import team.msg.common.enums.Field
 
 data class CreateGovernmentRequestData (
-    val field: String,
+    val field: Field,
     val governmentName: String
 )

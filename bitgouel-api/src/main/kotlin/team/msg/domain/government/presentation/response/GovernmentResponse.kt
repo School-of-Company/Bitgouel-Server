@@ -1,10 +1,11 @@
 package team.msg.domain.government.presentation.response
 
+import team.msg.common.enums.Field
 import team.msg.domain.government.model.Government
 
 data class GovernmentResponse (
     val id: Long,
-    val field: String,
+    val field: Field,
     val governmentName: String
 ) {
     fun of(government: Government) = GovernmentResponse(
