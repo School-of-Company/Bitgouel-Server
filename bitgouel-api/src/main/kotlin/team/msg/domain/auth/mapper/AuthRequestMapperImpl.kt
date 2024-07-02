@@ -6,10 +6,6 @@ import team.msg.domain.auth.presentation.data.web.*
 
 @Component
 class AuthRequestMapperImpl : AuthRequestMapper {
-
-    /**
-     * Student 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun studentSignUpWebRequestToDto(webRequest: StudentSignUpWebRequest): StudentSignUpRequest =
         StudentSignUpRequest(
             email = webRequest.email,
@@ -24,9 +20,6 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             admissionNumber = webRequest.admissionNumber
         )
 
-    /**
-     * Teacher 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun teacherSignUpWebRequestToDto(webRequest: TeacherSignUpWebRequest): TeacherSignUpRequest =
         TeacherSignUpRequest(
             email = webRequest.email,
@@ -37,9 +30,6 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             clubName = webRequest.clubName
         )
 
-    /**
-     * Bbozzak 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun bbozzakSignUpWebRequestToDto(webRequest: BbozzakSignUpWebRequest): BbozzakSignUpRequest =
         BbozzakSignUpRequest(
             email = webRequest.email,
@@ -50,9 +40,6 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             clubName = webRequest.clubName
         )
 
-    /**
-     * Professor 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun professorSignUpWebRequestToDto(webRequest: ProfessorSignUpWebRequest): ProfessorSignUpRequest =
         ProfessorSignUpRequest(
             email = webRequest.email,
@@ -64,9 +51,6 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             university = webRequest.university
         )
 
-    /**
-     * Government 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun governmentSignUpWebRequestToDto(webRequest: GovernmentSignUpWebRequest): GovernmentSignUpRequest =
         GovernmentSignUpRequest(
             email = webRequest.email,
@@ -80,9 +64,6 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             sectors = webRequest.sectors
         )
 
-    /**
-     * CompanyInstructor 회원가입 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun companyInstructorSignUpWebRequestToDto(webRequest: CompanyInstructorSignUpWebRequest): CompanyInstructorSignUpRequest =
         CompanyInstructorSignUpRequest(
             email = webRequest.email,
@@ -94,9 +75,6 @@ class AuthRequestMapperImpl : AuthRequestMapper {
             companyName = webRequest.company
         )
 
-    /**
-     * 로그인 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun loginWebRequestToDto(webRequest: LoginWebRequest): LoginRequest =
         LoginRequest(
             email = webRequest.email,

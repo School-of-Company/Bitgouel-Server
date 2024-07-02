@@ -3,6 +3,6 @@ package team.msg.domain.government.exception
 import team.msg.domain.government.exception.constant.GovernmentErrorCode
 import team.msg.global.error.exception.BitgouelException
 
-class GovernmentNotfoundException(
+class AlreadyExistGovernmentException(
     message: String
-) : BitgouelException(message, GovernmentErrorCode.GOVERNMENT_NOT_FOUND.status)
+) : BitgouelException(message, GovernmentErrorCode.ALREADY_EXIST_GOVERNMENT.status)

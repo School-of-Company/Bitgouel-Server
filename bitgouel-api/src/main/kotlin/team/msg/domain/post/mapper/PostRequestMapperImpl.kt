@@ -10,9 +10,6 @@ import team.msg.domain.post.presentation.web.UpdatePostWebRequest
 
 @Component
 class PostRequestMapperImpl : PostRequestMapper {
-    /**
-     * post 생성 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun createPostWebRequestToDto(webRequest: CreatePostWebRequest) = webRequest.run {
         CreatePostRequest(
             title = title,
@@ -22,9 +19,6 @@ class PostRequestMapperImpl : PostRequestMapper {
         )
     }
 
-    /**
-     * post 수정 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun updatePostWebRequestToDto(webRequest: UpdatePostWebRequest) = webRequest.run {
         UpdatePostRequest(
             title = title,
@@ -33,9 +27,6 @@ class PostRequestMapperImpl : PostRequestMapper {
         )
     }
 
-    /**
-     * post 전체 수정 Web Request 를 애플리케이션 영역에서 사용될 Dto 로 매핑합니다.
-     */
     override fun queryAllPostsWebRequestToDto(webRequest: QueryAllPostsWebRequest) = webRequest.run {
         QueryAllPostsRequest(
             postSequence = webRequest.postSequence,

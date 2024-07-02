@@ -24,7 +24,7 @@ import team.msg.domain.company.repository.CompanyRepository
 import team.msg.domain.email.exception.AuthCodeExpiredException
 import team.msg.domain.email.exception.UnAuthenticatedEmailException
 import team.msg.domain.email.repository.EmailAuthenticationRepository
-import team.msg.domain.government.exception.GovernmentNotfoundException
+import team.msg.domain.government.exception.GovernmentNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
@@ -182,7 +182,7 @@ class AuthServiceImpl(
         val club = queryClub(request.highSchool, request.clubName)
 
         val government = governmentRepository.findByName(request.governmentName)
-            ?: throw GovernmentNotfoundException("존재하지 않는 유관 기관입니다. info = [ governmentName = ${request.governmentName} ]")
+            ?: throw GovernmentNotFoundException("존재하지 않는 유관 기관입니다. info = [ governmentName = ${request.governmentName} ]")
 
         val governmentInstructor = GovernmentInstructor(
             id = UUID(0, 0),
