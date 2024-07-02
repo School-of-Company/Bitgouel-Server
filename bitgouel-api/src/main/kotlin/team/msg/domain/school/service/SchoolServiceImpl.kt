@@ -65,7 +65,8 @@ class SchoolServiceImpl(
             logoImageUrl = imageName,
             name = request.schoolName,
             field = request.field,
-            line = request.line
+            line = request.line,
+            departments = request.departments
         )
 
         schoolRepository.save(school)
@@ -97,7 +98,9 @@ class SchoolServiceImpl(
             logoImageUrl = imageName,
             name = request.schoolName,
             field = request.field,
-            line = request.line
+            line = request.line,
+            departments = request.departments
+
         )
         schoolRepository.save(updateSchool)
     }

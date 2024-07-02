@@ -24,6 +24,13 @@ class School(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "line", columnDefinition = "VARCHAR(50)", nullable = false)
-    val line: Line
+    val line: Line,
+
+    @ElementCollection
+    @CollectionTable(
+        name = "department",
+        joinColumns = [JoinColumn(name = "school_id")]
+    )
+    val departments: List<String>
 
 )
