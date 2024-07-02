@@ -8,17 +8,19 @@ data class GovernmentResponse (
     val field: Field,
     val governmentName: String
 ) {
-    fun of(government: Government) = GovernmentResponse(
-        id = id,
-        field = field,
-        governmentName = government.name
-    )
+    companion object {
+        fun of(government: Government) = GovernmentResponse(
+            id = government.id,
+            field = government.field,
+            governmentName = government.name
+        )
 
-    fun listOf(governments: List<Government>) = GovernmentsResponse(
-        governments.map {
-            of(it)
-        }
-    )
+        fun listOf(governments: List<Government>) = GovernmentsResponse(
+            governments.map {
+                of(it)
+            }
+        )
+    }
 }
 
 data class GovernmentsResponse(
