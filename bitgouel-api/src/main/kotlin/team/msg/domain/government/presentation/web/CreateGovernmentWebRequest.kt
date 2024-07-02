@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import team.msg.common.enums.Field
 
-data class CreateGovernmentWebRequest (
+data class CreateGovernmentWebRequest(
     @field:NotNull
     val field: Field,
 

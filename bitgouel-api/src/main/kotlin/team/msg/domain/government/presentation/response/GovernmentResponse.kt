@@ -3,7 +3,7 @@ package team.msg.domain.government.presentation.response
 import team.msg.common.enums.Field
 import team.msg.domain.government.model.Government
 
-data class GovernmentResponse (
+data class GovernmentResponse(
     val id: Long,
     val field: Field,
     val governmentName: String
