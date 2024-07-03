@@ -60,6 +60,9 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/auth/withdraw").authenticated()
 
+            // map
+            .mvcMatchers(HttpMethod.GET, "/map").permitAll()
+
             // email
             .mvcMatchers(HttpMethod.POST, "/email").permitAll()
             .mvcMatchers(HttpMethod.GET, "/email").permitAll()
