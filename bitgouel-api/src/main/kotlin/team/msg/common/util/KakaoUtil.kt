@@ -1,7 +1,7 @@
 package team.msg.common.util
 
 import org.springframework.stereotype.Component
-import team.msg.domain.map.AddressNotFoundException
+import team.msg.domain.map.exception.AddressNotFoundException
 import team.msg.thirdparty.kakao.client.KakaoClient
 
 @Component
