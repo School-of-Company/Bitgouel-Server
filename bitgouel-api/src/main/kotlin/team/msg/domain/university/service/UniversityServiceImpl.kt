@@ -9,11 +9,13 @@ import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.response.UniversityResponse
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.university.repository.UniversityRepository
 
 @Service
 class UniversityServiceImpl(
-    private val universityRepository: UniversityRepository
+    private val universityRepository: UniversityRepository,
+    private val professorRepository: ProfessorRepository
 ) : UniversityService {
 
     /**
@@ -43,6 +45,9 @@ class UniversityServiceImpl(
     override fun deleteUniversity(id: Long) {
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
+
+        if(professorRepository.existsByUniversity(university))
+            throw RuntimeException()
 
         universityRepository.delete(university)
     }
