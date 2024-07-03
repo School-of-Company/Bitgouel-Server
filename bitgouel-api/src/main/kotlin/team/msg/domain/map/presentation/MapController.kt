@@ -1,11 +1,11 @@
-package team.msg.domain.map.presentstion
+package team.msg.domain.map.presentation
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import team.msg.domain.map.presentstion.res.GetCoordinateResponseData
+import team.msg.domain.map.presentation.response.GetCoordinateResponseData
 import team.msg.domain.map.service.MapService
 
 @RestController

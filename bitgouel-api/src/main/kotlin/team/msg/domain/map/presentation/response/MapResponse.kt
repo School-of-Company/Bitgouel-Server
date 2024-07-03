@@ -1,6 +1,6 @@
-package team.msg.domain.map.presentstion.res
+package team.msg.domain.map.presentation.response
 
-class MapResponseData {
+class MapResponse {
     companion object {
         fun of(data: Pair<String, String>) = GetCoordinateResponseData(
             x = data.first,

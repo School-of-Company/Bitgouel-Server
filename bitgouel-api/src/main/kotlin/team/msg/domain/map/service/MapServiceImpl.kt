@@ -2,8 +2,8 @@ package team.msg.domain.map.service
 
 import org.springframework.stereotype.Service
 import team.msg.common.util.KakaoUtil
-import team.msg.domain.map.presentstion.res.GetCoordinateResponseData
-import team.msg.domain.map.presentstion.res.MapResponseData
+import team.msg.domain.map.presentation.response.GetCoordinateResponseData
+import team.msg.domain.map.presentation.response.MapResponse
 
 @Service
 class MapServiceImpl(
@@ -11,7 +11,7 @@ class MapServiceImpl(
 ) : MapService {
     override fun getCoordinate(address: String): GetCoordinateResponseData {
         val coordinate = kakaoUtil.getCoordinate(address)
-        val response = MapResponseData.of(coordinate)
+        val response = MapResponse.of(coordinate)
 
         return response
     }
