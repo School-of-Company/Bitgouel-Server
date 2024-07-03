@@ -36,4 +36,10 @@ class ClubController(
         val response = clubService.queryStudentDetails(clubId, studentId)
         return ResponseEntity.ok(response)
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteClub(@PathVariable id: Long): ResponseEntity<Unit> {
+        clubService.deleteClub(id)
+        return ResponseEntity.noContent().build()
+    }
 }
