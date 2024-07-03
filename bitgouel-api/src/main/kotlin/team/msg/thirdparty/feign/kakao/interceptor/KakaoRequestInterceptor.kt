@@ -1,8 +1,8 @@
-package team.msg.thirdparty.kakao.interceptor
+package team.msg.thirdparty.feign.kakao.interceptor
 
 import feign.RequestInterceptor
 import feign.RequestTemplate
-import team.msg.thirdparty.kakao.properties.KakaoProperties
+import team.msg.thirdparty.feign.kakao.properties.KakaoProperties
 
 class KakaoRequestInterceptor(
     private val kakaoProperties: KakaoProperties

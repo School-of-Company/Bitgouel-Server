@@ -1,10 +1,10 @@
-package team.msg.thirdparty.kakao.client
+package team.msg.thirdparty.feign.kakao
 
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import team.msg.thirdparty.kakao.client.data.res.KakaoAddressResponseData
-import team.msg.thirdparty.kakao.config.KakaoFeignConfig
+import team.msg.thirdparty.feign.kakao.client.data.res.KakaoAddressResponseData
+import team.msg.thirdparty.feign.kakao.config.KakaoFeignConfig
 
 @FeignClient(
     name = "KakaoClient",

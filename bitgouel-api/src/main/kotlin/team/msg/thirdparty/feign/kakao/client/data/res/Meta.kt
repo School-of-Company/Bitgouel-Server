@@ -1,4 +1,4 @@
-package team.msg.thirdparty.kakao.client.data.res
+package team.msg.thirdparty.feign.kakao.client.data.res
 
 /**
  * @param total 검색어에 검색된 문서 수

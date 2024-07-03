@@ -1,4 +1,4 @@
-package team.msg.thirdparty.kakao.properties
+package team.msg.thirdparty.feign.kakao.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding

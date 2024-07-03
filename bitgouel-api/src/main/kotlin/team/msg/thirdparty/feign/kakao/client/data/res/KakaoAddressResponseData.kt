@@ -1,4 +1,4 @@
-package team.msg.thirdparty.kakao.client.data.res
+package team.msg.thirdparty.feign.kakao.client.data.res
 
 /**
  * @param mata 응답 관련 정보

@@ -6,7 +6,7 @@ import team.msg.global.config.properties.EmailProperties
 import team.msg.global.config.properties.RedisProperties
 import team.msg.global.security.jwt.properties.JwtProperties
 import team.msg.thirdparty.aws.AwsProperties
-import team.msg.thirdparty.kakao.properties.KakaoProperties
+import team.msg.thirdparty.feign.kakao.properties.KakaoProperties
 
 @Configuration
 @ConfigurationPropertiesScan(
