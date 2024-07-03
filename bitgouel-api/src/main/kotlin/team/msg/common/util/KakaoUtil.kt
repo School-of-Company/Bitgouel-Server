@@ -14,7 +14,7 @@ class KakaoUtil(
      * @param query 도로번/지번 주소
      * @return 좌표 X, Y 값
      */
-    fun addressToXY(query: String): Pair<String, String> {
+    fun getCoordinate(query: String): Pair<String, String> {
         val response = kakaoClient.getKakaoMapAddress(query)
 
         if(response.document.isEmpty())
