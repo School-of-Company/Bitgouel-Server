@@ -18,6 +18,6 @@ data class Document(
     val addressType: String,
     val x: String,
     val y: String,
-    val address: Address,
-    val roadAddress: RoadAddress
+    val address: Address?,
+    val roadAddress: RoadAddress?
 )

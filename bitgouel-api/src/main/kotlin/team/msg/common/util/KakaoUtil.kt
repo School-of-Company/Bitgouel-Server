@@ -18,7 +18,7 @@ class KakaoUtil(
         val response = kakaoClient.getKakaoMapAddress(query)
 
         if(response.documents.isEmpty())
-            throw AddressNotFoundException("도로명/지번 주소를 찾을 수 없습니다. info : [ query = $query ]")
+            throw AddressNotFoundException("일치하는 도로명/지번 주소를 찾을 수 없습니다. info : [ query = $query ]")
 
         val address = response.documents.first()
 
