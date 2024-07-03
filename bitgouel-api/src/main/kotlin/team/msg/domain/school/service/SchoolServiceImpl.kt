@@ -129,7 +129,6 @@ class SchoolServiceImpl(
         schoolRepository.deleteById(id)
     }
 
-
     companion object {
         const val JPEG = "image/jpeg"
         const val PNG = "image/png"

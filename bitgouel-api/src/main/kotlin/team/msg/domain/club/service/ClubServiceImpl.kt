@@ -133,6 +133,19 @@ class ClubServiceImpl(
         return response
     }
 
+    /**
+     * 동아리를 삭제하는 비지니스 로직
+     * @param 동아리 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deleteClub(id: Long) {
+        val club = clubRepository.findByIdOrNull(id)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+
+        clubRepository.deleteById(club.id)
+    }
+
+
     private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
 
