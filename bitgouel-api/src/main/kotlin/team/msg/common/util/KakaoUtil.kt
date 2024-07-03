@@ -17,10 +17,10 @@ class KakaoUtil(
     fun getCoordinate(query: String): Pair<String, String> {
         val response = kakaoClient.getKakaoMapAddress(query)
 
-        if(response.document.isEmpty())
+        if(response.documents.isEmpty())
             throw AddressNotFoundException("도로명/지번 주소를 찾을 수 없습니다. info : [ query = $query ]")
 
-        val address = response.document.first()
+        val address = response.documents.first()
 
         return Pair(address.x, address.y)
     }
