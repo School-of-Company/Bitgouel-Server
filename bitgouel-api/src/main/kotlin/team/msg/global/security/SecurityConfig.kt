@@ -155,6 +155,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/government/{id}").hasRole(ADMIN)
 
             // university
+            .mvcMatchers(HttpMethod.GET, "/university").permitAll()
             .mvcMatchers(HttpMethod.POST, "/university").hasRole(ADMIN)
 
             // actuator
