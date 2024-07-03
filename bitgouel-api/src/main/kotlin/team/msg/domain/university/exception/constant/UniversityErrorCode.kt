@@ -4,5 +4,6 @@ enum class UniversityErrorCode(
     val status: Int
 ) {
     UNIVERSITY_NOT_FOUND(404),
-    PROFESSOR_NOT_FOUND(404)
+    PROFESSOR_NOT_FOUND(404),
+    ALREADY_EXIST_UNIVERSITY_NAME_EXCEPTION(409)
 }
