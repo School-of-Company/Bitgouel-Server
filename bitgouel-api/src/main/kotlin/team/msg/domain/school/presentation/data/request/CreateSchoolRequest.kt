@@ -8,7 +8,7 @@ data class CreateSchoolRequest(
     val field: Field,
     val line: Line,
     val departments: List<String>,
-    val club: List<CreateClubRequest>
+//    val club: List<CreateClubRequest>
 ) {
     companion object {
         data class CreateClubRequest(
