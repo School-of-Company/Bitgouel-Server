@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import team.msg.domain.university.mapper.UniversityMapper
+import team.msg.domain.university.mapper.UniversityRequestMapper
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.web.CreateUniversityWebRequest
 import team.msg.domain.university.service.UniversityService
@@ -18,12 +18,12 @@ import team.msg.domain.university.service.UniversityService
 @RequestMapping("/university")
 class UniversityController(
     private val universityService: UniversityService,
-    private val universityMapper: UniversityMapper
+    private val universityRequestMapper: UniversityRequestMapper
 ) {
 
     @PostMapping
     fun createUniversity(@RequestBody webRequest: CreateUniversityWebRequest): ResponseEntity<Unit> {
-        val request = universityMapper.createUniversityWebRequestToDto(webRequest)
+        val request = universityRequestMapper.createUniversityWebRequestToDto(webRequest)
         universityService.createUniversity(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }

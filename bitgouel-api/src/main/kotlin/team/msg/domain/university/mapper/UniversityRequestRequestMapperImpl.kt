@@ -5,7 +5,7 @@ import team.msg.domain.university.presentation.data.request.CreateUniversityRequ
 import team.msg.domain.university.presentation.data.web.CreateUniversityWebRequest
 
 @Component
-class UniversityRequestMapperImpl : UniversityMapper {
+class UniversityRequestRequestMapperImpl : UniversityRequestMapper {
 
     override fun createUniversityWebRequestToDto(webRequest: CreateUniversityWebRequest) : CreateUniversityRequest =
         CreateUniversityRequest(
