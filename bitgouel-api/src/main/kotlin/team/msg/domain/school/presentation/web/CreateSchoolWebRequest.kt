@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import team.msg.common.enums.Field
 import team.msg.common.enums.Line
+import team.msg.domain.club.presentation.web.request.CreateClubWebRequest
 
 data class CreateSchoolWebRequest(
 
@@ -11,11 +12,13 @@ data class CreateSchoolWebRequest(
     val schoolName: String,
 
     @field:NotNull
-    val field: Field,
+    val schoolField: Field,
 
     @field:NotNull
     val line: Line,
 
-    val departments: List<String>
+    val departments: List<String>,
+
+    val club: List<CreateClubWebRequest>
 
 )
