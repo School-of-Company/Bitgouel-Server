@@ -6,6 +6,6 @@ import java.util.*
 
 interface UniversityService {
     fun createUniversity(request: CreateUniversityRequest)
-    fun deleteUniversity(id: UUID)
+    fun deleteUniversity(id: Long)
     fun queryUniversities(): UniversitiesResponse
 }

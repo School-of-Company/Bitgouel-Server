@@ -41,7 +41,7 @@ class UniversityServiceImpl(
      * @param id 삭제할 대학의 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun deleteUniversity(id: UUID) {
+    override fun deleteUniversity(id: Long) {
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
 
