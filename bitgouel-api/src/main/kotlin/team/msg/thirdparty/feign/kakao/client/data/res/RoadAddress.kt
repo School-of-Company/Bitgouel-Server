@@ -2,10 +2,7 @@ package team.msg.thirdparty.feign.kakao.client.data.res
 
 /**
  * @param addressName 전체 도로명 주소
- * @param region1DepthName 지역명 1
- * @param region2DepthName 지역명 2 Depth
- * @param region3DepthName 지역명 3 Depth
- * @param loadName 도로명
+ * @param roadName 도로명
  * @param undergroundYn 지하 여부, Y 또는 N
  * @param mainBuildingNo 건물 본번
  * @param subBuildingNo 건물 부번, 없을 경우 빈 문자열("") 반환
@@ -16,10 +13,7 @@ package team.msg.thirdparty.feign.kakao.client.data.res
  */
 data class RoadAddress(
     val addressName: String,
-    val region1DepthName: String,
-    val region2DepthName: String,
-    val region3DepthName: String,
-    val loadName: String,
+    val roadName: String,
     val undergroundYn: String,
     val mainBuildingNo: String,
     val subBuildingNo: String,

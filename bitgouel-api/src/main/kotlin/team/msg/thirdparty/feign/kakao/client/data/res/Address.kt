@@ -2,10 +2,6 @@ package team.msg.thirdparty.feign.kakao.client.data.res
 
 /**
  * @param addressName 전체 지번 주소
- * @param region1DepthName 지역 1 Depth, 시도 단위
- * @param region2DepthName 지역 2 Depth, 구 단위
- * @param region3DepthName 지역 3 Depth, 동 단위
- * @param region3DepthHName 지역 3 Depth, 행정동 명칭
  * @param hCode 행정 코드
  * @param bCode 법정 코드
  * @param mountainYn 산 여부, Y 또는 N
@@ -16,10 +12,6 @@ package team.msg.thirdparty.feign.kakao.client.data.res
  */
 data class Address(
     val addressName: String,
-    val region1DepthName: String,
-    val region2DepthName: String,
-    val region3DepthName: String,
-    val region3DepthHName: String,
     val hCode: String,
     val bCode: String,
     val mountainYn: String,
