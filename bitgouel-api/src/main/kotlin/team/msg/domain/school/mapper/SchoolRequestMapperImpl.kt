@@ -13,14 +13,16 @@ class SchoolRequestMapperImpl : SchoolRequestMapper {
         CreateSchoolRequest(
             schoolName = webRequest.schoolName,
             field = webRequest.field,
-            line = webRequest.line
+            line = webRequest.line,
+            departments = webRequest.departments
         )
 
     override fun updateSchoolWebRequestToDto(webRequest: UpdateSchoolWebRequest): UpdateSchoolRequest =
         UpdateSchoolRequest(
             schoolName = webRequest.schoolName,
             field = webRequest.field,
-            line = webRequest.line
+            line = webRequest.line,
+            departments = webRequest.departments
         )
 
 }

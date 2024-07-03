@@ -210,14 +210,16 @@ class UserUtil(
         if (userRepository.existsByPhoneNumber(phoneNumber))
             throw AlreadyExistPhoneNumberException("이미 가입된 전화번호를 기입하였습니다. info : [ phoneNumber = $phoneNumber ]")
 
-        return User(
-            id = UUID(0, 0),
-            email = email,
-            name = name,
-            phoneNumber = phoneNumber,
-            password = securityUtil.passwordEncode(password),
-            authority = authority,
-            approveStatus = ApproveStatus.PENDING
+        return userRepository.save(
+            User(
+                id = UUID(0, 0),
+                email = email,
+                name = name,
+                phoneNumber = phoneNumber,
+                password = securityUtil.passwordEncode(password),
+                authority = authority,
+                approveStatus = ApproveStatus.PENDING
+            )
         )
     }
 

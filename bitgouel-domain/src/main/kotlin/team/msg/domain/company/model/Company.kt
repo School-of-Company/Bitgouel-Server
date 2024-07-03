@@ -14,7 +14,8 @@ class Company(
     @Column(name = "name", nullable = false)
     val name: String,
 
-    @Column(name = "industry", columnDefinition = "VARCHAR(100)", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "field", columnDefinition = "VARCHAR(100)", nullable = false)
     val field: Field
 
 )

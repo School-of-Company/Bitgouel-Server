@@ -14,6 +14,8 @@ data class UpdateSchoolWebRequest(
     val field: Field,
 
     @field:NotNull
-    val line: Line
+    val line: Line,
+
+    val departments: List<String>
 
 )

@@ -1,9 +1,9 @@
 package team.msg.domain.school.presentation.web
 
-import team.msg.common.enums.Field
-import team.msg.common.enums.Line
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import team.msg.common.enums.Field
+import team.msg.common.enums.Line
 
 data class CreateSchoolWebRequest(
 
@@ -14,6 +14,8 @@ data class CreateSchoolWebRequest(
     val field: Field,
 
     @field:NotNull
-    val line: Line
+    val line: Line,
+
+    val departments: List<String>
 
 )
