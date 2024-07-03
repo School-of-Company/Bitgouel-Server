@@ -2,6 +2,7 @@ package team.msg.domain.university.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.domain.university.exception.AlreadyExistUniversityNameException
 import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
@@ -21,6 +22,9 @@ class UniversityServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createUniversity(request: CreateUniversityRequest) {
+        if(universityRepository.existsByName(request.universityName))
+            throw AlreadyExistUniversityNameException("이미 존재하는 대학입니다. info : [ universityName = ${request.universityName} ]")
+
         val university = University(
             department = request.department,
             name = request.universityName
