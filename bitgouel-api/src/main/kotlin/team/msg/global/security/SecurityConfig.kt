@@ -70,6 +70,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/club/my").hasAnyRole(STUDENT, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/club/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/{id}/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+            .mvcMatchers(HttpMethod.DELETE, "/club{id}").hasRole(ADMIN)
 
             // school
             .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
