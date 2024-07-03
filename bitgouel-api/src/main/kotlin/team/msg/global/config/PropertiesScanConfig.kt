@@ -6,6 +6,7 @@ import team.msg.global.config.properties.EmailProperties
 import team.msg.global.config.properties.RedisProperties
 import team.msg.global.security.jwt.properties.JwtProperties
 import team.msg.thirdparty.aws.AwsProperties
+import team.msg.thirdparty.kakao.properties.KakaoProperties
 
 @Configuration
 @ConfigurationPropertiesScan(
@@ -13,7 +14,8 @@ import team.msg.thirdparty.aws.AwsProperties
         JwtProperties::class,
         EmailProperties::class,
         RedisProperties::class,
-        AwsProperties::class
+        AwsProperties::class,
+        KakaoProperties::class
     ]
 )
 class PropertiesScanConfig
