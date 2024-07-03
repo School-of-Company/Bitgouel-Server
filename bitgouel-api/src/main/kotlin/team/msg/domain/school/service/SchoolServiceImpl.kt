@@ -4,6 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import team.msg.domain.club.model.Club
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
@@ -69,7 +70,16 @@ class SchoolServiceImpl(
             departments = request.departments
         )
 
+        val clubs = request.club.map { club ->
+            Club(
+                school = school,
+                name = club.clubName,
+                field = club.field
+            )
+        }
+
         schoolRepository.save(school)
+        clubRepository.saveAll(clubs)
     }
 
 
