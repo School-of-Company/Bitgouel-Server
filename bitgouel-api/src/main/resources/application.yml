@@ -5,6 +5,8 @@ server:
       enabled: true
 
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   servlet:
     multipart:
       max-file-size: 10MB
@@ -63,3 +65,6 @@ management:
 
     prometheus:
       enabled: true
+
+kakao:
+  api-key: ${KAKAO_API_KEY}
