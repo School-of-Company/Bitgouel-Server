@@ -1,5 +1,8 @@
 package team.msg.thirdparty.feign.kakao.client.data.res
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+
 /**
  * @param addressName 전체 지번 주소 또는 전체 도로명 주소, 입력에 따라 결정됨
  * @param addressType address_name의 값의 타입(Type)
@@ -13,6 +16,7 @@ package team.msg.thirdparty.feign.kakao.client.data.res
  * @param address 지번 주소 상세 정보
  * @param roadAddress 도로명 주소 상세 정보
  */
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class Document(
     val addressName: String,
     val addressType: String,

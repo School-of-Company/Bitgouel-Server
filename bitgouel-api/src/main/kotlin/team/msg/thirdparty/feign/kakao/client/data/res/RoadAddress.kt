@@ -1,5 +1,8 @@
 package team.msg.thirdparty.feign.kakao.client.data.res
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+
 /**
  * @param addressName 전체 도로명 주소
  * @param roadName 도로명
@@ -11,6 +14,7 @@ package team.msg.thirdparty.feign.kakao.client.data.res
  * @param x X 좌표값, 경위도인 경우 경도(longitude)
  * @param y Y 좌표값, 경위도인 경우 위도(latitude)
  */
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class RoadAddress(
     val addressName: String,
     val roadName: String,
