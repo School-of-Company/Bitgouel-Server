@@ -9,6 +9,7 @@ import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
 import team.msg.domain.school.exception.InvalidExtensionException
+import team.msg.domain.school.exception.NotEmptySchoolException
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.presentation.data.request.CreateSchoolRequest
@@ -42,6 +43,7 @@ class SchoolServiceImpl(
                     schoolName = it.name,
                     field = it.field,
                     line = it.line,
+                    departments = it.departments,
                     logoImageUrl = it.logoImageUrl,
                     clubs = ClubResponse.schoolOf(clubs)
                 )
@@ -53,6 +55,7 @@ class SchoolServiceImpl(
 
     /**
      * 학교를 생성하는 비지니스 로직
+     * @param 생성할 학교의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createSchool(request: CreateSchoolRequest, logoImage: MultipartFile) {
@@ -60,31 +63,31 @@ class SchoolServiceImpl(
             throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${request.schoolName} ]")
         }
 
-        val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
+        val imageUrl = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val school = School(
-            logoImageUrl = imageName,
+            logoImageUrl = imageUrl,
             name = request.schoolName,
             field = request.field,
             line = request.line,
             departments = request.departments
         )
 
-//        val clubs = request.club.map { club ->
-//            Club(
-//                school = school,
-//                name = club.clubName,
-//                field = club.field
-//            )
-//        }
+        val clubs = request.club.map { club ->
+            Club(
+                school = school,
+                name = club.clubName,
+                field = club.field
+            )
+        }
 
         schoolRepository.save(school)
-//        clubRepository.saveAll(clubs)
+        clubRepository.saveAll(clubs)
     }
-
 
     /**
      * 학교를 수정하는 비지니스 로직
+     * @param 수정할 학교의 id와 수정할 내용들
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
@@ -93,7 +96,7 @@ class SchoolServiceImpl(
         }
 
         if (logoImage.contentType !in listOf(JPEG, JPG, PNG, HEIC)) {
-            throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType}")
+            throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType} ]")
         }
 
         val school = schoolRepository.findByIdOrNull(id)
@@ -101,33 +104,34 @@ class SchoolServiceImpl(
 
         awsS3Util.deleteImage(school.logoImageUrl)
 
-        val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
+        val imageUrl = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val updateSchool = School(
             id = id,
-            logoImageUrl = imageName,
+            logoImageUrl = imageUrl,
             name = request.schoolName,
             field = request.field,
             line = request.line,
             departments = request.departments
-
         )
         schoolRepository.save(updateSchool)
     }
 
     /**
      * 학교를 삭제하는 비지니스 로직
+     * @param 삭제할 학교의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteSchool(id: Long) {
         val school = schoolRepository.findByIdOrNull(id)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
 
+        if (clubRepository.existsBySchool(school))
+            throw NotEmptySchoolException("학교에 삭제되지 않은 동아리가 있습니다. info : [ schoolId = $id ]")
+
         awsS3Util.deleteImage(school.logoImageUrl)
-        clubRepository.deleteAllBySchoolId(id)
         schoolRepository.deleteById(id)
     }
-
 
     companion object {
         const val JPEG = "image/jpeg"
@@ -135,4 +139,5 @@ class SchoolServiceImpl(
         const val JPG = "image/jpg"
         const val HEIC = "image/heic"
     }
+
 }

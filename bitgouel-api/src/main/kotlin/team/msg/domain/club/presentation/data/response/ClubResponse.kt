@@ -1,5 +1,6 @@
 package team.msg.domain.club.presentation.data.response
 
+import team.msg.common.enums.Field
 import team.msg.domain.club.model.Club
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.presentation.data.response.StudentResponse
@@ -35,7 +36,8 @@ data class ClubResponse(
         fun schoolOf(clubs: List<Club>) = clubs.map {
             SchoolToClubResponse(
                 id = it.id,
-                name = it.name
+                name = it.name,
+                field = it.field
             )
         }
     }
@@ -56,5 +58,6 @@ data class ClubDetailsResponse(
 
 data class SchoolToClubResponse(
     val id: Long,
-    val name: String
+    val name: String,
+    val field: Field
 )

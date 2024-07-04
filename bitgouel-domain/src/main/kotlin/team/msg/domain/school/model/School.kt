@@ -15,7 +15,7 @@ class School(
     @Column(name = "logoImageUrl", columnDefinition = "VARCHAR(100)", nullable = false)
     val logoImageUrl: String,
 
-    @Column(name = "name", columnDefinition = "VARCHAR(100)", nullable = false, unique = true, updatable = false)
+    @Column(name = "name", columnDefinition = "VARCHAR(100)", nullable = false, unique = true)
     val name: String,
 
     @Enumerated(EnumType.STRING)

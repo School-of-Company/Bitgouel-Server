@@ -9,6 +9,7 @@ data class SchoolResponse(
     val schoolName: String,
     val field: Field,
     val line: Line,
+    val departments: List<String>,
     val logoImageUrl: String,
     val clubs: List<SchoolToClubResponse>
 )

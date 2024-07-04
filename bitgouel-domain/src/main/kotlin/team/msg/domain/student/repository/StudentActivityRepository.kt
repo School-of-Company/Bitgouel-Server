@@ -13,7 +13,6 @@ interface StudentActivityRepository : JpaRepository<StudentActivity, UUID>, Cust
 
     @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
     fun findAllByStudent(student: Student, pageable: Pageable): Page<StudentActivity>
-
     @EntityGraph(attributePaths = ["student"], type = EntityGraph.EntityGraphType.FETCH)
     override fun findAll(pageable: Pageable): Page<StudentActivity>
 }

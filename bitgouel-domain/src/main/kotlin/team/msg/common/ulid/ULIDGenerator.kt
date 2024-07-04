@@ -5,7 +5,6 @@ import java.nio.ByteOrder
 import java.security.SecureRandom
 import java.time.Instant
 
-
 /**
  * ULID를 생성하는 ULIDGenerator입니다. ULID는 현재 시간 정보를 기반으로하며
  * 보안 랜덤 값을 사용하여 16바이트의 바이트 배열을 생성합니다. 그런 다음 이를 문자열로 변환하여 ULID를 생성합니다.
