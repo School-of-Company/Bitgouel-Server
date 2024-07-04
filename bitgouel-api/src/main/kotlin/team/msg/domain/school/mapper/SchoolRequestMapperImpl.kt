@@ -26,8 +26,7 @@ class SchoolRequestMapperImpl(
             schoolName = webRequest.schoolName,
             field = webRequest.schoolField,
             line = webRequest.line,
-            departments = webRequest.departments,
-            club = clubRequestMapper.updateClubWebRequestToDto(webRequest.club)
+            departments = webRequest.departments
         )
 
 }

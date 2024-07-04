@@ -15,6 +15,7 @@ import team.msg.domain.government.repository.GovernmentRepository
 class GovernmentServiceImpl(
     private val governmentRepository: GovernmentRepository
 ) : GovernmentService {
+
     /**
      * 유관기관을 생성하는 비지니스 로직입니다.
      * 같은 이름의 유관기관이 이미 존재하면 예외를 반환합니다.
@@ -62,4 +63,5 @@ class GovernmentServiceImpl(
 
         governmentRepository.delete(government)
     }
+
 }

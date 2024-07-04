@@ -1,10 +1,9 @@
 package team.msg.domain.school.presentation.web
 
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
 import team.msg.common.enums.Field
 import team.msg.common.enums.Line
-import team.msg.domain.club.presentation.web.request.UpdateClubWebRequest
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 data class UpdateSchoolWebRequest(
 
@@ -17,8 +16,6 @@ data class UpdateSchoolWebRequest(
     @field:NotNull
     val line: Line,
 
-    val departments: List<String>,
-
-    val club: List<UpdateClubWebRequest>
+    val departments: List<String>
 
 )

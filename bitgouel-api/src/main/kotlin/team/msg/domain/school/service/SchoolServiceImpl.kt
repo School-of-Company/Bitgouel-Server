@@ -94,7 +94,7 @@ class SchoolServiceImpl(
         }
 
         if (logoImage.contentType !in listOf(JPEG, JPG, PNG, HEIC)) {
-            throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType}")
+            throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType} ]")
         }
 
         val school = schoolRepository.findByIdOrNull(id)
@@ -125,7 +125,6 @@ class SchoolServiceImpl(
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
 
         awsS3Util.deleteImage(school.logoImageUrl)
-        clubRepository.deleteAllBySchoolId(id)
         schoolRepository.deleteById(id)
     }
 
