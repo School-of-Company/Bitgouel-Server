@@ -4,16 +4,19 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.government.exception.AlreadyExistGovernmentException
+import team.msg.domain.government.exception.GovernmentHasGovernmentInstructorConstraintException
 import team.msg.domain.government.exception.GovernmentNotFoundException
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.presentation.request.CreateGovernmentRequestData
 import team.msg.domain.government.presentation.response.GovernmentResponse
 import team.msg.domain.government.presentation.response.GovernmentsResponse
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
 
 @Service
 class GovernmentServiceImpl(
-    private val governmentRepository: GovernmentRepository
+    private val governmentRepository: GovernmentRepository,
+    private val governmentInstructorRepository: GovernmentInstructorRepository
 ) : GovernmentService {
     /**
      * 유관기관을 생성하는 비지니스 로직입니다.
@@ -59,6 +62,9 @@ class GovernmentServiceImpl(
     override fun deleteGovernment(id: Long) {
         val government = governmentRepository.findByIdOrNull(id)
             ?: throw GovernmentNotFoundException("존재하지 않는 유관기관입니다. info : [ governmentId = $id ]")
+
+        if(governmentInstructorRepository.existsByGovernment(government))
+            throw GovernmentHasGovernmentInstructorConstraintException("아직 유관기관 강사가 존재하는 유관기관입니다. info : [ government = $id ]")
 
         governmentRepository.delete(government)
     }
