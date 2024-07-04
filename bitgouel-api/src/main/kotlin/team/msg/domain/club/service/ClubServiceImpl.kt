@@ -8,6 +8,9 @@ import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
+import team.msg.domain.club.exception.NotEmptyClubException
+import team.msg.domain.club.model.Club
+import team.msg.domain.club.presentation.data.reqeust.UpdateClubRequest
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.exception.CompanyInstructorNotFoundException
@@ -133,6 +136,21 @@ class ClubServiceImpl(
         return response
     }
 
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateClub(id: Long, updateClubRequest: UpdateClubRequest) {
+        val club = clubRepository.findByIdOrNull(id)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+
+        val updateClub = Club(
+            school = club.school,
+            name = updateClubRequest.clubName,
+            field = updateClubRequest.field
+        )
+
+        clubRepository.save(updateClub)
+    }
+
+
     /**
      * 동아리를 삭제하는 비지니스 로직
      * @param 동아리 id
@@ -142,8 +160,19 @@ class ClubServiceImpl(
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
 
+        if (isAnyUserBelong(club))
+            throw NotEmptyClubException("동아리에 탈퇴하지 않은 유저가 있습니다. info : [ clubId = $id ]")
+
         clubRepository.deleteById(club.id)
     }
+
+    private fun isAnyUserBelong(club: Club): Boolean =
+        teacherRepository.existsByClub(club) ||
+        bbozzakRepository.existsByClub(club) ||
+        studentRepository.existsByClub(club) ||
+        professorRepository.existsByClub(club) ||
+        governmentInstructorRepository.existsByClub(club) ||
+        companyInstructorRepository.existsByClub(club)
 
 
     private fun findStudentByUser(user: User) = studentRepository.findByUser(user)

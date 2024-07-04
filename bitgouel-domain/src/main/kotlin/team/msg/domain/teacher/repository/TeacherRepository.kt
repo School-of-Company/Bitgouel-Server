@@ -14,4 +14,6 @@ interface TeacherRepository : CrudRepository<Teacher, UUID> {
 
     @EntityGraph(attributePaths = ["user", "club"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByUser(user: User): Teacher?
+
+    fun existsByClub(club: Club): Boolean
 }

@@ -9,6 +9,7 @@ import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
 import team.msg.domain.school.exception.InvalidExtensionException
+import team.msg.domain.school.exception.NotEmptySchoolException
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.presentation.data.request.CreateSchoolRequest
@@ -53,9 +54,8 @@ class SchoolServiceImpl(
     }
 
     /**
-     * @param 생성할 학교의 정보
-     *
      * 학교를 생성하는 비지니스 로직
+     * @param 생성할 학교의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun createSchool(request: CreateSchoolRequest, logoImage: MultipartFile) {
@@ -86,9 +86,8 @@ class SchoolServiceImpl(
     }
 
     /**
-     * @param 수정할 학교의 id와 수정할 내용들
-     *
      * 학교를 수정하는 비지니스 로직
+     * @param 수정할 학교의 id와 수정할 내용들
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
@@ -114,20 +113,21 @@ class SchoolServiceImpl(
             field = request.field,
             line = request.line,
             departments = request.departments
-
         )
         schoolRepository.save(updateSchool)
     }
 
     /**
-     * @param 삭제할 학교의 id
-     *
      * 학교를 삭제하는 비지니스 로직
+     * @param 삭제할 학교의 id
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun deleteSchool(id: Long) {
         val school = schoolRepository.findByIdOrNull(id)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
+
+        if (clubRepository.existsBySchool(school))
+            throw NotEmptySchoolException("학교에 삭제되지 않은 동아리가 있습니다. info : [ schoolId = $id ]")
 
         awsS3Util.deleteImage(school.logoImageUrl)
         schoolRepository.deleteById(id)
