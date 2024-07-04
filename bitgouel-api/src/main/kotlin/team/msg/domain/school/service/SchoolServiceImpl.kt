@@ -63,10 +63,10 @@ class SchoolServiceImpl(
             throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${request.schoolName} ]")
         }
 
-        val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
+        val imageUrl = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val school = School(
-            logoImageUrl = imageName,
+            logoImageUrl = imageUrl,
             name = request.schoolName,
             field = request.field,
             line = request.line,
@@ -104,11 +104,11 @@ class SchoolServiceImpl(
 
         awsS3Util.deleteImage(school.logoImageUrl)
 
-        val imageName = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
+        val imageUrl = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
 
         val updateSchool = School(
             id = id,
-            logoImageUrl = imageName,
+            logoImageUrl = imageUrl,
             name = request.schoolName,
             field = request.field,
             line = request.line,

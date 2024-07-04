@@ -11,6 +11,6 @@ interface ClubService {
     fun queryClubDetailsById(id: Long): ClubDetailsResponse
     fun queryMyClubDetails(): ClubDetailsResponse
     fun queryStudentDetails(clubId: Long, studentId: UUID): StudentDetailsResponse
-    fun updateClub(id: Long, updateClubRequest: UpdateClubRequest)
+    fun updateClub(id: Long, request: UpdateClubRequest)
     fun deleteClub(id: Long)
 }

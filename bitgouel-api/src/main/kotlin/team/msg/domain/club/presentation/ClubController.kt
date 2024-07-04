@@ -42,7 +42,7 @@ class ClubController(
     }
 
     @PatchMapping("/{id}")
-    fun updateClub(@PathVariable id: Long, @Valid webRequest: UpdateClubWebRequest): ResponseEntity<Unit> {
+    fun updateClub(@PathVariable id: Long, @RequestBody @Valid webRequest: UpdateClubWebRequest): ResponseEntity<Unit> {
         clubService.updateClub(id, clubRequestMapper.updateClubWebRequestToDto(webRequest))
         return ResponseEntity.noContent().build()
     }
