@@ -136,6 +136,10 @@ class ClubServiceImpl(
         return response
     }
 
+    /**
+     * 동아리를 수정하는 비지니스 로직
+     * @param 동아리 id
+     */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateClub(id: Long, request: UpdateClubRequest) {
         val club = clubRepository.findByIdOrNull(id)
