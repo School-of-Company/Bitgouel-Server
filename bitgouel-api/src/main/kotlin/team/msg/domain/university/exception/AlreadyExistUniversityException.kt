@@ -5,4 +5,4 @@ import team.msg.global.error.exception.BitgouelException
 
 class AlreadyExistUniversityException(
     message: String
-) : BitgouelException(message, UniversityErrorCode.ALREADY_EXIST_UNIVERSITY_EXCEPTION.status)
+) : BitgouelException(message, UniversityErrorCode.ALREADY_EXIST_UNIVERSITY.status)
