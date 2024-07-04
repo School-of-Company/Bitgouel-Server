@@ -12,9 +12,11 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.common.enums.Field
 import team.msg.domain.government.exception.GovernmentNotFoundException
 import team.msg.domain.government.exception.AlreadyExistGovernmentException
+import team.msg.domain.government.exception.GovernmentHasGovernmentInstructorConstraintException
 import team.msg.domain.government.model.Government
 import team.msg.domain.government.presentation.request.CreateGovernmentRequestData
 import team.msg.domain.government.presentation.response.GovernmentResponse
+import team.msg.domain.government.repository.GovernmentInstructorRepository
 import team.msg.domain.government.repository.GovernmentRepository
 
 class GovernmentServiceImplTest : BehaviorSpec({
@@ -23,8 +25,10 @@ class GovernmentServiceImplTest : BehaviorSpec({
     val fixture = kotlinFixture()
 
     val governmentRepository = mockk<GovernmentRepository>()
+    val governmentInstructorRepository = mockk<GovernmentInstructorRepository>()
     val governmentServiceImpl = GovernmentServiceImpl(
-        governmentRepository
+        governmentRepository,
+        governmentInstructorRepository
     )
 
     // createGovernment 테스트 코드
@@ -114,6 +118,7 @@ class GovernmentServiceImplTest : BehaviorSpec({
         }
 
         every { governmentRepository.findByIdOrNull(governmentId) } returns government
+        every { governmentInstructorRepository.existsByGovernment(government) } returns false
         every { governmentRepository.delete(any()) } returns Unit
 
         When("유관기관을 삭제하면") {
@@ -129,6 +134,16 @@ class GovernmentServiceImplTest : BehaviorSpec({
 
             Then("GovernmentNotFoundException이 발생해야 한다.") {
                 shouldThrow<GovernmentNotFoundException> {
+                    governmentServiceImpl.deleteGovernment(governmentId)
+                }
+            }
+        }
+
+        When("유관기관에 유관기관 강사가 아직 존재한다면") {
+            every { governmentInstructorRepository.existsByGovernment(government) } returns true
+
+            Then("GovernmentHasGovernmentInstructorConstraintException이 발생해야 한다.") {
+                shouldThrow<GovernmentHasGovernmentInstructorConstraintException> {
                     governmentServiceImpl.deleteGovernment(governmentId)
                 }
             }
