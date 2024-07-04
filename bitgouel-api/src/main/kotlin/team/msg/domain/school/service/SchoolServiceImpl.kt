@@ -53,6 +53,8 @@ class SchoolServiceImpl(
     }
 
     /**
+     * @param 생성할 학교의 정보
+     *
      * 학교를 생성하는 비지니스 로직
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -83,8 +85,9 @@ class SchoolServiceImpl(
         clubRepository.saveAll(clubs)
     }
 
-
     /**
+     * @param 수정할 학교의 id와 수정할 내용들
+     *
      * 학교를 수정하는 비지니스 로직
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -117,6 +120,8 @@ class SchoolServiceImpl(
     }
 
     /**
+     * @param 삭제할 학교의 id
+     *
      * 학교를 삭제하는 비지니스 로직
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -134,4 +139,5 @@ class SchoolServiceImpl(
         const val JPG = "image/jpg"
         const val HEIC = "image/heic"
     }
+
 }
