@@ -1,7 +1,7 @@
 package team.msg.domain.map.service
 
-import team.msg.domain.map.presentation.response.GetCoordinateResponseData
+import team.msg.domain.map.presentation.response.GetCoordinateResponse
 
 interface MapService {
-    fun getCoordinate(address: String): GetCoordinateResponseData
+    fun getCoordinate(address: String): GetCoordinateResponse
 }
