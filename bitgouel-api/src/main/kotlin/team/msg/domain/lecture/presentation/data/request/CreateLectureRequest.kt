@@ -18,5 +18,7 @@ data class CreateLectureRequest (
     val lectureType: String,
     val credit: Int,
     val maxRegisteredUser: Int,
+    val address: String,
+    val locationDetails: String,
     val essentialComplete: Boolean
 )
