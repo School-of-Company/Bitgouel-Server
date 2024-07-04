@@ -146,7 +146,6 @@ class ClubServiceImpl(
             name = request.clubName,
             field = request.field
         )
-
         clubRepository.save(updateClub)
     }
 
