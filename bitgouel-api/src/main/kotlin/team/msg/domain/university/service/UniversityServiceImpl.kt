@@ -4,6 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.domain.university.exception.AlreadyExistUniversityException
+import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.exception.UniversityNotFoundException
 import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
@@ -47,7 +48,7 @@ class UniversityServiceImpl(
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
 
         if(professorRepository.existsByUniversity(university))
-            throw RuntimeException()
+            throw UniversityHasProfessorConstraintException("아직 대학교수가 존재하는 대학입니다. info : [ universityId = $id ]")
 
         universityRepository.delete(university)
     }
