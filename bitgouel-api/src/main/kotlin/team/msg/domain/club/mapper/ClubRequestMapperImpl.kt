@@ -9,20 +9,16 @@ import team.msg.domain.club.presentation.web.request.UpdateClubWebRequest
 @Component
 class ClubRequestMapperImpl : ClubRequestMapper {
 
-    override fun createClubWebRequestToDto(webRequest: List<CreateClubWebRequest>): List<CreateClubRequest> =
-        webRequest.map {
-            CreateClubRequest(
-                clubName = it.clubName,
-                field = it.field
-            )
-        }
+    override fun createClubWebRequestToDto(webRequest: CreateClubWebRequest): CreateClubRequest =
+        CreateClubRequest(
+            clubName = webRequest.clubName,
+            field = webRequest.field
+        )
 
-    override fun updateClubWebRequestToDto(webRequest: List<UpdateClubWebRequest>): List<UpdateClubRequest> =
-        webRequest.map {
-            UpdateClubRequest(
-                clubName = it.clubName,
-                field = it.field
-            )
-        }
+    override fun updateClubWebRequestToDto(webRequest: UpdateClubWebRequest): UpdateClubRequest =
+        UpdateClubRequest(
+            clubName = webRequest.clubName,
+            field = webRequest.field
+        )
 
 }

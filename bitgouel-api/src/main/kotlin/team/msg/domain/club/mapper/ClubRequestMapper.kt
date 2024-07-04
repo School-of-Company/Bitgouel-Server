@@ -6,6 +6,6 @@ import team.msg.domain.club.presentation.web.request.CreateClubWebRequest
 import team.msg.domain.club.presentation.web.request.UpdateClubWebRequest
 
 interface ClubRequestMapper {
-    fun createClubWebRequestToDto(webRequest: List<CreateClubWebRequest>): List<CreateClubRequest>
-    fun updateClubWebRequestToDto(webRequest: List<UpdateClubWebRequest>): List<UpdateClubRequest>
+    fun createClubWebRequestToDto(webRequest: CreateClubWebRequest): CreateClubRequest
+    fun updateClubWebRequestToDto(webRequest: UpdateClubWebRequest): UpdateClubRequest
 }

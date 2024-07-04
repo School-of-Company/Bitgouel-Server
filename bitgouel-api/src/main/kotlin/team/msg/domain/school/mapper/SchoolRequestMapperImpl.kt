@@ -18,7 +18,7 @@ class SchoolRequestMapperImpl(
             field = webRequest.schoolField,
             line = webRequest.line,
             departments = webRequest.departments,
-            club = clubRequestMapper.createClubWebRequestToDto(webRequest.club)
+            club = webRequest.club.map { clubRequestMapper.createClubWebRequestToDto(it) }
         )
 
     override fun updateSchoolWebRequestToDto(webRequest: UpdateSchoolWebRequest): UpdateSchoolRequest =
