@@ -60,6 +60,9 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/auth").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/auth/withdraw").authenticated()
 
+            // map
+            .mvcMatchers(HttpMethod.GET, "/map").permitAll()
+
             // email
             .mvcMatchers(HttpMethod.POST, "/email").permitAll()
             .mvcMatchers(HttpMethod.GET, "/email").permitAll()
@@ -155,8 +158,10 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.POST, "/government").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/government/{id}").hasRole(ADMIN)
 
-            // university 
+            // university
             .mvcMatchers(HttpMethod.GET, "/university").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/university").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/university/{id}").hasRole(ADMIN)
 
             // actuator
             .mvcMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()

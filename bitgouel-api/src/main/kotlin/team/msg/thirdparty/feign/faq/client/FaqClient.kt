@@ -1,4 +1,4 @@
-package team.msg.thirdparty.feign.client
+package team.msg.thirdparty.feign.faq.client
 
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
