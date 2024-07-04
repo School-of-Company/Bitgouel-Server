@@ -73,9 +73,14 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/club/my").hasAnyRole(STUDENT, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/club/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/{id}/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
+            .mvcMatchers(HttpMethod.PATCH, "/club/{id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/club/{id}").hasRole(ADMIN)
 
             // school
             .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.POST, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)
 
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasAnyRole(STUDENT, TEACHER, BBOZZAK)

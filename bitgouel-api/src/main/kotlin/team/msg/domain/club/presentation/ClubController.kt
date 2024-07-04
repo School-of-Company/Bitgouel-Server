@@ -1,9 +1,12 @@
 package team.msg.domain.club.presentation
 
+import javax.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import team.msg.domain.club.mapper.ClubRequestMapper
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
 import team.msg.domain.club.presentation.data.response.ClubsResponse
+import team.msg.domain.club.presentation.web.request.UpdateClubWebRequest
 import team.msg.domain.club.service.ClubService
 import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
 import java.util.*
@@ -11,7 +14,8 @@ import java.util.*
 @RestController
 @RequestMapping("/club")
 class ClubController(
-    private val clubService: ClubService
+    private val clubService: ClubService,
+    private val clubRequestMapper: ClubRequestMapper
 ) {
     @GetMapping
     fun queryAllClubs(@RequestParam("highSchool") highSchool: String): ResponseEntity<ClubsResponse> {
@@ -36,4 +40,17 @@ class ClubController(
         val response = clubService.queryStudentDetails(clubId, studentId)
         return ResponseEntity.ok(response)
     }
+
+    @PatchMapping("/{id}")
+    fun updateClub(@PathVariable id: Long, @RequestBody @Valid webRequest: UpdateClubWebRequest): ResponseEntity<Unit> {
+        clubService.updateClub(id, clubRequestMapper.updateClubWebRequestToDto(webRequest))
+        return ResponseEntity.noContent().build()
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteClub(@PathVariable id: Long): ResponseEntity<Unit> {
+        clubService.deleteClub(id)
+        return ResponseEntity.noContent().build()
+    }
+
 }

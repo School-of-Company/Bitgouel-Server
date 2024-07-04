@@ -8,6 +8,9 @@ import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.exception.ClubNotFoundException
+import team.msg.domain.club.exception.NotEmptyClubException
+import team.msg.domain.club.model.Club
+import team.msg.domain.club.presentation.data.reqeust.UpdateClubRequest
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.company.exception.CompanyInstructorNotFoundException
@@ -16,9 +19,6 @@ import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.government.exception.GovernmentInstructorNotFoundException
 import team.msg.domain.government.model.GovernmentInstructor
 import team.msg.domain.government.repository.GovernmentInstructorRepository
-import team.msg.domain.university.exception.ProfessorNotFoundException
-import team.msg.domain.university.model.Professor
-import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
@@ -29,6 +29,9 @@ import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.teacher.exception.TeacherNotFoundException
 import team.msg.domain.teacher.model.Teacher
 import team.msg.domain.teacher.repository.TeacherRepository
+import team.msg.domain.university.exception.ProfessorNotFoundException
+import team.msg.domain.university.model.Professor
+import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.user.model.User
 import team.msg.global.exception.InvalidRoleException
 import java.util.*
@@ -132,6 +135,46 @@ class ClubServiceImpl(
 
         return response
     }
+
+    /**
+     * 동아리를 수정하는 비지니스 로직
+     * @param 동아리 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun updateClub(id: Long, request: UpdateClubRequest) {
+        val club = clubRepository.findByIdOrNull(id)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+
+        val updateClub = Club(
+            school = club.school,
+            name = request.clubName,
+            field = request.field
+        )
+        clubRepository.save(updateClub)
+    }
+
+    /**
+     * 동아리를 삭제하는 비지니스 로직
+     * @param 동아리 id
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deleteClub(id: Long) {
+        val club = clubRepository.findByIdOrNull(id)
+            ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+
+        if (isAnyUserBelong(club))
+            throw NotEmptyClubException("동아리에 탈퇴하지 않은 유저가 있습니다. info : [ clubId = $id ]")
+
+        clubRepository.deleteById(club.id)
+    }
+
+    private fun isAnyUserBelong(club: Club): Boolean =
+        teacherRepository.existsByClub(club) ||
+        bbozzakRepository.existsByClub(club) ||
+        studentRepository.existsByClub(club) ||
+        professorRepository.existsByClub(club) ||
+        governmentInstructorRepository.existsByClub(club) ||
+        companyInstructorRepository.existsByClub(club)
 
     private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
