@@ -137,14 +137,14 @@ class ClubServiceImpl(
     }
 
     @Transactional(rollbackFor = [Exception::class])
-    override fun updateClub(id: Long, updateClubRequest: UpdateClubRequest) {
+    override fun updateClub(id: Long, request: UpdateClubRequest) {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
 
         val updateClub = Club(
             school = club.school,
-            name = updateClubRequest.clubName,
-            field = updateClubRequest.field
+            name = request.clubName,
+            field = request.field
         )
 
         clubRepository.save(updateClub)

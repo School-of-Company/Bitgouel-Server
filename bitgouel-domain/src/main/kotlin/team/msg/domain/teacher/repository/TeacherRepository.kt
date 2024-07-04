@@ -8,12 +8,9 @@ import team.msg.domain.user.model.User
 import java.util.*
 
 interface TeacherRepository : CrudRepository<Teacher, UUID> {
-
     @EntityGraph(attributePaths = ["user", "club"])
     fun findByClub(club: Club): Teacher?
-
     @EntityGraph(attributePaths = ["user", "club"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByUser(user: User): Teacher?
-
     fun existsByClub(club: Club): Boolean
 }

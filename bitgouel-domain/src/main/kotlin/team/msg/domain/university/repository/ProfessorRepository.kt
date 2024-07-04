@@ -11,8 +11,6 @@ import java.util.*
 interface ProfessorRepository : CrudRepository<Professor, UUID> {
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
     fun findByUser(user: User): Professor?
-
     fun existsByClub(club: Club): Boolean
     fun existsByUniversity(university: University): Boolean
-
 }
