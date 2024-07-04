@@ -68,6 +68,8 @@ data class LectureResponse(
             lecturer = lecture.instructor,
             userId = lecture.user!!.id,
             credit = lecture.credit,
+            locationX = lectureLocation.x,
+            locationY = lectureLocation.y,
             address = lectureLocation.address,
             locationDetails = lectureLocation.details,
             essentialComplete = lecture.essentialComplete
@@ -159,6 +161,8 @@ data class LectureDetailsResponse(
     val userId: UUID,
     val lecturer: String,
     val credit: Int,
+    val locationX: String,
+    val locationY: String,
     val address: String,
     val locationDetails: String,
     val essentialComplete: Boolean
