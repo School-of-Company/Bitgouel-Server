@@ -153,7 +153,6 @@ class ClubServiceImpl(
         clubRepository.save(updateClub)
     }
 
-
     /**
      * 동아리를 삭제하는 비지니스 로직
      * @param 동아리 id
@@ -176,7 +175,6 @@ class ClubServiceImpl(
         professorRepository.existsByClub(club) ||
         governmentInstructorRepository.existsByClub(club) ||
         companyInstructorRepository.existsByClub(club)
-
 
     private fun findStudentByUser(user: User) = studentRepository.findByUser(user)
         ?: throw StudentNotFoundException("학생을 찾을 수 없습니다. info : [ userId = ${user.id} ]")
