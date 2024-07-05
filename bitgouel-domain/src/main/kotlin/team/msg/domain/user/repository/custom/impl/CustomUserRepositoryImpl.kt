@@ -3,9 +3,12 @@ package team.msg.domain.user.repository.custom.impl
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import team.msg.common.enums.ApproveStatus
+import team.msg.domain.company.model.QCompany.company
 import team.msg.domain.company.model.QCompanyInstructor.companyInstructor
+import team.msg.domain.government.model.QGovernment.government
 import team.msg.domain.government.model.QGovernmentInstructor.governmentInstructor
 import team.msg.domain.university.model.QProfessor.professor
+import team.msg.domain.university.model.QUniversity.university
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.QUser.user
 import team.msg.domain.user.model.User
@@ -61,12 +64,14 @@ class CustomUserRepositoryImpl(
         queryFactory.select(user, professor.university.name, companyInstructor.company.name, governmentInstructor.government.name)
             .from(user)
             .leftJoin(professor).on(user.eq(professor.user))
+            .leftJoin(professor.university, university)
             .leftJoin(companyInstructor).on(user.eq(companyInstructor.user))
+            .leftJoin(companyInstructor.company, company)
             .leftJoin(governmentInstructor).on(user.eq(governmentInstructor.user))
+            .leftJoin(governmentInstructor.government, government)
             .where(
                 user.authority.`in`(Authority.ROLE_PROFESSOR, Authority.ROLE_COMPANY_INSTRUCTOR, Authority.ROLE_GOVERNMENT),
-                nameLike(keyword)
-                    ?.or(organizationNameLike(keyword))
+                nameLike(keyword)?.or(organizationNameLike(keyword))
             )
             .fetch()
             .map { tuple ->
