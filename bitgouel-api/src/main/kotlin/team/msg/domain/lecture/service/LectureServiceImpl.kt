@@ -169,18 +169,32 @@ class LectureServiceImpl(
 
         val lectureLocation = lectureLocationRepository.findByLectureId(lecture.id)
 
-        if(lectureLocation.address != request.address) {
-            val coordinate = kakaoUtil.getCoordinate(request.address)
-            val updatedLectureLocation = LectureLocation(
-                id = lectureLocation.id,
-                lectureId = savedLecture.id,
-                x = coordinate.first,
-                y = coordinate.second,
-                address = request.address,
-                details = request.locationDetails
-            )
+        when {
+            lectureLocation.address != request.address -> {
+                val coordinate = kakaoUtil.getCoordinate(request.address)
+                val updatedLectureLocation = LectureLocation(
+                    id = lectureLocation.id,
+                    lectureId = savedLecture.id,
+                    x = coordinate.first,
+                    y = coordinate.second,
+                    address = request.address,
+                    details = request.locationDetails
+                )
 
-            lectureLocationRepository.save(updatedLectureLocation)
+                lectureLocationRepository.save(updatedLectureLocation)
+            }
+            lectureLocation.details != request.locationDetails -> {
+                val updatedLectureLocation = LectureLocation(
+                    id = lectureLocation.id,
+                    lectureId = savedLecture.id,
+                    x = lectureLocation.x,
+                    y = lectureLocation.y,
+                    address = request.address,
+                    details = request.locationDetails
+                )
+
+                lectureLocationRepository.save(updatedLectureLocation)
+            }
         }
     }
     /**
