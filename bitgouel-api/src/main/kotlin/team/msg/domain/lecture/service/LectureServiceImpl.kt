@@ -106,7 +106,6 @@ class LectureServiceImpl(
 
         val coordinate = kakaoUtil.getCoordinate(request.address)
         val lectureLocation = LectureLocation(
-            id = 0,
             lectureId = savedLecture.id,
             x = coordinate.first,
             y = coordinate.second,
