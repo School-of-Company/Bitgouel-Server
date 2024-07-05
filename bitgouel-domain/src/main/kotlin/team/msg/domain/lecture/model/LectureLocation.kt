@@ -14,7 +14,7 @@ class LectureLocation(
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @Column(name = "user_id", columnDefinition = "BINARY(16)")
+    @Column(name = "lecture_id", columnDefinition = "BINARY(16)")
     val lectureId: UUID,
 
     @Column(name = "x", columnDefinition = "VARCHAR(30)", nullable = false)
