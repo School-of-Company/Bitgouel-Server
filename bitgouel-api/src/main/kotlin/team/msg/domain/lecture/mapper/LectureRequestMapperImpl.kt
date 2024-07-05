@@ -32,6 +32,8 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         credit = webRequest.credit,
         maxRegisteredUser = webRequest.maxRegisteredUser,
         userId = webRequest.userId,
+        address = webRequest.address,
+        locationDetails = webRequest.locationDetails,
         essentialComplete = webRequest.essentialComplete
     )
 
@@ -49,6 +51,8 @@ class LectureRequestMapperImpl : LectureRequestMapper{
         credit = webRequest.credit,
         maxRegisteredUser = webRequest.maxRegisteredUser,
         userId = webRequest.userId,
+        address = webRequest.address,
+        locationDetails = webRequest.locationDetails,
         essentialComplete = webRequest.essentialComplete
     )
 
