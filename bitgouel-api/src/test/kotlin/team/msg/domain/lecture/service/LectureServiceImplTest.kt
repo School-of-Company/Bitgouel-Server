@@ -11,6 +11,7 @@ import io.mockk.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import team.msg.common.util.KakaoUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
@@ -27,6 +28,7 @@ import team.msg.domain.lecture.exception.OverMaxRegisteredUserException
 import team.msg.domain.lecture.exception.UnSignedUpLectureException
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
+import team.msg.domain.lecture.model.LectureLocation
 import team.msg.domain.lecture.model.RegisteredLecture
 import team.msg.domain.lecture.presentation.data.request.CreateLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequest
@@ -40,6 +42,7 @@ import team.msg.domain.lecture.presentation.data.response.LectureDetailsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureResponse
 import team.msg.domain.lecture.presentation.data.response.LecturesResponse
 import team.msg.domain.lecture.repository.LectureDateRepository
+import team.msg.domain.lecture.repository.LectureLocationRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
 import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
@@ -76,6 +79,9 @@ class LectureServiceImplTest : BehaviorSpec({
     val clubRepository = mockk<ClubRepository>()
     val schoolRepository = mockk<SchoolRepository>()
     val userUtil = mockk<UserUtil>()
+    val kakaoUtil = mockk<KakaoUtil>()
+    val lectureLocationRepository = mockk<LectureLocationRepository>()
+
     val pageable = mockk<Pageable>()
     val lectureServiceImpl = LectureServiceImpl(
         lectureRepository,
@@ -87,7 +93,9 @@ class LectureServiceImplTest : BehaviorSpec({
         userRepository,
         clubRepository,
         schoolRepository,
-        userUtil
+        lectureLocationRepository,
+        userUtil,
+        kakaoUtil
     )
 
     // createLecture 테스트 코드
@@ -98,10 +106,14 @@ class LectureServiceImplTest : BehaviorSpec({
         val lecture = fixture<Lecture>()
         val lectureDate = fixture<LectureDate>()
         val lectureDates = mutableListOf(lectureDate)
+        val coordinate = fixture<Pair<String, String>>()
+        val lectureLocation = fixture<LectureLocation>()
 
         every { userRepository.findByIdOrNull(any()) } returns user
         every { lectureRepository.save(any()) } returns lecture
         every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
+        every { kakaoUtil.getCoordinate(any()) } returns coordinate
+        every { lectureLocationRepository.save(any()) } returns lectureLocation
 
         When("Lecture 등록 요청을 하면") {
             lectureServiceImpl.createLecture(request)
@@ -112,6 +124,11 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("LectureDate 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { lectureDateRepository.saveAll(any<List<LectureDate>>()) }
+            }
+
+            Then("LectureLocation 이 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureLocationRepository.save(any()) }
+
             }
         }
 
@@ -141,13 +158,22 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::authority) { Authority.ROLE_STUDENT }
         }
         val lectureId = UUID.randomUUID()
-        val request = fixture<UpdateLectureRequest>()
+        val newAddress = "newAddress"
+        val oldAddress = "oldAddress"
+        val request = fixture<UpdateLectureRequest>() {
+            property(UpdateLectureRequest::address) { newAddress }
+        }
         val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
             property(Lecture::user) { professorUser }
         }
         val updatedLecture = fixture<Lecture>()
         val lectureDate = fixture<LectureDate>()
         val lectureDates = mutableListOf(lectureDate)
+        val coordinate = fixture<Pair<String, String>>()
+        val lectureLocation = fixture<LectureLocation> {
+            property(LectureLocation::address) { oldAddress }
+        }
 
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
         every { userRepository.findByIdOrNull(any()) } returns professorUser
@@ -155,9 +181,12 @@ class LectureServiceImplTest : BehaviorSpec({
         every { lectureRepository.save(any()) } returns updatedLecture
         every { lectureDateRepository.saveAll(any<List<LectureDate>>()) } returns lectureDates
         every { lectureDateRepository.deleteAllByLectureId(lectureId) } returns Unit
+        every { kakaoUtil.getCoordinate(any()) } returns coordinate
+        every { lectureLocationRepository.findByLectureId(lectureId) } returns lectureLocation
+        every { lectureLocationRepository.save(any()) } returns lectureLocation
 
         When("Lecture 수정 요청을 하면") {
-            lectureServiceImpl.updateLecture(lectureId, request)
+            lectureServiceImpl.updateLecture(lectureId,request)
 
             Then("Lecture 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { lectureRepository.save(any()) }
@@ -169,6 +198,11 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("저장됐었던 LectureDate 가 삭제 되어야 한다.") {
                 verify(exactly = 1) { lectureDateRepository.deleteAllByLectureId(lectureId) }
+            }
+
+            Then("LectureLocation 이 저장이 되어야 한다.") {
+                verify(exactly = 1) { lectureLocationRepository.save(any()) }
+
             }
         }
 
@@ -461,6 +495,19 @@ class LectureServiceImplTest : BehaviorSpec({
         }
         val lectureDates = mutableListOf(lectureDate)
 
+        val address = "address"
+        val details = "details"
+        val x = "0.0"
+        val y = "0.0"
+
+        val lectureLocation = fixture<LectureLocation> {
+            property(LectureLocation::lectureId) { lectureId }
+            property(LectureLocation::address) { address }
+            property(LectureLocation::details) { details }
+            property(LectureLocation::x) { x }
+            property(LectureLocation::y) { y }
+        }
+
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
             property(Lecture::name) { name }
@@ -505,6 +552,10 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::division) { division }
             property(LectureDetailsResponse::line) { line }
             property(LectureDetailsResponse::department) { department }
+            property(LectureDetailsResponse::address) { address }
+            property(LectureDetailsResponse::locationDetails) { details }
+            property(LectureDetailsResponse::locationX) { x }
+            property(LectureDetailsResponse::locationY) { y }
         }
 
         every { userUtil.queryCurrentUser() } returns user
@@ -513,6 +564,7 @@ class LectureServiceImplTest : BehaviorSpec({
         every { registeredLectureRepository.countByLecture(any()) } returns headCount
         every { studentRepository.findByUser(any()) } returns student
         every { registeredLectureRepository.existsOne(any(), any()) } returns isRegistered
+        every { lectureLocationRepository.findByLectureId(lectureId) } returns lectureLocation
 
         When("강의 상세 정보를 조회하면") {
             val result = lectureServiceImpl.queryLectureDetails(lectureId)

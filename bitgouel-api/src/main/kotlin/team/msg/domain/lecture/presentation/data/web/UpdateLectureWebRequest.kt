@@ -59,6 +59,12 @@ data class UpdateLectureWebRequest(
     @field:Min(5)
     val maxRegisteredUser: Int,
 
+    @field:NotBlank
+    val address: String,
+
+    @field:NotBlank
+    val locationDetails: String,
+
     @field:NotNull
     val essentialComplete: Boolean
 )

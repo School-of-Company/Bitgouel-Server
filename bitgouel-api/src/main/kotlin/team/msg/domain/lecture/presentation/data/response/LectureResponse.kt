@@ -4,6 +4,7 @@ import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
 import team.msg.domain.lecture.model.LectureDate
+import team.msg.domain.lecture.model.LectureLocation
 import team.msg.domain.student.model.Student
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
@@ -48,7 +49,7 @@ data class LectureResponse(
             essentialComplete = lecture.essentialComplete
         )
 
-        fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean, lectureDates: List<LectureDate>): LectureDetailsResponse = LectureDetailsResponse(
+        fun detailOf(lecture: Lecture, headCount: Int, isRegistered: Boolean, lectureDates: List<LectureDate>, lectureLocation: LectureLocation): LectureDetailsResponse = LectureDetailsResponse(
             name = lecture.name,
             content = lecture.content,
             semester = lecture.semester,
@@ -67,6 +68,10 @@ data class LectureResponse(
             lecturer = lecture.instructor,
             userId = lecture.user!!.id,
             credit = lecture.credit,
+            locationX = lectureLocation.x,
+            locationY = lectureLocation.y,
+            address = lectureLocation.address,
+            locationDetails = lectureLocation.details,
             essentialComplete = lecture.essentialComplete
         )
 
@@ -156,6 +161,10 @@ data class LectureDetailsResponse(
     val userId: UUID,
     val lecturer: String,
     val credit: Int,
+    val locationX: String,
+    val locationY: String,
+    val address: String,
+    val locationDetails: String,
     val essentialComplete: Boolean
 )
 

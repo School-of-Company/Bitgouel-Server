@@ -42,6 +42,9 @@ import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletResponse
+import team.msg.common.util.KakaoUtil
+import team.msg.domain.lecture.model.LectureLocation
+import team.msg.domain.lecture.repository.LectureLocationRepository
 
 @Service
 class LectureServiceImpl(
@@ -54,7 +57,9 @@ class LectureServiceImpl(
     private val userRepository: UserRepository,
     private val clubRepository: ClubRepository,
     private val schoolRepository: SchoolRepository,
-    private val userUtil: UserUtil
+    private val lectureLocationRepository: LectureLocationRepository,
+    private val userUtil: UserUtil,
+    private val kakaoUtil: KakaoUtil
 ) : LectureService {
 
     /**
@@ -98,6 +103,17 @@ class LectureServiceImpl(
         }
 
         lectureDateRepository.saveAll(lectureDates)
+
+        val coordinate = kakaoUtil.getCoordinate(request.address)
+        val lectureLocation = LectureLocation(
+            lectureId = savedLecture.id,
+            x = coordinate.first,
+            y = coordinate.second,
+            address = request.address,
+            details = request.locationDetails
+        )
+
+        lectureLocationRepository.save(lectureLocation)
     }
 
     /**
@@ -147,7 +163,38 @@ class LectureServiceImpl(
                 endTime = it.endTime
             )
         }
+
         lectureDateRepository.saveAll(lectureDates)
+
+        val lectureLocation = lectureLocationRepository.findByLectureId(lecture.id)
+
+        when {
+            lectureLocation.address != request.address -> {
+                val coordinate = kakaoUtil.getCoordinate(request.address)
+                val updatedLectureLocation = LectureLocation(
+                    id = lectureLocation.id,
+                    lectureId = savedLecture.id,
+                    x = coordinate.first,
+                    y = coordinate.second,
+                    address = request.address,
+                    details = request.locationDetails
+                )
+
+                lectureLocationRepository.save(updatedLectureLocation)
+            }
+            lectureLocation.details != request.locationDetails -> {
+                val updatedLectureLocation = LectureLocation(
+                    id = lectureLocation.id,
+                    lectureId = savedLecture.id,
+                    x = lectureLocation.x,
+                    y = lectureLocation.y,
+                    address = request.address,
+                    details = request.locationDetails
+                )
+
+                lectureLocationRepository.save(updatedLectureLocation)
+            }
+        }
     }
     /**
      * 강의를 논리적으로 삭제하는 비지니스 로직입니다.
@@ -205,7 +252,15 @@ class LectureServiceImpl(
             registeredLectureRepository.existsOne(student.id, lecture.id)
         } else false
 
-        val response = LectureResponse.detailOf(lecture, registeredLectureCount, isRegistered, lectureDates)
+        val lectureLocation = lectureLocationRepository.findByLectureId(id)
+
+        val response = LectureResponse.detailOf(
+            lecture = lecture,
+            headCount = registeredLectureCount,
+            isRegistered = isRegistered,
+            lectureDates = lectureDates,
+            lectureLocation = lectureLocation
+        )
 
         return response
     }
