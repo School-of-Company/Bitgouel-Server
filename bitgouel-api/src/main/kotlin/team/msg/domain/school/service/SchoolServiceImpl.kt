@@ -41,7 +41,6 @@ class SchoolServiceImpl(
                 SchoolResponse(
                     id = it.id,
                     schoolName = it.name,
-                    field = it.field,
                     line = it.line,
                     departments = it.departments,
                     logoImageUrl = it.logoImageUrl,
@@ -68,7 +67,6 @@ class SchoolServiceImpl(
         val school = School(
             logoImageUrl = imageUrl,
             name = request.schoolName,
-            field = request.field,
             line = request.line,
             departments = request.departments
         )
@@ -110,7 +108,6 @@ class SchoolServiceImpl(
             id = id,
             logoImageUrl = imageUrl,
             name = request.schoolName,
-            field = request.field,
             line = request.line,
             departments = request.departments
         )
