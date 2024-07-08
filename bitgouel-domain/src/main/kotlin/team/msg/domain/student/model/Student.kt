@@ -1,18 +1,11 @@
 package team.msg.domain.student.model
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.OneToOne
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.club.model.Club
 import team.msg.domain.student.enums.StudentRole
 import team.msg.domain.user.model.User
 import java.util.*
+import javax.persistence.*
 
 @Entity
 class Student(
@@ -28,23 +21,26 @@ class Student(
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club,
 
-    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    @Column(name = "grade", columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val grade: Int,
 
     @Column(name = "class_room", columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val classRoom: Int,
 
-    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    @Column(name = "number", columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val number: Int,
 
-    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    @Column(name = "cohort", columnDefinition = "TINYINT UNSIGNED", nullable = false)
     val cohort: Int,
 
-    @Column(columnDefinition = "INT", nullable = false)
+    @Column(name = "credit", columnDefinition = "INT", nullable = false)
     val credit: Int,
 
+    @Column(name = "subscription_grade", columnDefinition = "INT", nullable = false)
+    val subscriptionGrade: Int,
+
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
+    @Column(name = "student_role", columnDefinition = "VARCHAR(10)", nullable = false)
     val studentRole: StudentRole
 
 ) : BaseUUIDEntity(id)

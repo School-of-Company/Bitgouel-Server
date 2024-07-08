@@ -11,6 +11,8 @@ import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.student.model.Student
+import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
@@ -27,11 +29,13 @@ class AdminServiceImplTest : BehaviorSpec({
     val userUtil = mockk<UserUtil>()
     val studentUtil = mockk<StudentUtil>()
     val clubRepository = mockk<ClubRepository>()
+    val studentRepository = mockk<StudentRepository>()
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
         userUtil = userUtil,
         studentUtil = studentUtil,
-        clubRepository = clubRepository
+        clubRepository = clubRepository,
+        studentRepository = studentRepository
     )
 
     // queryUsers 테스트 코드
@@ -48,6 +52,11 @@ class AdminServiceImplTest : BehaviorSpec({
             property(User::phoneNumber) { "01012345678" }
             property(User::authority) { authority }
             property(User::approveStatus) { approveStatus }
+        }
+
+        val student = fixture<Student> {
+            property(Student::id) { UUID.randomUUID() }
+            property(Student::user) { user }
         }
 
         val request = fixture<QueryUsersRequest> {
@@ -70,6 +79,7 @@ class AdminServiceImplTest : BehaviorSpec({
         }
 
         every { userRepository.query(keyword, authority, approveStatus) } returns listOf(user)
+        every { studentRepository.findByUser(any()) } returns student
 
         When("User 리스트 요청 시") {
             val result = adminServiceImpl.queryUsers(request)

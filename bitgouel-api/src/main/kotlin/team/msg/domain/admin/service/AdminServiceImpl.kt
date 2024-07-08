@@ -11,6 +11,7 @@ import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.InvalidEmailException
 import team.msg.domain.user.exception.InvalidPasswordException
@@ -28,7 +29,8 @@ class AdminServiceImpl(
     private val userRepository: UserRepository,
     private val userUtil: UserUtil,
     private val studentUtil: StudentUtil,
-    private val clubRepository: ClubRepository
+    private val clubRepository: ClubRepository,
+    private val studentRepository: StudentRepository
 ) : AdminService {
 
     /**
@@ -40,7 +42,12 @@ class AdminServiceImpl(
     override fun queryUsers(request: QueryUsersRequest): UsersResponse {
         val users = userRepository.query(request.keyword, request.authority, request.approveStatus)
 
-        return UserResponse.listOf(users)
+        return UsersResponse(
+            users.map { user ->
+                val student = studentRepository.findByUser(user)
+                UserResponse.of(user, student)
+            }
+        )
     }
 
     /**
@@ -128,6 +135,7 @@ class AdminServiceImpl(
             val classRoom = row.getCell(6).numericCellValue.toInt()
             val number = row.getCell(7).numericCellValue.toInt()
             val admissionNumber = row.getCell(8).numericCellValue.toInt()
+            val subscriptionGrade = row.getCell(9).numericCellValue.toInt()
 
             validateExcelStudentData(email, phoneNumber, password)
 
@@ -136,7 +144,7 @@ class AdminServiceImpl(
             val club = clubRepository findByName clubName
 
             try {
-                studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber)
+                studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber, subscriptionGrade)
             } catch (e: Exception) {
                 throw InternalServerException("서버 오류입니다.")
             }

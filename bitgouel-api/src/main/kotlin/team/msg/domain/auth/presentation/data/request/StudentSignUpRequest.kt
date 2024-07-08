@@ -10,5 +10,6 @@ data class StudentSignUpRequest(
     val grade: Int,
     val classRoom: Int,
     val number: Int,
-    val admissionNumber: Int
+    val admissionNumber: Int,
+    val subscriptionGrade: Int
 )

@@ -40,5 +40,8 @@ data class StudentSignUpWebRequest(
     val number: Int,
 
     @field:NotNull
-    val admissionNumber: Int
+    val admissionNumber: Int,
+
+    @field:NotNull
+    val subscriptionGrade: Int
 )

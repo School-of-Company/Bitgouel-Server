@@ -354,6 +354,7 @@ class LectureServiceImpl(
             number = student.number,
             cohort = student.cohort,
             credit = student.credit + lecture.credit,
+            subscriptionGrade = student.subscriptionGrade,
             studentRole = student.studentRole
         )
 
@@ -389,6 +390,7 @@ class LectureServiceImpl(
             number = student.number,
             cohort = student.cohort,
             credit = student.credit - lecture.credit,
+            subscriptionGrade = student.subscriptionGrade,
             studentRole = student.studentRole
         )
 

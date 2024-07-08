@@ -13,7 +13,7 @@ class StudentUtil(
     private val studentRepository: StudentRepository
 ) {
 
-    fun createStudent(user: User, club: Club, grade: Int, classRoom: Int, number: Int, admissionNumber: Int) {
+    fun createStudent(user: User, club: Club, grade: Int, classRoom: Int, number: Int, admissionNumber: Int, subscriptionGrade: Int) {
         val student = Student(
             id = UUID(0, 0),
             user = user,
@@ -23,6 +23,7 @@ class StudentUtil(
             number = number,
             cohort = admissionNumber - 2020,
             credit = 0,
+            subscriptionGrade = subscriptionGrade,
             studentRole = StudentRole.STUDENT
         )
         studentRepository.save(student)

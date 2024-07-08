@@ -182,6 +182,7 @@ class GraduateStudentJobConfiguration(
                 number = number,
                 cohort = cohort,
                 credit = credit,
+                subscriptionGrade = subscriptionGrade,
                 studentRole = StudentRole.GRADUATE
             )
         }
@@ -198,6 +199,7 @@ class GraduateStudentJobConfiguration(
                 number = number,
                 cohort = cohort,
                 credit = credit,
+                subscriptionGrade = subscriptionGrade,
                 studentRole = StudentRole.STUDENT
             )
         }
