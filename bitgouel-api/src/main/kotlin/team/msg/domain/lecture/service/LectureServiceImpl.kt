@@ -43,6 +43,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletResponse
 import team.msg.common.util.KakaoUtil
+import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.LectureLocation
 import team.msg.domain.lecture.repository.LectureLocationRepository
 
@@ -131,12 +132,13 @@ class LectureServiceImpl(
             throw ForbiddenLectureException("강의를 수정할 수 있는 권한이 없습니다. info : [ userId = ${currentUser.id} ]")
 
         val credit = if(request.lectureType != "상호학점인정교육과정") 0 else request.credit
+        val semester = if(request.lectureType == "대학탐방프로그램") Semester.NOT_APPLICABLE else request.semester
 
         val updatedLecture = Lecture(
             id = id,
             user = instructorUser,
             name = request.name,
-            semester = request.semester,
+            semester = semester,
             division = request.division,
             department = request.department,
             line = request.line,
