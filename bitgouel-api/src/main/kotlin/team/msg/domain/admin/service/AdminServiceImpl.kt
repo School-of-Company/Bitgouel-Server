@@ -44,7 +44,7 @@ class AdminServiceImpl(
 
         return UsersResponse(
             users.map { user ->
-                val student = studentRepository.findByUser(user) ?: null
+                val student = studentRepository.findByUser(user)
                 UserResponse.of(user, student)
             }
         )
