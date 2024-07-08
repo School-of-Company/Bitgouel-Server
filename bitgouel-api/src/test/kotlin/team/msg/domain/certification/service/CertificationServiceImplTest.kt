@@ -67,6 +67,7 @@ class CertificationServiceImplTest : BehaviorSpec ({
 
         every { userUtil.queryCurrentUser() } returns user
         every { studentRepository.findByUser(user) } returns student
+        every { certificationRepository.findAllByStudentId(student.id) } returns listOf(certification)
         every { certificationRepository.save(any()) } returns certification
 
         When("자격증 등록 요청을 하면") {

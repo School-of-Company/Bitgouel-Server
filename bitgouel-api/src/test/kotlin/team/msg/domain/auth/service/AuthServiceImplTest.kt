@@ -128,6 +128,7 @@ class AuthServiceImplTest : BehaviorSpec({
         every { schoolRepository.findByName(request.highSchool) } returns school
         every { clubRepository.findByNameAndSchool(request.clubName, school) } returns club
         every { securityUtil.passwordEncode(any()) } returns encodedPassword
+        every { studentUtil.createStudent(any(), any(), any(), any(), any(), any(), any()) } returns Unit
         every { studentRepository.save(any()) } returns student
 
         When("학생 회원가입 요청을 하면") {

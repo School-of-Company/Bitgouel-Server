@@ -18,7 +18,6 @@ import team.msg.domain.user.exception.InvalidPasswordException
 import team.msg.domain.user.exception.InvalidPhoneNumberException
 import team.msg.domain.user.exception.UserAlreadyApprovedException
 import team.msg.domain.user.model.User
-import team.msg.domain.user.presentation.data.response.AdminUserResponse
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
