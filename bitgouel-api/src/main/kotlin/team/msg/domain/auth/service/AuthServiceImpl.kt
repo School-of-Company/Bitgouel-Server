@@ -85,7 +85,7 @@ class AuthServiceImpl(
 
         val club = queryClub(request.highSchool, request.clubName)
 
-        studentUtil.createStudent(user, club, request.grade, request.classRoom, request.number, request.admissionNumber)
+        studentUtil.createStudent(user, club, request.grade, request.classRoom, request.number, request.admissionNumber, request.subscriptionGrade)
     }
 
     /**

@@ -1,6 +1,7 @@
 package team.msg.domain.user.presentation.data.response
 
 import team.msg.common.enums.ApproveStatus
+import team.msg.domain.student.model.Student
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.model.User
 import java.util.*
@@ -22,19 +23,15 @@ data class UserResponse (
             organization = organization
         )
 
-        fun of(user: User) = AdminUserResponse(
+        fun of(user: User, student: Student?) = AdminUserResponse(
             id = user.id,
             name = user.name,
             authority = user.authority,
             approveStatus = user.approveStatus,
             phoneNumber = user.phoneNumber,
+            subscriptionYear = user.createdAt.year,
+            subscriptionGrade = student?.subscriptionGrade,
             email = user.email
-        )
-
-        fun listOf(users: List<User>) = UsersResponse(
-            users.map {
-                of(it)
-            }
         )
 
         fun detailOf(user: User) = UserDetailsResponse(
@@ -61,6 +58,8 @@ data class AdminUserResponse(
     val authority: Authority,
     val approveStatus: ApproveStatus,
     val phoneNumber: String,
+    val subscriptionYear: Int,
+    val subscriptionGrade: Int?,
     val email: String
 )
 
