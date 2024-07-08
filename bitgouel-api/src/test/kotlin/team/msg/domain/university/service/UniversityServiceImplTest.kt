@@ -4,6 +4,7 @@ import com.appmattus.kotlinfixture.kotlinFixture
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -14,6 +15,8 @@ import team.msg.domain.university.exception.AlreadyExistUniversityException
 import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
+import team.msg.domain.university.presentation.data.response.UniversitiesResponse
+import team.msg.domain.university.presentation.data.response.UniversityResponse
 import team.msg.domain.university.repository.ProfessorRepository
 import team.msg.domain.university.repository.UniversityRepository
 
@@ -89,6 +92,40 @@ class UniversityServiceImplTest : BehaviorSpec({
                 shouldThrow<UniversityHasProfessorConstraintException> {
                     universityServiceImpl.deleteUniversity(universityId)
                 }
+            }
+        }
+    }
+
+    // queryUniversities 테스트 코드
+    Given("University가 주어질 때") {
+        val universityId = 1L
+        val universityName = "대학교"
+        val department = "컴퓨터 공학과"
+        val university = fixture<University> {
+            property(University::id) { universityId }
+            property(University::name) { universityName }
+            property(University::department) { department }
+        }
+
+        val universities = listOf(university)
+
+        val universityResponse = fixture<UniversityResponse> {
+            property(UniversityResponse::id) { universityId }
+            property(UniversityResponse::universityName) { universityName }
+            property(UniversityResponse::department) { department }
+        }
+
+        val response = fixture<UniversitiesResponse> {
+            property(UniversitiesResponse::universities) { listOf(universityResponse) }
+        }
+
+        every { universityRepository.findAll() } returns universities
+
+        When("대학 조회 시") {
+            val result = universityServiceImpl.queryUniversities()
+
+            Then("result 가 response 가 같아야 한다.") {
+                result shouldBe response
             }
         }
     }
