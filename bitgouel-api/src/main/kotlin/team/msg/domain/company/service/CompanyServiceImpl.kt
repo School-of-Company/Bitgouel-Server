@@ -56,7 +56,7 @@ class CompanyServiceImpl(
     }
 
     /**
-     * 기업을 삭제하는 비지니스로직입니다.
+     * 기업을 삭제하는 비지니스 로직입니다.
      * @param id 삭제할 기업의 id
      */
     @Transactional(rollbackFor = [Exception::class])
