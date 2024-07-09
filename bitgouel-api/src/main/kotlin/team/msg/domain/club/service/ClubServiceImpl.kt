@@ -69,6 +69,22 @@ class ClubServiceImpl(
     }
 
     /**
+     * 모든 동아리 이름을 조회하는 비즈니스 로직
+     * @param 동아리 이름을 조회하기 위한 학교 id
+     * @return 동아리 이름 리스트
+     */
+    @Transactional(readOnly = true)
+    override fun queryAllClubNames(schoolName: String?): ClubNamesResponse {
+        val clubs = clubRepository.findAllBySchoolName(schoolName)
+
+        val response = ClubNamesResponse(
+            ClubResponse.nameListOf(clubs)
+        )
+
+        return response
+    }
+
+    /**
      * 동아리를 상세 조회하는 비즈니스 로직
      * @param 동아리를 상세 조회하기 위한 id
      * @return 동아리 상세 정보를 담은 dto
