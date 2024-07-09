@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import team.msg.domain.school.mapper.SchoolRequestMapper
+import team.msg.domain.school.presentation.data.response.SchoolNamesResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.presentation.web.CreateSchoolWebRequest
 import team.msg.domain.school.presentation.web.UpdateSchoolWebRequest
@@ -21,6 +22,12 @@ class SchoolController(
     @GetMapping
     fun querySchools(): ResponseEntity<SchoolsResponse> {
         val response = schoolService.querySchools()
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/name")
+    fun querySchoolNames(): ResponseEntity<SchoolNamesResponse> {
+        val response = schoolService.querySchoolNames()
         return ResponseEntity.ok(response)
     }
 

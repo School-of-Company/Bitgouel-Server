@@ -14,7 +14,6 @@ import team.msg.global.security.handler.CustomAccessDeniedHandler
 import team.msg.global.security.handler.CustomAuthenticationEntryPointHandler
 import team.msg.global.security.jwt.JwtTokenParser
 
-
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtTokenParser: JwtTokenParser
@@ -78,6 +77,7 @@ class SecurityConfig(
 
             // school
             .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/school/name").permitAll()
             .mvcMatchers(HttpMethod.POST, "/school").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)

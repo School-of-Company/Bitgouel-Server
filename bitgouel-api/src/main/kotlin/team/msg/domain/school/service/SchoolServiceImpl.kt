@@ -14,6 +14,8 @@ import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.model.School
 import team.msg.domain.school.presentation.data.request.CreateSchoolRequest
 import team.msg.domain.school.presentation.data.request.UpdateSchoolRequest
+import team.msg.domain.school.presentation.data.response.SchoolNameResponse
+import team.msg.domain.school.presentation.data.response.SchoolNamesResponse
 import team.msg.domain.school.presentation.data.response.SchoolResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 import team.msg.domain.school.repository.SchoolRepository
@@ -45,6 +47,25 @@ class SchoolServiceImpl(
                     departments = it.departments,
                     logoImageUrl = it.logoImageUrl,
                     clubs = ClubResponse.schoolOf(clubs)
+                )
+            }
+        )
+
+        return response
+    }
+
+    /**
+     * 학교 이름을 전체 조회하는 비즈니스 로직
+     * @return 학교 이름을 담은 dto
+     */
+    @Transactional(readOnly = true)
+    override fun querySchoolNames(): SchoolNamesResponse {
+        val schools = schoolRepository.findAll()
+
+        val response = SchoolNamesResponse(
+            schools = schools.map {
+                SchoolNameResponse(
+                    schoolName = it.name
                 )
             }
         )
