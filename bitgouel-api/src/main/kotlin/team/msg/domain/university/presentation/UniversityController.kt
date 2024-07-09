@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,6 +15,7 @@ import team.msg.domain.university.mapper.UniversityRequestMapper
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.web.CreateDepartmentWebRequest
 import team.msg.domain.university.presentation.data.web.CreateUniversityWebRequest
+import team.msg.domain.university.presentation.data.web.UpdateUniversityWebRequest
 import team.msg.domain.university.service.UniversityService
 
 @RestController
@@ -28,6 +30,13 @@ class UniversityController(
         val request = universityRequestMapper.createUniversityWebRequestToDto(webRequest)
         universityService.createUniversity(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PatchMapping("/{id}")
+    fun updateUniversity(@PathVariable id: Long, webRequest: UpdateUniversityWebRequest): ResponseEntity<Unit> {
+        val request = universityRequestMapper.updateUniversityWebRequestToDto(webRequest)
+        universityService.updateUniversity(id, request)
+        return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
