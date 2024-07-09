@@ -22,5 +22,5 @@ class University(
 
     @ElementCollection
     @CollectionTable(name = "department", joinColumns = [JoinColumn(name = "university_id")])
-    val department: List<String>
+    val departments: List<String> = mutableListOf()
 )
