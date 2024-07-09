@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import team.msg.domain.company.mapper.CompanyMapper
+import team.msg.domain.company.mapper.CompanyRequestMapper
 import team.msg.domain.company.presentation.data.response.CompaniesResponse
 import team.msg.domain.company.presentation.web.CreateCompanyWebRequest
 import team.msg.domain.company.service.CompanyService
@@ -19,11 +19,11 @@ import team.msg.domain.company.service.CompanyService
 @RequestMapping("/company")
 class CompanyController(
     private val companyService: CompanyService,
-    private val companyMapper: CompanyMapper
+    private val companyRequestMapper: CompanyRequestMapper
 ) {
     @PostMapping
     fun createCompany(@RequestBody @Valid webRequest: CreateCompanyWebRequest): ResponseEntity<Unit> {
-        val request = companyMapper.createCompanyWebRequestToDto(webRequest)
+        val request = companyRequestMapper.createCompanyWebRequestToDto(webRequest)
         companyService.createCompany(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
