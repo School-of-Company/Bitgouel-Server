@@ -15,6 +15,7 @@ import team.msg.domain.university.mapper.UniversityRequestMapper
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.web.CreateDepartmentWebRequest
 import team.msg.domain.university.presentation.data.web.CreateUniversityWebRequest
+import team.msg.domain.university.presentation.data.web.DeleteDepartmentWebRequest
 import team.msg.domain.university.presentation.data.web.UpdateUniversityWebRequest
 import team.msg.domain.university.service.UniversityService
 
@@ -56,5 +57,12 @@ class UniversityController(
         val request = universityRequestMapper.createDepartmentWebRequestToDto(webRequest)
         universityService.createDepartment(id, request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @DeleteMapping("/department/{id}")
+    fun deleteDepartment(@PathVariable id: Long, @RequestBody webRequest: DeleteDepartmentWebRequest): ResponseEntity<Unit> {
+        val request = universityRequestMapper.deleteDepartmentWebRequestToDto(webRequest)
+        universityService.deleteDepartment(id, request)
+        return ResponseEntity.noContent().build()
     }
 }
