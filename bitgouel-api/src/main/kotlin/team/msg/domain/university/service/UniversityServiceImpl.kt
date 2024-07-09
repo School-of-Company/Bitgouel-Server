@@ -7,6 +7,7 @@ import team.msg.domain.university.exception.AlreadyExistUniversityException
 import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.exception.UniversityNotFoundException
 import team.msg.domain.university.model.University
+import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.response.UniversityResponse
@@ -64,5 +65,28 @@ class UniversityServiceImpl(
         )
 
         return response
+    }
+
+    /**
+     * 학과를 추가하는 비지니스 로직입니다.
+     * @param request 추가할 학과의 정보
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun createDepartment(id: Long, request: CreateDepartmentRequest) {
+        val university = universityRepository.findByIdOrNull(id)
+            ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
+
+        val departments = buildList {
+            addAll(university.departments)
+            add(request.department)
+        }
+
+        val updatedUniversity = University(
+            id = university.id,
+            name = university.name,
+            departments = departments
+        )
+
+        universityRepository.save(updatedUniversity)
     }
 }
