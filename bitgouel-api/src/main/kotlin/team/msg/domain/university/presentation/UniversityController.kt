@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import team.msg.domain.university.mapper.UniversityRequestMapper
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
+import team.msg.domain.university.presentation.data.web.CreateDepartmentWebRequest
 import team.msg.domain.university.presentation.data.web.CreateUniversityWebRequest
 import team.msg.domain.university.service.UniversityService
 
@@ -38,5 +40,12 @@ class UniversityController(
     fun queryUniversities(): ResponseEntity<UniversitiesResponse> {
         val response = universityService.queryUniversities()
         return ResponseEntity.ok(response)
+    }
+
+    @PostMapping("/department/{id}")
+    fun createDepartment(@PathVariable id: Long, @RequestBody webRequest: CreateDepartmentWebRequest): ResponseEntity<Unit> {
+        val request = universityRequestMapper.createDepartmentWebRequestToDto(webRequest)
+        universityService.createDepartment(id, request)
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
