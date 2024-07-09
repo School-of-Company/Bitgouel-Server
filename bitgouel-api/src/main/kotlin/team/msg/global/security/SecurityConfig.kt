@@ -165,6 +165,7 @@ class SecurityConfig(
             // university
             .mvcMatchers(HttpMethod.GET, "/university").permitAll()
             .mvcMatchers(HttpMethod.POST, "/university").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.PATCH, "/university/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/university/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.POST, "/university/department/{id}").hasRole(ADMIN)
 
