@@ -8,16 +8,13 @@ import team.msg.domain.school.presentation.web.CreateSchoolWebRequest
 import team.msg.domain.school.presentation.web.UpdateSchoolWebRequest
 
 @Component
-class SchoolRequestMapperImpl(
-    private val clubRequestMapper: ClubRequestMapper
-) : SchoolRequestMapper {
+class SchoolRequestMapperImpl : SchoolRequestMapper {
 
     override fun createSchoolWebRequestToDto(webRequest: CreateSchoolWebRequest): CreateSchoolRequest =
         CreateSchoolRequest(
             schoolName = webRequest.schoolName,
             line = webRequest.line,
-            departments = webRequest.departments,
-            club = webRequest.club.map { clubRequestMapper.createClubWebRequestToDto(it) }
+            departments = webRequest.departments
         )
 
     override fun updateSchoolWebRequestToDto(webRequest: UpdateSchoolWebRequest): UpdateSchoolRequest =

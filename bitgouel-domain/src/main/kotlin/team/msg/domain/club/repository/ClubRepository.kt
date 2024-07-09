@@ -17,4 +17,6 @@ interface ClubRepository : JpaRepository<Club, Long>, CustomClubRepository {
     fun findAllBySchool(school: School): List<Club>
 
     fun existsBySchool(school: School): Boolean
+
+    fun existsByName(name: String): Boolean
 }

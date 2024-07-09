@@ -21,6 +21,12 @@ data class ClubResponse(
             )
         }
 
+        fun nameListOf(clubs: List<String>): List<ClubNameResponse> = clubs.map {
+            ClubNameResponse(
+                name = it
+            )
+        }
+
         fun detailOf(club: Club, students: List<Student>, teacher: Teacher?) = ClubDetailsResponse(
             clubId = club.id,
             clubName = club.name,
@@ -60,4 +66,12 @@ data class SchoolToClubResponse(
     val id: Long,
     val name: String,
     val field: Field
+)
+
+data class ClubNameResponse(
+    val name: String
+)
+
+data class ClubNamesResponse(
+    val clubs: List<ClubNameResponse>
 )

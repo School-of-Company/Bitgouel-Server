@@ -92,16 +92,7 @@ class SchoolServiceImpl(
             departments = request.departments
         )
 
-        val clubs = request.club.map { club ->
-            Club(
-                school = school,
-                name = club.clubName,
-                field = club.field
-            )
-        }
-
         schoolRepository.save(school)
-        clubRepository.saveAll(clubs)
     }
 
     /**
