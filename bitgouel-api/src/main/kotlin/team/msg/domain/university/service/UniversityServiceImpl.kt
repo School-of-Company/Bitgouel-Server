@@ -31,7 +31,6 @@ class UniversityServiceImpl(
             throw AlreadyExistUniversityException("이미 존재하는 대학입니다. info : [ universityName = ${request.universityName} ]")
 
         val university = University(
-            department = request.department,
             name = request.universityName
         )
 
