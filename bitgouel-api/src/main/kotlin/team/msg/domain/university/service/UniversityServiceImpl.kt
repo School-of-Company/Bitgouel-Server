@@ -9,6 +9,7 @@ import team.msg.domain.university.exception.UniversityNotFoundException
 import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
+import team.msg.domain.university.presentation.data.request.DeleteDepartmentRequest
 import team.msg.domain.university.presentation.data.request.UpdateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.response.UniversityResponse
@@ -109,5 +110,24 @@ class UniversityServiceImpl(
         )
 
         universityRepository.save(updatedUniversity)
+    }
+
+    /**
+     * 학과를 삭제하는 비지니스 로직입니다.
+     * @param id 학과를 삭제할 대학의 식별자
+     * @param request 삭제할 학과의 정보
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun deleteDepartment(id: Long, request: DeleteDepartmentRequest) {
+        val university = universityRepository.findByIdOrNull(id)
+            ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
+
+        val updateUniversity = University(
+            id = university.id,
+            name = university.name,
+            departments = university.departments - request.department
+        )
+
+        universityRepository.save(updateUniversity)
     }
 }
