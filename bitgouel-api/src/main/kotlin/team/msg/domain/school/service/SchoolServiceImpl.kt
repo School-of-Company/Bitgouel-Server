@@ -65,7 +65,6 @@ class SchoolServiceImpl(
         val response = SchoolNamesResponse(
             schools = schools.map {
                 SchoolNameResponse(
-                    id = it.id,
                     schoolName = it.name
                 )
             }

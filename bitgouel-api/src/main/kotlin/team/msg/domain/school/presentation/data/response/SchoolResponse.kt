@@ -17,7 +17,6 @@ data class SchoolsResponse(
 )
 
 data class SchoolNameResponse(
-    val id: Long,
     val schoolName: String
 )
 
