@@ -39,7 +39,7 @@ class UniversityServiceImpl(
     }
 
     /**
-     * 대학을 삭제하는 비지니스로직입니다.
+     * 대학을 삭제하는 비지니스 로직입니다.
      * @param id 삭제할 대학의 id
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -69,6 +69,7 @@ class UniversityServiceImpl(
 
     /**
      * 학과를 추가하는 비지니스 로직입니다.
+     * @param id 학과를 추가할 대학의 식별자
      * @param request 추가할 학과의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
