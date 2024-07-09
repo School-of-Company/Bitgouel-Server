@@ -42,6 +42,7 @@ class UniversityServiceImpl(
 
     /**
      * 대학을 수정하는 비지니스 로직입니다.
+     *
      * @param id 수정할 대학의 식별자
      * @param request 수정할 대학의 정보
      */
@@ -61,6 +62,8 @@ class UniversityServiceImpl(
 
     /**
      * 대학을 삭제하는 비지니스 로직입니다.
+     * 삭제할 대학과 연관된 대학교수 엔티티가 존재한다면 예외를 반환합나다.
+     *
      * @param id 삭제할 대학의 id
      */
     @Transactional(rollbackFor = [Exception::class])
@@ -76,6 +79,7 @@ class UniversityServiceImpl(
 
     /**
      *  대학 리스트를 반환하는 비지니스 로직입니다.
+     *
      *  @return 대학 리스트
      */
     override fun queryUniversities(): UniversitiesResponse {
@@ -90,6 +94,7 @@ class UniversityServiceImpl(
 
     /**
      * 학과를 추가하는 비지니스 로직입니다.
+     *
      * @param id 학과를 추가할 대학의 식별자
      * @param request 추가할 학과의 정보
      */
@@ -114,6 +119,7 @@ class UniversityServiceImpl(
 
     /**
      * 학과를 삭제하는 비지니스 로직입니다.
+     *
      * @param id 학과를 삭제할 대학의 식별자
      * @param request 삭제할 학과의 정보
      */
