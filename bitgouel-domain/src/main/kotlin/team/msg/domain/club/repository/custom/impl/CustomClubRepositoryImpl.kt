@@ -34,6 +34,6 @@ class CustomClubRepositoryImpl(
             .fetch()
 
     private fun schoolNameEq(schoolName: String?): BooleanExpression? =
-        if (schoolName == null) null else club.school.name.eq(schoolName)
+        if (schoolName.isNullOrBlank()) null else club.school.name.eq(schoolName)
 
 }
