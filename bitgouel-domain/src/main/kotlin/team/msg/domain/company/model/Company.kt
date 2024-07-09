@@ -11,7 +11,7 @@ class Company(
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     val name: String,
 
     @Enumerated(EnumType.STRING)

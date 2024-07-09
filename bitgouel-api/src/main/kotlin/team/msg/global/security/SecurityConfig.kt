@@ -157,8 +157,13 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)
 
+            // company
+            .mvcMatchers(HttpMethod.GET, "/company").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/company").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.DELETE, "/company/{id}").hasRole(ADMIN)
+
             // government
-            .mvcMatchers(HttpMethod.GET, "/government").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/government").permitAll()
             .mvcMatchers(HttpMethod.POST, "/government").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/government/{id}").hasRole(ADMIN)
 
