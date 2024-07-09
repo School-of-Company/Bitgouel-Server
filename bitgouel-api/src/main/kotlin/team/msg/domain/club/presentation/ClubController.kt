@@ -27,7 +27,7 @@ class ClubController(
     }
 
     @GetMapping("/name")
-    fun queryAllClubs(@RequestParam("schoolName") schoolName: String?): ResponseEntity<ClubNamesResponse> {
+    fun queryAllClubNames(@RequestParam("schoolName") schoolName: String?): ResponseEntity<ClubNamesResponse> {
         val response = clubService.queryAllClubNames(schoolName)
         return ResponseEntity.ok(response)
     }
