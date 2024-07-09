@@ -15,3 +15,12 @@ data class SchoolResponse(
 data class SchoolsResponse(
     val schools: List<SchoolResponse>
 )
+
+data class SchoolNameResponse(
+    val id: Long,
+    val schoolName: String
+)
+
+data class SchoolNamesResponse(
+    val schools: List<SchoolNameResponse>
+)
