@@ -69,6 +69,7 @@ class SecurityConfig(
 
             // club
             .mvcMatchers(HttpMethod.GET, "/club").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/club/name").permitAll()
             .mvcMatchers(HttpMethod.GET, "/club/my").hasAnyRole(STUDENT, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
             .mvcMatchers(HttpMethod.GET, "/club/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.GET, "/club/{id}/{student_id}").hasAnyRole(STUDENT, ADMIN, PROFESSOR, COMPANY_INSTRUCTOR, BBOZZAK, TEACHER, GOVERNMENT)
