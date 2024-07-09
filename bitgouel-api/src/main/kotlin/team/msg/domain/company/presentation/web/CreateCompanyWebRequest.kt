@@ -1,7 +1,7 @@
 package team.msg.domain.company.presentation.web
 
 import javax.validation.constraints.NotBlank
-import org.jetbrains.annotations.NotNull
+import javax.validation.constraints.NotNull
 import team.msg.common.enums.Field
 
 data class CreateCompanyWebRequest(
