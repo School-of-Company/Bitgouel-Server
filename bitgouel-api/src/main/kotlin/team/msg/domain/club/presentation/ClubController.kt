@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import team.msg.domain.club.mapper.ClubRequestMapper
 import team.msg.domain.club.presentation.data.response.ClubDetailsResponse
+import team.msg.domain.club.presentation.data.response.ClubNamesResponse
 import team.msg.domain.club.presentation.data.response.ClubsResponse
 import team.msg.domain.club.presentation.web.request.UpdateClubWebRequest
 import team.msg.domain.club.service.ClubService
@@ -20,6 +21,12 @@ class ClubController(
     @GetMapping
     fun queryAllClubs(@RequestParam("highSchool") highSchool: String): ResponseEntity<ClubsResponse> {
         val response = clubService.queryAllClubs(highSchool)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/name")
+    fun queryAllClubs(@RequestParam("schoolName") schoolName: String?): ResponseEntity<ClubNamesResponse> {
+        val response = clubService.queryAllClubNames(schoolName)
         return ResponseEntity.ok(response)
     }
 
