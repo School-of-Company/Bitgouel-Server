@@ -14,12 +14,6 @@ data class CompanyResponse(
             companyName = company.name,
             field = company.field
         )
-
-        fun listOf(companies: List<Company>) = CompaniesResponse(
-            companies.map {
-                of(it)
-            }
-        )
     }
 }
 

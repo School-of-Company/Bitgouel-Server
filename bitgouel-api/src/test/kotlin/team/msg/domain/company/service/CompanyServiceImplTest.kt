@@ -17,6 +17,7 @@ import team.msg.domain.company.exception.CompanyHasCompanyInstructorConstraintEx
 import team.msg.domain.company.exception.CompanyNotFoundException
 import team.msg.domain.company.model.Company
 import team.msg.domain.company.presentation.data.request.CreateCompanyRequest
+import team.msg.domain.company.presentation.data.response.CompaniesResponse
 import team.msg.domain.company.presentation.data.response.CompanyResponse
 import team.msg.domain.company.repository.CompanyInstructorRepository
 import team.msg.domain.company.repository.CompanyRepository
@@ -94,7 +95,11 @@ class CompanyServiceImplTest : BehaviorSpec({
         }
 
         val companies = listOf(companyA, governmentB)
-        val response = CompanyResponse.listOf(companies)
+        val response = CompaniesResponse(
+            companies = companies.map {
+                CompanyResponse.of(it)
+            }
+        )
 
         every { companyRepository.findAll() } returns companies
 
