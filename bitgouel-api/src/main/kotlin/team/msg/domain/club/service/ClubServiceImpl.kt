@@ -7,9 +7,11 @@ import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
+import team.msg.domain.club.exception.AlreadyExistClubException
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.exception.NotEmptyClubException
 import team.msg.domain.club.model.Club
+import team.msg.domain.club.presentation.data.reqeust.CreateClubRequest
 import team.msg.domain.club.presentation.data.reqeust.UpdateClubRequest
 import team.msg.domain.club.presentation.data.response.*
 import team.msg.domain.club.repository.ClubRepository
@@ -153,6 +155,27 @@ class ClubServiceImpl(
     }
 
     /**
+     * 동아리를 생성하는 비지니스 로직
+     * @param 동아리가 속할 학교 id, 생성할 동아리 정보
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun createClub(schoolId: Long, request: CreateClubRequest) {
+        val school = schoolRepository.findByIdOrNull(schoolId)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ id = $schoolId ]")
+
+        if (clubRepository.existsByName(request.clubName)) {
+            throw AlreadyExistClubException("이미 존재하는 동아리입니다. info : [ clubName = ${request.clubName} ]")
+        }
+
+        val club = Club(
+            school = school,
+            name = request.clubName,
+            field = request.field
+        )
+        clubRepository.save(club)
+    }
+
+    /**
      * 동아리를 수정하는 비지니스 로직
      * @param 동아리 id
      */
@@ -160,6 +183,10 @@ class ClubServiceImpl(
     override fun updateClub(id: Long, request: UpdateClubRequest) {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
+
+        if (clubRepository.existsByName(request.clubName)) {
+            throw AlreadyExistClubException("이미 존재하는 동아리입니다. info : [ clubName = ${request.clubName} ]")
+        }
 
         val updateClub = Club(
             school = club.school,
