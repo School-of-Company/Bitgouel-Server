@@ -9,7 +9,6 @@ class UniversityRequestRequestMapperImpl : UniversityRequestMapper {
 
     override fun createUniversityWebRequestToDto(webRequest: CreateUniversityWebRequest) : CreateUniversityRequest =
         CreateUniversityRequest(
-            department = webRequest.department,
             universityName = webRequest.universityName
         )
 }
