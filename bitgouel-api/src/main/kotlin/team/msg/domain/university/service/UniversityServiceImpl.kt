@@ -48,6 +48,9 @@ class UniversityServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateUniversity(id: Long, request: UpdateUniversityRequest) {
+        if(universityRepository.existsByName(request.universityName))
+            throw AlreadyExistUniversityException("이미 존재하는 대학입니다. info : [ universityName = ${request.universityName} ]")
+
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
 
