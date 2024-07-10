@@ -82,6 +82,7 @@ class UniversityServiceImpl(
      *
      *  @return 대학 리스트
      */
+    @Transactional(readOnly = true)
     override fun queryUniversities(): UniversitiesResponse {
         val universities = universityRepository.findAll()
 
