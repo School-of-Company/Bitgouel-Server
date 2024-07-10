@@ -74,9 +74,11 @@ class UniversityServiceImplTest : BehaviorSpec({
     Given("UniversityId 와 UpdateUniversityRequest 가 주어졌을 때") {
         val universityId = 1L
         val newName = "newName"
+
         val request = fixture<UpdateUniversityRequest> {
             property(UpdateUniversityRequest::universityName) { newName }
         }
+
         val university = fixture<University>()
         val updatedUniversity = fixture<University> {
             property(University::name) { newName }
@@ -132,6 +134,7 @@ class UniversityServiceImplTest : BehaviorSpec({
         val universityId = 1L
         val universityName = "대학교"
         val department = "컴퓨터 공학과"
+
         val university = fixture<University> {
             property(University::id) { universityId }
             property(University::name) { universityName }
@@ -143,7 +146,6 @@ class UniversityServiceImplTest : BehaviorSpec({
             property(UniversityResponse::id) { universityId }
             property(UniversityResponse::universityName) { universityName }
         }
-
         val response = fixture<UniversitiesResponse> {
             property(UniversitiesResponse::universities) { listOf(universityResponse) }
         }
@@ -163,12 +165,12 @@ class UniversityServiceImplTest : BehaviorSpec({
     Given("UniversityId 와 CreateDepartmentRequest 가 주어지면") {
         val universityId = 1L
         val department = "컴공과"
+
         val request = fixture<CreateDepartmentRequest> {
             property(CreateDepartmentRequest::department) { department }
         }
 
         val university = fixture<University>()
-
         val updatedUniversity = fixture<University> {
             property(University::departments) { listOf(department) }
         }
@@ -189,6 +191,7 @@ class UniversityServiceImplTest : BehaviorSpec({
     Given("UniversityId 와 deleteDepartmentRequest 가 주어지면") {
         val universityId = 1L
         val department = "컴공과"
+
         val request = fixture<DeleteDepartmentRequest> {
             property(DeleteDepartmentRequest::department) { department }
         }
