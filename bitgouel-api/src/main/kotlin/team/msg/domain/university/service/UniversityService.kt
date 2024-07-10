@@ -12,5 +12,5 @@ interface UniversityService {
     fun deleteUniversity(id: Long)
     fun queryUniversities(): UniversitiesResponse
     fun createDepartment(id: Long, request: CreateDepartmentRequest)
-    fun deleteDepartment(id: Long, request: DeleteDepartmentRequest)
+    fun deleteDepartment(id: Long, department: String)
 }

@@ -3,6 +3,7 @@ package team.msg.domain.university.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestParam
 import team.msg.domain.university.exception.AlreadyExistUniversityException
 import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.exception.UniversityNotFoundException
@@ -128,14 +129,14 @@ class UniversityServiceImpl(
      * @param request 삭제할 학과의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun deleteDepartment(id: Long, request: DeleteDepartmentRequest) {
+    override fun deleteDepartment(id: Long, department: String) {
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
 
         val updateUniversity = University(
             id = university.id,
             name = university.name,
-            departments = university.departments - request.department
+            departments = university.departments - department
         )
 
         universityRepository.save(updateUniversity)

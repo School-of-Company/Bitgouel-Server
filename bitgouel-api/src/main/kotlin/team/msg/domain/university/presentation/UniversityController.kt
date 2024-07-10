@@ -61,9 +61,8 @@ class UniversityController(
     }
 
     @DeleteMapping("/department/{id}")
-    fun deleteDepartment(@PathVariable id: Long, @RequestBody webRequest: DeleteDepartmentWebRequest): ResponseEntity<Unit> {
-        val request = universityRequestMapper.deleteDepartmentWebRequestToDto(webRequest)
-        universityService.deleteDepartment(id, request)
+    fun deleteDepartment(@PathVariable id: Long, @RequestParam department: String): ResponseEntity<Unit> {
+        universityService.deleteDepartment(id, department)
         return ResponseEntity.noContent().build()
     }
 }
