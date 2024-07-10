@@ -1,5 +1,6 @@
 package team.msg.domain.university.presentation
 
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -27,14 +28,14 @@ class UniversityController(
 ) {
 
     @PostMapping
-    fun createUniversity(@RequestBody webRequest: CreateUniversityWebRequest): ResponseEntity<Unit> {
+    fun createUniversity(@RequestBody @Valid webRequest: CreateUniversityWebRequest): ResponseEntity<Unit> {
         val request = universityRequestMapper.createUniversityWebRequestToDto(webRequest)
         universityService.createUniversity(request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PatchMapping("/{id}")
-    fun updateUniversity(@PathVariable id: Long, webRequest: UpdateUniversityWebRequest): ResponseEntity<Unit> {
+    fun updateUniversity(@PathVariable id: Long, @RequestBody @Valid webRequest: UpdateUniversityWebRequest): ResponseEntity<Unit> {
         val request = universityRequestMapper.updateUniversityWebRequestToDto(webRequest)
         universityService.updateUniversity(id, request)
         return ResponseEntity.noContent().build()
@@ -53,7 +54,7 @@ class UniversityController(
     }
 
     @PostMapping("/department/{id}")
-    fun createDepartment(@PathVariable id: Long, @RequestBody webRequest: CreateDepartmentWebRequest): ResponseEntity<Unit> {
+    fun createDepartment(@PathVariable id: Long, @RequestBody @Valid webRequest: CreateDepartmentWebRequest): ResponseEntity<Unit> {
         val request = universityRequestMapper.createDepartmentWebRequestToDto(webRequest)
         universityService.createDepartment(id, request)
         return ResponseEntity.status(HttpStatus.CREATED).build()
