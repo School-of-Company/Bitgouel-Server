@@ -23,7 +23,7 @@ class School(
 
     @ElementCollection
     @CollectionTable(
-        name = "department",
+        name = "school_department",
         joinColumns = [JoinColumn(name = "school_id")]
     )
     val departments: List<String>

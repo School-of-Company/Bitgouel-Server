@@ -14,7 +14,9 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.domain.university.exception.AlreadyExistUniversityException
 import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.model.University
+import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
+import team.msg.domain.university.presentation.data.request.UpdateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.response.UniversityResponse
 import team.msg.domain.university.repository.ProfessorRepository
@@ -67,6 +69,36 @@ class UniversityServiceImplTest : BehaviorSpec({
         }
     }
 
+    // updateUniversity 테스트 코드
+    Given("UniversityId 와 UpdateUniversityRequest 가 주어졌을 때") {
+        val universityId = 1L
+        val newName = "newName"
+
+        val request = fixture<UpdateUniversityRequest> {
+            property(UpdateUniversityRequest::universityName) { newName }
+        }
+
+        val university = fixture<University>()
+        val updatedUniversity = fixture<University> {
+            property(University::name) { newName }
+        }
+
+        every { universityRepository.findByIdOrNull(universityId) } returns university
+        every { universityRepository.save(any()) } returns updatedUniversity
+
+        When("University 수정 요청을 하면") {
+            universityServiceImpl.updateUniversity(universityId, request)
+
+            Then("수정된 University 가 저장이 되어야 한다") {
+                verify(exactly = 1) { universityRepository.save(any()) }
+            }
+
+            Then("request 의 universityName 과 수정된 University 의 name 이 같아야 한다") {
+                request.universityName shouldBe updatedUniversity.name
+            }
+        }
+    }
+
     // deleteUniversity 테스트 코드
     Given("UniversityId 가 주어졌을 때") {
         val universityId = 1L
@@ -101,10 +133,10 @@ class UniversityServiceImplTest : BehaviorSpec({
         val universityId = 1L
         val universityName = "대학교"
         val department = "컴퓨터 공학과"
+
         val university = fixture<University> {
             property(University::id) { universityId }
             property(University::name) { universityName }
-            property(University::department) { department }
         }
 
         val universities = listOf(university)
@@ -112,9 +144,7 @@ class UniversityServiceImplTest : BehaviorSpec({
         val universityResponse = fixture<UniversityResponse> {
             property(UniversityResponse::id) { universityId }
             property(UniversityResponse::universityName) { universityName }
-            property(UniversityResponse::department) { department }
         }
-
         val response = fixture<UniversitiesResponse> {
             property(UniversitiesResponse::universities) { listOf(universityResponse) }
         }
@@ -126,6 +156,56 @@ class UniversityServiceImplTest : BehaviorSpec({
 
             Then("result 가 response 가 같아야 한다.") {
                 result shouldBe response
+            }
+        }
+    }
+
+    // createDepartment 테스트 코드
+    Given("UniversityId 와 CreateDepartmentRequest 가 주어지면") {
+        val universityId = 1L
+        val department = "컴공과"
+
+        val request = fixture<CreateDepartmentRequest> {
+            property(CreateDepartmentRequest::department) { department }
+        }
+
+        val university = fixture<University>()
+        val updatedUniversity = fixture<University> {
+            property(University::departments) { listOf(department) }
+        }
+
+        every { universityRepository.findByIdOrNull(universityId) } returns university
+        every { universityRepository.save(any()) } returns updatedUniversity
+
+        When("Department 추가 요청 시") {
+            universityServiceImpl.createDepartment(universityId, request)
+
+            Then("Update 된 University 가 저장이 되어야 한다") {
+                verify(exactly = 1) { universityRepository.save(any()) }
+            }
+        }
+    }
+
+    // deleteDepartment 테스트 코드
+    Given("UniversityId 와 deleteDepartmentRequest 가 주어지면") {
+        val universityId = 1L
+        val department = "컴공과"
+
+        val university = fixture<University> {
+            property(University::departments) { listOf(department) }
+        }
+        val updatedUniversity = fixture<University> {
+            property(University::departments) { listOf() }
+        }
+
+        every { universityRepository.findByIdOrNull(universityId) } returns university
+        every { universityRepository.save(any()) } returns updatedUniversity
+
+        When("Department 삭제 요청 시") {
+            universityServiceImpl.deleteDepartment(universityId, department)
+
+            Then("Update 된 University 가 저장이 되어야 한다") {
+                verify(exactly = 1) { universityRepository.save(any()) }
             }
         }
     }
