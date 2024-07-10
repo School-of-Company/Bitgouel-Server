@@ -16,7 +16,6 @@ import team.msg.domain.university.mapper.UniversityRequestMapper
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.web.CreateDepartmentWebRequest
 import team.msg.domain.university.presentation.data.web.CreateUniversityWebRequest
-import team.msg.domain.university.presentation.data.web.DeleteDepartmentWebRequest
 import team.msg.domain.university.presentation.data.web.UpdateUniversityWebRequest
 import team.msg.domain.university.service.UniversityService
 

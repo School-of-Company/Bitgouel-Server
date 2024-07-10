@@ -2,7 +2,6 @@ package team.msg.domain.university.service
 
 import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
-import team.msg.domain.university.presentation.data.request.DeleteDepartmentRequest
 import team.msg.domain.university.presentation.data.request.UpdateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 

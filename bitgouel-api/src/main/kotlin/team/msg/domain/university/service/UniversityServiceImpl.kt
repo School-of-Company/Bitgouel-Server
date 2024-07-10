@@ -3,14 +3,12 @@ package team.msg.domain.university.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.RequestParam
 import team.msg.domain.university.exception.AlreadyExistUniversityException
 import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.exception.UniversityNotFoundException
 import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
-import team.msg.domain.university.presentation.data.request.DeleteDepartmentRequest
 import team.msg.domain.university.presentation.data.request.UpdateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.response.UniversityResponse
