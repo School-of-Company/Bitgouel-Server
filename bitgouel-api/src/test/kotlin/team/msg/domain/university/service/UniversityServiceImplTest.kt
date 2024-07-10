@@ -16,7 +16,6 @@ import team.msg.domain.university.exception.UniversityHasProfessorConstraintExce
 import team.msg.domain.university.model.University
 import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
-import team.msg.domain.university.presentation.data.request.DeleteDepartmentRequest
 import team.msg.domain.university.presentation.data.request.UpdateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 import team.msg.domain.university.presentation.data.response.UniversityResponse
@@ -192,10 +191,6 @@ class UniversityServiceImplTest : BehaviorSpec({
         val universityId = 1L
         val department = "컴공과"
 
-        val request = fixture<DeleteDepartmentRequest> {
-            property(DeleteDepartmentRequest::department) { department }
-        }
-
         val university = fixture<University> {
             property(University::departments) { listOf(department) }
         }
@@ -207,7 +202,7 @@ class UniversityServiceImplTest : BehaviorSpec({
         every { universityRepository.save(any()) } returns updatedUniversity
 
         When("Department 삭제 요청 시") {
-            universityServiceImpl.deleteDepartment(universityId, request)
+            universityServiceImpl.deleteDepartment(universityId, department)
 
             Then("Update 된 University 가 저장이 되어야 한다") {
                 verify(exactly = 1) { universityRepository.save(any()) }
