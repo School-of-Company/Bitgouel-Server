@@ -14,6 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import team.msg.domain.university.exception.AlreadyExistUniversityException
 import team.msg.domain.university.exception.UniversityHasProfessorConstraintException
 import team.msg.domain.university.model.University
+import team.msg.domain.university.presentation.data.request.CreateDepartmentRequest
 import team.msg.domain.university.presentation.data.request.CreateUniversityRequest
 import team.msg.domain.university.presentation.data.request.UpdateUniversityRequest
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
@@ -153,6 +154,32 @@ class UniversityServiceImplTest : BehaviorSpec({
 
             Then("result 가 response 가 같아야 한다.") {
                 result shouldBe response
+            }
+        }
+    }
+
+    // createDepartment 테스트 코드
+    Given("UniversityId 와 CreateDepartmentRequest 가 주어지면") {
+        val universityId = 1L
+        val department = "컴공과"
+        val request = fixture<CreateDepartmentRequest> {
+            property(CreateDepartmentRequest::department) { department }
+        }
+
+        val university = fixture<University>()
+
+        val updatedUniversity = fixture<University> {
+            property(University::departments) { listOf(department) }
+        }
+
+        every { universityRepository.findByIdOrNull(universityId) } returns university
+        every { universityRepository.save(any()) } returns updatedUniversity
+
+        When("Department 추가 요청 시") {
+            universityServiceImpl.createDepartment(universityId, request)
+
+            Then("Update 된 University 가 저장이 되어야 한다") {
+                verify(exactly = 1) { universityRepository.save(any()) }
             }
         }
     }
