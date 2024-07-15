@@ -109,12 +109,15 @@ class LectureController(
         return ResponseEntity.ok(response)
     }
 
-    @PatchMapping("/{id}/{student_id}")
-    fun updateLectureCompleteStatus(
-        @PathVariable id: UUID, @PathVariable("student_id") studentId: UUID,
-        @RequestParam isComplete: Boolean
-    ): ResponseEntity<Unit> {
-        lectureService.updateLectureCompleteStatus(id, studentId, isComplete)
+    @GetMapping("/student/{id}/{student_id}")
+    fun querySignedUpStudentDetails(@PathVariable id: UUID, @PathVariable("student_id") studentId: UUID): ResponseEntity<SignedUpStudentDetailsResponse> {
+        val response = lectureService.querySignedUpStudentDetails(id, studentId)
+        return ResponseEntity.ok(response)
+    }
+
+    @PatchMapping("/{id}/complete")
+    fun updateLectureCompleteStatus(@PathVariable id: UUID, @RequestParam studentIds: List<UUID>): ResponseEntity<Unit> {
+        lectureService.updateLectureCompleteStatus(id, studentIds)
         return ResponseEntity.noContent().build()
     }
 
