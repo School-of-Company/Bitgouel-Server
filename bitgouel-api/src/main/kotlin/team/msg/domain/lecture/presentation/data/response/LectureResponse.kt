@@ -113,6 +113,20 @@ data class LectureResponse(
             lectures = lectures
         )
 
+        fun signedUpDetailOf(student: Student, completeStatus: CompleteStatus, currentCompletedDate: LocalDate?) = SignedUpStudentDetailsResponse(
+            email = student.user!!.email,
+            name = student.user!!.name,
+            grade = student.grade,
+            classNumber = student.number,
+            number = student.number,
+            phoneNumber = student.user!!.phoneNumber,
+            school = student.club.school.name,
+            clubName = student.club.name,
+            cohort = student.cohort,
+            currentCompletedDate = currentCompletedDate,
+            completeStatus = completeStatus
+        )
+
         fun of(student: Student, isComplete: Boolean) = student.run {
             SignedUpStudentResponse(
                 id = id,
@@ -229,7 +243,7 @@ data class SignedUpStudentDetailsResponse(
     val school: String,
     val clubName: String,
     val cohort: Int,
-    val currentCompletedDate: LocalDate,
+    val currentCompletedDate: LocalDate?,
     val completeStatus: CompleteStatus
 )
 
