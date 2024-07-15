@@ -17,6 +17,7 @@ import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.bbozzak.repository.BbozzakRepository
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.lecture.enums.CompleteStatus
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.exception.AlreadySignedUpLectureException
@@ -45,7 +46,7 @@ import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureLocationRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
+import team.msg.domain.lecture.repository.custom.projection.LectureAndRegisteredProjection
 import team.msg.domain.lecture.repository.custom.projection.LectureListProjection
 import team.msg.domain.lecture.repository.custom.projection.SignedUpStudentProjection
 import team.msg.domain.school.model.School
@@ -1029,7 +1030,11 @@ class LectureServiceImplTest : BehaviorSpec({
         val lectureType = "type"
         val lecturer = "lecturer"
 
-        val isComplete = false
+        val completeStatus = CompleteStatus.NOT_COMPLETED_YET
+
+        val registeredLecture = fixture<RegisteredLecture> {
+            property(RegisteredLecture::completeStatus) { completeStatus }
+        }
 
         val lecture = fixture<Lecture> {
             property(Lecture::id) { lectureId }
@@ -1047,13 +1052,13 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDate::lecture) { lecture }
         }
 
-        val lectureAndIsCompleteData = fixture<LectureAndIsCompleteProjection> {
-            property(LectureAndIsCompleteProjection::lecture) { lecture }
-            property(LectureAndIsCompleteProjection::isComplete) { isComplete }
+        val lectureAndIsCompleteData = fixture<LectureAndRegisteredProjection> {
+            property(LectureAndRegisteredProjection::lecture) { lecture }
+            property(LectureAndRegisteredProjection::registeredLecture) { registeredLecture }
         }
         val lectureAndIsComplete = listOf(lectureAndIsCompleteData)
 
-        val lectureResponse = LectureResponse.of(lecture, isComplete, LocalDate.MAX)
+        val lectureResponse = LectureResponse.of(lecture, completeStatus, LocalDate.MAX)
         val response = LectureResponse.signedUpOf(listOf(lectureResponse))
 
         every { teacherRepository.findByUser(teacherUser) } returns teacher
@@ -1140,6 +1145,12 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Club::name) { clubBName }
         }
 
+        val completeStatus = CompleteStatus.COMPLETED_IN_1RD
+
+        val registeredLecture = fixture<RegisteredLecture> {
+            property(RegisteredLecture::completeStatus) { completeStatus }
+        }
+
         val studentId = UUID.randomUUID()
         val grade = 1
         val classRoom = 2
@@ -1154,7 +1165,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::classRoom) { classRoom }
             property(Student::number) { number }
             property(Student::cohort) { cohort }
-        }.let { SignedUpStudentProjection(it, true) }
+        }.let { SignedUpStudentProjection(it, registeredLecture) }
 
         val studentB = fixture<Student> {
             property(Student::id) { studentId }
@@ -1164,7 +1175,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::classRoom) { classRoom }
             property(Student::number) { number }
             property(Student::cohort) { cohort }
-        }.let { SignedUpStudentProjection(it, true) }
+        }.let { SignedUpStudentProjection(it, registeredLecture) }
 
         val students = listOf(studentA, studentB)
         val clubAStudents = listOf(studentA)
@@ -1209,9 +1220,9 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::user) { professorUserA }
         }
 
-        val allStudentsData = students.map { LectureResponse.of(it.student, it.isComplete) }
-        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.student, it.isComplete) }
-        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.student, it.isComplete) }
+        val allStudentsData = students.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
+        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
+        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
 
         val allStudentsResponse = LectureResponse.signedUpOf(allStudentsData)
         val clubAStudentsResponse = LectureResponse.signedUpOf(clubAStudentsData)
@@ -1278,7 +1289,7 @@ class LectureServiceImplTest : BehaviorSpec({
     Given("lecture id와 student id, isComplete가 주어질 때"){
         val lectureId = UUID.randomUUID()
         val studentId = UUID.randomUUID()
-        val isComplete = true
+        val studentIds = listOf(studentId)
         val schoolName = "광주소프트웨어마이스터고등학교"
 
         val school = fixture<School> {
@@ -1289,6 +1300,9 @@ class LectureServiceImplTest : BehaviorSpec({
         val clubBId = 1L
         val clubAName = "clubAName"
         val clubBName = "clubBName"
+
+        val completeStatus = CompleteStatus.NOT_COMPLETED_YET
+        val updatedCompleteStatus = CompleteStatus.NOT_COMPLETED_YET
 
         val clubA = fixture<Club> {
             property(Club::id) { clubAId }
@@ -1304,6 +1318,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val student = fixture<Student> {
             property(Student::id) { studentId }
             property(Student::club) { clubA }
+            property(Student::grade) { 1 }
         }
 
         val teacherUser = fixture<User> {
@@ -1347,13 +1362,13 @@ class LectureServiceImplTest : BehaviorSpec({
         val registeredLecture = fixture<RegisteredLecture> {
             property(RegisteredLecture::lecture) { lecture }
             property(RegisteredLecture::student) { student }
-            property(RegisteredLecture::isComplete) { false }
+            property(RegisteredLecture::completeStatus) { completeStatus }
         }
 
         val updatedRegisteredLecture = fixture<RegisteredLecture> {
             property(RegisteredLecture::lecture) { lecture }
             property(RegisteredLecture::student) { student }
-            property(RegisteredLecture::isComplete) { isComplete }
+            property(RegisteredLecture::completeStatus) { CompleteStatus.COMPLETED_IN_1RD }
         }
 
         every { teacherRepository.findByUser(teacherUser) } returns teacher
@@ -1367,7 +1382,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 Bbozzak이나 Teacher이고, 학생과 같은 동아리에 소속되어있으면"){
             every { userUtil.queryCurrentUser() } returns teacherUser
 
-            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
 
             Then("registerdLecture 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { registeredLectureRepository.save(any()) }
@@ -1379,7 +1394,7 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
                 shouldThrow<ForbiddenSignedUpLectureException> {
-                    lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+                    lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
                 }
             }
         }
@@ -1387,7 +1402,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 Admin이면"){
             every { userUtil.queryCurrentUser() } returns adminUser
 
-            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
 
             Then("registerdLecture 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { registeredLectureRepository.save(any()) }
@@ -1397,7 +1412,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT이고 강의 강사라면") {
             every { userUtil.queryCurrentUser() } returns professorUserA
 
-            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+            lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
 
             Then("registerdLecture 가 저장이 되어야 한다.") {
                 verify(exactly = 1) { registeredLectureRepository.save(any()) }
@@ -1409,7 +1424,7 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
                 shouldThrow<ForbiddenSignedUpLectureException> {
-                    lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentId, isComplete)
+                    lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
                 }
             }
         }

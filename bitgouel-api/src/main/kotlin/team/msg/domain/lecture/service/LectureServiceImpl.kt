@@ -43,9 +43,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletResponse
 import team.msg.common.util.KakaoUtil
+import team.msg.domain.lecture.enums.CompleteStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.LectureLocation
 import team.msg.domain.lecture.repository.LectureLocationRepository
+import team.msg.domain.student.exception.InvalidStudentGradeException
 
 @Service
 class LectureServiceImpl(
@@ -442,7 +444,7 @@ class LectureServiceImpl(
         val signedUpLectures = registeredLectureRepository.findLecturesAndIsCompleteByStudentId(studentId)
             .map {
                 val lecture = it.lecture
-                val isComplete = it.isComplete
+                val isComplete = it.registeredLecture.completeStatus
 
                 lectureDateRepository.findByCurrentCompletedDate(lecture.id)
                     .let { currentCompletedDate -> LectureResponse.of(lecture, isComplete, currentCompletedDate) }
@@ -483,9 +485,31 @@ class LectureServiceImpl(
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
                 registeredLectureRepository.findSignedUpStudentsByLectureId(id)
             }
-        }.map { LectureResponse.of(it.student, it.isComplete) }
+        }.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
 
         val response = LectureResponse.signedUpOf(students)
+
+        return response
+    }
+
+    /**
+     * 강의에 신청한 학생의 상세정보를 조회하는 비지니스 로직입니다.
+     *
+     * 기업 강사, 유관기관 강사, 대학 교수 -> 자기 강의만 조회할 수 있음 (다른 강사의 강의 학생 조회 시 예외)
+     * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 조회
+     * 어드민 -> 제한 없음
+     *
+     * @param 조회할 강의 id, 학생 id
+     * @return 조회한 학생 정보를 담은 dto
+     */
+    @Transactional(readOnly = true)
+    override fun querySignedUpStudentDetails(id: UUID, studentId: UUID): SignedUpStudentDetailsResponse {
+        val student = studentRepository findById studentId
+        val registeredLecture = registeredLectureRepository.findByLectureIdAndStudentId(id, studentId)
+            ?: throw UnSignedUpLectureException("학생의 강의 신청 기록을 찾을 수 없습니다. info : [ lectureId = $id, studentId = ${student.id} ]")
+        val currentCompletedDate = lectureDateRepository.findByCurrentCompletedDate(id)
+
+        val response = LectureResponse.signedUpDetailOf(student, registeredLecture.completeStatus, currentCompletedDate)
 
         return response
     }
@@ -500,43 +524,52 @@ class LectureServiceImpl(
      * @param 이수 상태를 변경할 강의 id와 학생 id, 변결될 강의 여부
      */
     @Transactional(rollbackFor = [Exception::class])
-    override fun updateLectureCompleteStatus(id: UUID, studentId: UUID, isComplete: Boolean) {
+    override fun updateLectureCompleteStatus(id: UUID, studentIds: List<UUID>) {
         val user = userUtil.queryCurrentUser()
+        val students = studentRepository.findByIdIn(studentIds)
+        val lecture = lectureRepository findById id
 
         when(user.authority) {
             Authority.ROLE_TEACHER -> {
                 val teacher = teacherRepository findByUser user
-                val student = studentRepository findById studentId
 
-                if(teacher.club != student.club)
+                if(students.any { teacher.club != it.club })
                     throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
+
             }
             Authority.ROLE_BBOZZAK -> {
                 val bbozzak = bbozzakRepository findByUser user
-                val student = studentRepository findById studentId
 
-                if(bbozzak.club != student.club)
+                if(students.any { bbozzak.club != it.club })
                     throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
             }
             Authority.ROLE_ADMIN -> { }
             else -> {
-                val lecture = lectureRepository findById id
                 if (lecture.user != user)
                     throw ForbiddenSignedUpLectureException("학생의 이수 여부를 변경할 권한이 없습니다. info : [ userId = ${user.id} ]")
             }
         }
 
-        val registeredLecture = registeredLectureRepository.findByLectureIdAndStudentId(id, studentId)
-            ?: throw UnSignedUpLectureException("학생의 강의 신청 기록을 찾을 수 없습니다. info : [ lectureId = $id, studentId = $studentId ]")
-        
-        val updatedRegisteredLecture = RegisteredLecture(
-            id = registeredLecture.id,
-            student = registeredLecture.student,
-            lecture = registeredLecture.lecture,
-            isComplete = isComplete
-        )
+        val updatedRegisteredLectures = students.map { student ->
+            val registeredLecture = registeredLectureRepository.findByStudentAndLecture(student, lecture)
+                ?: throw UnSignedUpLectureException("학생의 강의 신청 기록을 찾을 수 없습니다. info : [ lectureId = $id, studentId = ${student.id} ]")
 
-        registeredLectureRepository.save(updatedRegisteredLecture)
+            val completeStatus = when(student.grade) {
+                1 -> CompleteStatus.COMPLETED_IN_1RD
+                2 -> CompleteStatus.COMPLETED_IN_2RD
+                3 -> CompleteStatus.COMPLETED_IN_3RD
+                else -> throw InvalidStudentGradeException("유효하지 않은 학년입니다. info : [ grade = ${student.grade} ]")
+            }
+
+            RegisteredLecture(
+                id = registeredLecture.id,
+                student = registeredLecture.student,
+                lecture = registeredLecture.lecture,
+                completeStatus = completeStatus
+            )
+        }
+
+        registeredLectureRepository.saveAll(updatedRegisteredLectures)
     }
 
     @Transactional(readOnly = true, rollbackFor = [Exception::class])

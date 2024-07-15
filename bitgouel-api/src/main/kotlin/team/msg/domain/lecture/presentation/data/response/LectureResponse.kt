@@ -1,5 +1,6 @@
 package team.msg.domain.lecture.presentation.data.response
 import org.springframework.data.domain.Page
+import team.msg.domain.lecture.enums.CompleteStatus
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.Lecture
@@ -99,31 +100,42 @@ data class LectureResponse(
             departments = departments
         )
         
-        fun of(lecture: Lecture, isComplete: Boolean, currentCompletedDate: LocalDate?) = SignedUpLectureResponse(
+        fun of(lecture: Lecture, completeStatus: CompleteStatus, currentCompletedDate: LocalDate?) = SignedUpLectureResponse(
             id = lecture.id,
             name = lecture.name,
             lectureType = lecture.lectureType,
             currentCompletedDate = currentCompletedDate,
             lecturer = lecture.instructor,
-            isComplete = isComplete
+            completeStatus = completeStatus
         )
 
         fun signedUpOf(lectures: List<SignedUpLectureResponse>) = SignedUpLecturesResponse(
             lectures = lectures
         )
 
+        fun signedUpDetailOf(student: Student, completeStatus: CompleteStatus, currentCompletedDate: LocalDate?) = SignedUpStudentDetailsResponse(
+            email = student.user!!.email,
+            name = student.user!!.name,
+            grade = student.grade,
+            classNumber = student.number,
+            number = student.number,
+            phoneNumber = student.user!!.phoneNumber,
+            school = student.club.school.name,
+            clubName = student.club.name,
+            cohort = student.cohort,
+            currentCompletedDate = currentCompletedDate,
+            completeStatus = completeStatus
+        )
+
         fun of(student: Student, isComplete: Boolean) = student.run {
             SignedUpStudentResponse(
                 id = id,
-                email = user!!.email,
                 name = user!!.name,
                 grade = grade,
                 classNumber = classRoom,
                 number = number,
-                phoneNumber = user!!.phoneNumber,
                 school = club.school.name,
                 clubName = club.name,
-                cohort = cohort,
                 isComplete = isComplete
             )
         }
@@ -203,7 +215,7 @@ data class SignedUpLectureResponse(
     val lectureType: String,
     val currentCompletedDate: LocalDate?,
     val lecturer: String,
-    val isComplete: Boolean
+    val completeStatus: CompleteStatus
 )
 
 data class SignedUpStudentsResponse(
@@ -212,6 +224,16 @@ data class SignedUpStudentsResponse(
 
 data class SignedUpStudentResponse(
     val id: UUID,
+    val name: String,
+    val grade: Int,
+    val classNumber: Int,
+    val number: Int,
+    val school: String,
+    val clubName: String,
+    val isComplete: Boolean
+)
+
+data class SignedUpStudentDetailsResponse(
     val email: String,
     val name: String,
     val grade: Int,
@@ -221,7 +243,8 @@ data class SignedUpStudentResponse(
     val school: String,
     val clubName: String,
     val cohort: Int,
-    val isComplete: Boolean
+    val currentCompletedDate: LocalDate?,
+    val completeStatus: CompleteStatus
 )
 
 data class DivisionsResponse(
