@@ -77,13 +77,6 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.PATCH, "/club/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/club/{id}").hasRole(ADMIN)
 
-            // school
-            .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.GET, "/school/name").permitAll()
-            .mvcMatchers(HttpMethod.POST, "/school").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
-            .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)
-
             // activity
             .mvcMatchers(HttpMethod.POST, "/activity").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
             .mvcMatchers(HttpMethod.PATCH, "/activity/{id}").hasAnyRole(STUDENT, TEACHER, BBOZZAK)
@@ -154,7 +147,8 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.GET, "/withdraw").hasRole(ADMIN)
 
             // school
-            .mvcMatchers(HttpMethod.GET, "/school").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/school").permitAll()
+            .mvcMatchers(HttpMethod.GET, "/school/name").permitAll()
             .mvcMatchers(HttpMethod.POST, "/school").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.PATCH, "/school/{id}").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.DELETE, "/school/{id}").hasRole(ADMIN)
