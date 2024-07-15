@@ -20,4 +20,5 @@ interface StudentRepository : CrudRepository<Student, UUID> {
     @EntityGraph(attributePaths = ["user"], type = EntityGraph.EntityGraphType.FETCH)
     fun findAllByCohort(cohort: Int): List<Student>
     fun existsByClub(club: Club): Boolean
+    fun findByIdIn(ids: List<UUID>): List<Student>
 }
