@@ -47,6 +47,7 @@ import team.msg.domain.lecture.enums.CompleteStatus
 import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.LectureLocation
 import team.msg.domain.lecture.repository.LectureLocationRepository
+import team.msg.domain.student.exception.InvalidStudentGradeException
 
 @Service
 class LectureServiceImpl(
@@ -556,7 +557,8 @@ class LectureServiceImpl(
             val completeStatus = when(student.grade) {
                 1 -> CompleteStatus.COMPLETED_IN_1RD
                 2 -> CompleteStatus.COMPLETED_IN_2RD
-                else -> CompleteStatus.COMPLETED_IN_3RD
+                3 -> CompleteStatus.COMPLETED_IN_3RD
+                else -> throw InvalidStudentGradeException("유효하지 않은 학년입니다. info : [ grade = ${student.grade} ]")
             }
 
             RegisteredLecture(
