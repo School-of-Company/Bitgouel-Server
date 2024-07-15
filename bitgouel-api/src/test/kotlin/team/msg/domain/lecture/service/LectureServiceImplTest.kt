@@ -45,7 +45,7 @@ import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureLocationRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.lecture.repository.custom.projection.LectureAndIsCompleteProjection
+import team.msg.domain.lecture.repository.custom.projection.LectureAndRegisteredProjection
 import team.msg.domain.lecture.repository.custom.projection.LectureListProjection
 import team.msg.domain.lecture.repository.custom.projection.SignedUpStudentProjection
 import team.msg.domain.school.model.School
@@ -1047,9 +1047,9 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDate::lecture) { lecture }
         }
 
-        val lectureAndIsCompleteData = fixture<LectureAndIsCompleteProjection> {
-            property(LectureAndIsCompleteProjection::lecture) { lecture }
-            property(LectureAndIsCompleteProjection::isComplete) { isComplete }
+        val lectureAndIsCompleteData = fixture<LectureAndRegisteredProjection> {
+            property(LectureAndRegisteredProjection::lecture) { lecture }
+            property(LectureAndRegisteredProjection::isComplete) { isComplete }
         }
         val lectureAndIsComplete = listOf(lectureAndIsCompleteData)
 
