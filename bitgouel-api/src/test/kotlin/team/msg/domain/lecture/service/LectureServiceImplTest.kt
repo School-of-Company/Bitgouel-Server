@@ -488,6 +488,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val completeDate = LocalDate.MAX
         val startTime = LocalTime.MIN
         val endTime = LocalTime.MAX
+        val essentialComplete = false
 
         val lectureDate = fixture<LectureDate> {
             property(LectureDate::completeDate) { completeDate }
@@ -524,6 +525,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::division) { division }
             property(Lecture::line) { line }
             property(Lecture::department) { department }
+            property(Lecture::essentialComplete) { essentialComplete }
         }
 
         val lectureDateResponse = fixture<LectureDateResponse> {
@@ -557,6 +559,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::locationDetails) { details }
             property(LectureDetailsResponse::locationX) { x }
             property(LectureDetailsResponse::locationY) { y }
+            property(LectureDetailsResponse::essentialComplete) { essentialComplete }
         }
 
         every { userUtil.queryCurrentUser() } returns user
@@ -587,7 +590,7 @@ class LectureServiceImplTest : BehaviorSpec({
     }
 
     //signUpLecture 테스트 코드
-    Given("Lecture id가 주어질 때") {
+    Given("Lecture id가 주어질 때 ") {
 
         val userId = UUID.randomUUID()
         val studentAuthority = Authority.ROLE_STUDENT
