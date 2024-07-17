@@ -117,7 +117,7 @@ data class LectureResponse(
             email = student.user!!.email,
             name = student.user!!.name,
             grade = student.grade,
-            classNumber = student.number,
+            classNumber = student.classRoom,
             number = student.number,
             phoneNumber = student.user!!.phoneNumber,
             school = student.club.school.name,

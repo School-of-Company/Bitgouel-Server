@@ -488,6 +488,7 @@ class LectureServiceImplTest : BehaviorSpec({
         val completeDate = LocalDate.MAX
         val startTime = LocalTime.MIN
         val endTime = LocalTime.MAX
+        val essentialComplete = false
 
         val lectureDate = fixture<LectureDate> {
             property(LectureDate::completeDate) { completeDate }
@@ -524,6 +525,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::division) { division }
             property(Lecture::line) { line }
             property(Lecture::department) { department }
+            property(Lecture::essentialComplete) { essentialComplete }
         }
 
         val lectureDateResponse = fixture<LectureDateResponse> {
@@ -557,6 +559,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(LectureDetailsResponse::locationDetails) { details }
             property(LectureDetailsResponse::locationX) { x }
             property(LectureDetailsResponse::locationY) { y }
+            property(LectureDetailsResponse::essentialComplete) { essentialComplete }
         }
 
         every { userUtil.queryCurrentUser() } returns user
@@ -586,7 +589,7 @@ class LectureServiceImplTest : BehaviorSpec({
         }
     }
 
-    //signUpLecture 테스트 코드
+    // signUpLecture 테스트 코드
     Given("Lecture id가 주어질 때") {
 
         val userId = UUID.randomUUID()
@@ -1108,6 +1111,7 @@ class LectureServiceImplTest : BehaviorSpec({
     // queryAllSignedUpLectures 테스트 코드
     Given("lecture id가 주어질 때") {
         val studentUserId = UUID.randomUUID()
+
         val studentEmail = "email"
         val studentName = "name"
         val studentPhoneNumber = "phoneNumber"
@@ -1117,13 +1121,13 @@ class LectureServiceImplTest : BehaviorSpec({
             property(User::id) { studentUserId }
             property(User::name) { studentName }
             property(User::email) { studentEmail }
-            property(User::phoneNumber) { studentPhoneNumber}
+            property(User::phoneNumber) { studentPhoneNumber }
         }
         val studentUserB = fixture<User>{
             property(User::id) { studentUserId }
             property(User::name) { studentName }
             property(User::email) { studentEmail }
-            property(User::phoneNumber) { studentPhoneNumber}
+            property(User::phoneNumber) { studentPhoneNumber }
         }
 
         val school = fixture<School> {
@@ -1285,6 +1289,83 @@ class LectureServiceImplTest : BehaviorSpec({
 
     }
 
+    // querySignedUpStudentDetails 테스트 코드
+    Given("Lecture id와 student id가 주어질 때") {
+        val email = "email"
+        val name = "name"
+        val phoneNumber = "01000000000"
+        val studentUser = fixture<User> {
+            property(User::email) { email }
+            property(User::name) { name }
+            property(User::phoneNumber) { phoneNumber }
+        }
+
+        val schoolName = "school"
+        val school = fixture<School> {
+            property(School::name) { schoolName }
+        }
+
+        val clubName = "club"
+        val club = fixture<Club> {
+            property(Club::name) { clubName }
+            property(Club::school) { school }
+        }
+
+        val studentId = UUID.randomUUID()
+        val cohort = 1
+        val grade = 1
+        val classRoom = 1
+        val number = 1
+
+        val student = fixture<Student> {
+            property(Student::id) { studentId }
+            property(Student::user) { studentUser }
+            property(Student::club) { club }
+            property(Student::grade) { grade }
+            property(Student::classRoom) { classRoom }
+            property(Student::number) { number }
+            property(Student::cohort) { cohort }
+        }
+
+        val lectureId = UUID.randomUUID()
+        val lecture = fixture<Lecture> {
+            property(Lecture::id) { lectureId }
+        }
+
+        val completeStatus = CompleteStatus.NOT_COMPLETED_YET
+
+        val registeredLecture = fixture<RegisteredLecture> {
+            property(RegisteredLecture::lecture) { lecture }
+            property(RegisteredLecture::student) { student }
+            property(RegisteredLecture::completeStatus) { completeStatus }
+        }
+
+        val currentCompletedDate = LocalDate.MIN
+
+        val response = LectureResponse.signedUpDetailOf(student, completeStatus, currentCompletedDate)
+
+        every { studentRepository.findByIdOrNull(studentId) } returns student
+        every { registeredLectureRepository.findByLectureIdAndStudentId(lectureId, studentId) } returns registeredLecture
+        every { lectureDateRepository.findByCurrentCompletedDate(lectureId) } returns currentCompletedDate
+
+        When("강의에 신청한 학생의 상세 정보를 조회하면") {
+            val result = lectureServiceImpl.querySignedUpStudentDetails(lectureId, studentId)
+            Then("result와 response가 같아야 한다") {
+                result shouldBe response
+            }
+        }
+
+        When("학생이 해당 강의를 신청하지 않았다면") {
+            every { registeredLectureRepository.findByLectureIdAndStudentId(lectureId, studentId) } returns null
+
+            Then("UnSignedUpLectureException이 발생해야 한다.") {
+                shouldThrow<UnSignedUpLectureException> {
+                    lectureServiceImpl.querySignedUpStudentDetails(lectureId, studentId)
+                }
+            }
+        }
+    }
+
     // updateLectureCompleteStatus 테스트 코드
     Given("lecture id와 student id, isComplete가 주어질 때"){
         val lectureId = UUID.randomUUID()
@@ -1320,6 +1401,7 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Student::club) { clubA }
             property(Student::grade) { 1 }
         }
+        val students = listOf(student)
 
         val teacherUser = fixture<User> {
             property(User::authority) { Authority.ROLE_TEACHER }
@@ -1370,14 +1452,15 @@ class LectureServiceImplTest : BehaviorSpec({
             property(RegisteredLecture::student) { student }
             property(RegisteredLecture::completeStatus) { CompleteStatus.COMPLETED_IN_1RD }
         }
+        val registeredLectures = listOf(updatedRegisteredLecture)
 
+        every { studentRepository.findByIdIn(studentIds) } returns students
         every { teacherRepository.findByUser(teacherUser) } returns teacher
         every { bbozzakRepository.findByUser(bbozzakUser) } returns bbozzak
-        every { studentRepository.findByIdOrNull(studentId) } returns student
         every { lectureRepository.findByIdOrNull(lectureId) } returns lecture
 
-        every { registeredLectureRepository.findByLectureIdAndStudentId(lectureId, studentId) } returns registeredLecture
-        every { registeredLectureRepository.save(any()) } returns updatedRegisteredLecture
+        every { registeredLectureRepository.findByStudentAndLecture(student, lecture) } returns registeredLecture
+        every { registeredLectureRepository.saveAll(any<List<RegisteredLecture>>()) } returns registeredLectures
 
         When("현재 로그인 한 유저가 Bbozzak이나 Teacher이고, 학생과 같은 동아리에 소속되어있으면"){
             every { userUtil.queryCurrentUser() } returns teacherUser
@@ -1385,7 +1468,7 @@ class LectureServiceImplTest : BehaviorSpec({
             lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
 
             Then("registerdLecture 가 저장이 되어야 한다.") {
-                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+                verify(exactly = 1) { registeredLectureRepository.saveAll(any<List<RegisteredLecture>>()) }
             }
         }
 
@@ -1405,7 +1488,7 @@ class LectureServiceImplTest : BehaviorSpec({
             lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
 
             Then("registerdLecture 가 저장이 되어야 한다.") {
-                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+                verify(exactly = 1) { registeredLectureRepository.saveAll(any<List<RegisteredLecture>>()) }
             }
         }
 
@@ -1415,7 +1498,7 @@ class LectureServiceImplTest : BehaviorSpec({
             lectureServiceImpl.updateLectureCompleteStatus(lectureId, studentIds)
 
             Then("registerdLecture 가 저장이 되어야 한다.") {
-                verify(exactly = 1) { registeredLectureRepository.save(any()) }
+                verify(exactly = 1) { registeredLectureRepository.saveAll(any<List<RegisteredLecture>>()) }
             }
         }
 
