@@ -589,8 +589,8 @@ class LectureServiceImplTest : BehaviorSpec({
         }
     }
 
-    //signUpLecture 테스트 코드
-    Given("Lecture id가 주어질 때 ") {
+    // signUpLecture 테스트 코드
+    Given("Lecture id가 주어질 때") {
 
         val userId = UUID.randomUUID()
         val studentAuthority = Authority.ROLE_STUDENT
