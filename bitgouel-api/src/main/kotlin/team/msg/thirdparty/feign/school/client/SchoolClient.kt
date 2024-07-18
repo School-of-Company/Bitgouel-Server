@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import team.msg.domain.school.presentation.data.response.SchoolNamesResponse
 import team.msg.domain.school.presentation.data.response.SchoolsResponse
 
-@FeignClient(value = "school", url = "http://localhost:8080")
+@FeignClient(value = "school", url = "http://localhost:8080/school")
 interface SchoolClient {
 
-    @GetMapping("/school")
+    @GetMapping
     fun querySchools(): SchoolsResponse
 
-    @GetMapping("/school/name")
+    @GetMapping("/name")
     fun querySchoolNames(): SchoolNamesResponse
 
 }

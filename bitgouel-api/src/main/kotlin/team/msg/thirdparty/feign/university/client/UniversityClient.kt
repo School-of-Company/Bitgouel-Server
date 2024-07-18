@@ -4,10 +4,10 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import team.msg.domain.university.presentation.data.response.UniversitiesResponse
 
-@FeignClient(value = "university", url = "http://localhost:8080")
+@FeignClient(value = "university", url = "http://localhost:8080/university")
 interface UniversityClient {
 
-    @GetMapping("/university")
+    @GetMapping
     fun queryUniversities(): UniversitiesResponse
 
 }
