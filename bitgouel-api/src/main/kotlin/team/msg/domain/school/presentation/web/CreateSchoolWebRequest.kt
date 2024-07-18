@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 data class CreateSchoolWebRequest(
 
     @field:NotBlank
-    val schoolName: String,
+    val name: String,
 
     @field:NotNull
     val line: Line,
