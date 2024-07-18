@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import javax.validation.Valid
 import javax.validation.constraints.Future
 import javax.validation.constraints.FutureOrPresent
-import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import team.msg.domain.lecture.enums.Semester
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 data class UpdateLectureWebRequest(
     @field:NotBlank
