@@ -4,7 +4,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
-import team.msg.domain.club.model.Club
 import team.msg.domain.club.presentation.data.response.ClubResponse
 import team.msg.domain.club.repository.ClubRepository
 import team.msg.domain.school.exception.AlreadyExistSchoolException
@@ -42,7 +41,7 @@ class SchoolServiceImpl(
                 val clubs = clubRepository.findAllBySchool(it)
                 SchoolResponse(
                     id = it.id,
-                    schoolName = it.name,
+                    name = it.name,
                     line = it.line,
                     departments = it.departments,
                     logoImageUrl = it.logoImageUrl,
@@ -65,7 +64,7 @@ class SchoolServiceImpl(
         val response = SchoolNamesResponse(
             schools = schools.map {
                 SchoolNameResponse(
-                    schoolName = it.name
+                    name = it.name
                 )
             }
         )

@@ -11,13 +11,13 @@ class ClubRequestMapperImpl : ClubRequestMapper {
 
     override fun createClubWebRequestToDto(webRequest: CreateClubWebRequest): CreateClubRequest =
         CreateClubRequest(
-            clubName = webRequest.clubName,
+            clubName = webRequest.name,
             field = webRequest.field
         )
 
     override fun updateClubWebRequestToDto(webRequest: UpdateClubWebRequest): UpdateClubRequest =
         UpdateClubRequest(
-            clubName = webRequest.clubName,
+            clubName = webRequest.name,
             field = webRequest.field
         )
 
