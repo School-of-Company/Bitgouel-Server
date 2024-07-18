@@ -78,11 +78,14 @@ class UniversityServiceImplTest : BehaviorSpec({
             property(UpdateUniversityRequest::universityName) { newName }
         }
 
-        val university = fixture<University>()
+        val university = fixture<University> {
+            property(University::name) { "university" }
+        }
         val updatedUniversity = fixture<University> {
             property(University::name) { newName }
         }
 
+        every { universityRepository.existsByName(university.name) } returns false
         every { universityRepository.findByIdOrNull(universityId) } returns university
         every { universityRepository.save(any()) } returns updatedUniversity
 

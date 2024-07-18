@@ -7,7 +7,7 @@ import team.msg.common.enums.Field
 class UpdateClubWebRequest(
 
     @NotBlank
-    val clubName: String,
+    val name: String,
 
     @NotNull
     val field: Field

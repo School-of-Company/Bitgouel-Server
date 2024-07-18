@@ -5,7 +5,7 @@ import team.msg.domain.club.presentation.data.response.SchoolToClubResponse
 
 data class SchoolResponse(
     val id: Long,
-    val schoolName: String,
+    val name: String,
     val line: Line,
     val departments: List<String>,
     val logoImageUrl: String,
@@ -17,7 +17,7 @@ data class SchoolsResponse(
 )
 
 data class SchoolNameResponse(
-    val schoolName: String
+    val name: String
 )
 
 data class SchoolNamesResponse(

@@ -8,7 +8,7 @@ import team.msg.common.validation.NotBlankStringList
 data class UpdateSchoolWebRequest(
 
     @field:NotBlank
-    val schoolName: String,
+    val name: String,
 
     @field:NotNull
     val line: Line,
