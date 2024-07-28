@@ -26,7 +26,6 @@ import team.msg.domain.lecture.presentation.data.response.*
 import team.msg.domain.lecture.repository.LectureDateRepository
 import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.lecture.repository.RegisteredLectureRepository
-import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.exception.StudentNotFoundException
 import team.msg.domain.student.model.Student
@@ -576,34 +575,6 @@ class LectureServiceImpl(
     override fun lectureReceiptStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
 
-        val cellStyle = workBook.createCellStyle()
-        cellStyle.alignment = HorizontalAlignment.CENTER
-        cellStyle.verticalAlignment = VerticalAlignment.CENTER
-
-        // 엑셀 삽입할 헤더
-        val headers = listOf(
-            "연번" to 10,
-            "학교" to 20,
-            "동아리명" to 20,
-            "학과명" to 20,
-            "반" to 5,
-            "이름" to 10,
-            "휴대폰 번호(학생)" to 20,
-            "담당교사명" to 20,
-            "휴대폰번호(담당교사)" to 20,
-            "이메일(담당교사)" to 20,
-            "강의명" to 30,
-            "학기" to 20,
-            "강의 구분" to 30,
-            "강의 과" to 20,
-            "강의 계열" to 30,
-            "강의 유형" to 30,
-            "담당 강사" to 20,
-            "학점" to 20,
-            "필수강의 여부" to 20,
-            "강의 이수 완료일" to 30
-        )
-
         val font = workBook.createFont()
         font.fontName = "Arial"
         font.fontHeightInPoints = 11
@@ -613,70 +584,89 @@ class LectureServiceImpl(
         style.verticalAlignment = VerticalAlignment.CENTER
         style.setFont(font)
 
+        // 엑셀 삽입할 헤더
+        val headers = listOf(
+            "연번" to 10,
+            "구분" to 30,
+            "계열" to 20,
+            "학기" to 10,
+            "대학" to 30,
+            "학과" to 20,
+            "교과명" to 40,
+            "교육일정" to 50,
+            "교육내용" to 50,
+            "교육 장소" to 30,
+            "담당 교수" to 20,
+            "연락처" to 30,
+            "학교명" to 30,
+            "동아리" to 30,
+            "학년" to 10,
+            "학생 성명" to 20,
+            "담당교사" to 20,
+            "담당교사 연락처" to 30,
+            "이수 상태" to 20
+        )
+
         val schools = schoolRepository.findAll()
 
         schools.forEach { highSchool ->
-            // 엑셀 시트 생성
             val sheet = workBook.createSheet(highSchool.name)
 
-            // 열 생성
             val headerRow = sheet.createRow(0)
 
-            headers.forEachIndexed { idx, header ->
-                headerRow.createCellWithOptions(idx, header.first, style, 20F)
+            headers.forEachIndexed { idx,header ->
+                headerRow.createCellWithOptions(idx, header.first, style, 30F)
 
                 sheet.autoSizeColumn(idx)
-                sheet.setColumnWidth(idx,sheet.getColumnWidth(idx) + (256 * header.second))
+                sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
             }
 
-            val school = schoolRepository.findByName(highSchool.name)
-                ?: throw SchoolNotFoundException("해당하는 학교를 찾을 수 없습니다. info : [ school = $highSchool]")
+            val clubs = clubRepository.findAllBySchool(highSchool)
 
-            val clubs = clubRepository.findAllBySchool(school)
+            clubs.map { club ->
+                val teacher = teacherRepository.findByClub(club)
+                    ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
 
-            val students = clubs.map { club ->
-                studentRepository.findAllByClub(club)
-            }.flatten()
+                val students = studentRepository.findAllByClub(club)
 
-            val registeredLecture = students.map { student ->
-                val registeredLecture = registeredLectureRepository.findAllByStudent(student)
+                students.forEachIndexed { idx, student ->
+                    val registeredLectures = registeredLectureRepository.findAllByStudent(student)
 
-                student to registeredLecture
-            }
+                    registeredLectures.map { registeredLecture ->
+                        val lecture = registeredLecture.lecture
+                        val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
+                        val startTime = "${lectureDates.first().startTime.hour}:${lectureDates.first().startTime.minute}"
+                        val endTime = "${lectureDates.first().endTime.hour}:${lectureDates.first().endTime.minute}"
 
-            registeredLecture.forEach { studentAndRegisteredLecture ->
-                val teacher  = teacherRepository findByClub studentAndRegisteredLecture.first.club
+                        val location = lectureLocationRepository.findByLectureId(lecture.id)
 
-                studentAndRegisteredLecture.second.forEachIndexed { idx, registeredLecture ->
-                    val lecture = registeredLecture.lecture
+                        val row = sheet.createRow(idx+1)
 
-                    val row = sheet.createRow(idx+1)
-
-                    listOf(
-                        (idx+1).toString(),
-                        school.name,
-                        studentAndRegisteredLecture.first.club.name,
-                        "",
-                        studentAndRegisteredLecture.first.classRoom.toString(),
-                        studentAndRegisteredLecture.first.user!!.name,
-                        studentAndRegisteredLecture.first.user!!.phoneNumber,
-                        teacher.user!!.name,
-                        teacher.user!!.phoneNumber,
-                        teacher.user!!.email,
-                        lecture.name,
-                        lecture.semester.yearAndSemester,
-                        lecture.division,
-                        lecture.department,
-                        lecture.line,
-                        lecture.lectureType,
-                        lecture.instructor,
-                        lecture.credit.toString(),
-                        if(lecture.essentialComplete) "O" else "X"
-                    ).forEachIndexed {
-                        cellIdx, parameter ->
-                        val cell = row.createCell(cellIdx)
-                        cell.setCellValue(parameter)
-                        cell.cellStyle = cellStyle
+                        listOf(
+                            (idx+1).toString(),
+                            lecture.division,
+                            lecture.line,
+                            lecture.semester.yearAndSemester,
+                            location.address,
+                            lecture.department,
+                            lecture.name,
+                            "${lectureDates.first().completeDate} ~ ${lectureDates.last().completeDate} $startTime ~ $endTime",
+                            lecture.content,
+                            location.details,
+                            lecture.instructor,
+                            lecture.user!!.phoneNumber,
+                            highSchool.name,
+                            club.name,
+                            student.grade.toString(),
+                            student.user!!.name,
+                            teacher.user!!.name,
+                            teacher.user!!.phoneNumber,
+                            registeredLecture.completeStatus.name
+                        ).forEachIndexed { cellIdx, parameter ->
+                            val cell = row.createCell(cellIdx)
+                            cell.setCellValue(parameter)
+                            cell.cellStyle = style
+                        }
                     }
                 }
             }
