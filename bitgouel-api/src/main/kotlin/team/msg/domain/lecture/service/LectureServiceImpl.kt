@@ -664,7 +664,7 @@ class LectureServiceImpl(
                             student.user!!.name,
                             teacher.user!!.name,
                             teacher.user!!.phoneNumber,
-                            registeredLecture.completeStatus.name
+                            registeredLecture.completeStatus.description
                         ).forEachIndexed { cellIdx, parameter ->
                             val cell = row.createCell(cellIdx)
                             cell.setCellValue(parameter)
