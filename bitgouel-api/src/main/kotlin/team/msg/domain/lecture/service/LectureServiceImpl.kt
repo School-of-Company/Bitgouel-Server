@@ -634,8 +634,11 @@ class LectureServiceImpl(
 
                     registeredLectures.map { registeredLecture ->
                         val lecture = registeredLecture.lecture
+
                         val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
+
                         val startTime = "${lectureDates.first().startTime.hour}:${lectureDates.first().startTime.minute}"
+
                         val endTime = "${lectureDates.first().endTime.hour}:${lectureDates.first().endTime.minute}"
 
                         val location = lectureLocationRepository.findByLectureId(lecture.id)
