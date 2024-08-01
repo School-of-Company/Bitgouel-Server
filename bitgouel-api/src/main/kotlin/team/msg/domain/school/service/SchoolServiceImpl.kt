@@ -55,6 +55,7 @@ class SchoolServiceImpl(
 
     /**
      * 학교의 상세 정보를 조회하는 비지니스 로직
+     * @param id 학교 id
      * @return 학교 정보를 담은 dto
      */
     @Transactional(readOnly = true)
