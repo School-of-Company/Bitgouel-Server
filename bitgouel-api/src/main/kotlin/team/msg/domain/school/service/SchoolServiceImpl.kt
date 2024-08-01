@@ -54,6 +54,32 @@ class SchoolServiceImpl(
     }
 
     /**
+     * 학교의 상세 정보를 조회하는 비지니스 로직
+     * @param id 학교 id
+     * @return 학교 정보를 담은 dto
+     */
+    @Transactional(readOnly = true)
+    override fun querySchoolDetails(id: Long): SchoolResponse {
+        val school = schoolRepository.findByIdOrNull(id)
+            ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")
+
+        val clubs = clubRepository.findAllBySchool(school)
+
+        val response = school.run {
+            SchoolResponse(
+                id = id,
+                name = name,
+                line = line,
+                departments = departments,
+                logoImageUrl = logoImageUrl,
+                clubs = ClubResponse.schoolOf(clubs)
+            )
+        }
+
+        return response
+    }
+
+    /**
      * 학교 이름을 전체 조회하는 비즈니스 로직
      * @return 학교 이름을 담은 dto
      */

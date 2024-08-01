@@ -11,6 +11,7 @@ import team.msg.domain.school.presentation.web.CreateSchoolWebRequest
 import team.msg.domain.school.presentation.web.UpdateSchoolWebRequest
 import team.msg.domain.school.service.SchoolService
 import javax.validation.Valid
+import team.msg.domain.school.presentation.data.response.SchoolResponse
 
 @RestController
 @RequestMapping("/school")
@@ -36,6 +37,12 @@ class SchoolController(
         val request = schoolRequestMapper.createSchoolWebRequestToDto(webRequest)
         schoolService.createSchool(request, logoImage)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @GetMapping("/{id}")
+    fun querySchoolDetails(@PathVariable id: Long): ResponseEntity<SchoolResponse> {
+        val response = schoolService.querySchoolDetails(id)
+        return ResponseEntity.ok(response)
     }
 
     @PatchMapping("/{id}")
