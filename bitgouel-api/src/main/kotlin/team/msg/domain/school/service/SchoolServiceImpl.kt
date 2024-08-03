@@ -130,20 +130,23 @@ class SchoolServiceImpl(
             throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info : [ schoolName = ${request.schoolName} ]")
         }
 
-        if (logoImage.contentType !in listOf(JPEG, JPG, PNG, HEIC)) {
-            throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType} ]")
-        }
-
         val school = schoolRepository.findByIdOrNull(id)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ schoolId = $id ]")
 
-        awsS3Util.deleteImage(school.logoImageUrl)
+        val logoImageUrl = if(logoImage.size == 0L) {
+            school.logoImageUrl
+        } else {
+            if (logoImage.contentType !in listOf(JPEG, JPG, PNG, HEIC)) {
+                throw InvalidExtensionException("유효하지 않은 확장자입니다. info : [ contentType = ${logoImage.contentType} ]")
+            }
 
-        val imageUrl = awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
+            awsS3Util.deleteImage(school.logoImageUrl)
+            awsS3Util.uploadImage(logoImage, UUID.randomUUID().toString())
+        }
 
         val updateSchool = School(
             id = id,
-            logoImageUrl = imageUrl,
+            logoImageUrl = logoImageUrl,
             name = request.schoolName,
             line = request.line,
             departments = request.departments
