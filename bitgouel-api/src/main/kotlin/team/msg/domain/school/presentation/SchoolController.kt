@@ -46,7 +46,7 @@ class SchoolController(
     }
 
     @PatchMapping("/{id}")
-    fun updateSchool(@PathVariable id: Long, @RequestPart @Valid webRequest: UpdateSchoolWebRequest, @RequestPart("logoImage") logoImage: MultipartFile): ResponseEntity<Unit> {
+    fun updateSchool(@PathVariable id: Long, @RequestPart @Valid webRequest: UpdateSchoolWebRequest, @RequestPart("logoImage", required = false) logoImage: MultipartFile): ResponseEntity<Unit> {
         val request = schoolRequestMapper.updateSchoolWebRequestToDto(webRequest)
         schoolService.updateSchool(id, request, logoImage)
         return ResponseEntity.noContent().build()
