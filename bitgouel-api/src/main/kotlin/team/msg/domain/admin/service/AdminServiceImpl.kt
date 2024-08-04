@@ -128,7 +128,7 @@ class AdminServiceImpl(
 
             val email = row.getCell(0).stringCellValue
             val name = row.getCell(1).stringCellValue
-            val phoneNumber = row.getCell(2).numericCellValue.toString()
+            val phoneNumber = row.getCell(2).stringCellValue
             val password = row.getCell(3).stringCellValue
             val clubName = row.getCell(4).stringCellValue
             val grade = row.getCell(5).numericCellValue.toInt()
