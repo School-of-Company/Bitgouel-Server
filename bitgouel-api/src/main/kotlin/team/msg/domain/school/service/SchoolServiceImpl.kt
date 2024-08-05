@@ -126,7 +126,7 @@ class SchoolServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
-        if (schoolRepository.existsByName(request.schoolName)) {
+        if (schoolRepository.existsByNameAndIdNotLike(request.schoolName, id)) {
             throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info : [ schoolName = ${request.schoolName} ]")
         }
 
