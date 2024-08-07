@@ -9,7 +9,7 @@ spring:
     multipart:
       max-file-size: 10MB
   profiles:
-    active: ${PROFILE:local}
+    active: ${PROFILE:prod}
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -63,6 +63,12 @@ management:
 
     prometheus:
       enabled: true
+
+logging:
+  discord:
+    webhook-url: ${DISCORD_WEBHOOK_URL}
+    avatar-url: ${DISCORD_AVATAR_URL}
+  config: classpath:logback-spring.xml
 
 kakao:
   api-key: ${KAKAO_API_KEY}

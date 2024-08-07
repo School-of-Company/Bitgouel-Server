@@ -3,7 +3,7 @@
 <configuration scan="true" scanPeriod="1 minute">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <springProfile name="local | prod">
+    <springProfile name="local | dev | prod">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -22,13 +22,11 @@
         </logger>
     </springProfile>
 
-    <springProfile name="prod" source="logging.discord.webhook-url">
+    <springProfile name="dev | prod" source="logging.discord.webhook-url">
 
-        <property resource="application-prod.yml" />
+        <property resource="application.yml" />
         <springProperty scope="context" name="DISCORD_WEBHOOK_URL" source="logging.discord.webhook-url"/>
         <springProperty scope="context" name="DISCORD_AVATAR_URL" source="logging.discord.avatar-url"/>
-        <springProperty scope="context" name="AWS_ACCESS_KEY" source="cloud.aws.credentials.access-key"/>
-        <springProperty scope="context" name="AWS_SECRET_KEY" source="cloud.aws.credentials.secret-key"/>
 
         <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
             <webhookUri>${DISCORD_WEBHOOK_URL}</webhookUri>
@@ -47,6 +45,23 @@
             </filter>
         </appender>
 
+        <logger name="org.springframework" level="INFO">
+            <appender-ref ref="ASYNC_DISCORD"/>
+        </logger>
+        <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
+            <appender-ref ref="ASYNC_DISCORD"/>
+        </logger>
+        <logger name="team.msg" level="INFO">
+            <appender-ref ref="ASYNC_DISCORD"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod" source="logging.discord.webhook-url">
+
+        <property resource="application-prod.yml" />
+        <springProperty scope="context" name="AWS_ACCESS_KEY" source="cloud.aws.credentials.access-key"/>
+        <springProperty scope="context" name="AWS_SECRET_KEY" source="cloud.aws.credentials.secret-key"/>
+
         <appender name="CLOUD-WATCH" class="ca.pjer.logback.AwsLogsAppender">
             <layout>
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -64,15 +79,12 @@
 
         <logger name="org.springframework" level="INFO">
             <appender-ref ref="CLOUD-WATCH"/>
-            <appender-ref ref="ASYNC_DISCORD"/>
         </logger>
         <logger name="org.hibernate.orm.jdbc.bind" level="TRACE">
             <appender-ref ref="CLOUD-WATCH"/>
-            <appender-ref ref="ASYNC_DISCORD"/>
         </logger>
         <logger name="team.msg" level="INFO">
             <appender-ref ref="CLOUD-WATCH"/>
-            <appender-ref ref="ASYNC_DISCORD"/>
         </logger>
     </springProfile>
 </configuration>
