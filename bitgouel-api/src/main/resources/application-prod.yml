@@ -9,10 +9,6 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-
 jwt:
   accessSecret: ${JWT_ACCESS}
   refreshSecret: ${JWT_REFRESH}

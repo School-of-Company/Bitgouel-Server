@@ -11,10 +11,6 @@ spring:
     hikari:
       auto-commit: false
 
-  redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
-
 jwt:
   accessSecret: ${JWT_ACCESS:bXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNnbXNn}
   refreshSecret: ${JWT_REFRESH:Yml0Z291ZWw=Yml0Z291ZWw=Yml0Z291ZWw=}
