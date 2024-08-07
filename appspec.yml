@@ -14,6 +14,6 @@ permissions:
 
 hooks:
   ApplicationStart:
-    - location: scripts/deploy.sh
+    - location: scripts/prod-deploy.sh
       timeout: 300
       runas: ec2-user
