@@ -189,6 +189,7 @@ class ClubServiceImpl(
         }
 
         val updateClub = Club(
+            id = id,
             school = club.school,
             name = request.clubName,
             field = request.field
