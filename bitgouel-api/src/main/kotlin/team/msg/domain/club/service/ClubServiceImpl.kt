@@ -184,7 +184,7 @@ class ClubServiceImpl(
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
 
-        if (clubRepository.existsByName(request.clubName)) {
+        if (clubRepository.existsByNameAndIdNotLike(request.clubName, id)) {
             throw AlreadyExistClubException("이미 존재하는 동아리입니다. info : [ clubName = ${request.clubName} ]")
         }
 

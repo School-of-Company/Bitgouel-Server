@@ -19,4 +19,6 @@ interface ClubRepository : JpaRepository<Club, Long>, CustomClubRepository {
     fun existsBySchool(school: School): Boolean
 
     fun existsByName(name: String): Boolean
+
+    fun existsByNameAndIdNotLike(name: String, id: Long): Boolean
 }
