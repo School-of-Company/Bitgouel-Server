@@ -28,7 +28,7 @@ class CustomLectureDateRepositoryImpl(
                 lectureDate.lecture.id.eq(lectureId)
             )
             .orderBy(
-                lectureDate.completeDate.desc()
+                lectureDate.completeDate.asc()
             )
             .fetchFirst()
 }
