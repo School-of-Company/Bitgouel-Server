@@ -41,10 +41,10 @@ class Lecture(
     @Column(columnDefinition = "VARCHAR(25)", nullable = false)
     val line: String,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     val startDate: LocalDateTime,
 
-    @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(6)")
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     val endDate: LocalDateTime,
 
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
