@@ -5,6 +5,6 @@ enum class SchoolErrorCode(
 ) {
     INVALID_EXTENSION(400),
     NOT_EMPTY_SCHOOL(400),
-    SCHOOL_NOT_FOUND(403),
+    SCHOOL_NOT_FOUND(404),
     SCHOOL_ALREADY_EXIST(409)
 }
