@@ -9,7 +9,7 @@ spring:
     multipart:
       max-file-size: 10MB
   profiles:
-    active: ${PROFILE:prod}
+    active: ${ACTIVE_PROFILES:local}
   mvc:
     throw-exception-if-no-handler-found: true
   web:
