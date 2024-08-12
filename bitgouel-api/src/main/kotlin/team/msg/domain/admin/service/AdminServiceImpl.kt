@@ -143,11 +143,7 @@ class AdminServiceImpl(
 
             val club = clubRepository findByName clubName
 
-            try {
-                studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber, subscriptionGrade)
-            } catch (e: Exception) {
-                throw InternalServerException("서버 오류입니다.")
-            }
+            studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber, subscriptionGrade)
         }
     }
 

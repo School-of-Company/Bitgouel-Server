@@ -1,25 +1,19 @@
-REPOSITORY=/home/ec2-user
-PROJECT_NAME=Bitgouel-Server
-JAR_PATH=$REPOSITORY/$PROJECT_NAME/bitgouel-api/build/libs/bitgouel-api-0.0.1-SNAPSHOT.jar
+DEPLOYMENT_ACTIVE_PROFILES=$(echo ACTIVE_PROFILES)
+SCRIPT_PATH="/home/ec2-user/action/scripts"
 
-cd $REPOSITORY/$PROJECT_NAME/
+if [ -z "$DEPLOYMENT_ACTIVE_PROFILES" ]; then
+  echo "Active profiles 가 설정되어 있지 않습니다."
+  exit 1
 
-echo "> Git Pull"
-git pull origin master
+elif [ "$DEPLOYMENT_ACTIVE_PROFILES" == "dev" ]; then
+  chmod +x $SCRIPT_PATH/dev-deploy.sh
+  $SCRIPT_PATH/dev-deploy.sh
 
-echo "> Project Build"
-./gradlew clean bitgouel-api:build -x test
+elif [ "$DEPLOYMENT_ACTIVE_PROFILES" == "prod" ]; then
+  chmod +x $SCRIPT_PATH/prod-deploy.sh
+  $SCRIPT_PATH/prod-deploy.sh
 
-CURRENT_PID=$(lsof -i tcp:8080)
-if [ -z "$CURRENT_PID" ]; then
-    echo "> 현재 구동중인 애플리케이션이 없으므로 종료하지 않습니다."
 else
-    echo "> kill -9 $CURRENT_PID"
-    kill -9 $CURRENT_PID
-    sleep 5
+  echo "Invalid Active profiles"
+  exit 1
 fi
-
-echo "> 애플리케이션 배포"
-JAR_NAME=$(ls -tr $JAR_PATH | tail -n 1)
-echo "> JAR NAME: $JAR_NAME"
-TZ='Asia/Seoul' nohup java -jar $JAR_NAME --spring.profiles.active=prod >> /home/ec2-user/deploy.log 2>/home/ec2-user/deploy-err.log &
