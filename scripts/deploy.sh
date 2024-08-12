@@ -4,9 +4,8 @@ SCRIPT_PATH="/home/ec2-user/action/scripts"
 if [ -z "$DEPLOYMENT_ACTIVE_PROFILES" ]; then
   echo "Active profiles 가 설정되어 있지 않습니다."
   exit 1
-fi
 
-if [ "$DEPLOYMENT_ACTIVE_PROFILES" == "dev" ]; then
+elif [ "$DEPLOYMENT_ACTIVE_PROFILES" == "dev" ]; then
   chmod +x $SCRIPT_PATH/dev-deploy.sh
   $SCRIPT_PATH/dev-deploy.sh
 
