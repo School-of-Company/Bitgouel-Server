@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
+import team.msg.domain.admin.exception.InvalidCellTypeException
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.model.Club
@@ -21,6 +22,9 @@ import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.exception.InternalServerException
+import java.lang.IndexOutOfBoundsException
+import java.lang.NullPointerException
 import java.util.*
 
 @Service
@@ -114,36 +118,45 @@ class AdminServiceImpl(
      */
     @Transactional(rollbackFor = [Exception::class])
     override fun uploadStudentListExcel(file: MultipartFile) {
-        file.inputStream.use {
-            val workbook = WorkbookFactory.create(file.inputStream)
+        try {
+            file.inputStream.use {
+                val workbook = WorkbookFactory.create(file.inputStream)
 
-            val sheet = workbook.getSheetAt(0)
+                val sheet = workbook.getSheetAt(0)
 
-            sheet.forEachIndexed { index, row ->
-                if (index == 0)
+                sheet.forEachIndexed { index, row ->
+                    if (index == 0) {
+                    }
                     return@forEachIndexed
 
-                if (row.getCell(0).stringCellValue == "")
+                    if (row.getCell(0).stringCellValue == "") {
+                    }
                     return
 
-                val email = row.getCell(0).stringCellValue
-                val name = row.getCell(1).stringCellValue
-                val phoneNumber = row.getCell(2).stringCellValue
-                val password = row.getCell(3).stringCellValue
-                val clubName = row.getCell(4).stringCellValue
-                val grade = row.getCell(5).numericCellValue.toInt()
-                val classRoom = row.getCell(6).numericCellValue.toInt()
-                val number = row.getCell(7).numericCellValue.toInt()
-                val admissionNumber = row.getCell(8).numericCellValue.toInt()
-                val subscriptionGrade = row.getCell(9).numericCellValue.toInt()
+                    val email = row.getCell(0).stringCellValue
+                    val name = row.getCell(1).stringCellValue
+                    val phoneNumber = row.getCell(2).stringCellValue
+                    val password = row.getCell(3).stringCellValue
+                    val clubName = row.getCell(4).stringCellValue
+                    val grade = row.getCell(5).numericCellValue.toInt()
+                    val classRoom = row.getCell(6).numericCellValue.toInt()
+                    val number = row.getCell(7).numericCellValue.toInt()
+                    val admissionNumber = row.getCell(8).numericCellValue.toInt()
+                    val subscriptionGrade = row.getCell(9).numericCellValue.toInt()
 
-                validateExcelStudentData(email, phoneNumber, password)
+                    validateExcelStudentData(email, phoneNumber, password)
 
-                val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
+                    val user = userUtil.createUser(email, name, phoneNumber, password, Authority.ROLE_STUDENT)
 
-                val club = clubRepository findByName clubName
+                    val club = clubRepository findByName clubName
 
-                studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber, subscriptionGrade)
+                    studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber, subscriptionGrade)
+                }
+            }
+        } catch (e: Exception) {
+            when (e) {
+                IndexOutOfBoundsException() -> throw InvalidCellTypeException("전화번호 셀 서식을 텍스트로 바꿔주세요.")
+                NullPointerException() -> throw InternalServerException("aasdfasdf")
             }
         }
     }
