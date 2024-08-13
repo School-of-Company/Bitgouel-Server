@@ -623,16 +623,18 @@ class LectureServiceImpl(
 
             val clubs = clubRepository.findAllBySchool(highSchool)
 
+            var idx = 1
+
             clubs.map { club ->
                 val teacher = teacherRepository.findByClub(club)
                     ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
 
                 val students = studentRepository.findAllByClub(club)
 
-                students.forEachIndexed { idx, student ->
+                students.forEach { student ->
                     val registeredLectures = registeredLectureRepository.findAllByStudent(student)
 
-                    registeredLectures.map { registeredLecture ->
+                    registeredLectures.forEach { registeredLecture ->
                         val lecture = registeredLecture.lecture
 
                         val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
@@ -643,10 +645,10 @@ class LectureServiceImpl(
 
                         val location = lectureLocationRepository.findByLectureId(lecture.id)
 
-                        val row = sheet.createRow(idx+1)
+                        val row = sheet.createRow(idx)
 
                         listOf(
-                            (idx+1).toString(),
+                            idx.toString(),
                             lecture.division,
                             lecture.line,
                             lecture.semester.yearAndSemester,
@@ -670,6 +672,8 @@ class LectureServiceImpl(
                             cell.setCellValue(parameter)
                             cell.cellStyle = style
                         }
+
+                        idx++
                     }
                 }
             }
