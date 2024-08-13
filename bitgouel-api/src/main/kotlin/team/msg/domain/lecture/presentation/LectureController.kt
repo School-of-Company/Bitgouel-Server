@@ -121,4 +121,10 @@ class LectureController(
         return ResponseEntity.noContent().build()
     }
 
+    @PatchMapping("/{id}/cancel")
+    fun cancelLectureCompleteStatus(@PathVariable id: UUID, @RequestParam studentIds: List<UUID>): ResponseEntity<Unit> {
+        lectureService.cancelLectureCompleteStatus(id, studentIds)
+        return ResponseEntity.noContent().build()
+    }
+
 }
