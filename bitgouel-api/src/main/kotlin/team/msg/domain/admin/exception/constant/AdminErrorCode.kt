@@ -4,7 +4,5 @@ enum class AdminErrorCode(
     val status: Int
 ) {
     INVALID_CELL_TYPE(400),
-    EMPTY_CELL(400),
-    ADMIN_NOT_FOUND(404),
-    ALREADY_EXIST_STUDENT_INFORMATION(409)
+    ADMIN_NOT_FOUND(404)
 }

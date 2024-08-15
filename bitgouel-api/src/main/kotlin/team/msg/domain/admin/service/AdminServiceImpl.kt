@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
-import team.msg.domain.admin.exception.EmptyCellException
 import team.msg.domain.admin.exception.InvalidCellTypeException
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.exception.ClubNotFoundException
@@ -23,10 +22,7 @@ import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
-import team.msg.global.error.exception.BitgouelException
 import team.msg.global.exception.InternalServerException
-import java.lang.IndexOutOfBoundsException
-import java.lang.NullPointerException
 import java.util.*
 
 @Service
