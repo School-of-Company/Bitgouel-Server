@@ -122,7 +122,7 @@ class AdminServiceImpl(
             } catch (e: IndexOutOfBoundsException) {
                 throw InvalidCellTypeException("전화번호 셀 서식을 텍스트로 바꿔주세요.")
             } catch (e: Exception) {
-                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다: info : [ error message : ${e.message}")
+                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message}")
             }
 
             val sheet = workbook.getSheetAt(0)
@@ -159,18 +159,18 @@ class AdminServiceImpl(
     private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
         if (!email.matches(emailRegex))
-            throw InvalidEmailException("유효하지 않은 이메일입니다. [ email =  $email ]")
+            throw InvalidEmailException("유효하지 않은 이메일입니다. info : [ email = $email ]")
 
         val phoneRegex = "^010[0-9]{8}\$".toRegex()
         if (!phoneNumber.matches(phoneRegex))
-            throw InvalidPhoneNumberException("유효하지 않은 휴대폰 번호입니다. [ phoneNumber = $phoneNumber ]")
+            throw InvalidPhoneNumberException("유효하지 않은 휴대폰 번호입니다. info : [ phoneNumber = $phoneNumber ]")
 
         val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
         if (!password.matches(passwordRegex))
-            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. [ password = $password ]")
+            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password = $password ]")
     }
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
-        this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. Info [ clubName = $clubName ]")
+        this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
 
 }
