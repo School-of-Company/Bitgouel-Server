@@ -461,11 +461,11 @@ class LectureServiceImpl(
      * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 조회
      * 어드민 -> 제한 없음
      *
-     * @param 조회할 강의 id
+     * @param 조회할 강의 id, 필터링할 강의 이수 여부
      * @return 조회한 학생 정보를 담은 list dto
      */
     @Transactional(readOnly = true)
-    override fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse {
+    override fun queryAllSignedUpStudents(id: UUID, request: QueryAllSignedUpStudentsRequest): SignedUpStudentsResponse {
         val user = userUtil.queryCurrentUser()
 
         val students = when(user.authority){
@@ -484,7 +484,9 @@ class LectureServiceImpl(
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
                 registeredLectureRepository.findSignedUpStudentsByLectureId(id)
             }
-        }.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
+        }
+        .filter { request.isComplete == null || it.registeredLecture.idComplete() == request.isComplete }
+        .map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
 
         val response = LectureResponse.signedUpOf(students)
 

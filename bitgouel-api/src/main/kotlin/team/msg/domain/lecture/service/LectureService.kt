@@ -7,6 +7,7 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllSignedUpStudentsRequest
 import team.msg.domain.lecture.presentation.data.request.UpdateLectureRequest
 import team.msg.domain.lecture.presentation.data.response.SignedUpLecturesResponse
 import team.msg.domain.lecture.presentation.data.response.DepartmentsResponse
@@ -32,7 +33,7 @@ interface LectureService {
     fun cancelSignUpLecture(id: UUID)
     fun queryInstructors(keyword: String): InstructorsResponse
     fun queryAllSignedUpLectures(studentId: UUID): SignedUpLecturesResponse
-    fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse
+    fun queryAllSignedUpStudents(id: UUID, request: QueryAllSignedUpStudentsRequest): SignedUpStudentsResponse
     fun querySignedUpStudentDetails(id: UUID, studentId: UUID): SignedUpStudentDetailsResponse
     fun updateLectureCompleteStatus(id: UUID, studentIds: List<UUID>)
     fun cancelLectureCompleteStatus(id: UUID, studentIds: List<UUID>)
