@@ -36,6 +36,7 @@ import team.msg.domain.lecture.presentation.data.request.QueryAllDepartmentsRequ
 import team.msg.domain.lecture.presentation.data.request.QueryAllDivisionsRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLectureRequest
 import team.msg.domain.lecture.presentation.data.request.QueryAllLinesRequest
+import team.msg.domain.lecture.presentation.data.request.QueryAllSignedUpStudentsRequest
 import team.msg.domain.lecture.presentation.data.request.UpdateLectureRequest
 import team.msg.domain.lecture.presentation.data.response.InstructorsResponse
 import team.msg.domain.lecture.presentation.data.response.LectureDateResponse
@@ -1117,6 +1118,10 @@ class LectureServiceImplTest : BehaviorSpec({
         val studentPhoneNumber = "phoneNumber"
         val schoolName = "광주소프트웨어마이스터고등학교"
 
+        val request = fixture<QueryAllSignedUpStudentsRequest> {
+            property(QueryAllSignedUpStudentsRequest::isComplete) { null }
+        }
+
         val studentUserA = fixture<User>{
             property(User::id) { studentUserId }
             property(User::name) { studentName }
@@ -1244,7 +1249,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 Teacher라면"){
             every { userUtil.queryCurrentUser() } returns teacherUser
 
-            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId, request)
             Then("result와 response가 같아야 한다") {
                 result shouldBe clubAStudentsResponse
             }
@@ -1253,7 +1258,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 Bbozzak라면"){
             every { userUtil.queryCurrentUser() } returns bbozzakUser
 
-            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId, request)
             Then("result와 response가 같아야 한다") {
                 result shouldBe clubBStudentsResponse
             }
@@ -1262,7 +1267,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 Admin이라면") {
             every { userUtil.queryCurrentUser() } returns adminUser
 
-            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId, request)
             Then("result와 response가 같아야 한다") {
                 result shouldBe allStudentsResponse
             }
@@ -1271,7 +1276,7 @@ class LectureServiceImplTest : BehaviorSpec({
         When("현재 로그인 한 유저가 PROFESSOR, COMPANY_INSTRUCTOR, GOVERNMENT이고 강의 강사라면") {
             every { userUtil.queryCurrentUser() } returns professorUserA
 
-            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+            val result = lectureServiceImpl.queryAllSignedUpStudents(lectureId, request)
             Then("result와 response가 같아야 한다") {
                 result shouldBe allStudentsResponse
             }
@@ -1282,7 +1287,7 @@ class LectureServiceImplTest : BehaviorSpec({
 
             Then("ForbiddenCompletedLectureException이 발생해야 한다.") {
                 shouldThrow<ForbiddenSignedUpLectureException> {
-                    lectureServiceImpl.queryAllSignedUpStudents(lectureId)
+                    lectureServiceImpl.queryAllSignedUpStudents(lectureId, request)
                 }
             }
         }
