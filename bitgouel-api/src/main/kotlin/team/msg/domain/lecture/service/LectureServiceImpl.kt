@@ -485,8 +485,8 @@ class LectureServiceImpl(
                 registeredLectureRepository.findSignedUpStudentsByLectureId(id)
             }
         }
-        .filter { request.isComplete == null || it.registeredLecture.idComplete() == request.isComplete }
-        .map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
+        .filter { request.isComplete == null || it.registeredLecture.isComplete() == request.isComplete }
+        .map { LectureResponse.of(it.student, it.registeredLecture.isComplete()) }
 
         val response = LectureResponse.signedUpOf(students)
 

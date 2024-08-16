@@ -1229,9 +1229,9 @@ class LectureServiceImplTest : BehaviorSpec({
             property(Lecture::user) { professorUserA }
         }
 
-        val allStudentsData = students.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
-        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
-        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
+        val allStudentsData = students.map { LectureResponse.of(it.student, it.registeredLecture.isComplete()) }
+        val clubAStudentsData = clubAStudents.map { LectureResponse.of(it.student, it.registeredLecture.isComplete()) }
+        val clubBStudentsData = clubBStudents.map { LectureResponse.of(it.student, it.registeredLecture.isComplete()) }
 
         val allStudentsResponse = LectureResponse.signedUpOf(allStudentsData)
         val clubAStudentsResponse = LectureResponse.signedUpOf(clubAStudentsData)
