@@ -104,8 +104,9 @@ class LectureController(
     }
 
     @GetMapping("/student/{id}")
-    fun queryAllSignedUpStudents(@PathVariable id: UUID): ResponseEntity<SignedUpStudentsResponse> {
-        val response = lectureService.queryAllSignedUpStudents(id)
+    fun queryAllSignedUpStudents(@PathVariable id: UUID, webRequest: QueryAllSignedUpStudentsWebRequest): ResponseEntity<SignedUpStudentsResponse> {
+        val request = lectureRequestMapper.queryAllSignedUpStudentsWebRequestToDto(webRequest)
+        val response = lectureService.queryAllSignedUpStudents(id, request)
         return ResponseEntity.ok(response)
     }
 

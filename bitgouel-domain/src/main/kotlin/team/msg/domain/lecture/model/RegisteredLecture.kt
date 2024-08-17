@@ -31,5 +31,5 @@ class RegisteredLecture(
     val completeStatus: CompleteStatus = CompleteStatus.NOT_COMPLETED_YET
 ) : BaseUUIDEntity(id) {
 
-    fun idComplete() = completeStatus != CompleteStatus.NOT_COMPLETED_YET
+    fun isComplete() = completeStatus != CompleteStatus.NOT_COMPLETED_YET
 }

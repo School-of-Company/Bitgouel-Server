@@ -9,7 +9,7 @@ interface CustomRegisteredLectureRepository {
     fun deleteAllByStudentId(studentId: UUID)
     fun existsOne(studentId: UUID,lectureId: UUID): Boolean
     fun findLecturesAndIsCompleteByStudentId(studentId: UUID): List<LectureAndRegisteredProjection>
-    fun findSignedUpStudentsByLectureId(lectureId: UUID): List<SignedUpStudentProjection>
-    fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID, clubId: Long): List<SignedUpStudentProjection>
+    fun findSignedUpStudentsByLectureId(lectureId: UUID, isComplete: Boolean?): List<SignedUpStudentProjection>
+    fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID, clubId: Long, isComplete: Boolean?): List<SignedUpStudentProjection>
     fun findByLectureIdAndStudentId(lectureId: UUID, studentId: UUID): RegisteredLecture?
 }

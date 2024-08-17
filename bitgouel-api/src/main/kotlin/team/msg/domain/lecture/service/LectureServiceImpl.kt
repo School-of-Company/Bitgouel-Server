@@ -461,30 +461,31 @@ class LectureServiceImpl(
      * 뽀짝 선생님, 취업 동아리 선생님 -> 담당 동아리 소속 학생만 조회
      * 어드민 -> 제한 없음
      *
-     * @param 조회할 강의 id
+     * @param 조회할 강의 id, 필터링할 강의 이수 여부
      * @return 조회한 학생 정보를 담은 list dto
      */
     @Transactional(readOnly = true)
-    override fun queryAllSignedUpStudents(id: UUID): SignedUpStudentsResponse {
+    override fun queryAllSignedUpStudents(id: UUID, request: QueryAllSignedUpStudentsRequest): SignedUpStudentsResponse {
         val user = userUtil.queryCurrentUser()
 
         val students = when(user.authority){
             Authority.ROLE_TEACHER -> {
                 val teacher = teacherRepository findByUser user
-                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, teacher.club.id)
+                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, teacher.club.id, request.isComplete)
             }
             Authority.ROLE_BBOZZAK -> {
                 val bbozzak = bbozzakRepository findByUser user
-                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, bbozzak.club.id)
+                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, bbozzak.club.id, request.isComplete)
             }
-            Authority.ROLE_ADMIN -> registeredLectureRepository.findSignedUpStudentsByLectureId(id)
+            Authority.ROLE_ADMIN -> registeredLectureRepository.findSignedUpStudentsByLectureId(id, request.isComplete)
             else -> {
                 val lecture = lectureRepository findById id
                 if(lecture.user != user)
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
-                registeredLectureRepository.findSignedUpStudentsByLectureId(id)
+                registeredLectureRepository.findSignedUpStudentsByLectureId(id, request.isComplete)
             }
-        }.map { LectureResponse.of(it.student, it.registeredLecture.idComplete()) }
+        }
+        .map { LectureResponse.of(it.student, it.registeredLecture.isComplete()) }
 
         val response = LectureResponse.signedUpOf(students)
 
