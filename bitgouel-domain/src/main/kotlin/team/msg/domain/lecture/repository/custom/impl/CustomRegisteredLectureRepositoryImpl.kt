@@ -1,8 +1,10 @@
 package team.msg.domain.lecture.repository.custom.impl
 
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Component
 import team.msg.domain.club.model.QClub.club
+import team.msg.domain.lecture.enums.CompleteStatus
 import team.msg.domain.lecture.model.QLecture.lecture
 import team.msg.domain.lecture.model.QRegisteredLecture.registeredLecture
 import team.msg.domain.lecture.model.RegisteredLecture
@@ -50,7 +52,7 @@ class CustomRegisteredLectureRepositoryImpl(
             )
             .fetch()
 
-    override fun findSignedUpStudentsByLectureId(lectureId: UUID): List<SignedUpStudentProjection> =
+    override fun findSignedUpStudentsByLectureId(lectureId: UUID, isComplete: Boolean?): List<SignedUpStudentProjection> =
         queryFactory.select(
                 QSignedUpStudentProjection(
                     student,
@@ -60,11 +62,12 @@ class CustomRegisteredLectureRepositoryImpl(
             .leftJoin(registeredLecture.lecture, lecture)
             .leftJoin(registeredLecture.student, student)
             .where(
-                lecture.id.eq(lectureId)
+                lecture.id.eq(lectureId),
+                eqIsComplete(isComplete)
             )
             .fetch()
 
-    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID,clubId: Long): List<SignedUpStudentProjection> =
+    override fun findSignedUpStudentsByLectureIdAndClubId(lectureId: UUID, clubId: Long, isComplete: Boolean?): List<SignedUpStudentProjection> =
         queryFactory.select(
                 QSignedUpStudentProjection(
                     student,
@@ -76,7 +79,8 @@ class CustomRegisteredLectureRepositoryImpl(
             .leftJoin(student.club, club)
             .where(
                 lecture.id.eq(lectureId),
-                student.club.id.eq(clubId)
+                student.club.id.eq(clubId),
+                eqIsComplete(isComplete)
             )
             .fetch()
 
@@ -89,4 +93,20 @@ class CustomRegisteredLectureRepositoryImpl(
                 student.id.eq(studentId)
             )
             .fetchOne()
+
+    private fun eqIsComplete(isComplete: Boolean?): BooleanExpression? =
+        if(isComplete == null) null
+        else registeredLecture.completeStatus.`in`(getCompleteStatus(isComplete))
+
+    private fun getCompleteStatus(isComplete: Boolean) =
+        if(isComplete)
+            listOf(
+                CompleteStatus.COMPLETED_IN_1RD,
+                CompleteStatus.COMPLETED_IN_2RD,
+                CompleteStatus.COMPLETED_IN_3RD
+            )
+        else
+            listOf(
+                CompleteStatus.NOT_COMPLETED_YET
+            ).also { println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.$isComplete<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<") }
 }

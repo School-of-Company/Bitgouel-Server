@@ -471,21 +471,20 @@ class LectureServiceImpl(
         val students = when(user.authority){
             Authority.ROLE_TEACHER -> {
                 val teacher = teacherRepository findByUser user
-                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, teacher.club.id)
+                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, teacher.club.id, request.isComplete)
             }
             Authority.ROLE_BBOZZAK -> {
                 val bbozzak = bbozzakRepository findByUser user
-                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, bbozzak.club.id)
+                registeredLectureRepository.findSignedUpStudentsByLectureIdAndClubId(id, bbozzak.club.id, request.isComplete)
             }
-            Authority.ROLE_ADMIN -> registeredLectureRepository.findSignedUpStudentsByLectureId(id)
+            Authority.ROLE_ADMIN -> registeredLectureRepository.findSignedUpStudentsByLectureId(id, request.isComplete)
             else -> {
                 val lecture = lectureRepository findById id
                 if(lecture.user != user)
                     throw ForbiddenSignedUpLectureException("학생의 수강 이력을 볼 권한이 없습니다. info : [ userId = ${user.id} ]")
-                registeredLectureRepository.findSignedUpStudentsByLectureId(id)
+                registeredLectureRepository.findSignedUpStudentsByLectureId(id, request.isComplete)
             }
         }
-        .filter { request.isComplete == null || it.registeredLecture.isComplete() == request.isComplete }
         .map { LectureResponse.of(it.student, it.registeredLecture.isComplete()) }
 
         val response = LectureResponse.signedUpOf(students)
