@@ -108,5 +108,5 @@ class CustomRegisteredLectureRepositoryImpl(
         else
             listOf(
                 CompleteStatus.NOT_COMPLETED_YET
-            ).also { println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.$isComplete<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<") }
+            )
 }
