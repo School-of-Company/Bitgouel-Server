@@ -666,7 +666,7 @@ class LectureServiceImpl(
 
             val headerRow = sheet.createRow(0)
 
-            headers.forEachIndexed { idx,header ->
+            headers.forEachIndexed { idx, header ->
                 headerRow.createCellWithOptions(idx, header.first, style, 30F)
 
                 sheet.autoSizeColumn(idx)
@@ -675,58 +675,69 @@ class LectureServiceImpl(
 
             val clubs = clubRepository.findAllBySchool(highSchool)
 
-            var idx = 1
-
-            clubs.map { club ->
+            val courseInformationList = clubs.asSequence().flatMap { club ->
                 val teacher = teacherRepository.findByClub(club)
                     ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
 
                 val students = studentRepository.findAllByClub(club)
 
-                students.forEach { student ->
-                    val registeredLectures = registeredLectureRepository.findAllByStudent(student)
+                students.map { student ->
+                    Triple(club, teacher, student)
+                }
+            }.flatMap { triple ->
+                val student = triple.third
 
-                    registeredLectures.forEach { registeredLecture ->
-                        val lecture = registeredLecture.lecture
+                val registeredLectures = registeredLectureRepository.findAllByStudent(student)
 
-                        val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
+                registeredLectures.map { registeredLecture ->
+                    Pair(registeredLecture, triple)
+                }
+            }.mapIndexed { idx, pair ->
+                val (registeredLecture, triple) = pair
 
-                        val startTime = "${lectureDates.first().startTime.hour}:${lectureDates.first().startTime.minute}"
+                val (club, teacher, student) = triple
 
-                        val endTime = "${lectureDates.first().endTime.hour}:${lectureDates.first().endTime.minute}"
+                val lecture = registeredLecture.lecture
 
-                        val location = lectureLocationRepository.findByLectureId(lecture.id)
+                val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
 
-                        val row = sheet.createRow(idx)
+                val startTime = "${lectureDates.first().startTime.hour}:${lectureDates.first().startTime.minute}"
 
-                        listOf(
-                            idx.toString(),
-                            lecture.division,
-                            lecture.line,
-                            lecture.semester.yearAndSemester,
-                            location.address,
-                            lecture.department,
-                            lecture.name,
-                            "${lectureDates.first().completeDate} ~ ${lectureDates.last().completeDate} $startTime ~ $endTime",
-                            lecture.content,
-                            location.details,
-                            lecture.instructor,
-                            lecture.user!!.phoneNumber,
-                            highSchool.name,
-                            club.name,
-                            student.grade.toString(),
-                            student.user!!.name,
-                            teacher.user!!.name,
-                            teacher.user!!.phoneNumber,
-                            registeredLecture.completeStatus.description
-                        ).forEachIndexed { cellIdx, parameter ->
-                            val cell = row.createCell(cellIdx)
-                            cell.setCellValue(parameter)
-                            cell.cellStyle = style
-                        }
+                val endTime = "${lectureDates.first().endTime.hour}:${lectureDates.first().endTime.minute}"
 
-                        idx++
-                    }
+                val location = lectureLocationRepository.findByLectureId(lecture.id)
+
+                listOf(
+                    (idx + 1).toString(),
+                    lecture.division,
+                    lecture.line,
+                    lecture.semester.yearAndSemester,
+                    location.address,
+                    lecture.department,
+                    lecture.name,
+                    "${lectureDates.first().completeDate} ~ ${lectureDates.last().completeDate} $startTime ~ $endTime",
+                    lecture.content,
+                    location.details,
+                    lecture.instructor,
+                    lecture.user!!.phoneNumber,
+                    highSchool.name,
+                    club.name,
+                    student.grade.toString(),
+                    student.user!!.name,
+                    teacher.user!!.name,
+                    teacher.user!!.phoneNumber,
+                    registeredLecture.completeStatus.description
+                )
+            }.toList()
+
+
+            courseInformationList.forEachIndexed { idx,courseInformation ->
+                val row = sheet.createRow(idx+1)
+
+                courseInformation.forEachIndexed { cellIdx, parameter ->
+                    val cell = row.createCell(cellIdx)
+                    cell.setCellValue(parameter)
+                    cell.cellStyle = style
                 }
             }
         }
