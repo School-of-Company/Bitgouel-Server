@@ -21,9 +21,13 @@ class RedissonConfig(
         val config = Config()
         val codec = StringCodec()
         config.codec = codec
-        config.useSingleServer().setAddress(
-            "$REDIS_PREFIX${redisProperties.host}:${redisProperties.port}"
-        )
+
+        config.useSingleServer()
+            .setAddress(
+                "$REDIS_PREFIX${redisProperties.host}:${redisProperties.port}"
+            )
+            .setConnectionPoolSize(20)
+            .setConnectionMinimumIdleSize(5)
         return Redisson.create(config)
     }
 }
