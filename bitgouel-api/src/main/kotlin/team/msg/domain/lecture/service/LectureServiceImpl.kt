@@ -47,7 +47,6 @@ import team.msg.domain.lecture.enums.Semester
 import team.msg.domain.lecture.model.LectureLocation
 import team.msg.domain.lecture.repository.LectureLocationRepository
 import team.msg.domain.student.exception.InvalidStudentGradeException
-import kotlin.collections.ArrayList
 
 @Service
 class LectureServiceImpl(
@@ -673,25 +672,30 @@ class LectureServiceImpl(
                 sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
             }
 
-            val arr = MutableList(19) { "" }
-
             val clubs = clubRepository.findAllBySchool(highSchool)
 
-            clubs.asSequence().flatMap { club ->
+            val courseInformationList = clubs.asSequence().flatMap { club ->
                 val teacher = teacherRepository.findByClub(club)
                     ?: throw TeacherNotFoundException("취업 동아리 선생님을 찾을 수 없습니다. info : [ clubId = ${club.id} ]")
 
-                arr[13] = club.name
-                arr[16] = teacher.user!!.name
-                arr[17] = teacher.user!!.phoneNumber
+                val students = studentRepository.findAllByClub(club)
 
-                studentRepository.findAllByClub(club)
-            }.flatMap { student ->
-                arr[14] = student.grade.toString()
-                arr[15] = student.user!!.name
+                students.map { student ->
+                    Triple(club, teacher, student)
+                }
+            }.flatMap { triple ->
+                val student = triple.third
 
-                registeredLectureRepository.findAllByStudent(student)
-            }.forEachIndexed { idx, registeredLecture ->
+                val registeredLectures = registeredLectureRepository.findAllByStudent(student)
+
+                registeredLectures.map { registeredLecture ->
+                    Pair(registeredLecture, triple)
+                }
+            }.mapIndexed { idx, pair ->
+                val (registeredLecture, triple) = pair
+
+                val (club, teacher, student) = triple
+
                 val lecture = registeredLecture.lecture
 
                 val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
@@ -702,24 +706,34 @@ class LectureServiceImpl(
 
                 val location = lectureLocationRepository.findByLectureId(lecture.id)
 
+                listOf(
+                    (idx + 1).toString(),
+                    lecture.division,
+                    lecture.line,
+                    lecture.semester.yearAndSemester,
+                    location.address,
+                    lecture.department,
+                    lecture.name,
+                    "${lectureDates.first().completeDate} ~ ${lectureDates.last().completeDate} $startTime ~ $endTime",
+                    lecture.content,
+                    location.details,
+                    lecture.instructor,
+                    lecture.user!!.phoneNumber,
+                    highSchool.name,
+                    club.name,
+                    student.grade.toString(),
+                    student.user!!.name,
+                    teacher.user!!.name,
+                    teacher.user!!.phoneNumber,
+                    registeredLecture.completeStatus.description
+                )
+            }.toList()
+
+
+            courseInformationList.forEachIndexed { idx,courseInformation ->
                 val row = sheet.createRow(idx+1)
 
-                arr[0] = (idx + 1).toString()
-                arr[1] = lecture.division
-                arr[2] = lecture.line
-                arr[3] = lecture.semester.yearAndSemester
-                arr[4] = location.address
-                arr[5] = lecture.department
-                arr[6] = lecture.name
-                arr[7] = "${lectureDates.first().completeDate} ~ ${lectureDates.last().completeDate} $startTime ~ $endTime"
-                arr[8] = lecture.content
-                arr[9] = location.details
-                arr[10] = lecture.instructor
-                arr[11] = lecture.user!!.phoneNumber
-                arr[12] = highSchool.name
-                arr[18] = registeredLecture.completeStatus.description
-
-                arr.forEachIndexed { cellIdx, parameter ->
+                courseInformation.forEachIndexed { cellIdx, parameter ->
                     val cell = row.createCell(cellIdx)
                     cell.setCellValue(parameter)
                     cell.cellStyle = style
