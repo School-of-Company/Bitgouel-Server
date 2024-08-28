@@ -1,5 +1,7 @@
 package team.msg.domain.government.service
 
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,6 +28,7 @@ class GovernmentServiceImpl(
      * @param request 생성할 유관기관의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryGovernments"])
     override fun createGovernment(request: CreateGovernmentRequestData) {
         if(governmentRepository.existsByName(request.governmentName))
             throw AlreadyExistGovernmentException("이미 존재하는 유관기관입니다. info : [ governmentName = ${request.governmentName} ]")
@@ -43,6 +46,7 @@ class GovernmentServiceImpl(
      * @return 유관기관 리스트
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = ["queryGovernments"])
     override fun queryGovernments(): GovernmentsResponse {
         val governments = governmentRepository.findAll()
         val response = GovernmentsResponse(
@@ -60,6 +64,7 @@ class GovernmentServiceImpl(
      * @param id 삭제할 유관기관의 id
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryGovernments"])
     override fun deleteGovernment(id: Long) {
         val government = governmentRepository.findByIdOrNull(id)
             ?: throw GovernmentNotFoundException("존재하지 않는 유관기관입니다. info : [ governmentId = $id ]")
