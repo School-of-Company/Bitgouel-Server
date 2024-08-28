@@ -78,7 +78,7 @@ class ClubServiceImpl(
      * @return 동아리 이름 리스트
      */
     @Transactional(readOnly = true)
-    @Cacheable(value = ["queryAllClubsCache"])
+    @Cacheable(value = ["queryClubs"])
     override fun queryClubNames(schoolName: String?): ClubNamesResponse {
         val clubs = clubRepository.findAllBySchoolName(schoolName)
 
@@ -162,7 +162,7 @@ class ClubServiceImpl(
      * @param 동아리가 속할 학교 id, 생성할 동아리 정보
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryAllClubs"])
+    @CacheEvict(value = ["queryClubs"])
     override fun createClub(schoolId: Long, request: CreateClubRequest) {
         val school = schoolRepository.findByIdOrNull(schoolId)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ id = $schoolId ]")
@@ -184,7 +184,7 @@ class ClubServiceImpl(
      * @param 동아리 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryAllClubs"])
+    @CacheEvict(value = ["queryClubs"])
     override fun updateClub(id: Long, request: UpdateClubRequest) {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
@@ -207,7 +207,7 @@ class ClubServiceImpl(
      * @param 동아리 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryAllClubs"])
+    @CacheEvict(value = ["queryClubs"])
     override fun deleteClub(id: Long) {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
