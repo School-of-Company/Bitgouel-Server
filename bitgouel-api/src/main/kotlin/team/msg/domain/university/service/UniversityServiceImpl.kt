@@ -1,5 +1,7 @@
 package team.msg.domain.university.service
 
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +30,7 @@ class UniversityServiceImpl(
      * @param request 생성할 대학의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryUniversities"])
     override fun createUniversity(request: CreateUniversityRequest) {
         if(universityRepository.existsByName(request.universityName))
             throw AlreadyExistUniversityException("이미 존재하는 대학입니다. info : [ universityName = ${request.universityName} ]")
@@ -46,6 +49,7 @@ class UniversityServiceImpl(
      * @param request 수정할 대학의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryUniversities"])
     override fun updateUniversity(id: Long, request: UpdateUniversityRequest) {
         if(universityRepository.existsByName(request.universityName))
             throw AlreadyExistUniversityException("이미 존재하는 대학입니다. info : [ universityName = ${request.universityName} ]")
@@ -69,6 +73,7 @@ class UniversityServiceImpl(
      * @param id 삭제할 대학의 id
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryUniversities"])
     override fun deleteUniversity(id: Long) {
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
@@ -85,6 +90,7 @@ class UniversityServiceImpl(
      *  @return 대학 리스트
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = ["queryUniversities"])
     override fun queryUniversities(): UniversitiesResponse {
         val universities = universityRepository.findAll()
 
@@ -102,6 +108,7 @@ class UniversityServiceImpl(
      * @param request 추가할 학과의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryUniversities"])
     override fun createDepartment(id: Long, request: CreateDepartmentRequest) {
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
@@ -127,6 +134,7 @@ class UniversityServiceImpl(
      * @param request 삭제할 학과의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryUniversities"])
     override fun deleteDepartment(id: Long, department: String) {
         val university = universityRepository.findByIdOrNull(id)
             ?: throw UniversityNotFoundException("존재하지 않는 대학입니다. info : [ universityId = $id ]")
