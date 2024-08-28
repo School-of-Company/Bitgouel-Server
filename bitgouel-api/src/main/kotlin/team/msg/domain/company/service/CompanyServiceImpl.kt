@@ -1,5 +1,7 @@
 package team.msg.domain.company.service
 
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,6 +28,7 @@ class CompanyServiceImpl(
      * @param request 생성할 기업의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryCompanies"])
     override fun createCompany(request: CreateCompanyRequest) {
         if(companyRepository.existsByName(request.companyName))
             throw AlreadyExistCompanyException("이미 존재하는 기업입니다. info : [ companyName = ${request.companyName} ]")
@@ -43,6 +46,7 @@ class CompanyServiceImpl(
      * @return 기업 리스트
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = ["queryCompanies"])
     override fun queryCompanies(): CompaniesResponse {
         val companies = companyRepository.findAll()
         val response = CompaniesResponse(
@@ -60,6 +64,7 @@ class CompanyServiceImpl(
      * @param id 삭제할 기업의 id
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryCompanies"])
     override fun deleteCompany(id: Long) {
         val company = companyRepository.findByIdOrNull(id)
             ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info : [ companyId = $id ]")
