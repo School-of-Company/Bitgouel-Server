@@ -34,6 +34,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("com.google.guava:guava:11.0.2")
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("com.github.ben-manes.caffeine:caffeine")
     implementation(project(":bitgouel-domain"))
 }
 
