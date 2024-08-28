@@ -1,5 +1,7 @@
 package team.msg.domain.club.service
 
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -76,6 +78,7 @@ class ClubServiceImpl(
      * @return 동아리 이름 리스트
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = ["queryAllClubsCache"])
     override fun queryAllClubNames(schoolName: String?): ClubNamesResponse {
         val clubs = clubRepository.findAllBySchoolName(schoolName)
 
@@ -159,6 +162,7 @@ class ClubServiceImpl(
      * @param 동아리가 속할 학교 id, 생성할 동아리 정보
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryAllClubs"])
     override fun createClub(schoolId: Long, request: CreateClubRequest) {
         val school = schoolRepository.findByIdOrNull(schoolId)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ id = $schoolId ]")
@@ -180,6 +184,7 @@ class ClubServiceImpl(
      * @param 동아리 id
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryAllClubs"])
     override fun updateClub(id: Long, request: UpdateClubRequest) {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
@@ -202,6 +207,7 @@ class ClubServiceImpl(
      * @param 동아리 id
      */
     @Transactional(rollbackFor = [Exception::class])
+    @CacheEvict(value = ["queryAllClubs"])
     override fun deleteClub(id: Long) {
         val club = clubRepository.findByIdOrNull(id)
             ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubId = $id ]")
