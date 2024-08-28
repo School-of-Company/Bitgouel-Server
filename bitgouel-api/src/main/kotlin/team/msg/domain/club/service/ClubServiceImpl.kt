@@ -59,7 +59,7 @@ class ClubServiceImpl(
      * @return 학교에 있는 취업동아리 리스트
      */
     @Transactional(readOnly = true)
-    override fun queryAllClubs(highSchool: String): ClubsResponse {
+    override fun queryClubs(highSchool: String): ClubsResponse {
         val school = schoolRepository.findByName(highSchool)
             ?: throw SchoolNotFoundException("존재하지 않는 학교 입니다. info : [ highSchool = $highSchool ]")
 
@@ -79,7 +79,7 @@ class ClubServiceImpl(
      */
     @Transactional(readOnly = true)
     @Cacheable(value = ["queryAllClubsCache"])
-    override fun queryAllClubNames(schoolName: String?): ClubNamesResponse {
+    override fun queryClubNames(schoolName: String?): ClubNamesResponse {
         val clubs = clubRepository.findAllBySchoolName(schoolName)
 
         val response = ClubNamesResponse(

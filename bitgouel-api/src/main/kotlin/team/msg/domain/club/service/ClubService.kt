@@ -9,8 +9,8 @@ import team.msg.domain.student.presentation.data.response.StudentDetailsResponse
 import java.util.*
 
 interface ClubService {
-    fun queryAllClubs(highSchool: String): ClubsResponse
-    fun queryAllClubNames(schoolName: String?): ClubNamesResponse
+    fun queryClubs(highSchool: String): ClubsResponse
+    fun queryClubNames(schoolName: String?): ClubNamesResponse
     fun queryClubDetailsById(id: Long): ClubDetailsResponse
     fun queryMyClubDetails(): ClubDetailsResponse
     fun queryStudentDetails(clubId: Long, studentId: UUID): StudentDetailsResponse
