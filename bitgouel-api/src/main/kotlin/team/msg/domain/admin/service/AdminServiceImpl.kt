@@ -1,7 +1,6 @@
 package team.msg.domain.admin.service
 
 import org.apache.poi.ss.usermodel.WorkbookFactory
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -16,7 +15,6 @@ import team.msg.domain.club.exception.ClubNotFoundException
 import team.msg.domain.club.exception.InvalidFieldException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
-import team.msg.domain.school.exception.AlreadyExistSchoolException
 import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.repository.StudentRepository
