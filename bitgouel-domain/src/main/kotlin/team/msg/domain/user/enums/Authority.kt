@@ -8,7 +8,7 @@ package team.msg.domain.user.enums
  * TEACHER - 취업 동아리 선생님
  * BBOZZAK - 뽀작 선생님
  * PROFESSOR - 대학 교수
- * COMPANY_INSTRUCTOR - 기 강사
+ * COMPANY_INSTRUCTOR - 기업 강사
  * GOVERNMENT - 유관 기관
  */
 enum class Authority {
