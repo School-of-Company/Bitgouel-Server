@@ -174,7 +174,7 @@ class AdminServiceImpl(
             val workbook = try {
                 WorkbookFactory.create(file.inputStream)
             } catch (e: Exception) {
-                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message}")
+                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
             }
 
             val sheet = workbook.getSheetAt(0)
