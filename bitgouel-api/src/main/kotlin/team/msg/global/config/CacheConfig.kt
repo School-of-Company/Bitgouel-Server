@@ -2,6 +2,7 @@ package team.msg.global.config
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.Scheduler
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.cache.caffeine.CaffeineCache
@@ -32,6 +33,7 @@ class CacheConfig {
         Caffeine.newBuilder()
             .maximumSize(cacheProperties.maximumSize)
             .expireAfterAccess(cacheProperties.expiredAfterWrite, TimeUnit.MINUTES)
+            .scheduler(Scheduler.systemScheduler())
             .recordStats()
             .build()
 }
