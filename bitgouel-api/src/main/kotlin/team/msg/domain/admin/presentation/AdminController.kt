@@ -40,9 +40,15 @@ class AdminController(
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/excel")
+    @PostMapping("/student/excel")
     fun uploadStudentListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
         adminService.uploadStudentListExcel(file)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/club/excel")
+    fun uploadClubListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
+        adminService.uploadClubListExcel(file)
         return ResponseEntity.ok().build()
     }
 }
