@@ -116,7 +116,7 @@ class InquiryServiceImpl(
             throw ForbiddenCommandInquiryException("문의사항을 삭제할 권한이 없습니다. info : [ userId = ${currentUser.id}, inquiryId = $id ]")
 
         if(inquiry.answerStatus == AnswerStatus.ANSWERED) {
-            val inquiryAnswer =  inquiryAnswerRepository findByInquiryId id
+            val inquiryAnswer = inquiryAnswerRepository findByInquiryId id
             inquiryAnswerRepository.delete(inquiryAnswer)
         }
 

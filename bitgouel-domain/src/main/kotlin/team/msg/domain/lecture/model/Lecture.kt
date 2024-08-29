@@ -7,7 +7,6 @@ import javax.persistence.Enumerated
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-import org.hibernate.annotations.ColumnDefault
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.domain.lecture.enums.LectureStatus
 import team.msg.domain.lecture.enums.Semester

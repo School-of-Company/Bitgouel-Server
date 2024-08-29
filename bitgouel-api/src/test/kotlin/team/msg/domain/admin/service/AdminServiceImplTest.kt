@@ -5,12 +5,17 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
@@ -30,12 +35,14 @@ class AdminServiceImplTest : BehaviorSpec({
     val studentUtil = mockk<StudentUtil>()
     val clubRepository = mockk<ClubRepository>()
     val studentRepository = mockk<StudentRepository>()
+    val schoolRepository = mockk<SchoolRepository>()
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
         userUtil = userUtil,
         studentUtil = studentUtil,
         clubRepository = clubRepository,
-        studentRepository = studentRepository
+        studentRepository = studentRepository,
+        schoolRepository = schoolRepository
     )
 
     // queryUsers 테스트 코드

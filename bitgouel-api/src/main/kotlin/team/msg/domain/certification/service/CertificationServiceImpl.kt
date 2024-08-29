@@ -118,7 +118,7 @@ class CertificationServiceImpl(
         val student = studentRepository findStudentById studentId
 
         if (student.club != club && club != null)
-            throw ForbiddenCertificationException("자격증을 조회할 권한이 없습니다. info : [ club = $club ]")
+            throw ForbiddenCertificationException("자격증을 조회할 권한이 없습니다. info : [ club = ${club.name} ]")
 
         val certifications = certificationRepository findAllByStudentIdOrderByAcquisitionDateDesc studentId
 

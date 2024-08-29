@@ -5,13 +5,18 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.enums.Field
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.exception.InvalidCellTypeException
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
+import team.msg.domain.club.exception.AlreadyExistClubException
 import team.msg.domain.club.exception.ClubNotFoundException
+import team.msg.domain.club.exception.InvalidFieldException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.school.exception.SchoolNotFoundException
+import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.InvalidEmailException
@@ -31,7 +36,8 @@ class AdminServiceImpl(
     private val userUtil: UserUtil,
     private val studentUtil: StudentUtil,
     private val clubRepository: ClubRepository,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
+    private val schoolRepository: SchoolRepository
 ) : AdminService {
 
     /**
@@ -122,7 +128,7 @@ class AdminServiceImpl(
             } catch (e: IndexOutOfBoundsException) {
                 throw InvalidCellTypeException("전화번호 셀 서식을 텍스트로 바꿔주세요.")
             } catch (e: Exception) {
-                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message}")
+                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
             }
 
             val sheet = workbook.getSheetAt(0)
@@ -156,6 +162,58 @@ class AdminServiceImpl(
         }
     }
 
+    /**
+     * 동아리 리스트 엑셀을 업로드 하는 비지니스 로직입니다
+     * @param 동아리 리스트 엑셀 업로드를 위한 MultipartFile
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun uploadClubListExcel(file: MultipartFile) {
+        file.inputStream.use {
+            val workbook = try {
+                WorkbookFactory.create(file.inputStream)
+            } catch (e: Exception) {
+                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
+            }
+
+            val sheet = workbook.getSheetAt(0)
+
+            sheet.forEachIndexed { index, row ->
+                if (index == 0)
+                    return@forEachIndexed
+
+                if (row.getCell(0).stringCellValue == "")
+                    return
+
+                val schoolName = row.getCell(0).stringCellValue
+                val clubName = row.getCell(1).stringCellValue
+                val field = row.getCell(2).stringCellValue
+
+                val school = schoolRepository.findByName(schoolName)
+                    ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ schoolName = $schoolName ]")
+
+                if (clubRepository.existsByName(clubName)) {
+                    throw AlreadyExistClubException("이미 존재하는 동아리입니다. info : [ clubName = $clubName ]")
+                }
+
+                val clubField = when (field) {
+                    FUTURISTIC_TRANSPORTATION_EQUIPMENT -> Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT
+                    ENERGY -> Field.ENERGY
+                    MEDICAL_HEALTHCARE -> Field.MEDICAL_HEALTHCARE
+                    AI_CONVERGENCE -> Field.AI_CONVERGENCE
+                    CULTURE -> Field.CULTURE
+                    else -> throw InvalidFieldException("유효하지 않은 동아리 분야입니다. info : [ clubField = $field ]")
+                }
+
+                val club = Club(
+                    school = school,
+                    name = clubName,
+                    field = clubField
+                )
+                clubRepository.save(club)
+            }
+        }
+    }
+
     private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
         if (!email.matches(emailRegex))
@@ -173,4 +231,12 @@ class AdminServiceImpl(
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
 
+
+    companion object {
+        const val FUTURISTIC_TRANSPORTATION_EQUIPMENT = "미래형 운송기기"
+        const val ENERGY = "에너지 산업"
+        const val MEDICAL_HEALTHCARE = "의료 헬스케어"
+        const val AI_CONVERGENCE = "AI 융복합"
+        const val CULTURE = "문화산업"
+    }
 }
