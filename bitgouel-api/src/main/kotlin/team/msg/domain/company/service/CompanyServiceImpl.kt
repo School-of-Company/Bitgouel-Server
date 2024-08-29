@@ -28,7 +28,7 @@ class CompanyServiceImpl(
      * @param request 생성할 기업의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryCompanies"])
+    @CacheEvict(value = ["queryCompanies"], allEntries = true)
     override fun createCompany(request: CreateCompanyRequest) {
         if(companyRepository.existsByName(request.companyName))
             throw AlreadyExistCompanyException("이미 존재하는 기업입니다. info : [ companyName = ${request.companyName} ]")
@@ -64,7 +64,7 @@ class CompanyServiceImpl(
      * @param id 삭제할 기업의 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryCompanies"])
+    @CacheEvict(value = ["queryCompanies"], allEntries = true)
     override fun deleteCompany(id: Long) {
         val company = companyRepository.findByIdOrNull(id)
             ?: throw CompanyNotFoundException("존재하지 않는 기업입니다. info : [ companyId = $id ]")

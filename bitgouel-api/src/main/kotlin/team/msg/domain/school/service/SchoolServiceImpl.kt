@@ -106,7 +106,7 @@ class SchoolServiceImpl(
      * @param 생성할 학교의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["querySchools"])
+    @CacheEvict(value = ["querySchools"], allEntries = true)
     override fun createSchool(request: CreateSchoolRequest, logoImage: MultipartFile) {
         if (schoolRepository.existsByName(request.schoolName)) {
             throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info [ schoolName = ${request.schoolName} ]")
@@ -129,7 +129,7 @@ class SchoolServiceImpl(
      * @param 수정할 학교의 id와 수정할 내용들
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["querySchools"])
+    @CacheEvict(value = ["querySchools"], allEntries = true)
     override fun updateSchool(id: Long, request: UpdateSchoolRequest, logoImage: MultipartFile) {
         if (schoolRepository.existsByNameAndIdNotLike(request.schoolName, id)) {
             throw AlreadyExistSchoolException("이미 존재하는 학교입니다. info : [ schoolName = ${request.schoolName} ]")
@@ -164,7 +164,7 @@ class SchoolServiceImpl(
      * @param 삭제할 학교의 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["querySchools"])
+    @CacheEvict(value = ["querySchools"], allEntries = true)
     override fun deleteSchool(id: Long) {
         val school = schoolRepository.findByIdOrNull(id)
             ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info [ schoolId = $id ]")

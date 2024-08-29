@@ -28,7 +28,7 @@ class GovernmentServiceImpl(
      * @param request 생성할 유관기관의 정보
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryGovernments"])
+    @CacheEvict(value = ["queryGovernments"], allEntries = true)
     override fun createGovernment(request: CreateGovernmentRequestData) {
         if(governmentRepository.existsByName(request.governmentName))
             throw AlreadyExistGovernmentException("이미 존재하는 유관기관입니다. info : [ governmentName = ${request.governmentName} ]")
@@ -64,7 +64,7 @@ class GovernmentServiceImpl(
      * @param id 삭제할 유관기관의 id
      */
     @Transactional(rollbackFor = [Exception::class])
-    @CacheEvict(value = ["queryGovernments"])
+    @CacheEvict(value = ["queryGovernments"], allEntries = true)
     override fun deleteGovernment(id: Long) {
         val government = governmentRepository.findByIdOrNull(id)
             ?: throw GovernmentNotFoundException("존재하지 않는 유관기관입니다. info : [ governmentId = $id ]")
