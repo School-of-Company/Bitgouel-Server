@@ -1,17 +1,24 @@
 package team.msg.domain.admin.service
 
 import org.apache.poi.ss.usermodel.WorkbookFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.enums.Field
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.exception.InvalidCellTypeException
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
+import team.msg.domain.club.exception.AlreadyExistClubException
 import team.msg.domain.club.exception.ClubNotFoundException
+import team.msg.domain.club.exception.InvalidFieldException
 import team.msg.domain.club.model.Club
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.school.exception.AlreadyExistSchoolException
+import team.msg.domain.school.exception.SchoolNotFoundException
+import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
 import team.msg.domain.user.exception.InvalidEmailException
@@ -31,7 +38,8 @@ class AdminServiceImpl(
     private val userUtil: UserUtil,
     private val studentUtil: StudentUtil,
     private val clubRepository: ClubRepository,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
+    private val schoolRepository: SchoolRepository
 ) : AdminService {
 
     /**
@@ -152,6 +160,60 @@ class AdminServiceImpl(
                 val club = clubRepository findByName clubName
 
                 studentUtil.createStudent(user, club, grade, classRoom, number, admissionNumber, subscriptionGrade)
+            }
+        }
+    }
+
+    /**
+     * 동아리 리스트 엑셀을 업로드 하는 비지니스 로직입니다
+     * @param 동아리 리스트 엑셀 업로드를 위한 MultipartFile
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    override fun uploadClubListExcel(file: MultipartFile) {
+        file.inputStream.use {
+            val workbook = try {
+                WorkbookFactory.create(file.inputStream)
+            } catch (e: Exception) {
+                throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message}")
+            }
+
+            val sheet = workbook.getSheetAt(0)
+
+            sheet.forEachIndexed { index, row ->
+                if (index == 0)
+                    return@forEachIndexed
+
+                if (row.getCell(0).stringCellValue == "")
+                    return
+
+                val schoolName = row.getCell(1).stringCellValue
+                val clubStatus = row.getCell(2).stringCellValue
+                val previousClubName = row.getCell(3).stringCellValue
+                val clubName = row.getCell(4).stringCellValue
+                val field = row.getCell(5).stringCellValue
+
+                val school = schoolRepository.findByName(schoolName)
+                    ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ schoolName = $schoolName ]")
+
+                if (clubRepository.existsByName(clubName)) {
+                    throw AlreadyExistClubException("이미 존재하는 동아리입니다. info : [ clubName = $clubName ]")
+                }
+
+                val clubField = when (field.toString()) {
+                    Field.AI_CONVERGENCE.toString() -> Field.AI_CONVERGENCE
+                    Field.CULTURE.toString() -> Field.CULTURE
+                    Field.ENERGY.toString() -> Field.ENERGY
+                    Field.MEDICAL_HEALTHCARE.toString() -> Field.MEDICAL_HEALTHCARE
+                    Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT.toString() -> Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT
+                    else -> throw InvalidFieldException("유효하지 않은 동아리 분야입니다. info : [ clubField = $field ]")
+                }
+
+                val club = Club(
+                    school = school,
+                    name = clubName,
+                    field = clubField
+                )
+                clubRepository.save(club)
             }
         }
     }

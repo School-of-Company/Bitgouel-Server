@@ -11,4 +11,5 @@ interface AdminService {
     fun rejectUsers(userIds: List<UUID>)
     fun forceWithdraw(userIds: List<UUID>)
     fun uploadStudentListExcel(file: MultipartFile)
+    fun uploadClubListExcel(file: MultipartFile)
 }
