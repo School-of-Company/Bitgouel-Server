@@ -1,5 +1,6 @@
 package team.msg.domain.admin.presentation
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -43,12 +44,12 @@ class AdminController(
     @PostMapping("/student/excel")
     fun uploadStudentListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
         adminService.uploadStudentListExcel(file)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/club/excel")
     fun uploadClubListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
         adminService.uploadClubListExcel(file)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
