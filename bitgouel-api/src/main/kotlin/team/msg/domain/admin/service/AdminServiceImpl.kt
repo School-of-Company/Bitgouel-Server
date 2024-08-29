@@ -186,11 +186,9 @@ class AdminServiceImpl(
                 if (row.getCell(0).stringCellValue == "")
                     return
 
-                val schoolName = row.getCell(1).stringCellValue
-                val clubStatus = row.getCell(2).stringCellValue
-                val previousClubName = row.getCell(3).stringCellValue
-                val clubName = row.getCell(4).stringCellValue
-                val field = row.getCell(5).stringCellValue
+                val schoolName = row.getCell(0).stringCellValue
+                val clubName = row.getCell(1).stringCellValue
+                val field = row.getCell(2).stringCellValue
 
                 val school = schoolRepository.findByName(schoolName)
                     ?: throw SchoolNotFoundException("존재하지 않는 학교입니다. info : [ schoolName = $schoolName ]")
@@ -199,12 +197,12 @@ class AdminServiceImpl(
                     throw AlreadyExistClubException("이미 존재하는 동아리입니다. info : [ clubName = $clubName ]")
                 }
 
-                val clubField = when (field.toString()) {
-                    Field.AI_CONVERGENCE.toString() -> Field.AI_CONVERGENCE
-                    Field.CULTURE.toString() -> Field.CULTURE
-                    Field.ENERGY.toString() -> Field.ENERGY
-                    Field.MEDICAL_HEALTHCARE.toString() -> Field.MEDICAL_HEALTHCARE
-                    Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT.toString() -> Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT
+                val clubField = when (field) {
+                    FUTURISTIC_TRANSPORTATION_EQUIPMENT -> Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT
+                    ENERGY -> Field.ENERGY
+                    MEDICAL_HEALTHCARE -> Field.MEDICAL_HEALTHCARE
+                    AI_CONVERGENCE -> Field.AI_CONVERGENCE
+                    CULTURE -> Field.CULTURE
                     else -> throw InvalidFieldException("유효하지 않은 동아리 분야입니다. info : [ clubField = $field ]")
                 }
 
@@ -235,4 +233,12 @@ class AdminServiceImpl(
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
 
+
+    companion object {
+        const val FUTURISTIC_TRANSPORTATION_EQUIPMENT = "미래형 운송기기"
+        const val ENERGY = "에너지 산업"
+        const val MEDICAL_HEALTHCARE = "의료 헬스케어"
+        const val AI_CONVERGENCE = "AI 융복합"
+        const val CULTURE = "문화산업"
+    }
 }
