@@ -87,7 +87,7 @@ class ClubServiceImplTest : BehaviorSpec({
         every { clubRepository.findAllBySchool(school) } returns listOf(club)
 
         When("동아리 전체 조회 요청을 하면") {
-            val result = clubServiceImpl.queryAllClubs(schoolName)
+            val result = clubServiceImpl.queryClubs(schoolName)
 
             Then("result와 response가 같아야 한다.") {
                 result shouldBe response
@@ -99,7 +99,7 @@ class ClubServiceImplTest : BehaviorSpec({
 
             Then("SchoolNotFoundException 발생해야 한다.") {
                 shouldThrow<SchoolNotFoundException> {
-                    clubServiceImpl.queryAllClubs(schoolName)
+                    clubServiceImpl.queryClubs(schoolName)
                 }
             }
         }

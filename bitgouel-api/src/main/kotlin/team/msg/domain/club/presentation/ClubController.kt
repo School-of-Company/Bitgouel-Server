@@ -21,14 +21,14 @@ class ClubController(
     private val clubRequestMapper: ClubRequestMapper
 ) {
     @GetMapping
-    fun queryAllClubs(@RequestParam("highSchool") highSchool: String): ResponseEntity<ClubsResponse> {
-        val response = clubService.queryAllClubs(highSchool)
+    fun queryClubs(@RequestParam("highSchool") highSchool: String): ResponseEntity<ClubsResponse> {
+        val response = clubService.queryClubs(highSchool)
         return ResponseEntity.ok(response)
     }
 
     @GetMapping("/name")
-    fun queryAllClubNames(@RequestParam("schoolName") schoolName: String?): ResponseEntity<ClubNamesResponse> {
-        val response = clubService.queryAllClubNames(schoolName)
+    fun queryClubNames(@RequestParam("schoolName") schoolName: String?): ResponseEntity<ClubNamesResponse> {
+        val response = clubService.queryClubNames(schoolName)
         return ResponseEntity.ok(response)
     }
 
