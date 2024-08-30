@@ -1,6 +1,11 @@
 package team.msg.domain.admin.service
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment
+import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.ss.usermodel.WorkbookFactory
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -29,6 +34,7 @@ import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
 import team.msg.global.exception.InternalServerException
 import java.util.*
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class AdminServiceImpl(
@@ -214,6 +220,94 @@ class AdminServiceImpl(
         }
     }
 
+    @Transactional(readOnly = true)
+    override fun clubStatusExcel(response: HttpServletResponse) {
+        val workBook = XSSFWorkbook()
+
+        val font = workBook.createFont()
+        font.fontName = "Arial"
+        font.fontHeightInPoints = 11
+
+        val style = workBook.createCellStyle()
+        style.alignment = HorizontalAlignment.CENTER
+        style.verticalAlignment = VerticalAlignment.CENTER
+        style.setFont(font)
+
+        val clubMemberStatusHeader = listOf(
+            "" to 5,
+            "" to 5,
+            "" to 5,
+            "" to 5,
+            "" to 5,
+            "" to 5,
+            "현황" to 20,
+            "확정인원" to 20
+        )
+
+        // 엑셀 삽입할 헤더
+        val headers = listOf(
+            "시트 이동" to 5,
+            "연번" to 5,
+            "핵심분야" to 10,
+            "계열" to 10,
+            "학교" to 20,
+            "동아리명" to 20,
+            "합계" to 5,
+            "1학년" to 5,
+            "2학년" to 5,
+            "3학년" to 5,
+            "동아리수" to 5,
+            "1학년" to 5,
+            "2학년" to 5,
+            "3학년" to 5
+        )
+
+        val schools = schoolRepository.findAll()
+
+        schools.forEach { school ->
+            val sheet = workBook.createSheet(school.name)
+
+            val header1stRow = sheet.createRow(0)
+            clubMemberStatusHeader.forEachIndexed { idx, header ->
+                header1stRow.createCellWithOptions(idx, header.first, style)
+
+                sheet.autoSizeColumn(idx)
+                sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
+            }
+
+            val header2ndRow = sheet.createRow(1)
+            headers.forEachIndexed { idx, header ->
+                header2ndRow.createCellWithOptions(idx, header.first, style)
+
+                sheet.autoSizeColumn(idx)
+                sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
+            }
+
+            val clubs = clubRepository.findAllBySchool(school)
+
+            clubs.forEachIndexed { idx, header ->
+                val row = sheet.createRow(idx + 2)
+
+                row.createCellWithOptions(idx, idx.toString(), style)
+                row.createCellWithOptions(idx, header.school.departments.toString(), style)
+                row.createCellWithOptions(idx, header.name, style)
+                row.createCellWithOptions(idx, header.school.name, style)
+                row.createCellWithOptions(idx, header.name, style)
+
+
+
+                row.createCellWithOptions(idx, idx.toString(), style)
+            }
+        }
+
+        response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.setHeader("Content-Disposition", "attachment;club.xlsx")
+
+        workBook.use {
+            it.write(response.outputStream)
+        }
+    }
+
     private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
         if (!email.matches(emailRegex))
@@ -231,6 +325,12 @@ class AdminServiceImpl(
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
 
+    fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        this.heightInPoints = 30F
+    }
 
     companion object {
         const val FUTURISTIC_TRANSPORTATION_EQUIPMENT = "미래형 운송기기"
