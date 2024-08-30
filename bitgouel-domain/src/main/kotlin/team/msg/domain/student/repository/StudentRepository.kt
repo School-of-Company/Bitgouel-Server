@@ -21,4 +21,6 @@ interface StudentRepository : CrudRepository<Student, UUID> {
     fun findAllByCohort(cohort: Int): List<Student>
     fun existsByClub(club: Club): Boolean
     fun findByIdIn(ids: List<UUID>): List<Student>
+    fun countByClub(club: Club): Int
+    fun countByClubAndGrade(club: Club, grade: Int): Int
 }

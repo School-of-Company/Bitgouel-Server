@@ -9,6 +9,7 @@ import team.msg.domain.admin.presentation.data.web.QueryUsersWebRequest
 import team.msg.domain.admin.service.AdminService
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import java.util.*
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/admin")
@@ -51,5 +52,11 @@ class AdminController(
     fun uploadClubListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
         adminService.uploadClubListExcel(file)
         return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @GetMapping("/club/excel")
+    fun clubStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
+        adminService.clubStatusExcel(response)
+        return ResponseEntity.ok().build()
     }
 }

@@ -240,8 +240,7 @@ class AdminServiceImpl(
             "" to 5,
             "" to 5,
             "" to 5,
-            "현황" to 20,
-            "확정인원" to 20
+            "현황" to 20
         )
 
         // 엑셀 삽입할 헤더
@@ -253,10 +252,6 @@ class AdminServiceImpl(
             "학교" to 20,
             "동아리명" to 20,
             "합계" to 5,
-            "1학년" to 5,
-            "2학년" to 5,
-            "3학년" to 5,
-            "동아리수" to 5,
             "1학년" to 5,
             "2학년" to 5,
             "3학년" to 5
@@ -294,9 +289,15 @@ class AdminServiceImpl(
                 row.createCellWithOptions(idx, header.school.name, style)
                 row.createCellWithOptions(idx, header.name, style)
 
+                val studentCount = studentRepository.countByClub(header)
+                row.createCellWithOptions(idx, studentCount.toString(), style)
 
-
-                row.createCellWithOptions(idx, idx.toString(), style)
+                val grade1stStudentCount = studentRepository.countByClubAndGrade(header, 1)
+                row.createCellWithOptions(idx, grade1stStudentCount.toString(), style)
+                val grade2ndStudentCount = studentRepository.countByClubAndGrade(header, 2)
+                row.createCellWithOptions(idx, grade2ndStudentCount.toString(), style)
+                val grade3ndStudentCount = studentRepository.countByClubAndGrade(header, 3)
+                row.createCellWithOptions(idx, grade3ndStudentCount.toString(), style)
             }
         }
 
