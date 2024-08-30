@@ -13,5 +13,5 @@ interface AdminService {
     fun forceWithdraw(userIds: List<UUID>)
     fun uploadStudentListExcel(file: MultipartFile)
     fun uploadClubListExcel(file: MultipartFile)
-    fun clubStatusExcel(response: HttpServletResponse)
+    fun downloadClubStatusExcel(response: HttpServletResponse)
 }

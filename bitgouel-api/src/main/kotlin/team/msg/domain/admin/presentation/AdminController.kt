@@ -55,8 +55,8 @@ class AdminController(
     }
 
     @GetMapping("/club/excel")
-    fun clubStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
-        adminService.clubStatusExcel(response)
+    fun downloadClubStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
+        adminService.downloadClubStatusExcel(response)
         return ResponseEntity.ok().build()
     }
 }

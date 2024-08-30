@@ -221,7 +221,7 @@ class AdminServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun clubStatusExcel(response: HttpServletResponse) {
+    override fun downloadClubStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
 
         val font = workBook.createFont()
@@ -261,8 +261,7 @@ class AdminServiceImpl(
 
         val sheet = workBook.createSheet("취업 동아리 명단")
 
-        schools.forEachIndexed { row, school ->
-
+        schools.forEach { school ->
             val header1stRow = sheet.createRow(0)
             clubMemberStatusHeader.forEachIndexed { idx, header ->
                 header1stRow.createCellWithOptions(idx, header.first, style)
@@ -284,21 +283,21 @@ class AdminServiceImpl(
             clubs.forEachIndexed { idx, club ->
                 val row = sheet.createRow(idx + 2)
 
-                row.createCellWithOptions(idx, idx.toString(), style)
-                row.createCellWithOptions(idx, club.school.departments.toString(), style)
-                row.createCellWithOptions(idx, club.name, style)
-                row.createCellWithOptions(idx, club.school.name, style)
-                row.createCellWithOptions(idx, club.name, style)
+                row.createCellWithOptions(0, idx.toString(), style)
+                row.createCellWithOptions(1, club.school.departments.toString(), style)
+                row.createCellWithOptions(2, club.name, style)
+                row.createCellWithOptions(3, club.school.name, style)
+                row.createCellWithOptions(4, club.name, style)
 
                 val studentCount = studentRepository.countByClub(club)
-                row.createCellWithOptions(idx, studentCount.toString(), style)
+                row.createCellWithOptions(5, studentCount.toString(), style)
 
                 val grade1stStudentCount = studentRepository.countByClubAndGrade(club, 1)
-                row.createCellWithOptions(idx, grade1stStudentCount.toString(), style)
+                row.createCellWithOptions(6, grade1stStudentCount.toString(), style)
                 val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
-                row.createCellWithOptions(idx, grade2ndStudentCount.toString(), style)
+                row.createCellWithOptions(7, grade2ndStudentCount.toString(), style)
                 val grade3ndStudentCount = studentRepository.countByClubAndGrade(club, 3)
-                row.createCellWithOptions(idx, grade3ndStudentCount.toString(), style)
+                row.createCellWithOptions(8, grade3ndStudentCount.toString(), style)
             }
         }
 
