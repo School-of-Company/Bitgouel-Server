@@ -52,4 +52,10 @@ class AdminController(
         adminService.uploadClubListExcel(file)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
+
+    @PostMapping("/lecture/excel")
+    fun uploadLectureListExcel(@RequestPart file: MultipartFile): ResponseEntity<Unit> {
+        adminService.uploadLectureListExcel(file)
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
 }
