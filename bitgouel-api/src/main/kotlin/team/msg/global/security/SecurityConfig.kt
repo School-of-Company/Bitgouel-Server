@@ -135,6 +135,7 @@ class SecurityConfig(
             .mvcMatchers(HttpMethod.DELETE, "/admin/withdraw").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.POST, "/admin/student/excel").hasRole(ADMIN)
             .mvcMatchers(HttpMethod.POST, "/admin/club/excel").hasRole(ADMIN)
+            .mvcMatchers(HttpMethod.GET, "/admin/club/excel").hasRole(ADMIN)
 
             // inquiry
             .mvcMatchers(HttpMethod.POST, "/inquiry").authenticated()
