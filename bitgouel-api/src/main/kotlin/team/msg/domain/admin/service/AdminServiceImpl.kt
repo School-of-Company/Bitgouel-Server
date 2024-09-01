@@ -257,11 +257,12 @@ class AdminServiceImpl(
             "3학년" to 5
         )
 
-        val schools = schoolRepository.findAll()
+        val clubs = clubRepository.findAll()
 
         val sheet = workBook.createSheet("취업 동아리 명단")
 
-        schools.forEach { school ->
+        clubs.forEachIndexed { idx, club ->
+
             val header1stRow = sheet.createRow(0)
             clubMemberStatusHeader.forEachIndexed { idx, header ->
                 header1stRow.createCellWithOptions(idx, header.first, style)
@@ -278,27 +279,24 @@ class AdminServiceImpl(
                 sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
             }
 
-            val clubs = clubRepository.findAllBySchool(school)
+            val row = sheet.createRow(idx + 2)
 
-            clubs.forEachIndexed { idx, club ->
-                val row = sheet.createRow(idx + 2)
+            row.createCellWithOptions(0, "시트 이동", style)
+            row.createCellWithOptions(1, (idx + 1).toString(), style)
+            row.createCellWithOptions(2, club.school.departments.toString(), style)
+            row.createCellWithOptions(3, club.name, style)
+            row.createCellWithOptions(4, club.school.name, style)
+            row.createCellWithOptions(5, club.name, style)
 
-                row.createCellWithOptions(0, idx.toString(), style)
-                row.createCellWithOptions(1, club.school.departments.toString(), style)
-                row.createCellWithOptions(2, club.name, style)
-                row.createCellWithOptions(3, club.school.name, style)
-                row.createCellWithOptions(4, club.name, style)
+            val studentCount = studentRepository.countByClub(club)
+            row.createCellWithOptions(6, studentCount.toString(), style)
 
-                val studentCount = studentRepository.countByClub(club)
-                row.createCellWithOptions(5, studentCount.toString(), style)
-
-                val grade1stStudentCount = studentRepository.countByClubAndGrade(club, 1)
-                row.createCellWithOptions(6, grade1stStudentCount.toString(), style)
-                val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
-                row.createCellWithOptions(7, grade2ndStudentCount.toString(), style)
-                val grade3ndStudentCount = studentRepository.countByClubAndGrade(club, 3)
-                row.createCellWithOptions(8, grade3ndStudentCount.toString(), style)
-            }
+            val grade1stStudentCount = studentRepository.countByClubAndGrade(club, 1)
+            row.createCellWithOptions(7, grade1stStudentCount.toString(), style)
+            val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
+            row.createCellWithOptions(8, grade2ndStudentCount.toString(), style)
+            val grade3ndStudentCount = studentRepository.countByClubAndGrade(club, 3)
+            row.createCellWithOptions(9, grade3ndStudentCount.toString(), style)
         }
 
         response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
