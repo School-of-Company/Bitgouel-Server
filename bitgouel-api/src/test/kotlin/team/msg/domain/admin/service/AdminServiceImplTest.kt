@@ -11,10 +11,14 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.util.KakaoUtil
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.presentation.data.request.QueryUsersRequest
 import team.msg.domain.club.repository.ClubRepository
+import team.msg.domain.lecture.repository.LectureDateRepository
+import team.msg.domain.lecture.repository.LectureLocationRepository
+import team.msg.domain.lecture.repository.LectureRepository
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.model.Student
 import team.msg.domain.student.repository.StudentRepository
@@ -36,13 +40,21 @@ class AdminServiceImplTest : BehaviorSpec({
     val clubRepository = mockk<ClubRepository>()
     val studentRepository = mockk<StudentRepository>()
     val schoolRepository = mockk<SchoolRepository>()
+    val lectureRepository = mockk<LectureRepository>()
+    val lectureDateRepository = mockk<LectureDateRepository>()
+    val lectureLocationRepository = mockk<LectureLocationRepository>()
+    val kakaoUtil = mockk<KakaoUtil>()
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
         userUtil = userUtil,
         studentUtil = studentUtil,
         clubRepository = clubRepository,
         studentRepository = studentRepository,
-        schoolRepository = schoolRepository
+        schoolRepository = schoolRepository,
+        lectureRepository = lectureRepository,
+        lectureDateRepository = lectureDateRepository,
+        lectureLocationRepository = lectureLocationRepository,
+        kakaoUtil = kakaoUtil
     )
 
     // queryUsers 테스트 코드
