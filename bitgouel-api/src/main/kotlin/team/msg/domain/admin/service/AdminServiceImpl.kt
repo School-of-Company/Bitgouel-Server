@@ -1,6 +1,8 @@
 package team.msg.domain.admin.service
 
-import org.apache.poi.ss.usermodel.WorkbookFactory
+import org.apache.poi.common.usermodel.HyperlinkType
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -27,21 +29,19 @@ import team.msg.domain.school.exception.SchoolNotFoundException
 import team.msg.domain.school.repository.SchoolRepository
 import team.msg.domain.student.repository.StudentRepository
 import team.msg.domain.user.enums.Authority
-import team.msg.domain.user.exception.InvalidEmailException
-import team.msg.domain.user.exception.InvalidPasswordException
-import team.msg.domain.user.exception.InvalidPhoneNumberException
-import team.msg.domain.user.exception.UserAlreadyApprovedException
-import team.msg.domain.user.exception.UserNotFoundException
+import team.msg.domain.user.exception.*
 import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.config.properties.DomainProperties
 import team.msg.global.exception.InternalServerException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.servlet.http.HttpServletResponse
 
 @Service
 class AdminServiceImpl(
@@ -51,6 +51,7 @@ class AdminServiceImpl(
     private val clubRepository: ClubRepository,
     private val studentRepository: StudentRepository,
     private val schoolRepository: SchoolRepository,
+    private val domainProperties: DomainProperties,
     private val lectureRepository: LectureRepository,
     private val lectureDateRepository: LectureDateRepository,
     private val kakaoUtil: KakaoUtil,
@@ -338,6 +339,117 @@ class AdminServiceImpl(
         }
     }
 
+    @Transactional(readOnly = true)
+    override fun downloadClubStatusExcel(response: HttpServletResponse) {
+        val workBook = XSSFWorkbook()
+
+        val defaultFont = workBook.createFont().apply {
+            fontName = "Arial"
+            fontHeightInPoints = 11
+        }
+
+        val defaultStyle = workBook.createCellStyle().apply {
+            alignment = HorizontalAlignment.CENTER
+            verticalAlignment = VerticalAlignment.CENTER
+            setFont(defaultFont)
+        }
+
+        val headerStyle = workBook.createCellStyle().apply {
+            alignment = HorizontalAlignment.CENTER
+            verticalAlignment = VerticalAlignment.CENTER
+            setFont(defaultFont)
+            fillForegroundColor = IndexedColors.GREY_25_PERCENT.index
+            fillPattern = FillPatternType.SOLID_FOREGROUND
+        }
+
+        val hyperlinkFont = workBook.createFont().apply {
+            fontName = "Arial"
+            fontHeightInPoints = 11
+            color = IndexedColors.BLUE.index
+            underline = XSSFFont.U_DOUBLE
+        }
+
+        val hyperlinkStyle = workBook.createCellStyle().apply {
+            alignment = HorizontalAlignment.CENTER
+            verticalAlignment = VerticalAlignment.CENTER
+            setFont(hyperlinkFont)
+        }
+
+        val headers = listOf(
+            "시트 이동" to 5,
+            "연번" to 5,
+            "핵심분야" to 10,
+            "계열" to 10,
+            "학교" to 20,
+            "동아리명" to 20,
+            "합계" to 5,
+            "1학년" to 5,
+            "2학년" to 5,
+            "3학년" to 5
+        )
+
+        val clubs = clubRepository.findAll()
+
+        val sheet = workBook.createSheet("취업 동아리 명단")
+
+        val header1stRow = sheet.createRow(0)
+        header1stRow.createCellWithOptions(7, "현황", headerStyle)
+        sheet.autoSizeColumn(7)
+        sheet.setColumnWidth(7, sheet.getColumnWidth(7) + (256 * 20))
+
+        val header2ndRow = sheet.createRow(1)
+        headers.forEachIndexed { idx, header ->
+            header2ndRow.createCellWithOptions(idx, header.first, headerStyle)
+
+            sheet.autoSizeColumn(idx)
+            sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
+        }
+
+        clubs.forEachIndexed { idx, club ->
+            val row = sheet.createRow(idx + 2)
+
+            val creationHelper = workBook.creationHelper
+            val hyperlink = creationHelper.createHyperlink(HyperlinkType.URL)
+            hyperlink.address = "${domainProperties.url}${club.id}"
+            row.createCellWithHyperLink(0, "명단", hyperlinkStyle, hyperlink)
+
+            row.createCellWithOptions(1, (idx + 1).toString(), defaultStyle)
+
+            val clubField = when (club.field) {
+                Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT -> FUTURISTIC_TRANSPORTATION_EQUIPMENT
+                Field.ENERGY -> ENERGY
+                Field.MEDICAL_HEALTHCARE -> MEDICAL_HEALTHCARE
+                Field.AI_CONVERGENCE -> AI_CONVERGENCE
+                Field.CULTURE -> CULTURE
+                else -> throw InvalidFieldException("유효하지 않은 동아리 분야입니다. info : [ clubField = ${club.field} ]")
+            }
+            row.createCellWithOptions(2, clubField, defaultStyle)
+
+            row.createCellWithOptions(3, club.name, defaultStyle)
+            row.createCellWithOptions(4, club.school.name, defaultStyle)
+            row.createCellWithOptions(5, club.name, defaultStyle)
+
+            val studentCount = studentRepository.countByClub(club)
+            row.createCellWithOptions(6, studentCount.toString(), defaultStyle)
+
+            val grade1stStudentCount = studentRepository.countByClubAndGrade(club, 1)
+            row.createCellWithOptions(7, grade1stStudentCount.toString(), defaultStyle)
+
+            val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
+            row.createCellWithOptions(8, grade2ndStudentCount.toString(), defaultStyle)
+
+            val grade3rdStudentCount = studentRepository.countByClubAndGrade(club, 3)
+            row.createCellWithOptions(9, grade3rdStudentCount.toString(), defaultStyle)
+        }
+
+        response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.setHeader("Content-Disposition", "attachment;club.xlsx")
+
+        workBook.use {
+            it.write(response.outputStream)
+        }
+    }
+
     private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
         if (!email.matches(emailRegex))
@@ -352,9 +464,23 @@ class AdminServiceImpl(
             throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password = $password ]")
     }
 
+    fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        this.heightInPoints = 30F
+    }
+
+    fun XSSFRow.createCellWithHyperLink(idx: Int, data: String, style: XSSFCellStyle, hyperlink: XSSFHyperlink) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        cell.hyperlink = hyperlink
+        this.heightInPoints = 30F
+    }
+
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
-
 
     companion object {
         const val FUTURISTIC_TRANSPORTATION_EQUIPMENT = "미래형 운송기기"
