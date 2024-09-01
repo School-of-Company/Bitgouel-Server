@@ -250,7 +250,7 @@ class AdminServiceImpl(
                 if (index == 0 || index == 1)
                     return@forEachIndexed
 
-                if (row.getCell(0).stringCellValue == "")
+                if (row.getCell(0) == null || row.getCell(0).stringCellValue == "")
                     return
 
                 val name = row.getCell(0).stringCellValue
@@ -263,7 +263,7 @@ class AdminServiceImpl(
                     ?: throw UserNotFoundException("존재하지 않는 강사입니다. info : [ name = $instructorName, email = $instructorEmail ]")
 
                 val type = row.getCell(4).stringCellValue
-                val credit = row.getCell(5).stringCellValue.toInt()
+                val credit = row.getCell(5).numericCellValue.toInt()
                 val semester = row.getCell(6).stringCellValue
 
                 val lectureSemester = when(semester) {
@@ -277,7 +277,7 @@ class AdminServiceImpl(
                 val division = row.getCell(7).stringCellValue
                 val line = row.getCell(8).stringCellValue
                 val department = row.getCell(9).stringCellValue
-                val maxRegisteredUser = row.getCell(10).stringCellValue.toInt()
+                val maxRegisteredUser = row.getCell(10).numericCellValue.toInt()
 
                 val startDate = row.getCell(11).stringCellValue.toLocalDateTime()
                 val endDate = row.getCell(12).stringCellValue.toLocalDateTime()
