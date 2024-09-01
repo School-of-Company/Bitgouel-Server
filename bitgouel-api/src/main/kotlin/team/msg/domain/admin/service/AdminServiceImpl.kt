@@ -261,8 +261,8 @@ class AdminServiceImpl(
                 val instructorName = row.getCell(2).stringCellValue
                 val instructorEmail = row.getCell(3).stringCellValue
 
-                val instructor = userRepository.findByNameAndEmail(instructorName, instructorEmail)
-                    ?: throw UserNotFoundException("존재하지 않는 강사입니다. info : [ name = $instructorName, email = $instructorEmail ]")
+                val instructor = userRepository.findByEmail(instructorEmail)
+                    ?: throw UserNotFoundException("존재하지 않는 강사입니다. info : [ email = $instructorEmail ]")
 
                 val type = row.getCell(4).stringCellValue
                 val credit = row.getCell(5).numericCellValue.toInt()
