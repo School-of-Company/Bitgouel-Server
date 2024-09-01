@@ -24,6 +24,7 @@ import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.AdminUserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.config.properties.DomainProperties
 import java.util.*
 
 class AdminServiceImplTest : BehaviorSpec({
@@ -36,13 +37,15 @@ class AdminServiceImplTest : BehaviorSpec({
     val clubRepository = mockk<ClubRepository>()
     val studentRepository = mockk<StudentRepository>()
     val schoolRepository = mockk<SchoolRepository>()
+    val domainProperties = mockk<DomainProperties>()
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
         userUtil = userUtil,
         studentUtil = studentUtil,
         clubRepository = clubRepository,
         studentRepository = studentRepository,
-        schoolRepository = schoolRepository
+        schoolRepository = schoolRepository,
+        domainProperties = domainProperties
     )
 
     // queryUsers 테스트 코드
