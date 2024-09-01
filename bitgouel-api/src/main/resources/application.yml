@@ -76,3 +76,7 @@ logging:
 
 kakao:
   api-key: ${KAKAO_API_KEY}
+
+admin:
+  domain:
+    url: ${ADMIN_DOMAIN_URL}

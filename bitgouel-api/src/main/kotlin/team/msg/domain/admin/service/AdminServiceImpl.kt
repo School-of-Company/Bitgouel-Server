@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont
 import org.apache.poi.xssf.usermodel.XSSFHyperlink
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -39,6 +40,7 @@ import team.msg.domain.user.model.User
 import team.msg.domain.user.presentation.data.response.UserResponse
 import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
+import team.msg.global.config.properties.DomainProperties
 import team.msg.global.exception.InternalServerException
 import java.util.*
 
@@ -49,7 +51,8 @@ class AdminServiceImpl(
     private val studentUtil: StudentUtil,
     private val clubRepository: ClubRepository,
     private val studentRepository: StudentRepository,
-    private val schoolRepository: SchoolRepository
+    private val schoolRepository: SchoolRepository,
+    private val domainProperties: DomainProperties
 ) : AdminService {
 
     /**
@@ -297,7 +300,7 @@ class AdminServiceImpl(
 
             val creationHelper = workBook.creationHelper
             val hyperlink = creationHelper.createHyperlink(HyperlinkType.URL)
-            hyperlink.address = "https://bitgouel-admin.vercel.app/main/club/detail/${club.id}"
+            hyperlink.address = "${domainProperties.url}${club.id}"
             row.createCellWithHyperLink(0, "명단", hyperlinkStyle, hyperlink)
 
             row.createCellWithOptions(1, (idx + 1).toString(), defaultStyle)
