@@ -366,14 +366,6 @@ class AdminServiceImpl(
         this.heightInPoints = 30F
     }
 
-    fun XSSFRow.createHeaderCellWithHyperLink(idx: Int, data: String, style: XSSFCellStyle, hyperlink: XSSFHyperlink) {
-        val cell = this.createCell(idx)
-        cell.setCellValue(data)
-        cell.cellStyle = style
-        cell.hyperlink = hyperlink
-        this.heightInPoints = 30F
-    }
-
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
 
