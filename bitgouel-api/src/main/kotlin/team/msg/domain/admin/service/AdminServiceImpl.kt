@@ -263,10 +263,10 @@ class AdminServiceImpl(
                 val semester = row.getCell(6).stringCellValue
 
                 val lectureSemester = when(semester) {
-                    "1학년 2학기" -> Semester.FIRST_YEAR_FALL_SEMESTER
-                    "2학년 1학기" -> Semester.SECOND_YEAR_SPRING_SEMESTER
-                    "2학년 2학기" -> Semester.SECOND_YEAR_FALL_SEMESTER
-                    "3학년 1학기" -> Semester.THIRD_YEAR_SPRING_SEMESTER
+                    FIRST_YEAR_FALL_SEMESTER -> Semester.FIRST_YEAR_FALL_SEMESTER
+                    SECOND_YEAR_SPRING_SEMESTER -> Semester.SECOND_YEAR_SPRING_SEMESTER
+                    SECOND_YEAR_FALL_SEMESTER -> Semester.SECOND_YEAR_FALL_SEMESTER
+                    THIRD_YEAR_SPRING_SEMESTER -> Semester.THIRD_YEAR_SPRING_SEMESTER
                     else -> Semester.NOT_APPLICABLE
                 }
 
@@ -356,6 +356,11 @@ class AdminServiceImpl(
         const val MEDICAL_HEALTHCARE = "의료 헬스케어"
         const val AI_CONVERGENCE = "AI 융복합"
         const val CULTURE = "문화산업"
+
+        const val FIRST_YEAR_FALL_SEMESTER = "1학년 2학기"
+        const val SECOND_YEAR_SPRING_SEMESTER = "2학년 1학기"
+        const val SECOND_YEAR_FALL_SEMESTER = "2학년 2학기"
+        const val THIRD_YEAR_SPRING_SEMESTER = "3학년 1학기"
     }
 
     private fun String.toLocalDateTime(): LocalDateTime =
