@@ -328,8 +328,8 @@ class AdminServiceImpl(
             val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
             row.createCellWithOptions(8, grade2ndStudentCount.toString(), defaultStyle)
 
-            val grade3ndStudentCount = studentRepository.countByClubAndGrade(club, 3)
-            row.createCellWithOptions(9, grade3ndStudentCount.toString(), defaultStyle)
+            val grade3rdStudentCount = studentRepository.countByClubAndGrade(club, 3)
+            row.createCellWithOptions(9, grade3rdStudentCount.toString(), defaultStyle)
         }
 
         response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
