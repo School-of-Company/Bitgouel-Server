@@ -1,9 +1,17 @@
 package team.msg.domain.admin.service
 
+import javax.servlet.http.HttpServletResponse
+import org.apache.poi.common.usermodel.HyperlinkType
+import org.apache.poi.hssf.usermodel.HSSFFont
+import org.apache.poi.ss.usermodel.Font
+import org.apache.poi.ss.usermodel.FontUnderline
 import org.apache.poi.ss.usermodel.HorizontalAlignment
+import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFFont
+import org.apache.poi.xssf.usermodel.XSSFHyperlink
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
@@ -34,7 +42,7 @@ import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
 import team.msg.global.exception.InternalServerException
 import java.util.*
-import javax.servlet.http.HttpServletResponse
+
 
 @Service
 class AdminServiceImpl(
@@ -224,14 +232,29 @@ class AdminServiceImpl(
     override fun downloadClubStatusExcel(response: HttpServletResponse) {
         val workBook = XSSFWorkbook()
 
-        val font = workBook.createFont()
-        font.fontName = "Arial"
-        font.fontHeightInPoints = 11
+        val defaultFont = workBook.createFont().apply {
+            fontName = "Arial"
+            fontHeightInPoints = 11
+        }
 
-        val style = workBook.createCellStyle()
-        style.alignment = HorizontalAlignment.CENTER
-        style.verticalAlignment = VerticalAlignment.CENTER
-        style.setFont(font)
+        val defaultStyle = workBook.createCellStyle().apply {
+            alignment = HorizontalAlignment.CENTER
+            verticalAlignment = VerticalAlignment.CENTER
+            setFont(defaultFont)
+        }
+
+        val hyperlinkFont = workBook.createFont().apply {
+            fontName = "Arial"
+            fontHeightInPoints = 11
+            color = IndexedColors.BLUE.index
+            underline = HSSFFont.U_DOUBLE
+        }
+
+        val hyperlinkStyle = workBook.createCellStyle().apply {
+            alignment = HorizontalAlignment.CENTER
+            verticalAlignment = VerticalAlignment.CENTER
+            setFont(hyperlinkFont)
+        }
 
         val clubMemberStatusHeader = listOf(
             "" to 5,
@@ -265,7 +288,7 @@ class AdminServiceImpl(
 
             val header1stRow = sheet.createRow(0)
             clubMemberStatusHeader.forEachIndexed { idx, header ->
-                header1stRow.createCellWithOptions(idx, header.first, style)
+                header1stRow.createCellWithOptions(idx, header.first, defaultStyle)
 
                 sheet.autoSizeColumn(idx)
                 sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
@@ -273,7 +296,7 @@ class AdminServiceImpl(
 
             val header2ndRow = sheet.createRow(1)
             headers.forEachIndexed { idx, header ->
-                header2ndRow.createCellWithOptions(idx, header.first, style)
+                header2ndRow.createCellWithOptions(idx, header.first, defaultStyle)
 
                 sheet.autoSizeColumn(idx)
                 sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
@@ -281,22 +304,25 @@ class AdminServiceImpl(
 
             val row = sheet.createRow(idx + 2)
 
-            row.createCellWithOptions(0, "시트 이동", style)
-            row.createCellWithOptions(1, (idx + 1).toString(), style)
-            row.createCellWithOptions(2, club.school.departments.toString(), style)
-            row.createCellWithOptions(3, club.name, style)
-            row.createCellWithOptions(4, club.school.name, style)
-            row.createCellWithOptions(5, club.name, style)
+            val creationHelper = workBook.creationHelper
+            val hyperlink = creationHelper.createHyperlink(HyperlinkType.URL)
+            hyperlink.address = "https://bitgouel-admin.vercel.app/main/club/detail/${club.id}"
+            row.createCellWithHyperLink(0, "명단", hyperlinkStyle, hyperlink)
+            row.createCellWithOptions(1, (idx + 1).toString(), defaultStyle)
+            row.createCellWithOptions(2, club.school.departments.toString(), defaultStyle)
+            row.createCellWithOptions(3, club.name, defaultStyle)
+            row.createCellWithOptions(4, club.school.name, defaultStyle)
+            row.createCellWithOptions(5, club.name, defaultStyle)
 
             val studentCount = studentRepository.countByClub(club)
-            row.createCellWithOptions(6, studentCount.toString(), style)
+            row.createCellWithOptions(6, studentCount.toString(), defaultStyle)
 
             val grade1stStudentCount = studentRepository.countByClubAndGrade(club, 1)
-            row.createCellWithOptions(7, grade1stStudentCount.toString(), style)
+            row.createCellWithOptions(7, grade1stStudentCount.toString(), defaultStyle)
             val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
-            row.createCellWithOptions(8, grade2ndStudentCount.toString(), style)
+            row.createCellWithOptions(8, grade2ndStudentCount.toString(), defaultStyle)
             val grade3ndStudentCount = studentRepository.countByClubAndGrade(club, 3)
-            row.createCellWithOptions(9, grade3ndStudentCount.toString(), style)
+            row.createCellWithOptions(9, grade3ndStudentCount.toString(), defaultStyle)
         }
 
         response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -305,6 +331,21 @@ class AdminServiceImpl(
         workBook.use {
             it.write(response.outputStream)
         }
+    }
+
+    fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        this.heightInPoints = 30F
+    }
+
+    fun XSSFRow.createCellWithHyperLink(idx: Int, data: String, style: XSSFCellStyle, hyperlink: XSSFHyperlink) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        cell.hyperlink = hyperlink
+        this.heightInPoints = 30F
     }
 
     private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
@@ -323,13 +364,6 @@ class AdminServiceImpl(
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
         this.findByName(clubName) ?: throw ClubNotFoundException("존재하지 않는 동아리입니다. info : [ clubName = $clubName ]")
-
-    fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle) {
-        val cell = this.createCell(idx)
-        cell.setCellValue(data)
-        cell.cellStyle = style
-        this.heightInPoints = 30F
-    }
 
     companion object {
         const val FUTURISTIC_TRANSPORTATION_EQUIPMENT = "미래형 운송기기"
