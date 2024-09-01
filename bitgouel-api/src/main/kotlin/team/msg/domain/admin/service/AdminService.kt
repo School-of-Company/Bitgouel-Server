@@ -14,4 +14,5 @@ interface AdminService {
     fun uploadStudentListExcel(file: MultipartFile)
     fun uploadClubListExcel(file: MultipartFile)
     fun downloadClubStatusExcel(response: HttpServletResponse)
+    fun uploadLectureListExcel(file: MultipartFile)
 }

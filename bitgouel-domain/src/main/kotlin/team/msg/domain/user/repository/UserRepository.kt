@@ -15,4 +15,5 @@ interface UserRepository : CrudRepository<User, UUID>, CustomUserRepository {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from User u where u.id in :ids")
     fun deleteByIdIn(ids: List<UUID>)
+    fun findByNameAndEmail(name: String, email: String): User?
 }

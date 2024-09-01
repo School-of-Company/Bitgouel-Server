@@ -15,13 +15,13 @@ class User(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
-    @Column(columnDefinition = "VARBINARY(100)", nullable = false)
+    @Column(columnDefinition = "VARBINARY(100)", nullable = false, unique = true)
     val email: String,
 
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val name: String,
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
     val phoneNumber: String,
 
     @Column(columnDefinition = "VARBINARY(100)", nullable = false)
