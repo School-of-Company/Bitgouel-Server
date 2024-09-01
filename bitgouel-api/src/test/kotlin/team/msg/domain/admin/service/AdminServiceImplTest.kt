@@ -5,11 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import team.msg.common.enums.ApproveStatus
 import team.msg.common.util.KakaoUtil
 import team.msg.common.util.StudentUtil
@@ -41,14 +37,11 @@ class AdminServiceImplTest : BehaviorSpec({
     val clubRepository = mockk<ClubRepository>()
     val studentRepository = mockk<StudentRepository>()
     val schoolRepository = mockk<SchoolRepository>()
-<<<<<<< HEAD
     val domainProperties = mockk<DomainProperties>()
-=======
     val lectureRepository = mockk<LectureRepository>()
     val lectureDateRepository = mockk<LectureDateRepository>()
     val lectureLocationRepository = mockk<LectureLocationRepository>()
     val kakaoUtil = mockk<KakaoUtil>()
->>>>>>> 90e19ca7027477a7f359f3d14b74b4e650e0b9e5
     val adminServiceImpl = AdminServiceImpl(
         userRepository = userRepository,
         userUtil = userUtil,
@@ -56,14 +49,11 @@ class AdminServiceImplTest : BehaviorSpec({
         clubRepository = clubRepository,
         studentRepository = studentRepository,
         schoolRepository = schoolRepository,
-<<<<<<< HEAD
-        domainProperties = domainProperties
-=======
+        domainProperties = domainProperties,
         lectureRepository = lectureRepository,
         lectureDateRepository = lectureDateRepository,
         lectureLocationRepository = lectureLocationRepository,
         kakaoUtil = kakaoUtil
->>>>>>> 90e19ca7027477a7f359f3d14b74b4e650e0b9e5
     )
 
     // queryUsers 테스트 코드
