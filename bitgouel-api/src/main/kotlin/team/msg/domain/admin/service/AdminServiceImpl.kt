@@ -242,7 +242,7 @@ class AdminServiceImpl(
                 WorkbookFactory.create(file.inputStream)
             } catch (e: IndexOutOfBoundsException) {
                 throw InvalidCellTypeException("셀 서식을 텍스트로 변경해주세요.")
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
             }
 
