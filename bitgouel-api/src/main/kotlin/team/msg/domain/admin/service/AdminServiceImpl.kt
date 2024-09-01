@@ -279,7 +279,7 @@ class AdminServiceImpl(
                 val endDate = row.getCell(12).stringCellValue.toLocalDateTime()
                 val essentialComplete = row.getCell(16).stringCellValue
 
-                val lectureEssentialComplete = essentialComplete == "O"
+                val lectureEssentialComplete = essentialComplete.uppercase() == "O"
 
                 val lecture = Lecture(
                     id = UUID(0, 0),
