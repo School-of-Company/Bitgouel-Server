@@ -3,8 +3,7 @@ package team.msg.domain.admin.service
 import javax.servlet.http.HttpServletResponse
 import org.apache.poi.common.usermodel.HyperlinkType
 import org.apache.poi.hssf.usermodel.HSSFFont
-import org.apache.poi.ss.usermodel.Font
-import org.apache.poi.ss.usermodel.FontUnderline
+import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.ss.usermodel.VerticalAlignment
@@ -42,7 +41,6 @@ import team.msg.domain.user.presentation.data.response.UsersResponse
 import team.msg.domain.user.repository.UserRepository
 import team.msg.global.exception.InternalServerException
 import java.util.*
-
 
 @Service
 class AdminServiceImpl(
@@ -243,11 +241,19 @@ class AdminServiceImpl(
             setFont(defaultFont)
         }
 
+        val headerStyle = workBook.createCellStyle().apply {
+            alignment = HorizontalAlignment.CENTER
+            verticalAlignment = VerticalAlignment.CENTER
+            setFont(defaultFont)
+            fillForegroundColor = IndexedColors.GREY_25_PERCENT.index
+            fillPattern = FillPatternType.SOLID_FOREGROUND
+        }
+
         val hyperlinkFont = workBook.createFont().apply {
             fontName = "Arial"
             fontHeightInPoints = 11
             color = IndexedColors.BLUE.index
-            underline = HSSFFont.U_DOUBLE
+            underline = XSSFFont.U_DOUBLE
         }
 
         val hyperlinkStyle = workBook.createCellStyle().apply {
@@ -256,17 +262,6 @@ class AdminServiceImpl(
             setFont(hyperlinkFont)
         }
 
-        val clubMemberStatusHeader = listOf(
-            "" to 5,
-            "" to 5,
-            "" to 5,
-            "" to 5,
-            "" to 5,
-            "" to 5,
-            "현황" to 20
-        )
-
-        // 엑셀 삽입할 헤더
         val headers = listOf(
             "시트 이동" to 5,
             "연번" to 5,
@@ -284,32 +279,39 @@ class AdminServiceImpl(
 
         val sheet = workBook.createSheet("취업 동아리 명단")
 
+        val header1stRow = sheet.createRow(0)
+        header1stRow.createCellWithOptions(7, "현황", headerStyle)
+        sheet.autoSizeColumn(7)
+        sheet.setColumnWidth(7, sheet.getColumnWidth(7) + (256 * 20))
+
+        val header2ndRow = sheet.createRow(1)
+        headers.forEachIndexed { idx, header ->
+            header2ndRow.createCellWithOptions(idx, header.first, headerStyle)
+
+            sheet.autoSizeColumn(idx)
+            sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
+        }
+
         clubs.forEachIndexed { idx, club ->
-
-            val header1stRow = sheet.createRow(0)
-            clubMemberStatusHeader.forEachIndexed { idx, header ->
-                header1stRow.createCellWithOptions(idx, header.first, defaultStyle)
-
-                sheet.autoSizeColumn(idx)
-                sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
-            }
-
-            val header2ndRow = sheet.createRow(1)
-            headers.forEachIndexed { idx, header ->
-                header2ndRow.createCellWithOptions(idx, header.first, defaultStyle)
-
-                sheet.autoSizeColumn(idx)
-                sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
-            }
-
             val row = sheet.createRow(idx + 2)
 
             val creationHelper = workBook.creationHelper
             val hyperlink = creationHelper.createHyperlink(HyperlinkType.URL)
             hyperlink.address = "https://bitgouel-admin.vercel.app/main/club/detail/${club.id}"
             row.createCellWithHyperLink(0, "명단", hyperlinkStyle, hyperlink)
+
             row.createCellWithOptions(1, (idx + 1).toString(), defaultStyle)
-            row.createCellWithOptions(2, club.school.departments.toString(), defaultStyle)
+
+            val clubField = when (club.field) {
+                Field.FUTURISTIC_TRANSPORTATION_EQUIPMENT -> FUTURISTIC_TRANSPORTATION_EQUIPMENT
+                Field.ENERGY -> ENERGY
+                Field.MEDICAL_HEALTHCARE -> MEDICAL_HEALTHCARE
+                Field.AI_CONVERGENCE -> AI_CONVERGENCE
+                Field.CULTURE -> CULTURE
+                else -> throw InvalidFieldException("유효하지 않은 동아리 분야입니다. info : [ clubField = ${club.field} ]")
+            }
+            row.createCellWithOptions(2, clubField, defaultStyle)
+
             row.createCellWithOptions(3, club.name, defaultStyle)
             row.createCellWithOptions(4, club.school.name, defaultStyle)
             row.createCellWithOptions(5, club.name, defaultStyle)
@@ -319,8 +321,10 @@ class AdminServiceImpl(
 
             val grade1stStudentCount = studentRepository.countByClubAndGrade(club, 1)
             row.createCellWithOptions(7, grade1stStudentCount.toString(), defaultStyle)
+
             val grade2ndStudentCount = studentRepository.countByClubAndGrade(club, 2)
             row.createCellWithOptions(8, grade2ndStudentCount.toString(), defaultStyle)
+
             val grade3ndStudentCount = studentRepository.countByClubAndGrade(club, 3)
             row.createCellWithOptions(9, grade3ndStudentCount.toString(), defaultStyle)
         }
@@ -331,6 +335,20 @@ class AdminServiceImpl(
         workBook.use {
             it.write(response.outputStream)
         }
+    }
+
+    private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
+        val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
+        if (!email.matches(emailRegex))
+            throw InvalidEmailException("유효하지 않은 이메일입니다. info : [ email = $email ]")
+
+        val phoneRegex = "^010[0-9]{8}\$".toRegex()
+        if (!phoneNumber.matches(phoneRegex))
+            throw InvalidPhoneNumberException("유효하지 않은 휴대폰 번호입니다. info : [ phoneNumber = $phoneNumber ]")
+
+        val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
+        if (!password.matches(passwordRegex))
+            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password = $password ]")
     }
 
     fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle) {
@@ -348,18 +366,12 @@ class AdminServiceImpl(
         this.heightInPoints = 30F
     }
 
-    private fun validateExcelStudentData(email: String, phoneNumber: String, password: String) {
-        val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$".toRegex()
-        if (!email.matches(emailRegex))
-            throw InvalidEmailException("유효하지 않은 이메일입니다. info : [ email = $email ]")
-
-        val phoneRegex = "^010[0-9]{8}\$".toRegex()
-        if (!phoneNumber.matches(phoneRegex))
-            throw InvalidPhoneNumberException("유효하지 않은 휴대폰 번호입니다. info : [ phoneNumber = $phoneNumber ]")
-
-        val passwordRegex = "^(?=.*[A-Za-z0-9])[A-Za-z0-9!@#\\\\\$%^&*]{8,24}\$".toRegex()
-        if (!password.matches(passwordRegex))
-            throw InvalidPasswordException("유효하지 않은 비밀번호입니다. info : [ password = $password ]")
+    fun XSSFRow.createHeaderCellWithHyperLink(idx: Int, data: String, style: XSSFCellStyle, hyperlink: XSSFHyperlink) {
+        val cell = this.createCell(idx)
+        cell.setCellValue(data)
+        cell.cellStyle = style
+        cell.hyperlink = hyperlink
+        this.heightInPoints = 30F
     }
 
     private infix fun ClubRepository.findByName(clubName: String): Club =
