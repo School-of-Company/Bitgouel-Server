@@ -140,15 +140,13 @@ class AdminServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun uploadStudentListExcel(file: MultipartFile) {
         file.inputStream.use {
-            val workbook = try {
-                WorkbookFactory.create(file.inputStream)
+            val sheet = try {
+                WorkbookFactory.create(it)
             } catch (e: IndexOutOfBoundsException) {
                 throw InvalidCellTypeException("전화번호 셀 서식을 텍스트로 바꿔주세요.")
             } catch (e: Exception) {
                 throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
-            }
-
-            val sheet = workbook.getSheetAt(0)
+            }.getSheetAt(0)
 
             sheet.forEachIndexed { index, row ->
                 if (index == 0)
@@ -186,13 +184,11 @@ class AdminServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun uploadClubListExcel(file: MultipartFile) {
         file.inputStream.use {
-            val workbook = try {
-                WorkbookFactory.create(file.inputStream)
+            val sheet = try {
+                WorkbookFactory.create(it)
             } catch (e: Exception) {
                 throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
-            }
-
-            val sheet = workbook.getSheetAt(0)
+            }.getSheetAt(0)
 
             sheet.forEachIndexed { index, row ->
                 if (index == 0)
@@ -238,15 +234,13 @@ class AdminServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun uploadLectureListExcel(file: MultipartFile) {
         file.inputStream.use {
-            val workbook = try {
-                WorkbookFactory.create(file.inputStream)
+            val sheet = try {
+                WorkbookFactory.create(it)
             } catch (e: IndexOutOfBoundsException) {
                 throw InvalidCellTypeException("셀 서식을 텍스트로 변경해주세요.")
             }  catch (e: Exception) {
                 throw InternalServerException("엑셀 파일 처리 중 문제가 발생했습니다. info : [ errorMessage = ${e.message} ]")
-            }
-
-            val sheet = workbook.getSheetAt(0)
+            }.getSheetAt(0)
 
             sheet.forEachIndexed { index, row ->
                 if (index == 0 || index == 1)
