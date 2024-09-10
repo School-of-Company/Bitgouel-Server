@@ -25,7 +25,7 @@ class Club(
     @JoinColumn(name = "school_id", nullable = false)
     val school: School,
 
-    @Column(name = "name", columnDefinition = "VARCHAR(30)", nullable = false)
+    @Column(name = "name", columnDefinition = "VARCHAR(30)", nullable = false, unique = true)
     val name: String,
 
     @Enumerated(EnumType.STRING)
