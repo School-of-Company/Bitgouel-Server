@@ -35,4 +35,5 @@ class Post (
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val feedType: FeedType
+
 ) : BaseUUIDEntity(id)
