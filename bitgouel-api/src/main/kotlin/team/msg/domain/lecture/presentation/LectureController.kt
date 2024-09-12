@@ -128,4 +128,9 @@ class LectureController(
         return ResponseEntity.noContent().build()
     }
 
+    @GetMapping("/excel_lecture")
+    fun lectureReceiptStatusExcelByLecture(response: HttpServletResponse): ResponseEntity<Unit> {
+        lectureService.lectureReceiptStatusExcelByLecture(response)
+        return ResponseEntity.ok().build()
+    }
 }
