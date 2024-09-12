@@ -750,6 +750,112 @@ class LectureServiceImpl(
         }
     }
 
+    @Transactional(readOnly = true)
+    override fun lectureReceiptStatusExcelByLecture(response: HttpServletResponse) {
+        val workBook = XSSFWorkbook()
+
+        val font = workBook.createFont()
+        font.fontName = "Arial"
+        font.fontHeightInPoints = 11
+
+        val style = workBook.createCellStyle()
+        style.alignment = HorizontalAlignment.CENTER
+        style.verticalAlignment = VerticalAlignment.CENTER
+        style.setFont(font)
+
+        // 엑셀 삽입할 헤더
+        val headers = listOf(
+            "연번" to 10,
+            "구분" to 30,
+            "계열" to 20,
+            "학기" to 10,
+            "대학" to 30,
+            "학과" to 20,
+            "교과명" to 40,
+            "교육일정" to 50,
+            "교육내용" to 50,
+            "교육 장소" to 30,
+            "담당 교수" to 20,
+            "연락처" to 30,
+            "학교명" to 30,
+            "동아리" to 30,
+            "학년" to 10,
+            "학생 성명" to 20,
+            "담당교사" to 20,
+            "담당교사 연락처" to 30,
+            "이수 상태" to 20
+        )
+
+        val lectures = lectureRepository.findAll()
+
+        lectures.map { lecture ->
+            val sheet = workBook.createSheet(lecture.name)
+
+            val headerRow = sheet.createRow(0)
+
+            headers.forEachIndexed { idx, header ->
+                headerRow.createCellWithOptions(idx, header.first, style, 30F)
+
+                sheet.autoSizeColumn(idx)
+                sheet.setColumnWidth(idx, sheet.getColumnWidth(idx) + (256 * header.second))
+            }
+
+            val registeredLectures = registeredLectureRepository.findAllByLecture(lecture)
+
+            registeredLectures.forEachIndexed { idx, registeredLecture ->
+                val student = registeredLecture.student
+
+                val club = student.club
+
+                val highSchool = club.school
+
+                val teacher = teacherRepository findByClub club
+
+                val lectureDates = lectureDateRepository.findAllByLecture(lecture).sortedBy { it.completeDate }
+
+                val startTime = "${lectureDates.first().startTime.hour}:${lectureDates.first().startTime.minute}"
+
+                val endTime = "${lectureDates.first().endTime.hour}:${lectureDates.first().endTime.minute}"
+
+                val location = lectureLocationRepository.findByLectureId(lecture.id)
+
+                val row = sheet.createRow(idx+1)
+
+                listOf(
+                    idx.toString(),
+                    lecture.line,
+                    lecture.semester.yearAndSemester,
+                    location.address,
+                    lecture.department,
+                    lecture.name,
+                    "${lectureDates.first().completeDate} ~ ${lectureDates.last().completeDate} $startTime ~ $endTime",
+                    lecture.content,
+                    location.details,
+                    lecture.instructor,
+                    lecture.user!!.phoneNumber,
+                    highSchool.name,
+                    club.name,
+                    student.grade.toString(),
+                    student.user!!.name,
+                    teacher.user!!.name,
+                    teacher.user!!.phoneNumber,
+                    registeredLecture.completeStatus.description
+                ).forEachIndexed { cellIdx, parameter ->
+                    val cell = row.createCell(cellIdx)
+                    cell.setCellValue(parameter)
+                    cell.cellStyle = style
+                }
+            }
+        }
+
+        response.contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response.setHeader("Content-Disposition", "attachment;lecture_result.xlsx")
+
+        workBook.use {
+            it.write(response.outputStream)
+        }
+    }
+
     fun XSSFRow.createCellWithOptions(idx: Int, data: String, style: XSSFCellStyle, height: Float) {
         val cell = this.createCell(idx)
         cell.setCellValue(data)
