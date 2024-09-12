@@ -38,4 +38,5 @@ interface LectureService {
     fun updateLectureCompleteStatus(id: UUID, studentIds: List<UUID>)
     fun cancelLectureCompleteStatus(id: UUID, studentIds: List<UUID>)
     fun lectureReceiptStatusExcel(response: HttpServletResponse)
+    fun lectureReceiptStatusExcelByLecture(response: HttpServletResponse)
 }
