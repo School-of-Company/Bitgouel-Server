@@ -15,4 +15,5 @@ interface RegisteredLectureRepository : CrudRepository<RegisteredLecture, UUID>,
     fun findAllByStudent(student: Student): List<RegisteredLecture>
     fun findByStudentAndLecture(student: Student, lecture: Lecture): RegisteredLecture?
     fun countByLecture(lecture: Lecture): Int
+    fun findAllByLecture(lecture: Lecture): List<RegisteredLecture>
 }
