@@ -91,6 +91,7 @@ class LectureController(
         return ResponseEntity.ok(response)
     }
 
+    @Deprecated("This API is deprecated. Use lectureReceiptStatusExcelByLecture API instead")
     @GetMapping("/excel")
     fun lectureReceiptStatusExcel(response: HttpServletResponse): ResponseEntity<Unit> {
         lectureService.lectureReceiptStatusExcel(response)
