@@ -3,6 +3,7 @@ package team.msg.domain.certification.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.common.util.UserUtil
 import team.msg.domain.admin.model.Admin
 import team.msg.domain.bbozzak.exception.BbozzakNotFoundException
@@ -66,6 +67,7 @@ class CertificationServiceImpl(
 
         val certification = Certification(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             studentId = student.id,
             name = request.name,
             acquisitionDate = request.acquisitionDate
@@ -145,6 +147,7 @@ class CertificationServiceImpl(
 
         val updateCertification = Certification(
             id = certification.id,
+            ulid = certification.ulid,
             studentId = certification.studentId,
             name = request.name,
             acquisitionDate = request.acquisitionDate

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.common.util.UserUtil
 import team.msg.domain.post.model.Post
 import team.msg.domain.post.presentation.data.request.CreatePostRequest
@@ -43,6 +44,7 @@ class PostServiceImpl(
         val post = request.run {
             Post(
                 id = UUID(0, 0),
+                ulid = ULIDGenerator.generateULID(),
                 userId = user.id,
                 title = title,
                 content = content,
@@ -78,6 +80,7 @@ class PostServiceImpl(
 
         val updatePost = Post(
             id = post.id,
+            ulid = post.ulid,
             userId = post.userId,
             title = request.title,
             content = request.content,

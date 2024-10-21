@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import team.msg.common.entity.BaseUUIDEntity
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.domain.admin.exception.AdminNotFoundException
 import team.msg.domain.admin.model.Admin
 import team.msg.domain.admin.repository.AdminRepository
@@ -213,6 +214,7 @@ class UserUtil(
         return userRepository.save(
             User(
                 id = UUID(0, 0),
+                ulid = ULIDGenerator.generateULID(),
                 email = email,
                 name = name,
                 phoneNumber = phoneNumber,

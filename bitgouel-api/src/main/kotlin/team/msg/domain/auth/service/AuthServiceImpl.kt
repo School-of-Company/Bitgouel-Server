@@ -5,6 +5,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.msg.common.enums.ApproveStatus
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.common.util.SecurityUtil
 import team.msg.common.util.StudentUtil
 import team.msg.common.util.UserUtil
@@ -106,6 +107,7 @@ class AuthServiceImpl(
 
         val teacher = Teacher(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = user,
             club = club
         )
@@ -130,6 +132,7 @@ class AuthServiceImpl(
 
         val bbozzak = Bbozzak(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = user,
             club = club
         )
@@ -158,6 +161,7 @@ class AuthServiceImpl(
 
         val professor = Professor(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = user,
             club = club,
             university = university
@@ -186,6 +190,7 @@ class AuthServiceImpl(
 
         val governmentInstructor = GovernmentInstructor(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = user,
             club = club,
             government = government,
@@ -216,6 +221,7 @@ class AuthServiceImpl(
 
         val companyInstructor = CompanyInstructor(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = user,
             club = club,
             company = company
@@ -304,6 +310,7 @@ class AuthServiceImpl(
 
         val modifiedPasswordUser = User(
             id = user.id,
+            ulid = user.ulid,
             email = user.email,
             name = user.name,
             phoneNumber = user.phoneNumber,

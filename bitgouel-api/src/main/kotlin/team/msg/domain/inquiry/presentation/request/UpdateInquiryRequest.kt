@@ -8,6 +8,7 @@ data class UpdateInquiryRequest(
 ) {
     fun update(inquiry: Inquiry): Inquiry = Inquiry(
         id = inquiry.id,
+        ulid = inquiry.ulid,
         user = inquiry.user,
         question = question,
         questionDetail = questionDetail,

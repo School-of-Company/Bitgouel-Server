@@ -3,6 +3,7 @@ package team.msg.domain.inquiry.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.common.util.UserUtil
 import team.msg.domain.inquiry.enums.AnswerStatus
 import team.msg.domain.inquiry.exception.AlreadyAnsweredInquiryException
@@ -40,6 +41,7 @@ class InquiryServiceImpl(
 
         val inquiry = Inquiry(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = currentUser,
             question = request.question,
             questionDetail = request.questionDetail,
@@ -171,6 +173,7 @@ class InquiryServiceImpl(
 
         val inquiryAnswer = InquiryAnswer(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             answer = request.answer,
             admin = currentUser,
             inquiryId = inquiry.id
