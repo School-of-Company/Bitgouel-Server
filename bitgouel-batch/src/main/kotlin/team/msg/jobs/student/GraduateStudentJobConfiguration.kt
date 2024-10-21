@@ -175,6 +175,7 @@ class GraduateStudentJobConfiguration(
         return student.run {
             Student(
                 id = id,
+                ulid = ulid,
                 user = user,
                 club = club,
                 classRoom = classRoom,
@@ -192,6 +193,7 @@ class GraduateStudentJobConfiguration(
         return student.run {
             Student(
                 id = id,
+                ulid = ulid,
                 user = user,
                 club = club,
                 classRoom = classRoom,
