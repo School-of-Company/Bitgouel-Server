@@ -20,6 +20,8 @@ class Lecture(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)", nullable = true)
     val user: User?,
@@ -66,7 +68,7 @@ class Lecture(
 
     @Column(columnDefinition = "TINYINT", nullable = false)
     val isDeleted: Boolean = false
-) : BaseUUIDEntity(id) {
+) : BaseUUIDEntity(id, ulid) {
     fun getLectureStatus(): LectureStatus {
         val currentTime = LocalDateTime.now()
 

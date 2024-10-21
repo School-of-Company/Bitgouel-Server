@@ -13,6 +13,8 @@ class Student(
     @get:JvmName(name = "getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -43,4 +45,4 @@ class Student(
     @Column(name = "student_role", columnDefinition = "VARCHAR(10)", nullable = false)
     val studentRole: StudentRole
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

@@ -16,6 +16,8 @@ class Inquiry(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @ManyToOne
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User,
@@ -29,7 +31,7 @@ class Inquiry(
     @Enumerated(EnumType.STRING)
     @Column(name = "answer_status", nullable = false)
     var answerStatus: AnswerStatus
-) : BaseUUIDEntity(id) {
+) : BaseUUIDEntity(id, ulid) {
     fun replyInquiry() {
         this.answerStatus = AnswerStatus.ANSWERED
     }

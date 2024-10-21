@@ -15,6 +15,8 @@ class LectureDate (
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", columnDefinition = "BINARY(16)")
     val lecture: Lecture,
@@ -27,4 +29,4 @@ class LectureDate (
 
     @Column(nullable = false, updatable = false, columnDefinition = "TIME")
     val endTime: LocalTime
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

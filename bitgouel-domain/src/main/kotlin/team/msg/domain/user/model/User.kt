@@ -15,6 +15,8 @@ class User(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @Column(columnDefinition = "VARBINARY(100)", nullable = false, unique = true)
     val email: String,
 
@@ -35,4 +37,4 @@ class User(
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val approveStatus: ApproveStatus
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

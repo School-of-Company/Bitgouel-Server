@@ -18,6 +18,8 @@ class RegisteredLecture(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", columnDefinition = "BINARY(16)")
     val student: Student,
@@ -29,7 +31,7 @@ class RegisteredLecture(
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     val completeStatus: CompleteStatus = CompleteStatus.NOT_COMPLETED_YET
-) : BaseUUIDEntity(id) {
+) : BaseUUIDEntity(id, ulid) {
 
     fun isComplete() = completeStatus != CompleteStatus.NOT_COMPLETED_YET
 }

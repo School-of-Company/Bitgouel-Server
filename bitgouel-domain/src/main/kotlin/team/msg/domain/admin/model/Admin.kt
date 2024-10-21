@@ -14,8 +14,10 @@ class Admin(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

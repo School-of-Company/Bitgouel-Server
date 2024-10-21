@@ -15,6 +15,8 @@ class Teacher(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -23,4 +25,4 @@ class Teacher(
     @JoinColumn(name = "club_id", nullable = false)
     val club: Club
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

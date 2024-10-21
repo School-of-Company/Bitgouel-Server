@@ -16,6 +16,8 @@ class StudentActivity(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     var title: String,
 
@@ -36,4 +38,4 @@ class StudentActivity(
     @JoinColumn(name = "teacher_id", columnDefinition = "BINARY(16)", nullable = false)
     val teacher: Teacher
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)
