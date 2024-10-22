@@ -41,6 +41,7 @@ import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletResponse
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.common.util.KakaoUtil
 import team.msg.domain.lecture.enums.CompleteStatus
 import team.msg.domain.lecture.enums.Semester
@@ -76,6 +77,7 @@ class LectureServiceImpl(
 
         val lecture = Lecture(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             user = user,
             name = request.name,
             semester = request.semester,
@@ -97,6 +99,7 @@ class LectureServiceImpl(
         val lectureDates = request.lectureDates.map {
             LectureDate(
                 id = UUID(0, 0),
+                ulid = ULIDGenerator.generateULID(),
                 lecture = savedLecture,
                 completeDate = it.completeDate,
                 startTime = it.startTime,
@@ -137,6 +140,7 @@ class LectureServiceImpl(
 
         val updatedLecture = Lecture(
             id = id,
+            ulid = lecture.ulid,
             user = instructorUser,
             name = request.name,
             semester = semester,
@@ -160,6 +164,7 @@ class LectureServiceImpl(
         val lectureDates = request.lectureDates.map {
             LectureDate(
                 id = UUID(0, 0),
+                ulid = ULIDGenerator.generateULID(),
                 lecture = savedLecture,
                 completeDate = it.completeDate,
                 startTime = it.startTime,
@@ -340,6 +345,7 @@ class LectureServiceImpl(
 
         val registeredLecture = RegisteredLecture(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             student = student,
             lecture = lecture
         )
@@ -348,6 +354,7 @@ class LectureServiceImpl(
 
         val updateCreditStudent = Student(
             id = student.id,
+            ulid = student.ulid,
             user = student.user,
             club = student.club,
             grade = student.grade,
@@ -384,6 +391,7 @@ class LectureServiceImpl(
 
         val updateCreditStudent = Student(
             id = student.id,
+            ulid = student.ulid,
             user = student.user,
             club = student.club,
             grade = student.grade,
@@ -563,6 +571,7 @@ class LectureServiceImpl(
 
             RegisteredLecture(
                 id = registeredLecture.id,
+                ulid = registeredLecture.ulid,
                 student = registeredLecture.student,
                 lecture = registeredLecture.lecture,
                 completeStatus = completeStatus
@@ -614,6 +623,7 @@ class LectureServiceImpl(
 
             RegisteredLecture(
                 id = registeredLecture.id,
+                ulid = registeredLecture.ulid,
                 student = registeredLecture.student,
                 lecture = registeredLecture.lecture,
                 completeStatus = CompleteStatus.NOT_COMPLETED_YET

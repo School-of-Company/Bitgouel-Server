@@ -14,11 +14,11 @@ abstract class BaseUUIDEntity(
     @Id
     @Column(columnDefinition = "BINARY(16)", nullable = false)
     @get:JvmName(name = "getIdentifier")
-    open var id: UUID = UUID(0, 0)
-) : BaseTimeEntity(), Persistable<UUID> {
-
+    open var id: UUID = UUID(0, 0),
+    
     @Column(name = "ulid", updatable = false, unique = true)
-    var ulid: String? = ULIDGenerator.generateULID()
+    open var ulid: String
+) : BaseTimeEntity(), Persistable<UUID> {
 
     override fun isNew(): Boolean = (id == UUID(0,0)).also { new ->
         if(new) id = UUID.randomUUID()

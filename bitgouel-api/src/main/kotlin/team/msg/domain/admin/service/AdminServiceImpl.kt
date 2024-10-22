@@ -42,6 +42,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.servlet.http.HttpServletResponse
+import team.msg.common.ulid.ULIDGenerator
 
 @Service
 class AdminServiceImpl(
@@ -90,6 +91,7 @@ class AdminServiceImpl(
 
             User(
                 id = it.id,
+                ulid = it.ulid,
                 email = it.email,
                 name = it.name,
                 phoneNumber = it.phoneNumber,
@@ -291,6 +293,7 @@ class AdminServiceImpl(
 
             val lecture = Lecture(
                 id = UUID(0, 0),
+                ulid = ULIDGenerator.generateULID(),
                 name = name,
                 content = content,
                 instructor = instructorName,
@@ -314,6 +317,7 @@ class AdminServiceImpl(
                     val timeZone = it.split(" ", "~")
                     LectureDate(
                         id = UUID(0, 0),
+                        ulid = ULIDGenerator.generateULID(),
                         lecture = lecture,
                         completeDate = timeZone[0].toLocalDate(),
                         startTime = timeZone[1].toLocalTime(),

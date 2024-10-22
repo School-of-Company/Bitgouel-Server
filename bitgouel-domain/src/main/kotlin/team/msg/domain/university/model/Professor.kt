@@ -16,6 +16,8 @@ class Professor(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -28,4 +30,4 @@ class Professor(
     @JoinColumn(name = "university_id")
     val university: University
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

@@ -12,6 +12,8 @@ class Post (
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @Column(name = "user_id", columnDefinition = "BINARY(16)")
     val userId: UUID,
 
@@ -36,4 +38,4 @@ class Post (
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     val feedType: FeedType
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

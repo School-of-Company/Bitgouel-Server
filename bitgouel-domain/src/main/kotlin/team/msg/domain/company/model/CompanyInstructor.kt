@@ -16,6 +16,8 @@ class CompanyInstructor(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -28,4 +30,4 @@ class CompanyInstructor(
     @JoinColumn(name = "company_id")
     val company: Company
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

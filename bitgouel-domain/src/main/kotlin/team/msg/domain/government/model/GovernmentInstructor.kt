@@ -17,6 +17,8 @@ class GovernmentInstructor(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "BINARY(16)")
     val user: User?,
@@ -35,4 +37,4 @@ class GovernmentInstructor(
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     val sectors: String
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

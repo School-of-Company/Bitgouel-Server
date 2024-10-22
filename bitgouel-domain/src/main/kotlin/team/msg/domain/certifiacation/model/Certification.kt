@@ -12,6 +12,8 @@ class Certification(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @Column(name = "student_id", columnDefinition = "BINARY(16)")
     val studentId: UUID,
 
@@ -21,4 +23,4 @@ class Certification(
     @Column(columnDefinition = "DATE", nullable = false)
     val acquisitionDate: LocalDate
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import team.msg.common.ulid.ULIDGenerator
 import team.msg.common.util.UserUtil
 import team.msg.domain.bbozzak.model.Bbozzak
 import team.msg.domain.club.model.Club
@@ -52,6 +53,7 @@ class StudentActivityServiceImpl(
 
         val studentActivity = StudentActivity(
             id = UUID(0, 0),
+            ulid = ULIDGenerator.generateULID(),
             title = request.title,
             content = request.content,
             credit = request.credit,
@@ -81,6 +83,7 @@ class StudentActivityServiceImpl(
 
         val updatedStudentActivity = StudentActivity(
             id = studentActivity.id,
+            ulid = studentActivity.ulid,
             title = request.title,
             content = request.content,
             credit = request.credit,

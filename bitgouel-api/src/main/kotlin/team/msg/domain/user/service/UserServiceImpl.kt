@@ -49,6 +49,7 @@ class UserServiceImpl(
 
         val modifiedPasswordUser = User(
             id = user.id,
+            ulid = user.ulid,
             email = user.email,
             name = user.name,
             phoneNumber = user.phoneNumber,

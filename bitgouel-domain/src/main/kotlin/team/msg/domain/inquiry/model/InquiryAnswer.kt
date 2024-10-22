@@ -14,6 +14,8 @@ class InquiryAnswer(
     @get:JvmName("getIdentifier")
     override var id: UUID,
 
+    override var ulid: String,
+
     @Column(columnDefinition = "VARCHAR(1000)", nullable = false)
     val answer: String,
 
@@ -24,4 +26,4 @@ class InquiryAnswer(
     @Column(name = "inquiry_id", columnDefinition = "BINARY(16)", nullable = false)
     val inquiryId: UUID
 
-) : BaseUUIDEntity(id)
+) : BaseUUIDEntity(id, ulid)
